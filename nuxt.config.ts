@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
-      title: 'A Better Nuxt 3 Starter',
+      title: 'Najm Printing',
       link: [{ rel: 'icon', type: 'image/*', href: '/favicon.svg' }]
     }
   },
@@ -15,11 +15,13 @@ export default defineNuxtConfig({
     '@unocss/nuxt',
     '@pinia/nuxt',
     'unplugin-icons/nuxt',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    
   ],
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
+      require('vite-svg-loader')(),
       ViteComponents({
         resolvers: [
           IconsResolver({
