@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4 gap-4 mx-4 sm:grid-cols-8 sm:mx-8 md:grid-cols-12 h-screen">
+  <div class="grid grid-cols-4 gap-4 mx-4 md:grid-cols-8 md:mx-8 lg:grid-cols-12 h-screen">
     <div
       v-for="n in columns"
       :key="n"
@@ -13,7 +13,7 @@
 <script setup lang="ts">
 const { width } = useWindowSize();
 
-const columns = computed(() => (width.value >= 768 ? 12 : width.value >= 375 ? 8 : 4));
+const columns = computed(() => (width.value >= 1024 ? 12 : width.value >= 768 ? 8 : 4));
 </script>
 
 <style scoped>
