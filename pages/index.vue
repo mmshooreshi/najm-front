@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-4 gap-4 mx-4 md:grid-cols-8 md:mx-8 lg:grid-cols-12 h-screen">
+  <div class="grid grid-cols-4 gap-4 mx-4 md:grid-cols-8 md:mx-8 lg:grid-cols-12 2xl:mx-28 h-screen">
     <div
       v-for="n in columns"
       :key="n"
