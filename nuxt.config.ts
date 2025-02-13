@@ -17,6 +17,7 @@ export default defineNuxtConfig({
     'unplugin-icons/nuxt',
     '@vueuse/nuxt'
   ],
+  css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
       ViteComponents({
