@@ -405,7 +405,7 @@ const handleElementHover = (image) => {
   // If not already hovered, change hover state.
   if (!image.hovered) {
     image.hovered = true
-    image.scale = 1.2
+    image.scale = 1.5
     image.hoverRotate = image.rotate + 10
     // Optionally, you can delay the z-index change if needed.
     // setTimeout(() => {
