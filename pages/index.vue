@@ -1,6 +1,6 @@
 <template>
   <!-- Wrap everything in a relative container -->
-  <div class="relative bg-gray/10 min-h-screen">
+  <div class="relative bg-gray/10 min-h-screen w-screen">
     <!-- SVG Background Gradient -->
     <svg
       class="absolute inset-0 w-full h-full pointer-events-none"
@@ -47,7 +47,7 @@
     </svg>
 
     <!-- Your Main Content (positioned above the background) -->
-    <div class="mx-4 md:mx-8 2xl:mx-28 relative">
+    <div class="mx-4 md:mx-8 2xl:mx-28 relative ">
       <Header />
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
@@ -55,7 +55,7 @@
         style="left:16px; right:16px; top:68px; padding:64px 24px;"
       >
         <!-- Header Text -->
-        <div class="w-[343px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[46px] text-black">
+        <div class="sm:w-[343px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[46px] text-black">
           یه راهکار خلاقانه برای چاپ و بسته‌بندی مورد نیاز شما
         </div>
         <!-- Floating Images -->
