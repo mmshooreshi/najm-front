@@ -4,7 +4,7 @@
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <!-- Settings Button -->
-    <button @click="showSettings = true"
+    <button @click="showSettings = !showSettings"
             class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded">
       Settings
     </button>
@@ -22,8 +22,8 @@
 
 
     <!-- Settings Modal -->
-    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-[999] bg-black bg-opacity-50">
-        <div class="bg-white p-4 rounded-lg w-80 space-y-3">
+    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-[999] pointer-events-none">
+        <div class="bg-white p-4 rounded-lg w-80 space-y-3  max-h-[80%] top-4 absolute overflow-auto shadow-md pointer-events-auto">
             <h2 class="text-xl font-bold mb-4">Settings</h2>
             <div class="space-y-2">
                 <label class="block">
@@ -208,15 +208,19 @@ const mouseEffect = ref({ x: 0, y: 0 })
    Compute Style for Each Image with Oscillation, Hover, & Parallax Effects
 -------------------------------------------------------------------------- */
 const getStyle = (image, index) => {
-    const factor = 1 // you can adjust the factor as needed
-    const effectiveX = getEffectiveX(image.left, factor)
-    const verticalSpeed = verticalSpeedFactor.value * factor
-    const verticalOffset = Math.sin(globalTime.value * verticalSpeed + index) * verticalAmplitude.value
-    const scaleSpeed = scaleSpeedFactor.value * factor
-    const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeed + index) * scaleAmplitude.value
+    const effectiveX = getEffectiveX(image.left, 1);
+    const isVisible = isInViewport(image);
+    
+    if (!isVisible) {
+        resetElement(image); // 🔥 Turn off hover if out of view
+    }
 
-    // Use hover rotation if defined
-    const rotation = image.hoverRotate !== undefined ? image.hoverRotate : image.rotate
+    const verticalSpeed = verticalSpeedFactor.value;
+    const verticalOffset = Math.sin(globalTime.value * verticalSpeed + index) * verticalAmplitude.value;
+    const scaleSpeed = scaleSpeedFactor.value;
+    const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeed + index) * scaleAmplitude.value;
+
+    const rotation = image.hoverRotate !== undefined ? image.hoverRotate : image.rotate;
 
     const style = {
         width: `${image.width}px`,
@@ -226,21 +230,20 @@ const getStyle = (image, index) => {
         transform: `rotate(${rotation}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x * parallaxMultiplier.value}px, ${mouseEffect.value.y * parallaxMultiplier.value}px)`,
         transition: `transform ${hoverTransitionDuration.value}s ease-out, box-shadow ${hoverTransitionDuration.value}s ease-out, opacity ${hoverTransitionDuration.value}s ease-out, filter ${hoverTransitionDuration.value}s ease-out`,
         position: 'absolute',
-        zIndex: image.zIndex
-    }
+        zIndex: image.zIndex,
+        opacity: isVisible ? 1 : 0, // Hide if off-screen
+    };
 
-    // Apply blur and fade to non-hovered images if one is hovered.
     if (images.some(img => img.hovered) && !image.hovered) {
-        style.filter = `blur(${nonHoveredBlur.value}px)`
-        style.opacity = nonHoveredOpacity.value
+        style.filter = `blur(${nonHoveredBlur.value}px)`;
+        style.opacity = nonHoveredOpacity.value;
     } else {
-        style.filter = 'none'
-        style.opacity = 1
+        style.filter = 'none';
+        style.opacity = 1;
     }
 
-    return style
-}
-
+    return style;
+};
 /**
  * getEffectiveX()
  * Given an image's original left and a movement factor,
@@ -257,6 +260,11 @@ function getEffectiveX(imageLeft, factor) {
     }
     return x
 }
+
+const isInViewport = (image) => {
+    const effectiveX = getEffectiveX(image.left, 1);
+    return effectiveX + image.width > 0;
+};
 
 /* -------------------------------------------------------------------------
    Animation Loop – Auto–Scroll, Inertia, Global Time, & Repulsion
@@ -431,6 +439,7 @@ const resetElement = (image) => {
 /* -------------------------------------------------------------------------
    Lifecycle Hooks
 -------------------------------------------------------------------------- */
+
 onMounted(() => {
     animate()
 })
