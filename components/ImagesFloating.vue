@@ -256,7 +256,7 @@
   const damping = ref(0.9)                   // damping factor for repulsion velocity
   
   // Inertia settings:
-  const inertiaFriction = ref(0.995)         // Friction factor per frame
+  const inertiaFriction = ref(0.695)         // Friction factor per frame
   const inertiaThreshold = ref(0.02)         // Minimum velocity threshold
   
   // New settings for hover effects:
