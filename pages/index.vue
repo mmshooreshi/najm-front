@@ -55,7 +55,7 @@
         style="left:16px; right:16px; top:68px; padding:64px 24px;"
       >
         <!-- Header Text -->
-        <div class="sm:w-[343px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[46px] text-black">
+        <div class="sm:w-[343px] md:w-[543px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[51px] text-black">
           یه راهکار خلاقانه برای چاپ و بسته‌بندی مورد نیاز شما
         </div>
         <!-- Floating Images -->
