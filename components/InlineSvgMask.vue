@@ -25,7 +25,7 @@
       :width="W"
       :height="H"
       alt="Loaded PNG"
-      style="position: relative; top: 0; left: 0; opacity: 100;"
+      style="position: relative; top: 0; left: 0; opacity: 1;"
     />
 
   </div>
