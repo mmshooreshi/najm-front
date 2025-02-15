@@ -40,7 +40,7 @@
       v-if="showSettings"
       class="fixed inset-0 flex items-center justify-center z-[999] bg-black bg-opacity-50"
     >
-      <div class="bg-white p-4 rounded-lg w-80">
+      <div class="bg-white p-4 rounded-lg w-80 space-y-3">
         <h2 class="text-xl font-bold mb-4">Settings</h2>
         <div class="space-y-2">
           <label class="block">
@@ -117,6 +117,73 @@
               class="w-full border rounded p-1"
             />
           </label>
+          <label class="block">
+            Inertia Friction:
+            <input
+              type="number"
+              v-model.number="inertiaFriction"
+              step="0.001"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Inertia Threshold:
+            <input
+              type="number"
+              v-model.number="inertiaThreshold"
+              step="0.01"
+              class="w-full border rounded p-1"
+            />
+          </label>
+  
+          <!-- New hover effect settings -->
+          <label class="block">
+            Hover Transition Duration (s):
+            <input
+              type="number"
+              v-model.number="hoverTransitionDuration"
+              step="0.1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Hover Z-Index Offset:
+            <input
+              type="number"
+              v-model.number="hoverZIndexOffset"
+              step="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Hover Z-Index Delay (ms):
+            <input
+              type="number"
+              v-model.number="hoverZIndexDelay"
+              step="50"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Non-Hovered Blur Amount (px):
+            <input
+              type="number"
+              v-model.number="nonHoveredBlur"
+              step="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Non-Hovered Opacity:
+            <input
+              type="number"
+              v-model.number="nonHoveredOpacity"
+              step="0.1"
+              min="0"
+              max="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
         </div>
         <button
           @click="showSettings = false"
@@ -182,24 +249,27 @@
   const verticalAmplitude = ref(0)         // pixels
   const verticalSpeedFactor = ref(5)         // multiplier for vertical oscillation
   
-  const scaleAmplitude = ref(0)              // scaling offset (e.g., 0.1 = 10% size change)
+  const scaleAmplitude = ref(0)              // e.g., 0.1 = 10% size change
   const scaleSpeedFactor = ref(5)            // multiplier for scaling oscillation
   
   const repulsionStrength = ref(200)         // force multiplier for repulsion
   const damping = ref(0.9)                   // damping factor for repulsion velocity
   
+  // Inertia settings:
+  const inertiaFriction = ref(0.995)         // Friction factor per frame
+  const inertiaThreshold = ref(0.02)         // Minimum velocity threshold
+  
+  // New settings for hover effects:
+  const hoverTransitionDuration = ref(0.3)   // seconds for transform, opacity & filter transitions
+  const hoverZIndexOffset = ref(10)          // additional z-index for hovered element
+  const hoverZIndexDelay = ref(150)          // delay (ms) before raising z-index
+  const nonHoveredBlur = ref(3)              // blur amount (px) for non-hovered images
+  const nonHoveredOpacity = ref(0.6)         // opacity for non-hovered images when one is hovered
+  
   /* -------------------------------------------------------------------------
      Modal Visibility
   -------------------------------------------------------------------------- */
   const showSettings = ref(false)
-  
-  /* -------------------------------------------------------------------------
-     Parallax Factor (if needed)
-  -------------------------------------------------------------------------- */
-  const getParallaxFactor = (index) => {
-    // For now we simply return 1 (or you can use a factor array as before)
-    return 1
-  }
   
   /* -------------------------------------------------------------------------
      Global State & Interaction
@@ -214,26 +284,40 @@
   const mouseEffect = ref({ x: 0, y: 0 })
   
   /* -------------------------------------------------------------------------
-     Compute Style for Each Image with Oscillation
+     Compute Style for Each Image with Oscillation and Hover Effects
   -------------------------------------------------------------------------- */
   const getStyle = (image, index) => {
-    const factor = getParallaxFactor(index)
+    const factor = 1 // you can adjust the factor as needed
     const effectiveX = getEffectiveX(image.left, factor)
     const verticalSpeed = verticalSpeedFactor.value * factor
     const verticalOffset = Math.sin(globalTime.value * verticalSpeed + index) * verticalAmplitude.value
     const scaleSpeed = scaleSpeedFactor.value * factor
     const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeed + index) * scaleAmplitude.value
   
-    return {
+    // Use the extra rotation if defined (from hover) otherwise base rotation.
+    const rotation = image.hoverRotate !== undefined ? image.hoverRotate : image.rotate
+  
+    const style = {
       width: `${image.width}px`,
       height: `${image.height}px`,
       left: `${effectiveX}px`,
       top: `${image.top + verticalOffset}px`,
-      transform: `rotate(${image.rotate}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x}px, ${mouseEffect.value.y}px)`,
-      transition: 'transform 0.3s ease-out, z-index 0.3s ease-out',
+      transform: `rotate(${rotation}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x}px, ${mouseEffect.value.y}px)`,
+      transition: `transform ${hoverTransitionDuration.value}s ease-out, box-shadow ${hoverTransitionDuration.value}s ease-out, opacity ${hoverTransitionDuration.value}s ease-out, filter ${hoverTransitionDuration.value}s ease-out`,
       position: 'absolute',
       zIndex: image.zIndex
     }
+  
+    // If any image is hovered and this one isn’t the hovered one, apply blur and fade.
+    if (images.some(img => img.hovered) && !image.hovered) {
+      style.filter = `blur(${nonHoveredBlur.value}px)`
+      style.opacity = nonHoveredOpacity.value
+    } else {
+      style.filter = 'none'
+      style.opacity = 1
+    }
+  
+    return style
   }
   
   /**
@@ -271,8 +355,8 @@
     if (!isSwiping.value) {
       if (swipeInertiaActive.value) {
         translateX.value += swipeVelocity.value * dt
-        swipeVelocity.value *= 0.795 // decay
-        if (Math.abs(swipeVelocity.value) < 0.02) {
+        swipeVelocity.value *= inertiaFriction.value
+        if (Math.abs(swipeVelocity.value) < inertiaThreshold.value) {
           swipeInertiaActive.value = false
           swipeVelocity.value = speed.value
         }
@@ -282,45 +366,29 @@
     }
   
     // ----- Repulsion Physics Update -----
-    // Loop through every pair of images.
     for (let i = 0; i < images.length; i++) {
       for (let j = i + 1; j < images.length; j++) {
         const imgA = images[i]
         const imgB = images[j]
-        const factorA = getParallaxFactor(i)
-        const factorB = getParallaxFactor(j)
-  
-        // Calculate the center positions of each image (including repulsion offset).
-        const centerAX =
-          getEffectiveX(imgA.left, factorA) +
-          (imgA.offsetX || 0) +
-          imgA.width / 2
-        const centerAY =
-          imgA.top + (imgA.offsetY || 0) + imgA.height / 2
-        const centerBX =
-          getEffectiveX(imgB.left, factorB) +
-          (imgB.offsetX || 0) +
-          imgB.width / 2
-        const centerBY =
-          imgB.top + (imgB.offsetY || 0) + imgB.height / 2
+        const centerAX = getEffectiveX(imgA.left, 1) + (imgA.offsetX || 0) + imgA.width / 2
+        const centerAY = imgA.top + (imgA.offsetY || 0) + imgA.height / 2
+        const centerBX = getEffectiveX(imgB.left, 1) + (imgB.offsetX || 0) + imgB.width / 2
+        const centerBY = imgB.top + (imgB.offsetY || 0) + imgB.height / 2
   
         const dx = centerAX - centerBX
         const dy = centerAY - centerBY
         const distance = Math.sqrt(dx * dx + dy * dy)
   
-        // Approximate each image’s "radius" (half the average of width and height).
         const radiusA = (imgA.width + imgA.height) / 4
         const radiusB = (imgB.width + imgB.height) / 4
         const minDist = radiusA + radiusB
   
-        // If images are too close, calculate repulsion.
         if (distance < minDist && distance > 0) {
           const overlap = minDist - distance
           const force = repulsionStrength.value * overlap
           const fx = (dx / distance) * force
           const fy = (dy / distance) * force
   
-          // Update velocities (apply opposite forces to each image).
           imgA.vx = (imgA.vx || 0) + fx * dtSec
           imgA.vy = (imgA.vy || 0) + fy * dtSec
           imgB.vx = (imgB.vx || 0) - fx * dtSec
@@ -329,15 +397,12 @@
       }
     }
   
-    // Update each image's repulsion offset based on velocity and apply damping.
     images.forEach(image => {
       image.offsetX = (image.offsetX || 0) + (image.vx || 0) * dtSec
       image.offsetY = (image.offsetY || 0) + (image.vy || 0) * dtSec
       image.vx = (image.vx || 0) * damping.value
       image.vy = (image.vy || 0) * damping.value
     })
-  
-    // --------------------------------------
   
     animationFrameId = requestAnimationFrame(animate)
   }
@@ -364,11 +429,9 @@
     if (!slider.value) return
     const rect = slider.value.getBoundingClientRect()
     const offsetX =
-      (((event.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) *
-      10
+      (((event.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 10
     const offsetY =
-      (((event.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) *
-      10
+      (((event.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * 10
     mouseEffect.value = { x: offsetX, y: offsetY }
   }
   const throttledMouseMove = useThrottleFn(handleMouseMove, 16)
@@ -405,13 +468,25 @@
      Image Hover Effects
   -------------------------------------------------------------------------- */
   const handleElementHover = (image) => {
-    image.scale = 1.1
+    // Increase the scale when hovered.
+    image.scale = 1.2
+    // Add an extra rotation for the hover effect.
+    image.hoverRotate = image.rotate + 10
+    image.hovered = true
     if (image.baseZIndex === undefined) image.baseZIndex = image.zIndex
-    image.zIndex = image.baseZIndex + 10
+    // Delay raising z-index to allow a smooth transition.
+    setTimeout(() => {
+      if (image.hovered) {
+        image.zIndex = image.baseZIndex + hoverZIndexOffset.value
+      }
+    }, hoverZIndexDelay.value)
   }
+  
   const resetElement = (image) => {
     image.scale = 1
-    if (image.baseZIndex !== undefined) image.zIndex = image.baseZIndex
+    image.hoverRotate = undefined
+    image.hovered = false
+    image.zIndex = image.baseZIndex
   }
   
   /* -------------------------------------------------------------------------
@@ -431,7 +506,6 @@
     width: 100vw;
     overflow-x: clip;
     overflow-y: unset;
-    /* background-color: red; */
   }
   .slider-inner {
     position: absolute;
@@ -439,8 +513,9 @@
   }
   .image-item {
     position: absolute;
-    transition: transform 0.3s ease-out, z-index 0.3s ease-out;
-    will-change: transform;
+    transition-property: transform, box-shadow, opacity, filter;
+    /* The duration and easing are controlled via inline style from settings. */
+    will-change: transform, opacity, filter;
   }
   </style>
   
