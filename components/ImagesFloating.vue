@@ -1,29 +1,29 @@
 <template>
-  <div ref="slider" class="slider-container relative w-full h-[70vh] touch-none"
+<button @click="showSettings = !showSettings"
+            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded focus:bg-red">
+      Settings
+    </button>
+
+  <div ref="slider" class="slider-container relative w-full h-[50vh] touch-none"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <!-- Settings Button -->
-    <button @click="showSettings = !showSettings"
-            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded">
-      Settings
-    </button>
 
     <div class="slider-inner absolute flex">
       <div v-for="(image, index) in images" :key="index"
            class="image-item absolute"
            :style="getStyle(image, index)">
         <!-- Use InlineSvg, now with pixel–aware hover effects -->
-        <InlineSvgMask class="opacity-0" :src="`/images/svg/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
-        <InlineSvg class="-translate-y-[100%]" :src="`/images/svg/${image.src}`"/>
+        <InlineSvgMask class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
       </div>
     </div>
   </div>
 
 
     <!-- Settings Modal -->
-    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-[999] pointer-events-none">
-        <div class="bg-white p-4 rounded-lg w-80 space-y-3  max-h-[80%] top-4 absolute overflow-auto shadow-md pointer-events-auto">
+    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-[100] max-h-[80%] overflow-auto">
+        <div class="bg-white p-4 rounded-lg w-80 space-y-3  h-full top-4  shadow-md ">
             <h2 class="text-xl font-bold mb-4">Settings</h2>
             <div class="space-y-2">
                 <label class="block">
@@ -116,33 +116,32 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useWindowSize, useThrottleFn } from '@vueuse/core'
-import InlineSvg from '~/components/InlineSvg.vue'
 import InlineSvgMask from '~/components/InlineSvgMask.vue'
 
 /* -------------------------------------------------------------------------
    Image Data – Adjust as needed!
 -------------------------------------------------------------------------- */
-const images = [
-    { name: "Open Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.svg", width: 145, height: 152, left: -52, top: 91, rotate: -12, zIndex: 1 },
-    { name: "Kraft Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.svg", width: 239, height: 210, left: 74, top: -4, rotate: 8, zIndex: 2 },
-    { name: "Free Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.svg", width: 167, height: 167, left: 180, top: 106, rotate: -8, zIndex: 3 },
-    { name: "Free Coffee Cup Paper Holder", src: "Free-Coffee-Cup-Paper-Holder-Mockup-1.svg", width: 158, height: 189, left: 264, top: 66, rotate: 15, zIndex: 4 },
-    { name: "Free Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1.svg", width: 122, height: 216, left: 429, top: 42, rotate: 10, zIndex: 5 },
-    { name: "Free Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.svg", width: 181, height: 153, left: 460, top: 140, rotate: 7, zIndex: 6 },
-    { name: "Kraft Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.svg", width: 123, height: 220, left: 588, top: 37, rotate: -6, zIndex: 7 },
-    { name: "Floating Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.svg", width: 156, height: 152, left: 720, top: 132, rotate: -10, zIndex: 8 },
-    { name: "Cardboard Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.svg", width: 178, height: 168, left: 768, top: 42, rotate: 5, zIndex: 9 },
-    { name: "Free Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.svg", width: 140, height: 194, left: 916, top: 100, rotate: -5, zIndex: 10 },
-    { name: "Open Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.svg", width: 144, height: 151, left: 1002, top: 175, rotate: -8, zIndex: 11 },
-    { name: "Kraft Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.svg", width: 141, height: 221, left: 1120, top: 18, rotate: 2, zIndex: 12 },
-    { name: "Free Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.svg", width: 168, height: 167, left: 1269, top: 117, rotate: -6, zIndex: 13 },
-    { name: "Floating Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.svg", width: 156, height: 152, left: 1331, top: 20, rotate: -12, zIndex: 14 },
-    { name: "Kraft Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.svg", width: 216, height: 190, left: 1406, top: 49, rotate: 5, zIndex: 15 },
-    { name: "Free Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1.svg", width: 138, height: 218, left: 1577, top: 25, rotate: -4, zIndex: 16 },
-    { name: "Free Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.svg", width: 181, height: 153, left: 1591, top: 184, rotate: 7, zIndex: 17 },
-    { name: "Free Coffee Cup Paper Holder", src: "Free-Coffee-Cup-Paper-Holder-Mockup-1.svg", width: 158, height: 189, left: 1717, top: 77, rotate: 15, zIndex: 18 },
-    { name: "Free Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.svg", width: 140, height: 194, left: 1862, top: 111, rotate: -5, zIndex: 19 },
-    { name: "Cardboard Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.svg", width: 181, height: 168, left: 1946, top: 116, rotate: 6, zIndex: 20 }
+let images = [
+    { name: "Open Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.png", width: 145, height: 152, left: -52, top: 91, rotate: -12, zIndex: 1 },
+    { name: "Kraft Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.png", width: 239, height: 210, left: 74, top: -4, rotate: 8, zIndex: 2 },
+    { name: "Free Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.png", width: 167, height: 167, left: 180, top: 106, rotate: -8, zIndex: 3 },
+    { name: "Free Coffee Cup Paper Holder", src: "Free-Coffee-Cup-Paper-Holder-Mockup-1.png", width: 158, height: 189, left: 264, top: 66, rotate: 15, zIndex: 4 },
+    { name: "Free Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1.png", width: 122, height: 216, left: 429, top: 42, rotate: 10, zIndex: 5 },
+    { name: "Free Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.png", width: 181, height: 153, left: 460, top: 140, rotate: 7, zIndex: 6 },
+    { name: "Kraft Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 123, height: 220, left: 588, top: 37, rotate: -6, zIndex: 7 },
+    { name: "Floating Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.png", width: 156, height: 152, left: 720, top: 132, rotate: -10, zIndex: 8 },
+    { name: "Cardboard Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.png", width: 178, height: 168, left: 768, top: 42, rotate: 5, zIndex: 9 },
+    { name: "Free Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.png", width: 140, height: 194, left: 916, top: 100, rotate: -5, zIndex: 10 },
+    { name: "Open Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.png", width: 144, height: 151, left: 1002, top: 175, rotate: -8, zIndex: 11 },
+    { name: "Kraft Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 141, height: 221, left: 1120, top: 18, rotate: 2, zIndex: 12 },
+    { name: "Free Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.png", width: 168, height: 167, left: 1269, top: 117, rotate: -6, zIndex: 13 },
+    { name: "Floating Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.png", width: 156, height: 152, left: 1331, top: 20, rotate: -12, zIndex: 14 },
+    { name: "Kraft Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.png", width: 216, height: 190, left: 1406, top: 49, rotate: 5, zIndex: 15 },
+    { name: "Free Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1-1.png", width: 138, height: 218, left: 1577, top: 25, rotate: -4, zIndex: 16 },
+    { name: "Free Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.png", width: 181, height: 153, left: 1591, top: 184, rotate: 7, zIndex: 17 },
+    { name: "Free Coffee Cup Paper Holder", src: "Free-Coffee-Cup-Paper-Holder-Mockup-1.png", width: 158, height: 189, left: 1717, top: 77, rotate: 15, zIndex: 18 },
+    { name: "Free Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.png", width: 140, height: 194, left: 1862, top: 111, rotate: -5, zIndex: 19 },
+    { name: "Cardboard Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.png", width: 181, height: 168, left: 1946, top: 116, rotate: 6, zIndex: 20 }
 ]
 
 /* -------------------------------------------------------------------------
@@ -176,16 +175,16 @@ const repulsionStrength = ref(200)         // force multiplier for repulsion
 const damping = ref(0.9)                   // damping factor for repulsion velocity
 
 // Inertia settings:
-const inertiaFriction = ref(0.695)         // Friction factor per frame
+const inertiaFriction = ref(0.795)         // Friction factor per frame
 const inertiaThreshold = ref(0.02)         // Minimum velocity threshold
 
 // New settings for hover & parallax effects:
 const hoverTransitionDuration = ref(0.3)   // seconds for transitions
-const hoverZIndexOffset = ref(100)          // additional z-index for hovered element
+const hoverZIndexOffset = ref(50)          // additional z-index for hovered element
 const hoverZIndexDelay = ref(0)          // delay (ms) before raising z-index
 const nonHoveredBlur = ref(3)              // blur amount (px) for non-hovered images
 const nonHoveredOpacity = ref(0.6)         // opacity for non-hovered images when one is hovered
-const parallaxMultiplier = ref(2.0)        // multiplier for mouse parallax effect
+const parallaxMultiplier = ref(1)        // multiplier for mouse parallax effect
 
 /* -------------------------------------------------------------------------
    Modal Visibility
@@ -263,7 +262,7 @@ function getEffectiveX(imageLeft, factor) {
 
 const isInViewport = (image) => {
     const effectiveX = getEffectiveX(image.left, 1);
-    return effectiveX + image.width > 0;
+    return effectiveX + image.width + 50 > 0;
 };
 
 /* -------------------------------------------------------------------------
@@ -370,7 +369,7 @@ const isRealSwipe = ref(false);
 let startTouchX = 0
 let startTranslateX = 0
 const handleTouchStart = (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     isSwiping.value = true;
     swipeInertiaActive.value = false;
     startTouchX = event.touches[0].clientX;
@@ -384,7 +383,7 @@ const handleTouchMove = (event) => {
     const currentTime = performance.now();
     const delta = currentX - startTouchX;
 
-    if (!isRealSwipe.value && Math.abs(delta) > 5) {
+    if (!isRealSwipe.value && Math.abs(delta) > 1) {
         isRealSwipe.value = true; // 🔥 Now it's a real swipe!
     }
 
@@ -422,11 +421,7 @@ const handleElementHover = (image) => {
     image.hovered = true
     if (image.baseZIndex === undefined) image.baseZIndex = image.zIndex
     // Delay raising z-index to allow a smooth transition.
-    setTimeout(() => {
-        if (image.hovered) {
-            image.zIndex = image.baseZIndex + hoverZIndexOffset.value
-        }
-    }, hoverZIndexDelay.value)
+    image.zIndex = 100
 }
 
 const resetElement = (image) => {
@@ -454,6 +449,7 @@ onUnmounted(() => {
     width: 100vw;
     overflow-x: clip;
     overflow-y: unset;
+    /* background-color: red; */
 }
 
 .slider-inner {
@@ -466,11 +462,5 @@ onUnmounted(() => {
     transition-property: transform, box-shadow, opacity, filter;
     will-change: transform, opacity, filter;
 }
-
-html, body {
-    overflow: hidden; /* Prevents scrolling from affecting layout */
-    touch-action: none; /* Disables browser handling of touch gestures */
-}
-
 
 </style>
