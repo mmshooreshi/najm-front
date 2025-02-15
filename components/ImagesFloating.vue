@@ -271,7 +271,7 @@
   
   // New settings for hover & parallax effects:
   const hoverTransitionDuration = ref(0.3)   // seconds for transitions
-  const hoverZIndexOffset = ref(10)          // additional z-index for hovered element
+  const hoverZIndexOffset = ref(100)          // additional z-index for hovered element
   const hoverZIndexDelay = ref(0)          // delay (ms) before raising z-index
   const nonHoveredBlur = ref(3)              // blur amount (px) for non-hovered images
   const nonHoveredOpacity = ref(0.6)         // opacity for non-hovered images when one is hovered
