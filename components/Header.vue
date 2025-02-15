@@ -7,6 +7,22 @@
         <NuxtLink to="/" class="flex justify-center">
           <NajmLogo class="h-12 w-12" />
         </NuxtLink>
+      </div>
+  
+      <!-- Left: Language + Search -->
+      <div v-if="width < 768" class="flex flex-row items-center gap-1">
+        <!-- Language Switch -->
+        <div 
+          class="w-12 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold 
+                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+          <span class="block">FA</span>
+        </div>
+        <!-- Search Button -->
+        <div 
+          class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
+                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+          <SearchIcon class="w-6 h-6 fill-current text-gray-700" />
+        </div>
         <!-- Hamburger Menu -->
         <div 
           @click="toggleMenu" 
@@ -14,22 +30,7 @@
                  transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
           <HamburgerIcon class="w-6 h-6 fill-current text-gray-700" />
         </div>
-      </div>
-  
-      <!-- Left: Language + Search -->
-      <div v-if="width < 768" class="flex flex-row items-center gap-4">
-        <!-- Search Button -->
-        <div 
-          class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
-                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
-          <SearchIcon class="w-6 h-6 fill-current text-gray-700" />
-        </div>
-        <!-- Language Switch -->
-        <div 
-          class="w-12 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold 
-                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
-          <span class="block">FA</span>
-        </div>
+
       </div>
 
       <!-- Desktop Navigation (>= 768px) -->

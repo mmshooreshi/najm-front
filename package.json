@@ -25,6 +25,7 @@
     "vite-svg-loader": "^5.1.0"
   },
   "dependencies": {
+    "@vueuse/motion": "^2.2.6",
     "nuxt-icons": "^3.2.1",
     "pinia": "^2.1.7",
     "vue-i18n": "^9.13.1"
