@@ -9,6 +9,14 @@
       @touchmove="handleTouchMove"
       @touchend="handleTouchEnd"
     >
+      <!-- Settings Button -->
+      <button
+        @click="showSettings = true"
+        class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded"
+      >
+        Settings
+      </button>
+  
       <div class="slider-inner absolute flex">
         <div
           v-for="(image, index) in images"
@@ -24,6 +32,98 @@
             class="w-full h-full object-contain"
           />
         </div>
+      </div>
+    </div>
+  
+    <!-- Settings Modal -->
+    <div
+      v-if="showSettings"
+      class="fixed inset-0 flex items-center justify-center z-[999] bg-black bg-opacity-50"
+    >
+      <div class="bg-white p-4 rounded-lg w-80">
+        <h2 class="text-xl font-bold mb-4">Settings</h2>
+        <div class="space-y-2">
+          <label class="block">
+            Base Speed:
+            <input
+              type="number"
+              v-model.number="baseSpeed"
+              step="0.1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Accelerated Speed:
+            <input
+              type="number"
+              v-model.number="acceleratedSpeed"
+              step="0.1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Vertical Amplitude:
+            <input
+              type="number"
+              v-model.number="verticalAmplitude"
+              step="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Vertical Speed Factor:
+            <input
+              type="number"
+              v-model.number="verticalSpeedFactor"
+              step="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Scale Amplitude:
+            <input
+              type="number"
+              v-model.number="scaleAmplitude"
+              step="0.1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Scale Speed Factor:
+            <input
+              type="number"
+              v-model.number="scaleSpeedFactor"
+              step="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Repulsion Strength:
+            <input
+              type="number"
+              v-model.number="repulsionStrength"
+              step="10"
+              class="w-full border rounded p-1"
+            />
+          </label>
+          <label class="block">
+            Damping:
+            <input
+              type="number"
+              v-model.number="damping"
+              step="0.05"
+              min="0"
+              max="1"
+              class="w-full border rounded p-1"
+            />
+          </label>
+        </div>
+        <button
+          @click="showSettings = false"
+          class="mt-4 bg-blue-500 text-white rounded px-4 py-2"
+        >
+          Close
+        </button>
       </div>
     </div>
   </template>
@@ -65,13 +165,76 @@
   const minLeft = Math.min(...images.map(img => img.left))
   const maxRight = Math.max(...images.map(img => img.left + img.width))
   const trackWidth = maxRight - minLeft
-  const MARGIN = -300  // Allow images to leave the scene by this margin before wrapping
+  const MARGIN = -300 // Allow images to leave the scene by this margin before wrapping
   
   // Global translation value.
   const translateX = ref(0)
   
   // Global time for oscillation effects.
   const globalTime = ref(0)
+  
+  /* -------------------------------------------------------------------------
+     Exposed Variables for Controls
+  -------------------------------------------------------------------------- */
+  const baseSpeed = ref(-0.5)
+  const acceleratedSpeed = ref(-0.7)
+  
+  const verticalAmplitude = ref(0)         // pixels
+  const verticalSpeedFactor = ref(5)         // multiplier for vertical oscillation
+  
+  const scaleAmplitude = ref(0)              // scaling offset (e.g., 0.1 = 10% size change)
+  const scaleSpeedFactor = ref(5)            // multiplier for scaling oscillation
+  
+  const repulsionStrength = ref(200)         // force multiplier for repulsion
+  const damping = ref(0.9)                   // damping factor for repulsion velocity
+  
+  /* -------------------------------------------------------------------------
+     Modal Visibility
+  -------------------------------------------------------------------------- */
+  const showSettings = ref(false)
+  
+  /* -------------------------------------------------------------------------
+     Parallax Factor (if needed)
+  -------------------------------------------------------------------------- */
+  const getParallaxFactor = (index) => {
+    // For now we simply return 1 (or you can use a factor array as before)
+    return 1
+  }
+  
+  /* -------------------------------------------------------------------------
+     Global State & Interaction
+  -------------------------------------------------------------------------- */
+  const slider = ref(null)
+  const { width } = useWindowSize()
+  const isHovered = ref(false)
+  const isSwiping = ref(false)
+  const speed = computed(() =>
+    isHovered.value ? acceleratedSpeed.value : baseSpeed.value
+  )
+  const mouseEffect = ref({ x: 0, y: 0 })
+  
+  /* -------------------------------------------------------------------------
+     Compute Style for Each Image with Oscillation
+  -------------------------------------------------------------------------- */
+  const getStyle = (image, index) => {
+    const factor = getParallaxFactor(index)
+    const effectiveX = getEffectiveX(image.left, factor)
+    const verticalSpeed = verticalSpeedFactor.value * factor
+    const verticalOffset = Math.sin(globalTime.value * verticalSpeed + index) * verticalAmplitude.value
+    const scaleSpeed = scaleSpeedFactor.value * factor
+    const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeed + index) * scaleAmplitude.value
+  
+    return {
+      width: `${image.width}px`,
+      height: `${image.height}px`,
+      left: `${effectiveX}px`,
+      top: `${image.top + verticalOffset}px`,
+      transform: `rotate(${image.rotate}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x}px, ${mouseEffect.value.y}px)`,
+      transition: 'transform 0.3s ease-out, z-index 0.3s ease-out',
+      position: 'absolute',
+      zIndex: image.zIndex
+    }
+  }
   
   /**
    * getEffectiveX()
@@ -91,139 +254,93 @@
   }
   
   /* -------------------------------------------------------------------------
-     Parallax Factor
+     Animation Loop – Auto–Scroll, Inertia, Global Time, & Repulsion
   -------------------------------------------------------------------------- */
-  const getParallaxFactor = (index) => {
-    const factors = [0.95, 1.0, 1.05]
-    return factors[index % factors.length]
-  }
-  
-  /* -------------------------------------------------------------------------
-     Global State & Interaction
-  -------------------------------------------------------------------------- */
-  const slider = ref(null)
-  const { width } = useWindowSize()
-  const baseSpeed = ref(-0.5)
-  const acceleratedSpeed = -0.7
-  // Accelerate only on hover.
-  const isHovered = ref(false)
-  const isSwiping = ref(false)
-  const speed = computed(() => (isHovered.value ? acceleratedSpeed : baseSpeed.value))
-  const mouseEffect = ref({ x: 0, y: 0 })
-  
-  /* -------------------------------------------------------------------------
-     Compute Style for Each Image with Subtle Vertical & Size Oscillation
-  -------------------------------------------------------------------------- */
-  const getStyle = (image, index) => {
-    // const factor = getParallaxFactor(index)
-    const factor = 1
-
-    const effectiveX = getEffectiveX(image.left, factor)
-    // Subtle vertical movement: each image gets its own oscillation speed and phase.
-    // const verticalAmplitude = 10 // pixels
-    const verticalAmplitude = 0 // pixels
-    const verticalSpeed = 5 * factor
-    const verticalOffset = Math.sin(globalTime.value * verticalSpeed + index) * verticalAmplitude
-    // Subtle size oscillation:
-    // const scaleAmplitude = 0.1
-    const scaleAmplitude = 0
-    const scaleSpeed = 5 * factor
-    const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeed + index) * scaleAmplitude
-    return {
-      width: `${image.width}px`,
-      height: `${image.height}px`,
-      left: `${effectiveX}px`,
-      top: `${image.top + verticalOffset}px`,
-      transform: `rotate(${image.rotate}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x}px, ${mouseEffect.value.y}px)`,
-      transition: 'transform 0.3s ease-out, z-index 0.3s ease-out',
-      position: 'absolute',
-      zIndex: image.zIndex
-    }
-  }
-  
-  /* -------------------------------------------------------------------------
-     Animation Loop – Auto–Scroll, Inertia & Global Time Update
-  -------------------------------------------------------------------------- */
-    let animationFrameId
-    let lastFrameTime = performance.now()
-    const animate = () => {
+  let animationFrameId
+  let lastFrameTime = performance.now()
+  const animate = () => {
     const now = performance.now()
     const dt = now - lastFrameTime
     const dtSec = dt / 1000
     lastFrameTime = now
-    
+  
     // Update global time.
     globalTime.value += dtSec
-    
+  
     // Auto-scroll / swipe inertia.
     if (!isSwiping.value) {
-        if (swipeInertiaActive.value) {
+      if (swipeInertiaActive.value) {
         translateX.value += swipeVelocity.value * dt
-        swipeVelocity.value *= 0.995 // decay
+        swipeVelocity.value *= 0.795 // decay
         if (Math.abs(swipeVelocity.value) < 0.02) {
-            swipeInertiaActive.value = false
-            swipeVelocity.value = speed.value
+          swipeInertiaActive.value = false
+          swipeVelocity.value = speed.value
         }
-        } else {
+      } else {
         translateX.value += speed.value
-        }
+      }
     }
-    
+  
     // ----- Repulsion Physics Update -----
     // Loop through every pair of images.
     for (let i = 0; i < images.length; i++) {
-        for (let j = i + 1; j < images.length; j++) {
+      for (let j = i + 1; j < images.length; j++) {
         const imgA = images[i]
         const imgB = images[j]
         const factorA = getParallaxFactor(i)
         const factorB = getParallaxFactor(j)
-        
+  
         // Calculate the center positions of each image (including repulsion offset).
-        const centerAX = getEffectiveX(imgA.left, factorA) + (imgA.offsetX || 0) + imgA.width / 2
-        const centerAY = imgA.top + (imgA.offsetY || 0) + imgA.height / 2
-        const centerBX = getEffectiveX(imgB.left, factorB) + (imgB.offsetX || 0) + imgB.width / 2
-        const centerBY = imgB.top + (imgB.offsetY || 0) + imgB.height / 2
-        
+        const centerAX =
+          getEffectiveX(imgA.left, factorA) +
+          (imgA.offsetX || 0) +
+          imgA.width / 2
+        const centerAY =
+          imgA.top + (imgA.offsetY || 0) + imgA.height / 2
+        const centerBX =
+          getEffectiveX(imgB.left, factorB) +
+          (imgB.offsetX || 0) +
+          imgB.width / 2
+        const centerBY =
+          imgB.top + (imgB.offsetY || 0) + imgB.height / 2
+  
         const dx = centerAX - centerBX
         const dy = centerAY - centerBY
         const distance = Math.sqrt(dx * dx + dy * dy)
-        
+  
         // Approximate each image’s "radius" (half the average of width and height).
         const radiusA = (imgA.width + imgA.height) / 4
         const radiusB = (imgB.width + imgB.height) / 4
         const minDist = radiusA + radiusB
-        
+  
         // If images are too close, calculate repulsion.
         if (distance < minDist && distance > 0) {
-            const overlap = minDist - distance
-            const repulsionStrength = 200 // Adjust to tune the repulsion force.
-            const force = repulsionStrength * overlap
-            const fx = (dx / distance) * force
-            const fy = (dy / distance) * force
-            
-            // Update velocities (apply opposite forces to each image).
-            imgA.vx = (imgA.vx || 0) + fx * dtSec
-            imgA.vy = (imgA.vy || 0) + fy * dtSec
-            imgB.vx = (imgB.vx || 0) - fx * dtSec
-            imgB.vy = (imgB.vy || 0) - fy * dtSec
+          const overlap = minDist - distance
+          const force = repulsionStrength.value * overlap
+          const fx = (dx / distance) * force
+          const fy = (dy / distance) * force
+  
+          // Update velocities (apply opposite forces to each image).
+          imgA.vx = (imgA.vx || 0) + fx * dtSec
+          imgA.vy = (imgA.vy || 0) + fy * dtSec
+          imgB.vx = (imgB.vx || 0) - fx * dtSec
+          imgB.vy = (imgB.vy || 0) - fy * dtSec
         }
-        }
+      }
     }
-    
+  
     // Update each image's repulsion offset based on velocity and apply damping.
-    const damping = 0.9 // Adjust for smoother or snappier damping.
     images.forEach(image => {
-        image.offsetX = (image.offsetX || 0) + (image.vx || 0) * dtSec
-        image.offsetY = (image.offsetY || 0) + (image.vy || 0) * dtSec
-        image.vx = (image.vx || 0) * damping
-        image.vy = (image.vy || 0) * damping
+      image.offsetX = (image.offsetX || 0) + (image.vx || 0) * dtSec
+      image.offsetY = (image.offsetY || 0) + (image.vy || 0) * dtSec
+      image.vx = (image.vx || 0) * damping.value
+      image.vy = (image.vy || 0) * damping.value
     })
-    
+  
     // --------------------------------------
-    
+  
     animationFrameId = requestAnimationFrame(animate)
-    }
-
+  }
   
   /* -------------------------------------------------------------------------
      Swipe Inertia Variables
@@ -236,13 +353,22 @@
   /* -------------------------------------------------------------------------
      Event Handlers – Mouse, Touch, & Hover Effects
   -------------------------------------------------------------------------- */
-  const handleMouseEnter = () => { isHovered.value = true }
-  const handleMouseLeave = () => { isHovered.value = false; mouseEffect.value = { x: 0, y: 0 } }
+  const handleMouseEnter = () => {
+    isHovered.value = true
+  }
+  const handleMouseLeave = () => {
+    isHovered.value = false
+    mouseEffect.value = { x: 0, y: 0 }
+  }
   const handleMouseMove = (event) => {
     if (!slider.value) return
     const rect = slider.value.getBoundingClientRect()
-    const offsetX = (((event.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 10
-    const offsetY = (((event.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * 10
+    const offsetX =
+      (((event.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) *
+      10
+    const offsetY =
+      (((event.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) *
+      10
     mouseEffect.value = { x: offsetX, y: offsetY }
   }
   const throttledMouseMove = useThrottleFn(handleMouseMove, 16)
@@ -305,7 +431,6 @@
     width: 100vw;
     overflow-x: clip;
     overflow-y: unset;
-
     /* background-color: red; */
   }
   .slider-inner {
