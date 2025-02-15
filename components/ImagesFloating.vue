@@ -184,6 +184,16 @@
               class="w-full border rounded p-1"
             />
           </label>
+          <!-- New Parallax setting -->
+          <label class="block">
+            Parallax Multiplier:
+            <input
+              type="number"
+              v-model.number="parallaxMultiplier"
+              step="0.1"
+              class="w-full border rounded p-1"
+            />
+          </label>
         </div>
         <button
           @click="showSettings = false"
@@ -259,12 +269,13 @@
   const inertiaFriction = ref(0.695)         // Friction factor per frame
   const inertiaThreshold = ref(0.02)         // Minimum velocity threshold
   
-  // New settings for hover effects:
-  const hoverTransitionDuration = ref(0.3)   // seconds for transform, opacity & filter transitions
+  // New settings for hover & parallax effects:
+  const hoverTransitionDuration = ref(0.3)   // seconds for transitions
   const hoverZIndexOffset = ref(10)          // additional z-index for hovered element
-  const hoverZIndexDelay = ref(150)          // delay (ms) before raising z-index
+  const hoverZIndexDelay = ref(0)          // delay (ms) before raising z-index
   const nonHoveredBlur = ref(3)              // blur amount (px) for non-hovered images
   const nonHoveredOpacity = ref(0.6)         // opacity for non-hovered images when one is hovered
+  const parallaxMultiplier = ref(2.0)        // multiplier for mouse parallax effect
   
   /* -------------------------------------------------------------------------
      Modal Visibility
@@ -284,7 +295,7 @@
   const mouseEffect = ref({ x: 0, y: 0 })
   
   /* -------------------------------------------------------------------------
-     Compute Style for Each Image with Oscillation and Hover Effects
+     Compute Style for Each Image with Oscillation, Hover, & Parallax Effects
   -------------------------------------------------------------------------- */
   const getStyle = (image, index) => {
     const factor = 1 // you can adjust the factor as needed
@@ -294,7 +305,7 @@
     const scaleSpeed = scaleSpeedFactor.value * factor
     const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeed + index) * scaleAmplitude.value
   
-    // Use the extra rotation if defined (from hover) otherwise base rotation.
+    // Use hover rotation if defined
     const rotation = image.hoverRotate !== undefined ? image.hoverRotate : image.rotate
   
     const style = {
@@ -302,13 +313,13 @@
       height: `${image.height}px`,
       left: `${effectiveX}px`,
       top: `${image.top + verticalOffset}px`,
-      transform: `rotate(${rotation}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x}px, ${mouseEffect.value.y}px)`,
+      transform: `rotate(${rotation}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x * parallaxMultiplier.value}px, ${mouseEffect.value.y * parallaxMultiplier.value}px)`,
       transition: `transform ${hoverTransitionDuration.value}s ease-out, box-shadow ${hoverTransitionDuration.value}s ease-out, opacity ${hoverTransitionDuration.value}s ease-out, filter ${hoverTransitionDuration.value}s ease-out`,
       position: 'absolute',
       zIndex: image.zIndex
     }
   
-    // If any image is hovered and this one isn’t the hovered one, apply blur and fade.
+    // Apply blur and fade to non-hovered images if one is hovered.
     if (images.some(img => img.hovered) && !image.hovered) {
       style.filter = `blur(${nonHoveredBlur.value}px)`
       style.opacity = nonHoveredOpacity.value
@@ -365,7 +376,7 @@
       }
     }
   
-    // ----- Repulsion Physics Update -----
+    // Repulsion Physics Update.
     for (let i = 0; i < images.length; i++) {
       for (let j = i + 1; j < images.length; j++) {
         const imgA = images[i]
@@ -514,7 +525,6 @@
   .image-item {
     position: absolute;
     transition-property: transform, box-shadow, opacity, filter;
-    /* The duration and easing are controlled via inline style from settings. */
     will-change: transform, opacity, filter;
   }
   </style>
