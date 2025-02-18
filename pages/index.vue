@@ -51,7 +51,7 @@
       <Header />
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
-        class="absolute z-[1] flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] backdrop-blur-sm"
+        class=" z-[1] flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] backdrop-blur-sm"
         style="left:16px; right:16px; top:68px; padding:64px 24px;"
       >
         <!-- Header Text -->
@@ -62,13 +62,17 @@
         <ImagesFloating />
       </div>
 
+
+
       <!-- Grid Layout -->
-      <div class="grid grid-cols-4 gap-4 md:grid-cols-8 lg:grid-cols-12 h-screen">
+      <div class="absolute grid grid-cols-4 gap-4 md:grid-cols-8 lg:grid-cols-12 h-screen">
         <div v-for="n in columns" :key="n" class="bg-red-200/0 text-center h-full">
           <!-- Content for column {{ n }} -->
         </div>
       </div>
     </div>
+
+
   </div>
 </template>
 

@@ -16,9 +16,18 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'unplugin-icons/nuxt',
     '@vueuse/nuxt',
-    
+    '@vueuse/motion/nuxt',
+    // '@hypernym/nuxt-gsap',
+    "v-gsap-nuxt",
+    "nuxt-shiki"
   ],
-  css: ['~/assets/css/main.css'],
+  vgsap: {
+    presets: [],
+    breakpoint: 768,
+    scroller: '',
+    composable: true
+  },
+  css: ['~/assets/css/main.css', '~/assets/css/shiki.css'],
   vite: {
     plugins: [
       require('vite-svg-loader')(),
