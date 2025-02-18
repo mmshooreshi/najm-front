@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     "v-gsap-nuxt",
     "nuxt-shiki"
   ],
+  features: {
+    inlineStyles: false,
+  },
+
   vgsap: {
     presets: [],
     breakpoint: 768,
