@@ -1,5 +1,5 @@
 <template>
-    <div class="text-container">
+    <div class="text-container ">
       <p class="text">
         یه راهکار خلاقانه برای 
         <span class="highlight highlight-yellow">چاپ</span>
@@ -43,7 +43,7 @@
     border-radius: 12px;
     position: relative;
     transform-origin: center;
-    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1.2), box-shadow 0.4s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1.2), box-shadow 0.4s ease-in-out;
   }
 
   /* "چاپ" Styles */
@@ -53,18 +53,27 @@
     height: 36px;
     transform: rotate(-3.2deg);
   }
+
+  .highlight-yellow:hover {
+    color: #F4FFD0;
+  }
   
   /* "بسته‌بندی" Styles */
   .highlight-purple {
-    background: #B9ADFF;
-    width: 116px;
-    height: 36px;
-    transform: rotate(3.36deg);
+      background: #B9ADFF;
+      width: 116px;
+      height: 36px;
+      transform: rotate(3.36deg);
+    }
+    
+  .highlight-purple:hover {
+    color: #B9ADFF;
   }
-
   /* Hover Effect: Rotate to 0deg, add shadow, slight scale-up */
   .highlight:hover {
-    transform: rotate(0deg) scale(1.05);
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    background: black;
+    transform: rotate(0deg);
+    cursor: pointer;
+    /* box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); */
   }
   </style>

@@ -1,6 +1,6 @@
 <template>
   <!-- Wrap everything in a relative container -->
-  <div class="relative bg-gray/10 min-h-screen w-screen">
+  <div class="relative bg-gray/10 min-h-screen w-screen prevent-select">
     <!-- SVG Background Gradient -->
     <BackgroundGradient />
 
