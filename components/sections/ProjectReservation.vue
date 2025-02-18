@@ -1,8 +1,16 @@
 <template>
-    <div class="max-w-md mx-auto px-3 pt-6 pb-3 bg-white rounded-[35px] shadow-lg prevent-select overflow-hidden" dir="rtl">
-      <div class="px-3">
-        <!-- Header Section -->
-        <div class="w-10 h-10 bg-[#EAFED3] flex items-center justify-center rounded-full mb-6">
+  <div class="relative max-w-md mx-auto px-3 pt-6 pb-3 bg-white rounded-[35px] shadow-lg prevent-select overflow-top-visible" dir="rtl">
+    
+    <!-- SVG Header Background -->
+    <div class="absolute inset-x-0 top-0 -mt-[35px] z-10">
+      <svg class="w-full" viewBox="0 0 343 115" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M290 0C283.032 0 276.54 2.03601 271.086 5.54554C254.831 16.0054 239.33 35 220 35H35C15.67 35 0 50.67 0 70V114C0 114.552 0.447712 115 0.999997 115H342C342.552 115 343 114.552 343 114V35C343 15.67 327.33 0 308 0H290Z" fill="white"/>
+      </svg>
+    </div>
+
+    <div class="relative px-3 z-20">
+      <!-- Header Section -->
+      <div class="w-10 h-10 bg-[#EAFED3] flex items-center justify-center rounded-full mb-6 -mt-10">
             <TargetIcon />
         </div>
     

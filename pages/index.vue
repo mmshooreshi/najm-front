@@ -13,9 +13,10 @@
         style="left:16px; right:16px; top:68px; padding:64px 24px;"
       >
         <!-- Header Text -->
-        <div class="sm:w-[343px] md:w-[543px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[51px] text-black">
+        <!-- <div class="sm:w-[343px] md:w-[543px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[51px] text-black">
           یه راهکار خلاقانه برای چاپ و بسته‌بندی مورد نیاز شما
-        </div>
+        </div> -->
+        <HighlightedText/>
         <!-- Floating Images -->
         <ImagesFloating />
       </div>
@@ -45,6 +46,7 @@ import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import BackgroundGradient from '~/components/BackgroundGradient.vue'
+import HighlightedText from '~/components/new/HighlightedText.vue';
 
 const { width } = useWindowSize()
 const columns = computed(() => (width.value >= 1024 ? 12 : width.value >= 768 ? 8 : 4))

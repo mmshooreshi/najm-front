@@ -1,9 +1,9 @@
 <template>
-<button @click="showSettings = !showSettings"
+<!-- <button @click="showSettings = !showSettings"
             class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded focus:bg-red">
       Settings
     </button>
-
+ -->
   <div ref="slider" class="slider-container relative w-full h-[50vh] touch-none"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"

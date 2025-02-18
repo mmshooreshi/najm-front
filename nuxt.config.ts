@@ -5,12 +5,14 @@ import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   app: {
     head: {
       title: 'Najm Printing',
       link: [{ rel: 'icon', type: 'image/*', href: '/favicon.svg' }]
     }
   },
+
   modules: [
     '@unocss/nuxt',
     '@pinia/nuxt',
@@ -21,6 +23,7 @@ export default defineNuxtConfig({
     "v-gsap-nuxt",
     "nuxt-shiki"
   ],
+
   features: {
     inlineStyles: false,
   },
@@ -31,7 +34,9 @@ export default defineNuxtConfig({
     scroller: '',
     composable: true
   },
+
   css: ['~/assets/css/main.css', '~/assets/css/shiki.css'],
+
   vite: {
     plugins: [
       require('vite-svg-loader')(),
@@ -44,5 +49,7 @@ export default defineNuxtConfig({
         dts: true
       })
     ]
-  }
+  },
+
+  compatibilityDate: '2025-02-18'
 })
