@@ -63,7 +63,11 @@
       </div>
 
 
+      <ProjectReservation/>
 
+      <div class="h-[1000px] w-full">
+        .
+      </div>
       <!-- Grid Layout -->
       <div class="absolute grid grid-cols-4 gap-4 md:grid-cols-8 lg:grid-cols-12 h-screen">
         <div v-for="n in columns" :key="n" class="bg-red-200/0 text-center h-full">
@@ -81,7 +85,7 @@ import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
-
+import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 const { width } = useWindowSize()
 const columns = computed(() => (width.value >= 1024 ? 12 : width.value >= 768 ? 8 : 4))
 </script>
