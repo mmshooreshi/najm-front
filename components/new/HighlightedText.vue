@@ -25,7 +25,6 @@
     font-style: normal;
     font-weight: 900;
     font-size: 24px;
-    /* line-height: 51px; */
     color: black;
     max-width: 543px;
     position: relative;
@@ -44,8 +43,9 @@
     border-radius: 12px;
     position: relative;
     transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1.2), box-shadow 0.4s ease-in-out;
   }
-  
+
   /* "چاپ" Styles */
   .highlight-yellow {
     background: #F4FFD0;
@@ -61,5 +61,10 @@
     height: 36px;
     transform: rotate(3.36deg);
   }
+
+  /* Hover Effect: Rotate to 0deg, add shadow, slight scale-up */
+  .highlight:hover {
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+  }
   </style>
-  
