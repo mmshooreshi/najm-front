@@ -24,6 +24,20 @@
 
       <ProjectReservation/>
 
+      <!-- New Printing Section Component -->
+      <div class="mt-4">
+        <PrintingSection />
+      </div>
+
+      <!-- Accordion -->
+      <div class="mt-2 max-w-[500px] mx-auto">
+        <Accordion />
+      </div>
+      
+      <testing/>
+
+
+
       <div class="h-[1000px] w-full">
         .
       </div>
@@ -45,8 +59,11 @@ import { useWindowSize } from '@vueuse/core'
 import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
+import PrintingSection from '~/components/sections/PrintingSection.vue'
+import Accordion from '~/components/Accordion.vue'
 import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import HighlightedText from '~/components/new/HighlightedText.vue';
+import testing from '~/components/testing.vue';
 
 const { width } = useWindowSize()
 const columns = computed(() => (width.value >= 1024 ? 12 : width.value >= 768 ? 8 : 4))
