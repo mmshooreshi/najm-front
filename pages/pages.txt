@@ -1,3 +1,5 @@
+pages/index.vue
+```
 <template>
   <!-- Wrap everything in a relative container -->
   <div class="relative bg-gray/10 min-h-screen w-screen prevent-select">
@@ -24,24 +26,17 @@
 
       <ProjectReservation/>
 
-
-      <div class="mt-2 max-w-[500px] mx-auto px-6 py-16">
-        <div class="flex flex-col items-center space-y-[48px]">
-          <PrintingSection />
-          <Carousal class="w-full"/>
-          <Accordion />
-          <Btn class="text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
-
-        </div>
+      <!-- New Printing Section Component -->
+      <div class="mt-4">
+        <PrintingSection />
       </div>
 
-      <div dir="rtl" class="overflow-hidden border border-0 border-black rounded-3xl max-w-[350px] w-full mx-auto space-y-[8px]">
-        <CarousalDet/>
-        <CustomPackage/>
-
+      <!-- Accordion -->
+      <div class="mt-2 max-w-[500px] mx-auto">
+        <Accordion />
       </div>
       
-      <!-- <testing/> -->
+      <testing/>
 
 
 
@@ -67,25 +62,13 @@ import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
-import Carousal from '~/components/sections/Carousal.vue'
-import CustomPackage from '~/components/sections/CustomPackage.vue'
-import CarousalDet from '~/components/sections/CarousalDet.vue'
-
 import Accordion from '~/components/Accordion.vue'
 import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import HighlightedText from '~/components/new/HighlightedText.vue';
 import testing from '~/components/testing.vue';
-import Btn from "~/components/re/Btn.vue";
-
-const isLoading = ref(false);
-
-const handleAction = () => {
-  isLoading.value = true;
-  setTimeout(() => (isLoading.value = false), 2000);
-};
-
-
 
 const { width } = useWindowSize()
 const columns = computed(() => (width.value >= 1024 ? 12 : width.value >= 768 ? 8 : 4))
 </script>
+
+```
