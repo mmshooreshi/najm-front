@@ -1,0 +1,2324 @@
+Accordion.vue
+```
+<template>
+    <div class="accordion">
+      <AccordionItem
+        v-for="(item, index) in items"
+        :key="index"
+        :title="item.title"
+        :content="item.content"
+      />
+    </div>
+  </template>
+  
+  <script setup>
+  import AccordionItem from "./AccordionItem.vue";
+  import { ref } from "vue";
+  
+  const items = ref([
+    { title: "مشاوره و برنامه‌ریزی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+    { title: "طراحی و فرم‌بندی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+    { title: "لیتوگرافی و زینک", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+    { title: "تولید قالب و بسته‌بندی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+    { title: "خدمات تکمیلی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+    { title: "نگهداری و ارسال", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+    { title: "پشتیبانی بعد از تحویل", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
+  ]);
+  </script>
+  
+  <style scoped>
+  .accordion {
+    max-width: 600px;
+    margin: auto;
+    /* border: 1px solid #ddd; */
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  </style>
+  
+```
+
+AccordionItem.vue
+```
+<template>
+  <div dir="rtl" class="text-d4 accordion-item">
+    <div class="header" @click="toggle" :class="{'text-[#1B670E]':isOpen}">
+      <span>{{ title }}</span>
+      <svg
+        class="icon"
+        :class="{ open: isOpen }"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+    <transition
+      @enter="enter"
+      @after-enter="afterEnter"
+      @leave="leave"
+      @after-leave="afterLeave"
+    >
+      <!-- v-show controls whether the content is rendered -->
+      <div v-show="isOpen" ref="contentDiv" class="content">
+        <p>{{ content }}</p>
+      </div>
+    </transition>
+  </div>
+</template>
+
+<script setup>
+import { ref, nextTick } from "vue";
+
+const props = defineProps({
+  title: String,
+  content: String
+});
+
+const isOpen = ref(false);
+const contentDiv = ref(null);
+
+const toggle = () => {
+  isOpen.value = !isOpen.value;
+};
+
+const enter = (el) => {
+  // start from zero height and opacity
+  el.style.height = "0px";
+  el.style.opacity = "0";
+  // force reflow so the starting style is applied
+  el.offsetHeight;
+  const height = el.scrollHeight;
+  el.style.transition = "height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease";
+  el.style.height = height + "px";
+  el.style.opacity = "1";
+};
+
+const afterEnter = (el) => {
+  // clear inline height so that it can adjust if content changes
+  el.style.height = "auto";
+  el.style.transition = "";
+};
+
+const leave = (el) => {
+  // set height to current pixel value before collapsing
+  el.style.height = el.scrollHeight + "px";
+  el.style.opacity = "1";
+  // force reflow to register the current height
+  el.offsetHeight;
+  el.style.transition = "height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease";
+  el.style.height = "0px";
+  el.style.opacity = "0";
+};
+
+const afterLeave = (el) => {
+  el.style.transition = "";
+};
+</script>
+
+<style scoped>
+  .text-d4{
+    font-family: 'IRANSansX-d4', sans-serif;
+    font-style: normal;
+  }
+.accordion-item {
+  /* border-bottom: 1px solid #ddd; */
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  /* background: #f8f8f8; */
+  cursor: pointer;
+  font-weight: bold;
+}
+.icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+.icon.open {
+  transform: rotate(45deg);
+}
+.content {
+  overflow: hidden;
+  /* background: white; */
+  padding: 0 15px;
+  font-size: 12px;
+  
+}
+.content p {
+  margin: 15px 0;
+}
+</style>
+
+```
+
+testing.vue
+```
+<template>
+    <div class="container" tabindex="0" @keyup.esc="stop()">
+      <div ref="box" class="box" @click="animate">Click me</div>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref } from 'vue'
+  import { useSpring, useMotionProperties } from '@vueuse/motion'
+  
+  const box = ref(null)
+  
+  const { motionProperties } = useMotionProperties(box, {
+    x: 0,
+    y: 0,
+  })
+  
+  const { set, stop } = useSpring(motionProperties, {
+      duration: 1000,
+      bounce: 0.0,
+  })
+  
+  function animate() {
+    set({
+      x: Math.random() * 400,
+      y: Math.random() * 400,
+    })
+  }
+  </script>
+    
+  <style scoped>
+  .container {
+    width: 500px;
+    height: 500px;
+    outline: 2px solid #41B883;
+  }
+  .box {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #41B883;
+    color: white;
+  }
+  </style>
+  
+```
+
+sections/PrintingSection.vue
+```
+<template>
+    <div dir="rtl" class="relative max-w-2xl mx-auto p-6 text-center rounded-3xl">
+      <h2 class="text-2xl font-extrabold text-[#000000] text-d4">دقیق، کارآمد، بدون واسطه</h2>
+      <p class="text-xs text mt-2">
+        تمامی مراحل <span>چاپ</span> در مجموعه‌ی خود ما انجام میشه، بدون دخالت واسطه‌ها.
+        
+        ما فقط نمی‌فروشیم، ما <span>تولید</span> می‌کنیم و این یعنی:
+      </p>
+
+
+
+      <div class="mt-4 text-d4 flex flex-wrap flex-col justify-center items-center space-y-[7px] text-2xl font-black">
+        <span class="highlight highlight-yellow">کیفیت بالاتر</span>
+        <span class="highlight highlight-blue">کنترل بهتر روی جزئیات</span>
+        <span class="highlight highlight-purple">قیمت منصفانه‌تر</span>
+      </div>
+      <div class="h-48 md:h-96 mt-6 py-6 relative flex flex-col items-center justify-center">
+        <img src="/images/sections/printing-section-1.png" alt="Printing Machine" class="w-min absolute -z-1 w-full h-48 md:h-96 object-cover rounded-3xl " />
+        <div class="group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max bottom-3 left-3 bg-white px-4 py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-[29px]">
+            <!-- Center the icon -->
+            <div class="ml-2 flex justify-center items-center w-6 h-6 transition-transform -rotate-90" :class="{ 'rotate-180': isOpen }">
+                <ChevronDownIcon class="group-hover:translate-y-2 transition-all duration-300" />
+            </div>
+            <div class="text text-xs text-demibold">چاپخانه اختصاصی ما</div>
+        </div>
+        <CarouselIndicator @cycleComplete="handleCycleComplete" />
+    </div>
+    </div>
+  </template>
+  
+  <style scoped>
+  .text {
+    font-family: 'IRANSansX', sans-serif;
+    font-style: normal;
+  }
+  .text-d4{
+    font-family: 'IRANSansX-d4', sans-serif;
+    font-style: normal;
+  }
+  
+  .highlight {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 8px;
+    border-radius: 12px;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1.2), box-shadow 0.4s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .highlight-yellow { background: #F4FFD0; transform: rotate(-3deg); }
+  .highlight-blue { background: #ADFAFF; transform: rotate(-4deg); }
+  .highlight-purple { background: #B9ADFF; transform: rotate(3deg); }
+  
+  .highlight:hover { background: black; transform: rotate(0); color: white; }
+  .text-demibold {
+	font-weight: 600;
+}
+  </style>
+  
+
+  <script setup lang="ts">
+    import ChevronDownIcon from "~/assets/icons/chevron-down-icon.svg";
+    import CarouselIndicator from "~/components/new/CarouselIndicator.vue";
+
+const handleCycleComplete = (): void => {
+    console.log("Carousel completed a full cycle!");
+  
+};
+
+const isOpen = ref(false);
+
+  </script>
+```
+
+new/CarouselIndicator.vue
+```
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useCarouselStore } from "@/store/useCarouselStore";
+
+// Define emits
+const emit = defineEmits<{
+  (e: "cycleComplete"): void;
+}>();
+
+// Store instance
+const store = useCarouselStore();
+const interval = ref<ReturnType<typeof setInterval> | null>(null);
+const duration = 1000; // Change every second
+
+// Computed function to check if a step is active
+const isActive = (index: number) => computed(() => index === store.currentStep);
+
+// Function to start the looping carousel
+const startCarousel = () => {
+  if (interval.value) clearInterval(interval.value);
+
+  interval.value = setInterval(() => {
+    store.nextStep();
+    if (store.currentStep === 0) {
+      emit("cycleComplete"); // Emit event when looping back to start
+    }
+  }, duration);
+};
+
+// Start the carousel on mount
+onMounted(startCarousel);
+
+// Cleanup the interval on unmount
+onUnmounted(() => {
+  if (interval.value) clearInterval(interval.value);
+});
+</script>
+
+<template>
+  <div class="carousel-indicator">
+    <div
+      v-for="(step, index) in store.steps"
+      :key="index"
+      class="circle"
+      :class="{ 'active': isActive(index).value }"
+    ></div>
+  </div>
+</template>
+
+<style scoped>
+.carousel-indicator {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 8px;
+}
+
+.circle {
+  width: 6px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.active {
+  width: 20px;
+  background: #66ba58;
+  border-radius: 4px;
+
+}
+</style>
+
+```
+
+sections/ProjectReservation.vue
+```
+<template>
+
+<div class="max-w-md mx-auto  relative inset-x-0 top-15 z-1" dir="rtl">
+        <svg class="w-full" viewBox="0 0 343 115" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M290 0C283.032 0 276.54 2.03601 271.086 5.54554C254.831 16.0054 239.33 35 220 35H35C15.67 35 0 50.67 0 70V114C0 114.552 0.447712 115 0.999997 115H342C342.552 115 343 114.552 343 114V35C343 15.67 327.33 0 308 0H290Z" 
+            fill="white" />
+        </svg>
+        <div class="z-2 w-10 h-10 bg-[#EAFED3] flex items-center justify-center rounded-full top-4 right-4 mr-5 right-0 absolute" dir="rtl">
+            <TargetIcon />
+        </div>
+
+    </div>
+
+
+
+
+    <div class="relative max-w-md mx-auto px-3 pt-6 pb-3 bg-white rounded-[35px] shadow-lg prevent-select overflow-hidden"
+     dir="rtl">    
+
+    <div class="relative px-3 z-20">
+      <!-- Header Section -->
+    
+        <div class="flex items-center justify-between">
+        <h2 class="text-[18px] font-extrabold">از طراحی تا بسته‌بندی، همه زیر یه سقف!</h2>
+        </div>
+        <p class="text-gray-600 mt-2 text-[12px] font-medium">چه چیزی نیاز دارید؟</p>
+      </div>
+      <!-- Dropdowns using SelectBox -->
+      <div class="mt-6 space-y-3 px-3">
+        <SelectBox v-model="selectedMarket" :options="marketOptions" />
+        <SelectBox v-model="selectedCategory" :options="categoryOptions" />
+        <SearchBox v-model="searchQuery" :options="productOptions" />
+      </div>
+  
+      <!-- CTA Button -->
+      <div
+        class="group mt-6 bg-[#014439] rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white transition-all duration-300 ease-in-out transform hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]">
+        <span class="text-lg font-semibold">رزرو پروژه جدید</span>
+        <p class="animate-pulse-alt text-white/50 text-sm font-normal mt-2">
+            شروع دهی از <span class=" text-white underline underline-offset-4">۵</span> روز دیگر
+        </p>
+        </div>
+
+</div>
+  </template>
+  
+  <script setup>
+import TargetIcon from "~/assets/icons/target-icon.svg";
+import SelectBox from "@/components/new/SelectBox.vue";
+import SearchBox from "@/components/new/SearchBox.vue";
+import { ref } from "vue";
+
+// Dropdown Values
+const selectedMarket = ref(null);
+const selectedCategory = ref(null);
+const searchQuery = ref("");
+
+// Options for SelectBoxes
+const marketOptions = [
+  { label: "بازار مصرفی", value: "market" },
+  { label: "صنعتی", value: "industrial" },
+  { label: "کشاورزی", value: "agriculture" },
+];
+
+const categoryOptions = [
+  { label: "دسته‌بندی ۱", value: "category-1" },
+  { label: "دسته‌بندی ۲", value: "category-2" },
+  { label: "دسته‌بندی ۳", value: "category-3" },
+];
+
+// Searchable Product Options
+const productOptions = [
+  { label: "محصول ۱", value: "product-1" },
+  { label: "محصول ۲", value: "product-2" },
+  { label: "محصول ۳", value: "product-3" },
+];
+</script>
+
+  <style scoped>
+  /* Custom styling if needed */
+  </style>
+  
+```
+
+new/HighlightedText.vue
+```
+<template>
+    <div class="text-container ">
+      <p class="text">
+        یه راهکار خلاقانه برای 
+        <span class="highlight highlight-yellow">چاپ</span>
+        و
+        <span class="highlight highlight-purple">بسته‌بندی</span>
+        مورد نیاز شما
+      </p>
+    </div>
+  </template>
+  
+  <script setup>
+  </script>
+  
+  <style scoped>
+  .text-container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .text {
+    font-family: 'IRANSansX-D4', sans-serif;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 24px;
+    color: black;
+    max-width: 543px;
+    position: relative;
+  }
+  
+  /* Base styling for highlights */
+  .highlight {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 8px;
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 36px;
+    color: black;
+    border-radius: 12px;
+    position: relative;
+    transform-origin: center;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1.2), box-shadow 0.4s ease-in-out;
+  }
+
+  /* "چاپ" Styles */
+  .highlight-yellow {
+    background: #F4FFD0;
+    width: 61px;
+    height: 36px;
+    transform: rotate(-3.2deg);
+  }
+
+  .highlight-yellow:hover {
+    color: #F4FFD0;
+  }
+  
+  /* "بسته‌بندی" Styles */
+  .highlight-purple {
+      background: #B9ADFF;
+      width: 116px;
+      height: 36px;
+      transform: rotate(3.36deg);
+    }
+    
+  .highlight-purple:hover {
+    color: #B9ADFF;
+  }
+  /* Hover Effect: Rotate to 0deg, add shadow, slight scale-up */
+  .highlight:hover {
+    background: black;
+    transform: rotate(0deg);
+    cursor: pointer;
+    /* box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); */
+  }
+  </style>
+
+```
+
+new/SelectBox.vue
+```
+<template>
+    <div class="relative w-full">
+      <!-- Selected Option -->
+      <div
+        class="flex justify-between items-center px-6 py-4 border rounded-[15px] bg-white cursor-pointer  hover:shadow-md transition-all"
+        @click="toggleDropdown"
+        ref="trigger"
+      >
+        <span class="text-gray-700 text-[12px] font-semibold">{{ selectedOption.label }}</span>
+        <span :class="['transition-transform', { 'rotate-180': isOpen }]">
+            <ChevronDownIcon/>
+        </span>
+      </div>
+  
+      <!-- Dropdown Menu -->
+      <div
+        v-show="isOpen"
+        class="absolute w-full mt-2 bg-white border border-[#014439] rounded-lg shadow-xl overflow-hidden z-50"
+        ref="dropdown"
+        style="top: 100%; left: 0;"
+      >
+        <ul class="max-h-60 overflow-y-auto">
+          <li
+            v-for="(option, index) in options"
+            :key="option.value"
+            @click="selectOption(option)"
+            @keydown.enter="selectOption(option)"
+            @mouseover="hoverIndex = index"
+            :class="[
+              'px-4 py-3 cursor-pointer transition-all',
+              hoverIndex === index ? 'bg-[#014439] text-[#66BA58]' : 'hover:bg-gray-100'
+            ]"
+            tabindex="0"
+          >
+            <slot name="option" :option="option">
+              {{ option.label }}
+            </slot>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted, onUnmounted, nextTick } from "vue";
+  import gsap from "gsap";
+  import ChevronDownIcon from "~/assets/icons/chevron-down-icon.svg";
+
+  const props = defineProps({
+    options: { type: Array, required: true },
+    modelValue: { type: [String, Number], default: null }
+  });
+  
+  const emit = defineEmits(["update:modelValue"]);
+  
+  const isOpen = ref(false);
+  const selectedOption = ref(props.options[0] || {});
+  const hoverIndex = ref(0);
+  const dropdown = ref(null);
+  const trigger = ref(null);
+  
+  const toggleDropdown = async () => {
+    isOpen.value = !isOpen.value;
+    await nextTick();
+    if (isOpen.value) animateOpen();
+  };
+  
+  const selectOption = (option) => {
+    selectedOption.value = option;
+    emit("update:modelValue", option.value);
+    isOpen.value = false;
+  };
+  
+  const animateOpen = () => {
+    gsap.fromTo(
+      dropdown.value,
+      { opacity: 0, y: -10 },
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
+    );
+  };
+  
+  // Close dropdown when clicking outside
+  const handleClickOutside = (event) => {
+    if (!dropdown.value?.contains(event.target) && !trigger.value?.contains(event.target)) {
+      isOpen.value = false;
+    }
+  };
+  
+  onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+  });
+  
+  onUnmounted(() => {
+    document.removeEventListener("click", handleClickOutside);
+  });
+  </script>
+  
+  <style scoped>
+  /* Custom Styles */
+  </style>
+  
+```
+
+ImagesFloating.vue
+```
+<template>
+<!-- <button @click="showSettings = !showSettings"
+            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded focus:bg-red">
+      Settings
+    </button>
+ -->
+  <div ref="slider" class="slider-container relative w-full h-[50vh] touch-none"
+       @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
+       @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
+       @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+    <!-- Settings Button -->
+
+    <div class="slider-inner absolute flex">
+      <div v-for="(image, index) in images" :key="index"
+           class="image-item absolute"
+           :style="getStyle(image, index)">
+        <!-- Use InlineSvg, now with pixel–aware hover effects -->
+        <InlineSvgMask class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Settings Modal -->
+    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-[100] max-h-[80%] overflow-auto">
+        <div class="bg-white p-4 rounded-lg w-80 space-y-3  h-full top-4  shadow-md ">
+            <h2 class="text-xl font-bold mb-4">Settings</h2>
+            <div class="space-y-2">
+                <label class="block">
+                    Base Speed:
+                    <input type="number" v-model.number="baseSpeed" step="0.1" class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Accelerated Speed:
+                    <input type="number" v-model.number="acceleratedSpeed" step="0.1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Vertical Amplitude:
+                    <input type="number" v-model.number="verticalAmplitude" step="1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Vertical Speed Factor:
+                    <input type="number" v-model.number="verticalSpeedFactor" step="1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Scale Amplitude:
+                    <input type="number" v-model.number="scaleAmplitude" step="0.1" class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Scale Speed Factor:
+                    <input type="number" v-model.number="scaleSpeedFactor" step="1" class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Repulsion Strength:
+                    <input type="number" v-model.number="repulsionStrength" step="10"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Damping:
+                    <input type="number" v-model.number="damping" step="0.05" min="0" max="1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Inertia Friction:
+                    <input type="number" v-model.number="inertiaFriction" step="0.001"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Inertia Threshold:
+                    <input type="number" v-model.number="inertiaThreshold" step="0.01"
+                        class="w-full border rounded p-1" />
+                </label>
+
+                <!-- New hover effect settings -->
+                <label class="block">
+                    Hover Transition Duration (s):
+                    <input type="number" v-model.number="hoverTransitionDuration" step="0.1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Hover Z-Index Offset:
+                    <input type="number" v-model.number="hoverZIndexOffset" step="1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Hover Z-Index Delay (ms):
+                    <input type="number" v-model.number="hoverZIndexDelay" step="50"
+                        class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Non-Hovered Blur Amount (px):
+                    <input type="number" v-model.number="nonHoveredBlur" step="1" class="w-full border rounded p-1" />
+                </label>
+                <label class="block">
+                    Non-Hovered Opacity:
+                    <input type="number" v-model.number="nonHoveredOpacity" step="0.1" min="0" max="1"
+                        class="w-full border rounded p-1" />
+                </label>
+                <!-- New Parallax setting -->
+                <label class="block">
+                    Parallax Multiplier:
+                    <input type="number" v-model.number="parallaxMultiplier" step="0.1"
+                        class="w-full border rounded p-1" />
+                </label>
+            </div>
+            <button @click="showSettings = false" class="mt-4 bg-blue-500 text-white rounded px-4 py-2">
+                Close
+            </button>
+        </div>
+    </div>
+</template>
+
+
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useWindowSize, useThrottleFn } from '@vueuse/core'
+import InlineSvgMask from '~/components/InlineSvgMask.vue'
+
+let images = [
+    { name: ***** Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.png", width: 145, height: 152, left: -52, top: 91, rotate: -12, zIndex: 1 },
+    { name: ***** Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.png", width: 239, height: 210, left: 74, top: -4, rotate: 8, zIndex: 2 },
+    { name: ***** Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.png", width: 167, height: 167, left: 180, top: 106, rotate: -8, zIndex: 3 },
+    { name: ***** Coffee Cup Paper Holder", src: "Free-Coffee-Cup-Paper-Holder-Mockup-1.png", width: 158, height: 189, left: 264, top: 66, rotate: 15, zIndex: 4 },
+    { name: ***** Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1.png", width: 122, height: 216, left: 429, top: 42, rotate: 10, zIndex: 5 },
+    { name: ***** Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.png", width: 181, height: 153, left: 460, top: 140, rotate: 7, zIndex: 6 },
+    { name: ***** Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 123, height: 220, left: 588, top: 37, rotate: -6, zIndex: 7 },
+    { name: ***** Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.png", width: 156, height: 152, left: 720, top: 132, rotate: -10, zIndex: 8 },
+    { name: ***** Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.png", width: 178, height: 168, left: 768, top: 42, rotate: 5, zIndex: 9 },
+    { name: ***** Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.png", width: 140, height: 194, left: 916, top: 100, rotate: -5, zIndex: 10 },
+    { name: ***** Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.png", width: 144, height: 151, left: 1002, top: 175, rotate: -8, zIndex: 11 },
+    { name: ***** Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 141, height: 221, left: 1120, top: 18, rotate: 2, zIndex: 12 },
+    { name: ***** Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.png", width: 168, height: 167, left: 1269, top: 117, rotate: -6, zIndex: 13 },
+    { name: ***** Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.png", width: 156, height: 152, left: 1331, top: 20, rotate: -12, zIndex: 14 },
+    { name: ***** Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.png", width: 216, height: 190, left: 1406, top: 49, rotate: 5, zIndex: 15 },
+    { name: ***** Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1-1.png", width: 138, height: 218, left: 1577, top: 25, rotate: -4, zIndex: 16 },
+    { name: ***** Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.png", width: 181, height: 153, left: 1591, top: 184, rotate: 7, zIndex: 17 },
+    { name: ***** Coffee Cup Paper Holder", src: "Free-Coffee-Cup-Paper-Holder-Mockup-1.png", width: 158, height: 189, left: 1717, top: 77, rotate: 15, zIndex: 18 },
+    { name: ***** Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.png", width: 140, height: 194, left: 1862, top: 111, rotate: -5, zIndex: 19 },
+    { name: ***** Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.png", width: 181, height: 168, left: 1946, top: 116, rotate: 6, zIndex: 20 }
+]
+
+
+// Initialize each image’s baseZIndex (if not already set)
+images.forEach(img => {
+  if (img.baseZIndex === undefined) {
+    img.baseZIndex = img.zIndex
+  }
+})
+
+// Global translation and time variables
+const translateX = ref(0)
+const globalTime = ref(0)
+const minLeft = Math.min(...images.map(img => img.left))
+const maxRight = Math.max(...images.map(img => img.left + img.width))
+const trackWidth = maxRight - minLeft
+const MARGIN = -300
+
+// Settings
+const baseSpeed = ref(-0.5)
+const acceleratedSpeed = ref(-0.7)
+const verticalAmplitude = ref(70)
+const verticalSpeedFactor = ref(1.5)
+const scaleAmplitude = ref(0)
+const scaleSpeedFactor = ref(5)
+const repulsionStrength = ref(200)
+const damping = ref(0.9)
+const inertiaFriction = ref(0.795)
+const inertiaThreshold = ref(0.02)
+
+// Hover & parallax settings
+const hoverTransitionDuration = ref(0.3)
+const hoverZIndexOffset = ref(50)
+const hoverZIndexDelay = ref(0) // not used in this example
+const nonHoveredBlur = ref(3)
+const nonHoveredOpacity = ref(0.6)
+const parallaxMultiplier = ref(1)
+
+const showSettings = ref(false)
+const slider = ref(null)
+const { width } = useWindowSize()
+const isHovered = ref(false)
+const isSwiping = ref(false)
+const mouseEffect = ref({ x: 0, y: 0 })
+
+const speed = computed(() =>
+  isHovered.value ? acceleratedSpeed.value : baseSpeed.value
+)
+
+///////////////////////////////////////////
+// Helper Functions for Position & Style
+///////////////////////////////////////////
+
+const getEffectiveX = (imageLeft, factor) => {
+  let x = imageLeft + translateX.value * factor
+  while (x < minLeft - MARGIN) {
+    x += trackWidth
+  }
+  while (x > minLeft + trackWidth + MARGIN) {
+    x -= trackWidth
+  }
+  return x
+}
+
+const isInViewport = (image) => {
+  const effectiveX = getEffectiveX(image.left, 1)
+  return effectiveX + image.width + 50 > 0
+}
+
+// Compute style for each image.
+// Notice that we calculate zIndex based on the hovered state without
+// permanently modifying the image's base z-index.
+const getStyle = (image, index) => {
+  const effectiveX = getEffectiveX(image.left, 1)
+  const isVisible = isInViewport(image)
+  if (!isVisible) {
+    // Optionally reset hover state if the image goes out of view.
+    resetElement(image)
+  }
+
+  const verticalOffset = Math.sin(globalTime.value * verticalSpeedFactor.value + index) * verticalAmplitude.value
+  const scaleOffset = 1 + Math.sin(globalTime.value * scaleSpeedFactor.value + index) * scaleAmplitude.value
+
+  // Determine effective z-index
+  const effectiveZIndex = image.hovered
+    ? image.baseZIndex + hoverZIndexOffset.value
+    : image.baseZIndex
+
+  const style = {
+    width: `${image.width}px`,
+    height: `${image.height}px`,
+    left: `${effectiveX}px`,
+    top: `${image.top + verticalOffset}px`,
+    transform: `rotate(${image.hoverRotate !== undefined ? image.hoverRotate : image.rotate}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x * parallaxMultiplier.value}px, ${mouseEffect.value.y * parallaxMultiplier.value}px)`,
+    transition: `transform ${hoverTransitionDuration.value}s ease-out, box-shadow ${hoverTransitionDuration.value}s ease-out, opacity ${hoverTransitionDuration.value}s ease-out, filter ${hoverTransitionDuration.value}s ease-out`,
+    position: 'absolute',
+    zIndex: effectiveZIndex,
+    opacity: isVisible ? 1 : 0,
+  }
+
+  // Apply non-hovered effects when any image is hovered.
+  if (images.some(img => img.hovered) && !image.hovered) {
+    style.filter = `blur(${nonHoveredBlur.value}px)`
+    style.opacity = nonHoveredOpacity.value
+  } else {
+    style.filter = 'none'
+    style.opacity = 1
+  }
+
+  return style
+}
+
+///////////////////////////////////////////
+// Animation Loop & Physics
+///////////////////////////////////////////
+
+let animationFrameId
+let lastFrameTime = performance.now()
+const animate = () => {
+  const now = performance.now()
+  const dt = now - lastFrameTime
+  const dtSec = dt / 1000
+  lastFrameTime = now
+
+  globalTime.value += dtSec
+
+  // Auto-scroll / swipe inertia logic…
+  if (!isSwiping.value) {
+    if (swipeInertiaActive.value) {
+      translateX.value += swipeVelocity.value * dt
+      swipeVelocity.value *= inertiaFriction.value
+      if (Math.abs(swipeVelocity.value) < inertiaThreshold.value) {
+        swipeInertiaActive.value = false
+        swipeVelocity.value = speed.value
+      }
+    } else {
+      translateX.value += speed.value
+    }
+  }
+
+  // Repulsion physics between images…
+  for (let i = 0; i < images.length; i++) {
+    for (let j = i + 1; j < images.length; j++) {
+      const imgA = images[i]
+      const imgB = images[j]
+      const centerAX = getEffectiveX(imgA.left, 1) + (imgA.offsetX || 0) + imgA.width / 2
+      const centerAY = imgA.top + (imgA.offsetY || 0) + imgA.height / 2
+      const centerBX = getEffectiveX(imgB.left, 1) + (imgB.offsetX || 0) + imgB.width / 2
+      const centerBY = imgB.top + (imgB.offsetY || 0) + imgB.height / 2
+
+      const dx = centerAX - centerBX
+      const dy = centerAY - centerBY
+      const distance = Math.sqrt(dx * dx + dy * dy)
+
+      const radiusA = (imgA.width + imgA.height) / 4
+      const radiusB = (imgB.width + imgB.height) / 4
+      const minDist = radiusA + radiusB
+
+      if (distance < minDist && distance > 0) {
+        const overlap = minDist - distance
+        const force = repulsionStrength.value * overlap
+        const fx = (dx / distance) * force
+        const fy = (dy / distance) * force
+
+        imgA.vx = (imgA.vx || 0) + fx * dtSec
+        imgA.vy = (imgA.vy || 0) + fy * dtSec
+        imgB.vx = (imgB.vx || 0) - fx * dtSec
+        imgB.vy = (imgB.vy || 0) - fy * dtSec
+      }
+    }
+  }
+
+  images.forEach(image => {
+    image.offsetX = (image.offsetX || 0) + (image.vx || 0) * dtSec
+    image.offsetY = (image.offsetY || 0) + (image.vy || 0) * dtSec
+    image.vx = (image.vx || 0) * damping.value
+    image.vy = (image.vy || 0) * damping.value
+  })
+
+  animationFrameId = requestAnimationFrame(animate)
+}
+
+///////////////////////////////////////////
+// Swipe Inertia Variables & Handlers
+///////////////////////////////////////////
+
+const swipeVelocity = ref(0)
+const lastTouchX = ref(0)
+const lastTouchTime = ref(0)
+const swipeInertiaActive = ref(false)
+const isRealSwipe = ref(false)
+let startTouchX = 0
+let startTranslateX = 0
+
+const handleTouchStart = (event) => {
+  isSwiping.value = true
+  swipeInertiaActive.value = false
+  startTouchX = event.touches[0].clientX
+  startTranslateX = translateX.value
+  lastTouchX.value = event.touches[0].clientX
+  lastTouchTime.value = performance.now()
+  isRealSwipe.value = false
+}
+
+const handleTouchMove = (event) => {
+  const currentX = event.touches[0].clientX
+  const currentTime = performance.now()
+  const delta = currentX - startTouchX
+
+  if (!isRealSwipe.value && Math.abs(delta) > 1) {
+    isRealSwipe.value = true
+  }
+
+  if (isRealSwipe.value) {
+    translateX.value = startTranslateX + delta
+    const dt = currentTime - lastTouchTime.value
+    if (dt > 0) {
+      swipeVelocity.value = (currentX - lastTouchX.value) / dt
+    }
+    lastTouchX.value = currentX
+    lastTouchTime.value = currentTime
+  }
+}
+
+const handleTouchEnd = () => {
+  isSwiping.value = false
+  if (!isRealSwipe.value) {
+    swipeVelocity.value = 0
+  } else {
+    swipeInertiaActive.value = true
+  }
+}
+
+///////////////////////////////////////////
+// Mouse and Hover Handlers
+///////////////////////////////////////////
+
+const handleMouseEnter = () => {
+  isHovered.value = true
+}
+
+const handleMouseLeave = () => {
+  isHovered.value = false
+  mouseEffect.value = { x: 0, y: 0 }
+}
+
+const handleMouseMove = (event) => {
+  if (!slider.value) return
+  const rect = slider.value.getBoundingClientRect()
+  const offsetX = (((event.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 10
+  const offsetY = (((event.clientY - rect.top) - rect.height / 2) / (rect.height / 2)) * 10
+  mouseEffect.value = { x: offsetX, y: offsetY }
+}
+
+const throttledMouseMove = useThrottleFn(handleMouseMove, 16)
+
+///////////////////////////////////////////
+// Image Hover Effects
+///////////////////////////////////////////
+
+const handleElementHover = (image) => {
+  // If not already hovered, change hover state.
+  if (!image.hovered) {
+    image.hovered = true
+    image.scale = 1.5
+    image.hoverRotate = image.rotate + 10
+    // Optionally, you can delay the z-index change if needed.
+    // setTimeout(() => {
+    //   image._delayedZIndexSet = true;
+    // }, hoverZIndexDelay.value);
+  }
+}
+
+const resetElement = (image) => {
+  image.hovered = false
+  image.scale = 1
+  image.hoverRotate = undefined
+}
+
+///////////////////////////////////////////
+// Lifecycle Hooks
+///////////////////////////////////////////
+
+onMounted(() => {
+  animate()
+})
+
+onUnmounted(() => {
+  cancelAnimationFrame(animationFrameId)
+})
+</script>
+
+
+
+
+
+
+
+<style >
+.slider-container {
+    left: 0;
+    width: 100vw;
+    overflow-x: clip;
+    overflow-y: unset;
+    /* background-color: red; */
+}
+
+.slider-inner {
+    position: absolute;
+    display: flex;
+}
+
+.image-item {
+    position: absolute;
+    transition-property: transform, box-shadow, opacity, filter;
+    will-change: transform, opacity, filter;
+}
+
+</style>
+
+
+
+
+
+```
+
+BackgroundGradient.vue
+```
+<template>
+    <div class="absolute inset-0 w-full h-full -z-10">
+      <svg class="w-full h-full" viewBox="0 0 375 3600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <rect width="375" height="3600" fill="url(#smoothGradient)"/>
+        <defs>
+          <linearGradient id="smoothGradient" x1="187.5" y1="0" x2="187.5" y2="3600" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#FBFCFD"/>
+            <stop offset="15%" stop-color="#B3E1FE" stop-opacity="0.58"/>
+            <stop offset="35%" stop-color="#D5F4F5"/>
+            <stop offset="55%" stop-color="#C0C5FD"/>
+            <stop offset="75%" stop-color="#D5F4F5"/>
+            <stop offset="100%" stop-color="#F8FAFC"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </template>
+  
+  <script setup>
+  </script>
+  
+  <style scoped>
+  /* Ensuring the SVG scales properly */
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+  
+```
+
+new/SearchBox.vue
+```
+<template>
+    <div class="relative w-full">
+      <!-- Search Input Field -->
+      <div class="relative">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="جست‌وجوی محصول"
+          class="w-full p-4 pl-12 border border-gray-300 rounded-[15px] text-[12px] font-semibold placeholder:text-[#626262] placeholder:font-medium hover:shadow-md focus:border-[#014439] focus:ring-2 focus:ring-[#014439] transition-all"          @focus="isFocused = true"
+          @input="filterResults"
+          @blur="handleBlur"
+          ref="searchInput"
+        />
+        <!-- Magnifier Icon -->
+        <span class="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-500">
+          <MagnifierIcon />
+        </span>
+      </div>
+  
+      <!-- Search Dropdown (Only Show When Focused) -->
+      <div
+        v-show="isFocused && searchResults.length"
+        class="absolute w-full mt-2 bg-white border border-[#014439] rounded-lg shadow-xl overflow-hidden z-50"
+        ref="dropdown"
+      >
+        <ul class="max-h-60 overflow-y-auto">
+          <li
+            v-for="(result, index) in searchResults"
+            :key="index"
+            @click="selectSearchResult(result)"
+            class="px-4 py-3 cursor-pointer transition-all hover:bg-[#014439] hover:text-white"
+          >
+            {{ result }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </template>
+  
+
+  <script setup>
+  import { ref, onMounted, onUnmounted } from "vue";
+  import gsap from "gsap";
+  import MagnifierIcon from "~/assets/icons/magnifier-icon.svg";
+  
+  const searchQuery = ref("");
+  const searchResults = ref([]);
+  const isFocused = ref(false);
+  const searchInput = ref(null);
+  const dropdown = ref(null);
+  
+  // Dummy Product Data for Search
+  const allProducts = ["محصول ۱", "محصول ۲", "محصول ۳", "محصول ۴", "محصول ۵"];
+  
+  const filterResults = () => {
+    searchResults.value = allProducts.filter((product) =>
+      product.includes(searchQuery.value)
+    );
+  };
+  
+  const selectSearchResult = (result) => {
+    searchQuery.value = result;
+    searchResults.value = [];
+    isFocused.value = false;
+  };
+  
+  // Handle Blur (Adds Short Delay to Allow Click on Dropdown)
+  const handleBlur = () => {
+    setTimeout(() => {
+      isFocused.value = false;
+    }, 200);
+  };
+  
+  // Close Dropdown if Clicked Outside
+  const handleClickOutside = (event) => {
+    if (
+      searchInput.value &&
+      !searchInput.value.contains(event.target) &&
+      dropdown.value &&
+      !dropdown.value.contains(event.target)
+    ) {
+      isFocused.value = false;
+    }
+  };
+  
+  onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+  });
+  
+  onUnmounted(() => {
+    document.removeEventListener("click", handleClickOutside);
+  });
+  </script>
+  
+```
+
+gsap/Snippet.vue
+```
+<template>
+  <pre
+    class="Snippet"
+    v-html="html"
+  />
+</template>
+
+<script setup lang="ts">
+import { codeToHtml, codeToTokens } from 'shiki'
+
+const props = withDefaults(
+  defineProps<{
+    name: *****
+  }>(),
+  {},
+)
+
+const snippets = {
+  DemoCard: `<article v-gsap.whenVisible.from="{ scale: 0.8, height: 0, padding: 0 }">
+	<div v-gsap.whenVisible.from="{ y: 100 }"></div>
+	<div v-gsap.whenVisible.delay-1000.stagger.from="{ opacity: 0, x: -40 }">
+		<div class="h-[20px] w-[200px]"></div>
+		<div class="h-[14px] w-[140px]"></div>
+		<div class="h-[14px] w-[120px]"></div>
+	</div>
+</article>`,
+  DemoParallax: `<section>
+	<div v-gsap.parallax.faster></div>
+	<div v-gsap.parallax.faster-10></div>
+</section>`,
+  DemoPinned: `<section v-gsap.timeline.pinned>
+  <div class="Dot" v-gsap.add.to="{ width: '800px' }"></div>
+  <h1
+    v-gsap.add.fromTo="[{ opacity: 0, y: 32 }, { opacity: 1, y: 0 }]"
+    v-gsap.add.to="{ opacity: 0, y: -32 }">New era of</h1>
+  <h1
+    v-gsap.add.withPrevious.fromTo="[{ opacity: 0, y: 32 }, { opacity: 1, y: 0 }]"
+    v-gsap.add.to="{ opacity: 0, y: -32 }">animation</h1>
+</section>`,
+  DemoTextflow: `<section>
+  <div v-gsap.whenVisible.to="{ x: -300, start: 'top bottom', end: 'bottom top', scrub: 1.5 }">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+  <div v-gsap.whenVisible.to="{ x: 300, start: 'top bottom', end: 'bottom top', scrub: 1.5 }">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+</section>`,
+  DemoTextflowTimeline: `<section v-gsap.timeline.whenVisible="{ start: 'top bottom', end: 'bottom top', scrub: 1.5 }">
+  <div v-gsap.add.to="{ x: -300 }">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+  <div v-gsap.add.withPrevious.to="{ x: 300 }">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+</section>`,
+  DemoStateToggle: `<div
+  :data-visible="isVisible"
+  v-gsap.onState-visible.from="{ scale: 0, rotate: -25 }"></div>`,
+  DemoStateArray: `<section :data-index="currentIndex">
+  <div v-gsap.onState-index-0.inherit.from="{ scale: 0 }"></div>
+  <div v-gsap.onState-index-1.inherit.from="{ scale: 0 }"></div>
+  <div v-gsap.onState-index-2.inherit.from="{ scale: 0 }"></div>
+</section>`,
+  DemoVIF: `<GSAPTransition :hidden="{ scale: 0, rotate: -25 }">
+  <div v-if="index == 0"></div>
+</GSAPTransition>`,
+}
+
+const html = await codeToHtml(snippets?.[props.name] || '', {
+  lang: 'html',
+  theme: 'github-dark',
+})
+</script>
+```
+
+gsap/DemoPinned.vue
+```
+<template>
+  <BoxComponent
+    class="w-full relative"
+  >
+    <section>
+      <div
+        v-gsap.add.to="{ width: '800px', backgroundColor: `rgb(34 197 94)` }"
+        class="Dot"
+      />
+      <h1
+        v-gsap.add.fromTo="[{ opacity: 0, y: 32 }, { opacity: 1, y: 0 }]"
+        v-gsap.add.to="{ opacity: 0, y: -32 }"
+      >
+        New era of
+      </h1>
+      <h1
+        v-gsap.add.withPrevious.fromTo="[{ opacity: 0, y: 32 }, { opacity: 1, y: 0 }]"
+        v-gsap.add.to="{ opacity: 0, y: -32 }"
+      >
+        animation
+      </h1>
+    </section>
+  </BoxComponent>
+</template>
+
+<script setup lang="ts">
+import BoxComponent from '@/components/gsap/BoxComponent.vue';
+
+</script>
+
+<style lang="scss" scoped>
+section {
+}
+h1 {
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -mt-[8%];
+  @apply w-[80%];
+  @apply font-bold text-white text-[3rem] lg:text-[4rem] leading-[110%] text-center;
+
+	&:nth-child(2) {
+		@apply text-black;
+	}
+}
+
+.Dot {
+  @apply w-[100px] aspect-square rounded-full border;
+  @apply bg-neutral-200 border-neutral-300;
+  @apply dark:bg-neutral-600 dark:border-neutral-500;
+  @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  @apply flex items-center justify-center;
+}
+</style>
+
+```
+
+gsap/DemoTimelineCard.vue
+```
+<template>
+  <div v-gsap.timeline.whenVisible>
+    <article v-gsap.add.from="{ scale: 0.8, height: 0, padding: 0 }">
+      <div v-gsap.add.from="{ y: 100 }" />
+      <div v-gsap.add.stagger.from="{ opacity: 0, x: -40 }">
+        <div class="h-[20px] w-[200px]" />
+        <div class="h-[14px] w-[140px]" />
+        <div class="h-[14px] w-[120px]" />
+      </div>
+    </article>
+  </div>
+
+  <div v-gsap.timeline.whenVisible>
+    <article v-gsap.add.order-0.from="{ scale: 0.8, height: 0, padding: 0 }">
+      <div v-gsap.add.order-1.from="{ y: 100 }" />
+      <div v-gsap.add.order-1.stagger.from="{ opacity: 0, x: -40 }">
+        <div class="h-[20px] w-[200px]" />
+        <div class="h-[14px] w-[140px]" />
+        <div class="h-[14px] w-[120px]" />
+      </div>
+    </article>
+  </div>
+  <div v-gsap.timeline.whenVisible>
+    <article v-gsap.add.from="{ scale: 0.8, height: 0, padding: 0 }">
+      <div v-gsap.add.withPrevious.from="{ y: 100 }" />
+      <div v-gsap.add.withPrevious.stagger.from="{ opacity: 0, x: -40 }">
+        <div class="h-[20px] w-[200px]" />
+        <div class="h-[14px] w-[140px]" />
+        <div class="h-[14px] w-[120px]" />
+      </div>
+    </article>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+article {
+  @apply overflow-hidden p-6 rounded-xl flex gap-6;
+  @apply dark:bg-green-700 dark:border-black;
+  @apply bg-green-400 border-black;
+
+  & > div:first-child {
+    @apply w-[64px] aspect-square rounded-full border;
+    @apply dark:bg-green-500 dark:border-green-800;
+    @apply bg-green-500 border-green-600;
+  }
+  & > div:nth-child(2) {
+    @apply flex flex-col gap-2;
+
+    & > div {
+      @apply rounded-md border;
+      @apply dark:bg-green-500 dark:border-green-800;
+      @apply bg-green-500 border-green-600;
+    }
+  }
+}
+</style>
+
+```
+
+gsap/DemoTextflow.vue
+```
+<template>
+  <!-- <section>
+		<div v-gsap.whenVisible.to="{ x: -300, start: 'top bottom', end: 'bottom top', scrub: 1.5 }">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+		<div v-gsap.whenVisible.to="{ x: 300, start: 'top bottom', end: 'bottom top', scrub: 1.5 }">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>
+	</section> -->
+  <section v-gsap.timeline.whenVisible="{ start: 'top bottom', end: 'bottom top', scrub: 1.5 }">
+    <div v-gsap.add.to="{ x: -300 }">
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    </div>
+    <div v-gsap.add.withPrevious.to="{ x: 300 }">
+      Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+    </div>
+  </section>
+</template>
+
+<style lang="scss" scoped>
+section {
+	@apply w-full h-full;
+	@apply relative;
+	@apply flex flex-col items-start justify-center;
+
+	div {
+		@apply text-[8rem] text-neutral-300 dark:text-neutral-600 leading-[100%] uppercase font-black whitespace-nowrap;
+
+		&:nth-child(1) {
+		}
+		&:nth-child(2) {
+		}
+	}
+}
+</style>
+
+```
+
+gsap/DemoStateToggle.vue
+```
+<template>
+  <div
+    v-gsap.onState-visible.from="{ scale: 0, rotate: -25, duration: 0.3 }"
+    :data-visible="isVisible"
+    class="mt-16 w-[80px] aspect-square rounded-lg bg-neutral-300 dark:bg-neutral-600"
+  />
+  <button
+    class="px-3 py-1 mt-4 rounded-md bg-neutral-300 dark:bg-neutral-600"
+    @click="isVisible = !isVisible"
+  >
+    {{ isVisible ? 'Hide' : 'Show' }} Element
+  </button>
+</template>
+
+<script setup lang="ts">
+const isVisible = ref<boolean>(true)
+</script>
+
+```
+
+gsap/DemoStateArray.vue
+```
+<template>
+  <section
+    class="w-full h-full relative"
+    :data-index="currentIndex"
+  >
+    <div
+      v-gsap.onState-index-0.inherit.from="{ scale: 0, duration: 0.3 }"
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[80px] lg:h-[150px] aspect-[3/2] rounded-lg bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center"
+    >
+      1
+    </div>
+    <div
+      v-gsap.onState-index-1.inherit.from="{ scale: 0, duration: 0.3 }"
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[80px] lg:h-[150px] aspect-[3/2] rounded-lg bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center"
+    >
+      2
+    </div>
+    <div
+      v-gsap.onState-index-2.inherit.from="{ scale: 0, duration: 0.3 }"
+      class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[80px] lg:h-[150px] aspect-[3/2] rounded-lg bg-neutral-300 dark:bg-neutral-600 flex items-center justify-center"
+    >
+      3
+    </div>
+
+    <button
+      class="absolute -bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-md bg-neutral-300 dark:bg-neutral-600"
+      @click="increase()"
+    >
+      Next Card
+    </button>
+  </section>
+</template>
+
+<script setup lang="ts">
+const currentIndex = ref<number>(0)
+
+function increase() {
+  currentIndex.value++
+  if (currentIndex.value > 2) {
+    currentIndex.value = 0
+  }
+}
+</script>
+
+```
+
+gsap/DemoParallax.vue
+```
+<template>
+  <section>
+    <div v-gsap.parallax.faster />
+    <div v-gsap.parallax.faster-10 />
+  </section>
+</template>
+
+<style lang="scss" scoped>
+section {
+	@apply flex !flex-row items-center justify-center;
+	@apply relative;
+
+	& > div:nth-child(1) {
+		@apply w-[100px] aspect-[2/3] rounded-lg backdrop-blur-md border;
+		@apply bg-neutral-300 border-neutral-400/50;
+		@apply dark:bg-neutral-700 border-neutral-500/50;
+		@apply ml-[25px];
+	}
+	& > div:nth-child(2) {
+		@apply w-[100px] aspect-[2/3] rounded-lg backdrop-blur-md border;
+		@apply bg-neutral-200  border-neutral-400/50;
+		@apply dark:bg-neutral-500 border-neutral-500/50;
+		@apply -ml-[50px];
+	}
+}
+</style>
+
+```
+
+gsap/DemoComponent.vue
+```
+<template>
+  <button
+    type="button"
+  >
+    {{ text || 'Hello World' }}
+  </button>
+</template>
+
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    text?: string
+  }>(),
+  {},
+)
+</script>
+
+<style lang="scss" scoped>
+button {
+  @apply z-[0] shadow-2xl font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none border;
+  @apply bg-neutral-300 border-neutral-400;
+  @apply dark:bg-neutral-700 dark:border-neutral-500;
+}
+</style>
+
+```
+
+gsap/DemoCard.vue
+```
+<template>
+  <article v-gsap.whenVisible.from="{ scale: 0.8, height: 0, padding: 0 }">
+    <div v-gsap.whenVisible.from="{ y: 100 }" />
+    <div v-gsap.whenVisible.delay-1000.stagger.from="{ opacity: 0, x: -40 }">
+      <div class="h-[20px] w-[200px]" />
+      <div class="h-[14px] w-[140px]" />
+      <div class="h-[14px] w-[120px]" />
+    </div>
+  </article>
+</template>
+
+<style lang="scss" scoped>
+	article {
+		@apply overflow-hidden p-6 rounded-xl flex gap-6 border;
+		@apply dark:bg-neutral-600 dark:border-neutral-900;
+		@apply bg-neutral-200 border-neutral-300;
+
+		& > div:first-child {
+			@apply w-[64px] aspect-square rounded-full border;
+			@apply dark:bg-neutral-700 dark:border-neutral-800;
+			@apply bg-neutral-300 border-neutral-400/25;
+		}
+		& > div:nth-child(2) {
+			@apply flex flex-col gap-2;
+
+			& > div {
+				@apply rounded-md border ;
+				@apply dark:bg-neutral-700 dark:border-neutral-800;
+				@apply bg-neutral-300 border-neutral-400/25;
+			}
+		}
+	}
+</style>
+
+```
+
+gsap/BoxComponent.vue
+```
+<template>
+  <div
+    class="relative bg-black/5 border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg flex flex-col items-center justify-center gap-3 w-full aspect-[3/2]"
+    :style="{ overflow: `${overflow}` }"
+  >
+    <slot />
+
+    <div class="Crosshair">
+      <div
+        class="Vertical absolute inset-y-0 left-1/2 translate-x-[-50%] w-[1px] bg-gradient-to-b from-transparent dark:via-white/20 via-black/10 to-transparent  z-[-1]"
+      />
+      <div
+        class="Horizontal absolute inset-x-0 top-1/2 translate-y-[-50%] h-[1px] bg-gradient-to-r from-transparent dark:via-white/20 via-black/10 to-transparent z-[-1]"
+      />
+    </div>
+
+    <div class="absolute top-2 left-4 dark:text-white/80 text-gray-700">
+      <pre>{{ title }}</pre>
+    </div>
+
+    <button
+      hide-scrollbar
+      class="dark:text-white/25 text-black/25 absolute bottom-2 inset-x-0 px-4 overflow-scroll text-[14px]"
+      @click="copy(code)"
+    >
+      <pre v-html="code?.trim()" />
+    </button>
+  </div>
+</template>
+
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    title?: string
+    crosshair?: boolean
+    code?: string
+    overflow?: string
+  }>(),
+  {
+    crosshair: true,
+    overflow: 'hidden',
+  },
+)
+
+function copy(code?: string) {
+  if (!code) return
+  navigator.clipboard.writeText(code)
+
+  alert('Copied to clipboard')
+}
+</script>
+
+<style lang="scss" scoped>
+[hide-scrollbar] {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>
+
+```
+
+InlineSvgMask.vue
+```
+<template>
+  <!-- Container with explicit size -->
+  <div :style="{ position: 'relative', width: W + 'px', height: H + 'px' }">
+    <!-- SVG with dynamically traced polygon (overlaid) -->
+    <svg
+      :width="W"
+      :height="H"
+      ref="svgEl"
+      style="position: absolute; top: 0; left: 0; opacity:0;"
+    >
+      <polygon
+        ref="polyEl"
+        class="hover-poly"
+        v-if="pts"
+        :points="pts"
+        :fill="hovered === 'top' ? 'green' : hovered === 'back' ? 'red' : 'black'"
+        style="pointer-events: visiblePainted; fill-opacity: 0.5;"
+      />
+    </svg>
+
+    <!-- Inline PNG image (underneath the SVG) -->
+    <img
+      ref="imgEl"
+      :src="src"
+      :width="W"
+      :height="H"
+      alt="Loaded PNG"
+      style="position: relative; top: 0; left: 0; opacity: 1;"
+    />
+
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+const props = defineProps({
+  src: { type: String, required: true }
+})
+const emit = defineEmits(['hover', 'leave'])
+
+// Reactive state for dimensions and polygon data.
+const W = ref(0)
+const H = ref(0)
+const pts = ref('')
+// Hover state: '' (not hovered), 'top' (on top), or 'back' (hovered but behind).
+const hovered = ref('')
+
+// Refs for SVG and image elements.
+const svgEl = ref(null)
+const polyEl = ref(null)
+const imgEl = ref(null)
+
+// Configurable alpha threshold to account for anti-aliasing (0-255).
+const ALPHA_THRESHOLD = 50
+
+/**
+ * Simple 4-neighbor contour tracer.
+ * Traces the binary mask 'm' and returns a string of points for the polygon.
+ */
+const trace = m => {
+  const h = m.length, w = m[0].length;
+  let s;
+  // Find a starting pixel on the top or left boundary of the object.
+  for (let y = 0; y < h && !s; y++) {
+    for (let x = 0; x < w && !s; x++) {
+      if (m[y][x] && (!m[y - 1]?.[x] || !m[y][x - 1])) {
+        s = { x, y }
+      }
+    }
+  }
+  if (!s) return ''
+  const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]],
+    res = []
+  let x = s.x,
+    y = s.y,
+    d = 0
+  do {
+    res.push(`${x + 0.5},${y + 0.5}`)
+    let found = false
+    for (let i = 0; i < 4; i++) {
+      let nd = (d + i) % 4
+      let nx = x + dirs[nd][0],
+        ny = y + dirs[nd][1]
+      if (nx >= 0 && ny >= 0 && nx < w && ny < h && m[ny][nx]) {
+        x = nx
+        y = ny
+        d = (nd + 3) % 4
+        found = true
+        break
+      }
+    }
+    if (!found) break
+  } while (x !== s.x || y !== s.y)
+  return res.join(' ')
+}
+
+/**
+ * Fallback: Compute the bounding box of a binary mask.
+ */
+function boundingBox(m) {
+  const h = m.length,
+    w = m[0].length
+  let minX = w,
+    minY = h,
+    maxX = 0,
+    maxY = 0
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (m[y][x]) {
+        if (x < minX) minX = x
+        if (x > maxX) maxX = x
+        if (y < minY) minY = y
+        if (y > maxY) maxY = y
+      }
+    }
+  }
+  if (minX > maxX || minY > maxY) return ''
+  return `${minX},${minY} ${maxX + 1},${minY} ${maxX + 1},${maxY + 1} ${minX},${maxY + 1}`
+}
+
+/**
+ * Loads a PNG image into a hidden canvas, builds a binary mask using the alpha channel,
+ * and then traces its contour.
+ */
+function loadAndTraceImage(src) {
+  const img = new Image()
+  img.crossOrigin = "anonymous"
+  img.src = src
+  img.onload = () => {
+    // Set dimensions based on the loaded image.
+    W.value = img.width
+    H.value = img.height
+
+    const c = document.createElement('canvas')
+    c.width = img.width
+    c.height = img.height
+    const ctx = c.getContext('2d')
+    ctx.drawImage(img, 0, 0)
+    const d = ctx.getImageData(0, 0, img.width, img.height).data
+    const m = []
+    for (let y = 0; y < img.height; y++) {
+      let row = []
+      for (let x = 0; x < img.width; x++) {
+        // Check if the alpha value is above the threshold.
+        row.push(d[(y * img.width + x) * 4 + 3] > ALPHA_THRESHOLD)
+      }
+      m.push(row)
+    }
+    // Try to trace the shape.
+    const traced = trace(m)
+    pts.value = traced ? traced : boundingBox(m)
+  }
+  img.onerror = err => console.error("Error loading image:", err)
+}
+
+/**
+ * Unified move handler for pointer and touch events on the SVG.
+ */
+function onMove(e) {
+  let clientX, clientY
+  if (e.touches && e.touches.length > 0) {
+    clientX = e.touches[0].clientX
+    clientY = e.touches[0].clientY
+  } else {
+    clientX = e.clientX
+    clientY = e.clientY
+  }
+  if (!svgEl.value || !polyEl.value) return
+
+  const pt = svgEl.value.createSVGPoint()
+  pt.x = clientX
+  pt.y = clientY
+  const svgP = pt.matrixTransform(svgEl.value.getScreenCTM().inverse())
+
+  if (polyEl.value.isPointInFill(svgP)) {
+    const elements = document.elementsFromPoint(clientX, clientY)
+    const hoveredPolys = elements.filter(el =>
+      el.classList && el.classList.contains('hover-poly')
+    )
+    if (hoveredPolys.length && hoveredPolys[0] === polyEl.value) {
+      if (hovered.value !== 'top') {
+        hovered.value = 'top'
+        emit('hover', { src: props.src, state: 'top' })
+      }
+    } else {
+      if (hovered.value !== 'back') {
+        hovered.value = 'back'
+        emit('leave', { src: props.src, state: 'back' })
+
+      }
+    }
+  } else {
+    if (hovered.value !== '') {
+      hovered.value = ''
+      emit('leave', props.src)
+    }
+  }
+}
+
+/**
+ * Handler for touchend/touchcancel events on the SVG.
+ */
+function onTouchEnd() {
+  // if (hovered.value !== '') {
+  //   hovered.value = ''
+  //   emit('leave', props.src)
+  // }
+}
+
+onMounted(() => {
+  // Attach event listeners for pointer and touch events.
+  window.addEventListener('pointermove', onMove)
+  window.addEventListener('touchmove', onMove)
+  window.addEventListener('touchstart', onMove)
+  window.addEventListener('touchend', onTouchEnd)
+  window.addEventListener('touchcancel', onTouchEnd)
+
+  // Load and trace the image if a source is provided.
+  if (props.src) {
+    loadAndTraceImage(props.src)
+  }
+
+  // Add hover listeners on the image element.
+  if (imgEl.value) {
+    imgEl.value.addEventListener('mouseenter', () => {
+      imgEl.value.classList.add('png-hovered')
+      emit('hover')
+    })
+    imgEl.value.addEventListener('mouseleave', () => {
+      imgEl.value.classList.remove('png-hovered')
+      emit('leave')
+    })
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('pointermove', onMove)
+  window.removeEventListener('touchmove', onMove)
+  window.removeEventListener('touchstart', onMove)
+  window.removeEventListener('touchend', onTouchEnd)
+  window.removeEventListener('touchcancel', onTouchEnd)
+})
+</script>
+
+<style scoped>
+/* When hovered, the inline PNG gets a dashed red outline and blue drop shadow. */
+.png-hovered {
+  /* outline: 2px dashed red; */
+  /* filter: drop-shadow(10px 10px 50px blue); */
+}
+</style>
+
+```
+
+InlinePng.vue
+```
+<template>
+  <!-- Render the PNG inline -->
+  <img ref="imgEl" :src="src" alt="Loaded PNG" />
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
+  src: { type: String, required: true }
+})
+const emit = defineEmits(['hover', 'leave'])
+
+const imgEl = ref(null)
+
+onMounted(() => {
+  // Add event listeners directly to the image element.
+  if (imgEl.value) {
+    imgEl.value.addEventListener('mouseenter', () => {
+      imgEl.value.classList.add('png-hovered')
+      emit('hover')
+    })
+    imgEl.value.addEventListener('mouseleave', () => {
+      imgEl.value.classList.remove('png-hovered')
+      emit('leave')
+    })
+  }
+})
+</script>
+
+<style scoped>
+/* When hovered, add a dashed red outline and a blue drop shadow */
+.png-hovered {
+  outline: 2px dashed red;
+  filter: drop-shadow(10px 10px 50px blue);
+}
+</style>
+
+```
+
+Header.vue
+```
+<template>
+    <header dir="rtl" class="flex items-center justify-between py-3 bg-transparent w-full">
+        
+      <!-- Right: Logo + Hamburger -->
+      <div v-if="width < 768" class="flex flex-row items-center gap-4">
+        <!-- Logo -->
+        <NuxtLink to="/" class="flex justify-center">
+          <NajmLogo class="h-12 w-12" />
+        </NuxtLink>
+      </div>
+  
+      <!-- Left: Language + Search -->
+      <div v-if="width < 768" class="flex flex-row items-center gap-1">
+        <!-- Language Switch -->
+        <div 
+          class="w-12 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold 
+                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+          <span class="block">FA</span>
+        </div>
+        <!-- Search Button -->
+        <div 
+          class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
+                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+          <SearchIcon class="w-6 h-6 fill-current text-gray-700" />
+        </div>
+        <!-- Hamburger Menu -->
+        <div 
+          @click="toggleMenu" 
+          class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
+                 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+          <HamburgerIcon class="w-6 h-6 fill-current text-gray-700" />
+        </div>
+
+      </div>
+
+      <!-- Desktop Navigation (>= 768px) -->
+      <nav v-if="width >= 768" class="flex items-center justify-between w-full">
+        <!-- Right Side: Logo -->
+        <NuxtLink to="/" class="flex items-center gap-3">
+            <NajmLogo class="h-12 w-12" />
+            <span><span class="text-base text-black">چاپ و بسته‌بندی </span><span class="text-black text-2xl">نجم</span></span>
+        </NuxtLink>
+
+        <!-- Left Side: Profile + Hamburger + Search -->
+        <div class="flex items-center gap-3">
+            <!-- Profile Icon + Dropdown Arrow -->
+            <div 
+              class="flex items-center gap-x-3 h-12 py-3 px-6 p-2 rounded-xl border border-1 border-black/10 
+                     transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+                <UserIcon class="w-6 h-6 text-gray-700" />
+                <span class="text-black text-sm">محمدمهدی</span>
+                <BottomArrowIcon class="text-gray-500" />
+            </div>
+
+            <!-- Hamburger Icon -->
+            <div 
+              @click="toggleMenu" 
+              class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
+                     transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+              <HamburgerIcon class="w-6 h-6 fill-current text-gray-700" />
+            </div>
+
+            <!-- Search Icon -->
+            <div 
+              class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
+                     transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+              <SearchIcon class="w-6 h-6 fill-current text-gray-700" />
+            </div>
+        </div>
+      </nav>
+    </header>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useWindowSize } from "@vueuse/core";
+
+// Import SVGs as Vue components
+import NajmLogo from "~/assets/icons/najm-logo.svg";
+import HamburgerIcon from "~/assets/icons/hamburger-icon.svg";
+import SearchIcon from "~/assets/icons/search-icon.svg";
+import UserIcon from "~/assets/icons/user-icon.svg";
+import BottomArrowIcon from "~/assets/icons/bottom-arrow-icon.svg";
+
+const { width } = useWindowSize();
+const menuOpen = ref(false);
+
+const toggleMenu = () => {
+  menuOpen.value = !menuOpen.value;
+};
+</script>
+
+```
+
+NuxtDemo.vue
+```
+<template>
+  <div class="text-secondary-darker dark:text-white bg-white dark:bg-black">
+    <div
+      class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0"
+    >
+      <div class="max-w-screen-2xl grid grid-cols-2 mx-auto sm:px-6 lg:px-8">
+        <NuxtWelcome />
+        <div class="py-20 px-12 bg-black text-white flex flex-col gap-4">
+          <!-- Plugins -->
+          <div class="rounded p-4 gradient-border">
+            <div class="mb-4">
+              <h1 class="font-medium text-2xl">Plugins</h1>
+
+              <ul class="list-inside list-disc pt-1 pl-2 text-gray-300">
+                <li>
+                  <a
+                    class="text-primary hover:underline"
+                    href="https://unocss.dev/integrations/nuxt"
+                    target="_blank"
+                    >@unocss/nuxt</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-primary hover:underline"
+                    href="https://github.com/antfu/unplugin-icons"
+                    target="_blank"
+                    >unplugin-icons</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-primary hover:underline"
+                    href="https://pinia.esm.dev/ssr/nuxt.html"
+                    target="_blank"
+                    >@pinia/nuxt</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="text-primary hover:underline"
+                    href="https://vueuse.org/nuxt/readme.html#vueuse-nuxt"
+                    target="_blank"
+                    >@vueuse/nuxt3</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Pinia -->
+          <div class="rounded p-4 gradient-border">
+            <div class="mb-4 flex flex-col gap-6">
+              <h1 class="font-medium text-2xl">Pinia</h1>
+              <h2 class="text-base">Use Pinia manage store</h2>
+              <button
+                class="text-primary bg-transparent px-2 py-1 focus:outline-transparent rounded-lg border border-[#00DC82]"
+                @click="counterStore.increment"
+              >
+                Counter {{ counterStore.n }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Serverless Functions -->
+          <div class="rounded p-4 gradient-border">
+            <div class="mb-4 flex flex-col gap-6">
+              <h1 class="font-medium text-2xl">Serverless Functions</h1>
+              <h2 class="text-base">
+                Create a Serverless Functions in
+                <a
+                  class="text-primary hover:underline"
+                  href="api/hello?name=World"
+                  target="_blank"
+                  >server/api.ts</a
+                >
+              </h2>
+
+              <code>{{ data }}</code>
+            </div>
+          </div>
+          <!-- Vue i18n -->
+
+          <div class="rounded p-4 gradient-border">
+            <div class="mb-4">
+              <h1 class="font-medium text-2xl">Vue i18n</h1>
+            </div>
+
+            <ul class="list-inside list-disc pt-1 pl-2">
+              <li>
+                {{ t('hello', { name: ***** Better Nuxt 3 Starter' }) }}
+              </li>
+              <li>
+                {{ t('menu.home') }}
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="rounded p-4 gradient-border py-8 flex justify-center items-center space-x-2"
+          >
+            <div class="">
+              <button
+                class="bg-transparent hover:text-primary px-2 py-1 focus:outline-transparent rounded-sm"
+                @click="toggleLocales"
+              >
+                <carbon:language class="h-5 w-5" />
+              </button>
+              <ClientOnly>
+                <button
+                  class="bg-transparent px-2 py-1 focus:outline-transparent rounded-sm bg-white dark:bg-black text-black dark:text-white rounded-md hover:text-primary"
+                  @click="(e) => toggleDark()"
+                >
+                  <carbon:moon class="h-5 w-5" v-if="isDark" />
+                  <carbon:sun class="h-5 w-5" v-else />
+                </button>
+              </ClientOnly>
+              <button
+                class="bg-transparent hover:text-primary px-2 py-1 focus:outline-transparent rounded-sm"
+                @click="(e) => gotoGitHub()"
+              >
+                <carbon:logo-github class="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
+import { useCounter } from '@/store/counter'
+import { isDark, toggleDark } from '@/composables/dark'
+
+const { t, locale, availableLocales } = useI18n()
+const counterStore = useCounter()
+
+// fetch data from server/api
+const { data } = await useAsyncData('/api/hello', () => {
+  return $fetch('/api/hello', {
+    params: {
+      name: *****
+    }
+  })
+})
+
+const toggleLocales = () => {
+  // change to some real logic
+  const locales = availableLocales
+  console.log(locale.value)
+  locale.value = locales[(locales.indexOf(locale.value) + 1) % locales.length]
+}
+
+const gotoGitHub = () => {
+  window.open('https://github.com/nuxtbase/nuxt3-starter')
+}
+</script>
+
+<style scoped>
+.gradient-border {
+  position: relative;
+  border-radius: 0.5rem;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  width: 100%;
+}
+@media (prefers-color-scheme: light) {
+  .gradient-border {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  .gradient-border::before {
+    background: linear-gradient(
+      90deg,
+      #e2e2e2 0%,
+      #e2e2e2 25%,
+      #00dc82 50%,
+      #36e4da 75%,
+      #0047e1 100%
+    );
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .gradient-border {
+    background-color: rgba(20, 20, 20, 0.3);
+  }
+  .gradient-border::before {
+    background: linear-gradient(
+      90deg,
+      #303030 0%,
+      #303030 25%,
+      #00dc82 50%,
+      #36e4da 75%,
+      #0047e1 100%
+    );
+  }
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0.5rem;
+  padding: 2px;
+  width: 100%;
+  background-size: 400% auto;
+  background-position: 0 0;
+  opacity: 0.5;
+  transition: background-position 0.3s ease-in-out, opacity 0.2s ease-in-out;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
+.gradient-border:hover::before {
+  background-position: -50% 0;
+  opacity: 1;
+}
+</style>
+
+```

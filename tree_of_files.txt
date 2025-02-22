@@ -1,0 +1,178 @@
+- .DS_Store
+- components
+  - .DS_Store
+  - Accordion.vue
+  - AccordionItem.vue
+  - testing.vue
+  - sections
+    - PrintingSection.vue
+    - ProjectReservation.vue
+  - new
+    - CarouselIndicator.vue
+    - HighlightedText.vue
+    - SelectBox.vue
+    - SearchBox.vue
+  - ImagesFloating.vue
+  - BackgroundGradient.vue
+  - gsap
+    - Snippet.vue
+    - DemoPinned.vue
+    - DemoTimelineCard.vue
+    - DemoTextflow.vue
+    - DemoStateToggle.vue
+    - DemoStateArray.vue
+    - DemoParallax.vue
+    - DemoComponent.vue
+    - DemoCard.vue
+    - BoxComponent.vue
+  - InlineSvgMask.vue
+  - InlinePng.vue
+  - Header.vue
+  - NuxtDemo.vue
+- public
+  - images
+    - .DS_Store
+  - fonts
+    - d4
+      - IRANSansX-UltraLightD4.ttf
+      - IRANSansX-ThinD4.ttf
+      - IRANSansX-RegularD4.ttf
+      - IRANSansX-MediumD4.ttf
+      - IRANSansX-LightD4.ttf
+      - IRANSansX-HeavyD4.ttf
+      - IRANSansX-ExtraBoldD4.ttf
+      - IRANSansX-ExtraBlackD4.ttf
+      - IRANSansX-DemiBoldD4.ttf
+      - IRANSansX-BoldD4.ttf
+      - IRANSansX-BlackD4.ttf
+    - woff2
+      - IRANSansX-UltraLight.woff2
+      - IRANSansX-Thin.woff2
+      - IRANSansX-Regular.woff2
+      - IRANSansX-Medium.woff2
+      - IRANSansX-Light.woff2
+      - IRANSansX-Heavy.woff2
+      - IRANSansX-ExtraBold.woff2
+      - IRANSansX-ExtraBlack.woff2
+      - IRANSansX-DemiBold.woff2
+      - IRANSansX-Bold.woff2
+      - IRANSansX-Black.woff2
+    - woff
+      - IRANSansX-UltraLight.woff
+      - IRANSansX-Thin.woff
+      - IRANSansX-Regular.woff
+      - IRANSansX-Medium.woff
+      - IRANSansX-Light.woff
+      - IRANSansX-Heavy.woff
+      - IRANSansX-ExtraBold.woff
+      - IRANSansX-ExtraBlack.woff
+      - IRANSansX-DemiBold.woff
+      - IRANSansX-Bold.woff
+      - IRANSansX-Black.woff
+    - .DS_Store
+  - .DS_Store
+- .nuxt
+  - nitro.json
+  - dev
+    - index.mjs.map
+    - index.mjs
+  - tsconfig.server.json
+  - types
+    - nitro-imports.d.ts
+    - nitro-routes.d.ts
+    - nitro.d.ts
+    - nitro-config.d.ts
+    - plugins.d.ts
+    - imports.d.ts
+    - schema.d.ts
+    - layouts.d.ts
+    - middleware.d.ts
+    - builder-env.d.ts
+    - vue-shim.d.ts
+    - nitro-nuxt.d.ts
+    - build.d.ts
+    - app-defaults.d.ts
+    - app.config.d.ts
+  - manifest
+    - meta
+      - dev.json
+      - 1f20abaf-eb7d-4949-914f-8d2f92417df4.json
+    - latest.json
+  - schema
+    - nuxt.schema.d.ts
+    - nuxt.schema.json
+  - imports.d.ts
+  - components.d.ts
+  - app.config.mjs
+  - nuxt.d.ts
+  - nuxt.json
+- pages
+  - index.vue
+  - select.vue
+  - gsap.vue
+- components.d.ts
+- package.json
+- pnpm-lock.yaml
+- unocss.config.ts
+- nuxt.config.ts
+- store
+  - useCarouselStore.ts
+  - counter.ts
+- assets
+  - css
+    - fontiran.css
+    - main.css
+    - shiki.css
+  - fonts
+    - d4
+      - IRANSansX-UltraLightD4.ttf
+      - IRANSansX-ThinD4.ttf
+      - IRANSansX-RegularD4.ttf
+      - IRANSansX-MediumD4.ttf
+      - IRANSansX-LightD4.ttf
+      - IRANSansX-HeavyD4.ttf
+      - IRANSansX-ExtraBoldD4.ttf
+      - IRANSansX-ExtraBlackD4.ttf
+      - IRANSansX-DemiBoldD4.ttf
+      - IRANSansX-BoldD4.ttf
+      - IRANSansX-BlackD4.ttf
+    - .DS_Store
+    - woff2
+      - IRANSansX-UltraLight.woff2
+      - IRANSansX-Thin.woff2
+      - IRANSansX-Regular.woff2
+      - IRANSansX-Medium.woff2
+      - IRANSansX-Light.woff2
+      - IRANSansX-Heavy.woff2
+      - IRANSansX-ExtraBold.woff2
+      - IRANSansX-ExtraBlack.woff2
+      - IRANSansX-DemiBold.woff2
+      - IRANSansX-Bold.woff2
+      - IRANSansX-Black.woff2
+    - woff
+      - IRANSansX-UltraLight.woff
+      - IRANSansX-Thin.woff
+      - IRANSansX-Regular.woff
+      - IRANSansX-Medium.woff
+      - IRANSansX-Light.woff
+      - IRANSansX-Heavy.woff
+      - IRANSansX-ExtraBold.woff
+      - IRANSansX-ExtraBlack.woff
+      - IRANSansX-DemiBold.woff
+      - IRANSansX-Bold.woff
+      - IRANSansX-Black.woff
+- app.vue
+- server
+  - api
+    - hello.get.ts
+- plugins
+  - i18n.ts
+- locales
+  - zh-CN.json
+  - ja.json
+  - en.json
+- composables
+  - dark.ts
+- .stackblitzrc
+- .prettierrc
+- .npmrc

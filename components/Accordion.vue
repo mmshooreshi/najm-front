@@ -1,5 +1,5 @@
 <template>
-    <div class="accordion">
+    <div class="w-full max-w-[400px] accordion">
       <AccordionItem
         v-for="(item, index) in items"
         :key="index"
@@ -26,7 +26,6 @@
   
   <style scoped>
   .accordion {
-    max-width: 600px;
     margin: auto;
     /* border: 1px solid #ddd; */
     border-radius: 8px;

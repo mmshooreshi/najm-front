@@ -76,10 +76,7 @@ const afterLeave = (el) => {
 </script>
 
 <style scoped>
-  .text-d4{
-    font-family: 'IRANSansX-d4', sans-serif;
-    font-style: normal;
-  }
+
 .accordion-item {
   /* border-bottom: 1px solid #ddd; */
 }
