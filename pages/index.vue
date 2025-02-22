@@ -30,7 +30,7 @@
           <PrintingSection />
           <Carousal class="w-full"/>
           <Accordion />
-          <Btn class="text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
+          <Btn class="text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
 
         </div>
       </div>

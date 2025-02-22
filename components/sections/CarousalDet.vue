@@ -8,9 +8,9 @@
       <!-- Overlay Content -->
       <div class="absolute inset-0 flex flex-col items-center justify-between p-6">
         <!-- Caption -->
-        <figcaption class="bg-[#DFEED7] text-d4 text-base font-extrabold px-4 py-2 rounded-3xl self-start">
+        <div class="bg-[#DFEED7] text-d4 text-base font-extrabold px-4 py-2 rounded-3xl self-start">
           پکیج اداری و سازمانی
-        </figcaption>
+        </div>
   
 
   
