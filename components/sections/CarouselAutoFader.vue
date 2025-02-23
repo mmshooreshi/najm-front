@@ -53,6 +53,7 @@ const onSlideChange = (swiperInstance: any) => {
     console.log('Carousel completed a full cycle!')
   }
 }
+const uniqueId = Math.random().toString(36).substring(2, 9);
 
 onMounted(() => {
   console.log('Swiper initialized')
@@ -60,7 +61,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="mt-6 relative">
+  <div  class="relative">
     <ClientOnly>
       <swiper-container
         ref="containerRef"
@@ -70,7 +71,7 @@ onMounted(() => {
         :autoplay="{ delay: 2000, disableOnInteraction: false }"
         :effect="'fade'"
         :fadeEffect="{ crossFade: true }"
-        :pagination="{ el: '.swiper-pagination', clickable: true }"
+        :pagination="{ el: `#pagination-${uniqueId}`, clickable: true }"
         @slideChange="onSlideChange"
       >
         <swiper-slide v-for="(slide, index) in slides" :key="index" class="relative">
@@ -80,7 +81,7 @@ onMounted(() => {
             class="w-full h-48 md:h-96 object-cover rounded-3xl"
           />
           <!-- Overlay Button with Chevron Icon -->
-          <div class="absolute right-3 top-3 sm:top-unset sm:-bottom-3  group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max bg-white py-0 px-2 sm:px-4 sm:py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-[29px]">
+          <div class="absolute left-[50%] -translate-x-[50%] bottom-[1%] group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max bg-white py-0 px-2 sm:px-4 sm:py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-[29px]">
             <!-- Center the icon -->
             <div class="text text-xs text-demibold">{{slide.text}}</div>
 
@@ -91,7 +92,7 @@ onMounted(() => {
 
         </swiper-slide>
         <!-- Swiper built-in pagination indicators -->
-        <div class="swiper-pagination"></div>
+        <div :id="`pagination-${uniqueId}`" class="swiper-pagination"></div>
       </swiper-container>
     </ClientOnly>
   </div>

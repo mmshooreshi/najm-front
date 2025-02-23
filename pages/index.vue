@@ -25,18 +25,22 @@
       <ProjectReservation/>
 
 
-      <div class="mt-2 max-w-[500px] mx-auto px-6 py-16">
-        <div class="flex flex-col items-center space-y-[48px]">
-          <PrintingSection />
-          <Carousel class="w-full"/>
-          <Accordion />
-          <Btn class="text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
+      <div class="mt-2 mx-auto py-16 px-6">
+        <PrintingSection />
 
+        <div class="flex flex-col md:max-w-screen items-center  md:flex-row gap-2 my-8 mx-0">
+          <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%]"/>
+          <Accordion />
         </div>
+        <Btn class="absolute left-[50%] -translate-x-[50%] text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
+
       </div>
 
-      <div dir="rtl" class="overflow-hidden border border-0 border-black rounded-3xl max-w-[350px] w-full mx-auto space-y-[8px]">
-        <CarousalDet/>
+
+      <div class="overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full my-8 mx-auto px-6 gap-4">
+        <!-- <CarousalDet/> -->
+        <CarouselAutoSlider  class="w-full md:max-w-[350px] lg:max-w-[450px]"/>
+
         <CustomPackage/>
 
       </div>
@@ -67,7 +71,8 @@ import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
-import Carousel from '~/components/sections/Carousel.vue'
+import CarouselAutoFader from '~/components/sections/CarouselAutoFader.vue'
+import CarouselAutoSlider from '~/components/sections/CarouselAutoSlider.vue'
 
 import CustomPackage from '~/components/sections/CustomPackage.vue'
 import CarousalDet from '~/components/sections/CarousalDet.vue'
@@ -80,7 +85,7 @@ import Btn from "~/components/re/Btn.vue";
 
 const isLoading = ref(false);
 
-const handleAction = () => {
+const handleSubmit = () => {
   isLoading.value = true;
   setTimeout(() => (isLoading.value = false), 2000);
 };

@@ -1,5 +1,5 @@
 <template>
-    <div class="transition-all  text-d4 flex flex-col items-start w-full max-w-md bg-[#DFEED7] rounded-3xl p-6 ">
+    <div dir="rtl" class="transition-all text-d4 flex flex-col items-start w-full h-full max-w-md bg-[#DFEED7] rounded-3xl p-6 ">
       <!-- Header Icon -->
       <div class="p-2 flex bg-[#EAFED3] self-start items-center justify-center rounded-3xl ">
         <PuzzleIcon />
