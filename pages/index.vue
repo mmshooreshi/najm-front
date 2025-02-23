@@ -28,7 +28,7 @@
       <div class="mt-2 max-w-[500px] mx-auto px-6 py-16">
         <div class="flex flex-col items-center space-y-[48px]">
           <PrintingSection />
-          <Carousal class="w-full"/>
+          <Carousel class="w-full"/>
           <Accordion />
           <Btn class="text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
 
@@ -67,7 +67,8 @@ import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
-import Carousal from '~/components/sections/Carousal.vue'
+import Carousel from '~/components/sections/Carousel.vue'
+
 import CustomPackage from '~/components/sections/CustomPackage.vue'
 import CarousalDet from '~/components/sections/CarousalDet.vue'
 

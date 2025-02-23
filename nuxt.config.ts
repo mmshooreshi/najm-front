@@ -21,7 +21,8 @@ export default defineNuxtConfig({
     '@vueuse/motion/nuxt',
     // '@hypernym/nuxt-gsap',
     "v-gsap-nuxt",
-    "nuxt-shiki"
+    "nuxt-shiki",
+    'nuxt-swiper'
   ],
 
   features: {
