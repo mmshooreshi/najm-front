@@ -32,7 +32,7 @@
           <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%]"/>
           <Accordion />
         </div>
-        <Btn class="absolute left-[50%] -translate-x-[50%] text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
+        <Btn class="absolute left-[50%] -translate-x-[50%] text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[20px] sm:px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
 
       </div>
 
@@ -43,6 +43,11 @@
 
         <CustomPackage/>
 
+      </div>
+
+      <div>
+
+        <FollowupWheel/>
       </div>
       
       <!-- <testing/> -->
@@ -82,6 +87,7 @@ import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import HighlightedText from '~/components/new/HighlightedText.vue';
 import testing from '~/components/testing.vue';
 import Btn from "~/components/re/Btn.vue";
+import FollowupWheel from '~/components/sections/FollowupWheel.vue';
 
 const isLoading = ref(false);
 
