@@ -7,7 +7,7 @@
 
 
     <!-- Your Main Content (positioned above the background) -->
-    <div class="snap-start">
+    <div class="snap-start max-h-screen">
       <Header />
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
@@ -29,10 +29,10 @@
     <div class="snap-start  mt-2 mx-auto py-16 px-6 ">
       <PrintingSection />
     </div>
-    <div class="snap-start snap-y snap-mandatory h-[90%]">
+    <div class="snap-start snap-y snap-mandatory h-max pb-12">
 
       <div class=" flex flex-col md:max-w-screen items-center  md:flex-row gap-8 lg:gap-28 my-8 mx-0 md:mx-8 lg:mx-28">
-        <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%]" />
+        <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%] pt-8" />
         <Accordion class="snap-start pt-8"/>
       </div>
       <Btn
