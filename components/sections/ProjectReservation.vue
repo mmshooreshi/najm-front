@@ -1,7 +1,7 @@
 <template>
-  <div class="mt-28 -mb-28 max-w-md mx-auto animate-pulse-alt" dir="rtl">
+  <div class="mt-0 -mb-28 max-w-md mx-auto animate-pulse-alt" dir="rtl">
     <!-- Target Icon -->
-    <div ref="targetRef" class="group relative cursor-pointer  -mt-[50px] fixed -z-10" @click="togglePopup" v-click-outside="closePopup">
+    <div ref="targetRef" class="group relative cursor-pointer  -mt-[50px] fixed -z-10" @click="togglePopup" >
       <div class="w-full mx-auto" dir="rtl">
         <svg
           width="100%"
@@ -27,7 +27,7 @@
   </div>
 
   <!-- Pop-up with GSAP in/out animation and click-outside -->
-  <div dir="rtl" class="-mt-[400px] h-[350px] z-100 mx-auto max-w-md inset-0">
+  <div dir="rtl" class="-mt-[650px] h-[400px] z-100 mx-auto max-w-md inset-0" :class="{ '': !isShown }">
     <transition
       @before-enter="beforeEnter"
       @enter="enter"
@@ -35,8 +35,9 @@
     >
       <div
         v-show="isShown"
+        v-click-outside="closePopup"
         ref="popupRef"
-        class="z-10 bg-white rounded-3xl shadow-lg p-4 origin-center"
+        class="z-10 bg-white rounded-3xl shadow-lg p-4 origin-center overflow-hidden"
         :style="{ top: `${position.top}px`, left: `${position.left}px` }"
       >
         <div class="relative px-3 z-20">
@@ -48,7 +49,7 @@
           <SelectBox v-model="selectedCategory" :options="categoryOptions" />
           <SearchBox v-model="searchQuery" :options="productOptions" />
         </div>
-        <div class="group mt-6 bg-[#014439] rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]">
+        <div class="group mt-6 bg-[#014439] rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50] transition-all">
           <span class="text-lg font-semibold">رزرو پروژه جدید</span>
           <p class="animate-pulse-alt text-white/50 text-sm font-normal mt-2">
             شروع دهی از <span class="text-white underline underline-offset-4">۵</span> روز دیگر

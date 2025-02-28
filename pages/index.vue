@@ -10,7 +10,7 @@
       <Header />
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
-        class=" z-[1] flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] backdrop-blur-sm"
+        class="z-10 flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] backdrop-blur-sm"
         style="left:16px; right:16px; top:68px; padding:64px 24px;"
       >
         <!-- Header Text -->

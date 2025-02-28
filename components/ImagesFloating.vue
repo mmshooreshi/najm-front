@@ -22,7 +22,7 @@
 
 
     <!-- Settings Modal -->
-    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-[100] max-h-[80%] overflow-auto">
+    <div v-if="showSettings" class="fixed inset-0 flex items-center justify-center z-100 max-h-[80%] overflow-auto">
         <div class="bg-white p-4 rounded-lg w-80 space-y-3  h-full top-4  shadow-md ">
             <h2 class="text-xl font-bold mb-4">Settings</h2>
             <div class="space-y-2">
