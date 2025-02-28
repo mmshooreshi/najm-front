@@ -30,7 +30,7 @@
     <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-6 ">
       <PrintingSection />
     </div>
-    <div class="snap-start snap-y snap-mandatory  h-max pt-0 max-h-[70%] ">
+    <div class="snap-start snap-y snap-mandatory  h-max md:pt-8 max-h-[70%] ">
       <div
         class=" pt-4 md:pt-0 grid grid-cols-1 md:grid-cols-7  md:grid-rows-2 md:gap-2  my-8 mx-0 md:mx-0  items-start">
         <!-- Left Section (Auto-fading Carousel) -->
@@ -58,7 +58,7 @@
 
     </div>
 
-    <div  dir="rtl" class="snap-start  mt-28 pt-8" >
+    <div  dir="rtl" class="snap-start  mt-28 pt-8 mb-12" >
     <div class="flex flex-row justify-between">
     <h1 class="text-3xl font-bold text-d4 max-w-[30%]">چیزی فراتر از یک جعبه!</h1>
     <p class="text-xl text-justify max-w-[470px]">هر سبک جعبه برای نمایش محصول منحصر به فرد شما طراحی شده است. برش ها و پنجره های سفارشی را اضافه کنید تا واقعاً خارق العاده باش.</p>

@@ -13,7 +13,7 @@
           <swiper-slide
             v-for="(box, index) in boxes"
             :key="index"
-            class="w-64 mx-4 my-0"
+            class="w-64 mx-0 my-0"
             @click="selectedBox = index"
           >
             <div
@@ -34,7 +34,7 @@
               <div class="absolute inset-0 bg-black bg-opacity-20 rounded-3xl"></div>
 
               <!-- Display Button -->
-              <button class="relative bottom-0 bg-white px-6 py-3 rounded-3xl text-sm shadow-md z-10">
+              <button class="relative bottom-4 bg-white px-6 py-3 rounded-3xl text-sm shadow-md z-10">
                 نمایش ابعاد
               </button>
             </div>
@@ -42,6 +42,8 @@
             <!-- Box Name -->
             <h3 class="text-base text-d4 font-bold mt-4">{{ box.name }}</h3>
             <p dir="rtl" class="text-sm text-d4 text-[#2F3136]">۵۰۰+ عدد</p>
+          </swiper-slide>
+          <swiper-slide class="w-12 mx-0 my-0">
           </swiper-slide>
         </swiper-container>
       </div>
