@@ -4,7 +4,7 @@
       Settings
     </button>
  -->
-  <div ref="slider" class="slider-container relative w-full h-[30vh] touch-none"
+  <div ref="slider" class="slider-container relative w-screen h-[30vh] touch-none"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">

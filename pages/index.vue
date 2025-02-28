@@ -2,17 +2,17 @@
   <!-- Wrap everything in a relative container -->
   <BackgroundGradient />
 
-  <div class="px-4 md:px-8 2xl:px-28  relative h-screen  prevent-select  overflow-auto snap-y snap-mandatory ">
+  <div class="px-4 md:px-8 2xl:px-28  relative h-screen  prevent-select  overflow-x-hidden overflow-y-auto snap-y snap-mandatory ">
     <!-- SVG Background Gradient -->
 
 
     <!-- Your Main Content (positioned above the background) -->
-    <div class="snap-start max-h-screen">
+    <div class="snap-start  max-h-screen">
       <Header />
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
-        class="z-10 flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] backdrop-blur-sm"
-        style="left:16px; right:16px; top:68px; padding:64px 24px;">
+        class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] "
+        style="top:68px; padding:64px 24px;">
         <!-- Header Text -->
         <!-- <div class="sm:w-[343px] md:w-[543px] h-[138px] text-center font-IRANSansX font-bold text-[35px] leading-[51px] text-black">
           یه راهکار خلاقانه برای چاپ و بسته‌بندی مورد نیاز شما

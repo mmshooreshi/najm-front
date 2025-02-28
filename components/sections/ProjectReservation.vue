@@ -27,7 +27,7 @@
   </div>
 
   <!-- Pop-up with GSAP in/out animation and click-outside -->
-  <div dir="rtl" class="absolute h-0 top-[30vh]  mx-auto max-w-md inset-0" :class="{ '': !isShown }">
+  <div dir="rtl" class="absolute h-0 top-[30vh] z-10 mx-auto max-w-md inset-0" :class="{ '': !isShown }">
     <transition
       @before-enter="beforeEnter"
       @enter="enter"
@@ -83,22 +83,31 @@ const updatePopupPosition = () => {
     };
   }
 };
+const lastClickTime = ref(0);
+
 const togglePopup = async (event) => {
-  isShown.value = !isShown.value;    
+  const now = Date.now();
 
+  // Prevent clicks within 200ms
+  if (now - lastClickTime.value < 200) {
+    return;
+  }
+  lastClickTime.value = now;
+
+  isShown.value = !isShown.value;
   await nextTick();
-    updatePopupPosition();
-  
+  updatePopupPosition();
 
-  event.stopPropagation(); // Prevent event from bubbling up and triggering reopen
+  event.stopPropagation(); // Prevent event from bubbling up
 };
+
 
 const closePopup = () => {
   if (isShown.value){
   // timeout:
   setTimeout(() => {
     isShown.value = false;
-  }, 500);
+  }, 100);
 }
 };
 
@@ -138,6 +147,51 @@ const productOptions = [
   { label: "محصول ۲", value: "product-2" },
   { label: "محصول ۳", value: "product-3" },
 ];
+
+// **Detect if the target is out of viewport**
+import { onMounted, onUnmounted } from "vue";
+
+const handleScroll = () => {
+  if (!targetRef.value) return;
+
+  const rect = targetRef.value.getBoundingClientRect();
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+
+  // Calculate visibility ratio
+  const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+  const visibleWidth = Math.min(rect.right, windowWidth) - Math.max(rect.left, 0);
+  const targetHeight = rect.height;
+  const targetWidth = rect.width;
+
+  const visibilityRatioH = visibleHeight / targetHeight;
+  const visibilityRatioW = visibleWidth / targetWidth;
+
+  console.log("📏 Target Rect:", rect);
+  console.log("📏 Visible Height Ratio:", visibilityRatioH);
+  console.log("📏 Visible Width Ratio:", visibilityRatioW);
+
+  if (visibilityRatioH < 0.75 || visibilityRatioW < 0.9) {
+    console.log("👀 Target is less than 50% visible. Closing popup.");
+    isShown.value = false;
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("touchstart", handleScroll, { passive: true });
+  window.addEventListener("touchmove", handleScroll, { passive: true });
+  window.addEventListener("wheel", handleScroll, { passive: true });
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("touchstart", handleScroll);
+  window.removeEventListener("touchmove", handleScroll);
+  window.removeEventListener("wheel", handleScroll);
+});
+
+
 </script>
 
 <!-- Local click-outside directive registration -->
