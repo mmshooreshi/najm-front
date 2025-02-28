@@ -9,7 +9,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: 'Najm Printing',
-      link: [{ rel: 'icon', type: 'image/*', href: '/favicon.svg' }]
+      link: [
+        { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
+        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
+        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Bold.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
+        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Medium.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
+        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Light.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }
+      ]
+
     }
   },
   build: {
@@ -41,7 +48,7 @@ export default defineNuxtConfig({
     composable: true
  }, 
 
-  css: ['~/assets/css/main.css', '~/assets/css/shiki.css'],
+  css: ['~/assets/css/fontiran.css','~/assets/css/main.css', '~/assets/css/shiki.css'],
 
   vite: {
     plugins: [
