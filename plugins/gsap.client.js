@@ -2,6 +2,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
+
 import { Draggable } from 'gsap/Draggable';
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -15,6 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       Draggable,
       ScrollTrigger,
       MotionPathPlugin
+      
     },
   };
 });

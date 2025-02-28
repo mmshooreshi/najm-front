@@ -47,6 +47,11 @@ export default defineNuxtConfig({
     scroller: "",  // Now correctly targeting scroll container
     composable: true
  }, 
+ router: {
+  options: {
+    scrollBehaviorType: 'smooth'
+  }
+},
 
   css: ['~/assets/css/fontiran.css','~/assets/css/main.css', '~/assets/css/shiki.css'],
   runtimeConfig: {
@@ -71,6 +76,9 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    optimizeDeps: {
+      include: ["gsap/ScrollSmoother"] // Ensure GSAP plugins are included
+    },
     plugins: [
       require('vite-svg-loader')(),
       ViteComponents({

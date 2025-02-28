@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" @click="$emit('toggle')" class="cursor-pointer hover:bg-[#E5EDED]/100 text-d4 accordion-item rounded-3xl bg-[#E5EDED]/50 transition-all p-6 mt-1" :class="{'!bg-[#E5EDED]/100':isOpen}">
+  <div dir="rtl" @click="$emit('toggle')" class="cursor-pointer hover:bg-[#E5EDED]/100 text-d4 accordion-item rounded-3xl bg-[#E5EDED]/50 transition-all p-6  mt-1" :class="{'!bg-[#E5EDED]/100':isOpen}">
     <div class="header" :class="{'text-[#1B670E]':isOpen}">
       <span>{{ title }}</span>
       <svg class="icon" :class="{ open: isOpen }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
