@@ -1,6 +1,7 @@
 <template>
     <!-- Container is always in the DOM, but initially hidden with opacity-0 -->
     <div
+    dir="rtl"
       :class="{'opacity-0': !ready}"
       class="max-w-screen mx-auto text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-hidden transition-opacity duration-300"
     >
