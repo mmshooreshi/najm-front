@@ -27,7 +27,7 @@
   </div>
 
   <!-- Pop-up with GSAP in/out animation and click-outside -->
-  <div dir="rtl" class="-mt-[650px] h-[400px] z-100 mx-auto max-w-md inset-0" :class="{ '': !isShown }">
+  <div dir="rtl" class="-mt-[650px] h-[600px] z-100 mx-auto max-w-md inset-0" :class="{ '': !isShown }">
     <transition
       @before-enter="beforeEnter"
       @enter="enter"
