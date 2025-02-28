@@ -28,8 +28,8 @@
       <div class="mt-2 mx-auto py-16 px-6">
         <PrintingSection />
 
-        <div class="flex flex-col md:max-w-screen items-center  md:flex-row gap-2 my-8 mx-0">
-          <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%]"/>
+        <div class="flex flex-col md:max-w-screen items-center  md:flex-row gap-8 lg:gap-28 my-8 mx-0 md:mx-8 lg:mx-28">
+          <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%] "/>
           <Accordion />
         </div>
         <Btn class="absolute left-[50%] -translate-x-[50%] text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[20px] sm:px-[90px]" label="با امکانات ما آشنا شو"  :loading="isLoading" @clicked="handleSubmit" />
@@ -37,17 +37,17 @@
       </div>
 
 
-      <div class="overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full my-8 mx-auto px-6 gap-4">
+      <div class="overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full mt-8 mb-4 mx-auto px-0 gap-4">
         <!-- <CarousalDet/> -->
-        <CarouselAutoSlider  class="w-full md:max-w-[350px] lg:max-w-[450px]"/>
+        <CarouselAutoSlider  class="w-full md:max-w-[350px] lg:max-w-lg"/>
 
         <CustomPackage/>
 
       </div>
 
       <div>
-
         <FollowupWheel/>
+
       </div>
       
       <!-- <testing/> -->

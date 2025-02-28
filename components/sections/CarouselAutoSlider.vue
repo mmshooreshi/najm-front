@@ -60,7 +60,7 @@ onMounted(() => {
 <template>
   <div class="relative">
     <ClientOnly>
-      <swiper-container ref="containerRef" class="h-48 md:h-130" :modules="[Autoplay, EffectFade, Pagination]"
+      <swiper-container ref="containerRef" class="h-96 md:h-130" :modules="[Autoplay, EffectFade, Pagination]"
         :loop="true" :autoplay="{ delay: 3500, disableOnInteraction: false }" :effect="'fade'"
         :fadeEffect="{ crossFade: true }" :pagination="{ el: `#pagination-${uniqueId}`, clickable: true }"
         @slideChange="onSlideChange">
@@ -69,7 +69,7 @@ onMounted(() => {
             class="cursor-pointer group relative flex flex-col items-center w-full h-full rounded-3xl overflow-hidden">
             <div class="group-hover:scale-110 duration-1000 w-full transition-all">
 
-              <img :src="slide.image" :alt="slide.alt" class="w-full h-48 md:h-136 object-cover rounded-3xl" />
+              <img :src="slide.image" :alt="slide.alt" class="w-full h-96 md:h-136 object-cover rounded-3xl" />
             </div>
 
 

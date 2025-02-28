@@ -65,7 +65,7 @@ onMounted(() => {
     <ClientOnly>
       <swiper-container
         ref="containerRef"
-        class="h-48 md:h-96"
+        class="h-96 md:h-96 "
         :modules="[Autoplay, EffectFade, Pagination]"
         :loop="true"
         :autoplay="{ delay: 2000, disableOnInteraction: false }"
@@ -78,7 +78,7 @@ onMounted(() => {
           <img
             :src="slide.image"
             :alt="slide.alt"
-            class="w-full h-48 md:h-96 object-cover rounded-3xl"
+            class="w-full h-96 md:h-96 object-cover rounded-3xl"
           />
           <!-- Overlay Button with Chevron Icon -->
           <div class="absolute left-[50%] -translate-x-[50%] bottom-[1%] group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max bg-white py-0 px-2 sm:px-4 sm:py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-[29px]">

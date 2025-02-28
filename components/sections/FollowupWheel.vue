@@ -1,39 +1,43 @@
 <template>
+    <!-- Container is always in the DOM, but initially hidden with opacity-0 -->
     <div
-      dir="rtl"
-      class="max-w-screen text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-visible"
+      :class="{'opacity-0': !ready}"
+      class="max-w-screen mx-auto text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-hidden transition-opacity duration-300"
     >
+
       <!-- Title/description -->
       <div class="flex flex-col items-center gap-2">
         <h2 class="text-[20px] font-extrabold text-center">
           سفارش آسون، پیگیریِ آسون‌تر!
         </h2>
         <p class="text-sm text-center">
-          وضعیت سفارشتو از لحظه‌ی ثبت تا تحویل روی یک تایم‌لاین دقیق ببین! هر مرحله که جلوتر بری، ما بهت اطلاع
-          میدیم.
+          وضعیت سفارشتو از لحظه‌ی ثبت تا تحویل روی یک تایم‌لاین دقیق ببین! هر مرحله که جلوتر بری، ما بهت اطلاع میدیم.
         </p>
       </div>
   
       <!-- Button -->
-      <button
-        class="hover:tracking-wide transition-all mx-auto mt-6 bg-white text-xs text-d4 font-semibold px-6 py-3 rounded-full"
-      >
+      <button class="hover:tracking-wide transition-all mx-auto mt-0 bg-white text-xs text-d4 font-semibold px-6 py-3 rounded-full">
         پیگیری وضعیت سفارش
       </button>
   
       <!-- Main container -->
-      <div class="w-full max-w-md relative mt-8">
+      <div class="relative mt-16 w-full max-w-md" @mouseenter="pauseAnimation" @mouseleave="resumeAnimation">
+        <!-- Inject raw SVG -->
+        <div v-html="circlePathRaw" class="absolute w-full scale-110 opacity-0"></div>
         <img :src="contoursPath" alt="contours" class="w-full h-auto block" />
   
-        <!-- The steps positioned on a circle -->
-        <div class="circle-container">
-          <StepItem
-            v-for="(step, index) in steps"
-            :key="index"
+        <!-- Each step is positioned along the circle -->
+        <div
+          v-for="(step, idx) in steps"
+          :key="idx"
+          ref="stepElements"
+          class="absolute w-10 h-10 flex items-center justify-center"
+          style="top:50%; left:50%; transform: translate(-50%, -50%)"
+        >
+          <FollowupItem
             :icon="step.icon"
             :text="step.text"
-            :style="stepStyle(index)"
-            class="step"
+            :active="steps.length - activeIndex - 1 === idx && !animationPaused"
           />
         </div>
       </div>
@@ -41,8 +45,9 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
-  import StepItem from '@/components/FollowupItem.vue';
+  import { ref, nextTick, onMounted } from 'vue';
+  import FollowupItem from '@/components/FollowupItem.vue';
+  import circlePathRaw from '~/assets/svg/circlePath.svg?raw';
   
   const contoursPath = '/images/sections/followup/contours.svg';
   
@@ -62,59 +67,69 @@
     { icon: supportIcon, text: 'پشتیبانی' },
   ];
   
-  const stepCount = steps.length;
-  const radius = 240; // Radius in pixels (adjust to fit your container)
-  const rotation = ref(0); // This will hold our continuously updated angle
+  const stepElements = ref([]);
+  const activeIndex = ref(0);
+  const ready = ref(false);
+  const duration = 2;
+  let offset = 1;
+  const animationPaused = ref(false);
   
-  let animationFrame: number;
-  const speed = 0.5; // Radians per second
+  function animate() {
+    if (animationPaused.value) return;
   
-  onMounted(() => {
-    let lastTimestamp = performance.now();
-    const update = (timestamp: number) => {
-      const delta = (timestamp - lastTimestamp) / 1000; // Convert to seconds
-      lastTimestamp = timestamp;
-      rotation.value += speed * delta;
-      animationFrame = requestAnimationFrame(update);
-    };
-    animationFrame = requestAnimationFrame(update);
-  });
+    setTimeout(() => {
+      activeIndex.value = (activeIndex.value + 1) % steps.length;
+    }, 500);
   
-  onUnmounted(() => {
-    cancelAnimationFrame(animationFrame);
-  });
+    stepElements.value.forEach((el, i) => {
+      useGSAP().to(el, {
+        duration,
+        ease: 'expo.inOut',
+        motionPath: {
+          path: '#circlePath',
+          align: '#circlePath',
+          alignOrigin: [0.5, 0.5],
+          start: (offset + i) / steps.length,
+          end: (offset + i + 1) / steps.length,
+        },
+      });
+    });
   
-  /**
-   * Computes the style for each step so they follow the circle.
-   * Each step is positioned at an angle equal to:
-   *   (angle per step * index) + (continuous rotation offset)
-   */
-  function stepStyle(index: number) {
-    const anglePerStep = (2 * Math.PI) / stepCount;
-    const angle = anglePerStep * index + rotation.value;
-    return {
-      position: 'absolute',
-      left: `calc(50% + ${Math.cos(angle) * radius}px)`,
-      top: `calc(50% - ${Math.sin(angle) * radius}px)`,
-      transform: 'translate(-50%, -50%)',
-      transition: 'all 0.5s ease',
-    };
+    offset = (offset + 1) % steps.length;
+    setTimeout(animate, duration * 1000);
   }
+  
+  function pauseAnimation() {
+    animationPaused.value = true;
+  }
+  
+  function resumeAnimation() {
+    animationPaused.value = false;
+    animate();
+  }
+  
+  onMounted(async () => {
+    await nextTick();
+  
+    stepElements.value.forEach((el, i) => {
+      useGSAP().set(el, {
+        motionPath: {
+          path: '#circlePath',
+          align: '#circlePath',
+          alignOrigin: [0.5, 0.5],
+          start: i / steps.length,
+        },
+      });
+    });
+  
+    ready.value = true;
+    animate();
+  });
   </script>
   
   <style scoped>
-  .circle-container {
-    position: absolute;
-    width: 0px;
-    height: 0px;
-    background-color: red;
-    top: 100%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-  
-  .step {
-    transition: all 0.5s ease;
+  .opacity-0 {
+    opacity: 0;
   }
   </style>
   

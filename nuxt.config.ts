@@ -12,6 +12,9 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/*', href: '/favicon.svg' }]
     }
   },
+  build: {
+    transpile: ['gsap'],
+  },
 
   modules: [
     '@unocss/nuxt',
@@ -28,13 +31,15 @@ export default defineNuxtConfig({
   features: {
     inlineStyles: false,
   },
-
+  // gsap: {
+  //   composables: true
+  // },
   vgsap: {
     presets: [],
     breakpoint: 768,
-    scroller: '',
+    scroller: "",  // Now correctly targeting scroll container
     composable: true
-  },
+ }, 
 
   css: ['~/assets/css/main.css', '~/assets/css/shiki.css'],
 

@@ -1,8 +1,8 @@
-<svg width="249" height="125" viewBox="0 0 249 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="101" y="101.5" width="47" height="47" rx="23.5" stroke="#FEFDD3" stroke-opacity="0.5"/>
-<rect x="89" y="89.5" width="71" height="71" rx="31.5" stroke="#FEFDD3" stroke-opacity="0.5"/>
-<rect x="73" y="72.5" width="103" height="103" rx="43.5" stroke="#FEFDD3" stroke-opacity="0.5"/>
-<rect x="53" y="52.5" width="143" height="143" rx="63.5" stroke="#FEFDD3" stroke-opacity="0.5"/>
-<rect x="29" y="28.5" width="191" height="191" rx="87.5" stroke="#FEFDD3" stroke-opacity="0.5"/>
-<rect x="1" y="0.5" width="247" height="247" rx="115.5" stroke="#FEFDD3" stroke-opacity="0.5"/>
+<svg viewBox="0 0 249 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="101" y="101.5" width="47" height="47" rx="23.5" stroke="#FEFDD3" stroke-opacity=".5"/>
+  <rect x="89" y="89.5" width="71" height="71" rx="31.5" stroke="#FEFDD3" stroke-opacity=".5"/>
+  <rect x="73" y="72.5" width="103" height="103" rx="43.5" stroke="#FEFDD3" stroke-opacity=".5"/>
+  <rect x="53" y="52.5" width="143" height="143" rx="63.5" stroke="#FEFDD3" stroke-opacity=".5"/>
+  <rect x="29" y="28.5" width="191" height="191" rx="87.5" stroke="#FEFDD3" stroke-opacity=".5"/>
+  <rect x="1" y="0.5" width="247" height="247" rx="115.5" stroke="#FEFDD3" stroke-opacity=".5"/>
 </svg>

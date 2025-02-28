@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CirclePath: typeof import('~icons/ci/rcle-path')['default']
     MinusIcon: typeof import('~icons/mi/nus-icon')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

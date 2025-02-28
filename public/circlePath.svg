@@ -1,0 +1,15 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="202.5 89.5 387 387">
+<path
+  id="circlePath"
+  fill="none"
+  stroke="#000"
+  stroke-width="2"
+  d="
+    M396,283
+    m -193,0
+    a 193,193 0 1,1 386,0
+    a 193,193 0 1,1 -386,0
+  "
+/>
+</svg>
