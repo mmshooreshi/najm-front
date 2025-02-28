@@ -21,7 +21,7 @@
       </button>
   
       <!-- Main container -->
-      <div class="relative mt-16 w-full max-w-md" @mouseenter="pauseAnimation" @mouseleave="resumeAnimation">
+      <div class="relative mt-16 w-full max-w-md" >
         <!-- Inject raw SVG -->
         <div v-html="circlePathRaw" class="absolute w-full scale-110 opacity-0"></div>
         <img :src="contoursPath" alt="contours" class="w-full h-auto block" />
@@ -31,6 +31,7 @@
           v-for="(step, idx) in steps"
           :key="idx"
           ref="stepElements"
+          @mouseenter="pauseAnimation" @mouseleave="resumeAnimation"
           class="absolute w-10 h-10 flex items-center justify-center"
           style="top:50%; left:50%; transform: translate(-50%, -50%)"
         >
