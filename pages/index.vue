@@ -2,7 +2,8 @@
   <!-- Wrap everything in a relative container -->
   <BackgroundGradient />
 
-  <div class="px-4 md:px-8 2xl:px-28  relative h-screen  prevent-select  overflow-x-hidden overflow-y-auto snap-y snap-mandatory ">
+  <div
+    class="px-4 md:px-8 2xl:px-28  relative h-screen  prevent-select  overflow-x-hidden overflow-y-auto snap-y snap-mandatory ">
     <!-- SVG Background Gradient -->
 
 
@@ -29,19 +30,36 @@
     <div class="snap-start  mt-2 mx-auto py-16 px-6 ">
       <PrintingSection />
     </div>
-    <div class="snap-start snap-y snap-mandatory h-max pb-12">
+    <div class="snap-y snap-mandatory  h-max pt-4">
+        <div
+          class="snap-start pt-8 md:pt-0 grid grid-cols-1 md:grid-cols-7  md:grid-rows-2 md:gap-2  my-8 mx-0 md:mx-0 lg:mx-28 items-start">
+          <!-- Left Section (Auto-fading Carousel) -->
+          <div class="w-full  h-full row-span-1 md:row-span-2 md:col-span-2">
+            <CarouselAutoFader class="w-full h-full" />
+          </div>
+          <!-- Center Section (Accordion) -->
+          <div class="snap-start pt-8 md:pt-0 w-full row-span-1 md:row-span-2 col-span-3">
+            <Accordion class="" />
+          </div>
 
-      <div class=" flex flex-col md:max-w-screen items-center  md:flex-row gap-8 lg:gap-28 my-8 mx-0 md:mx-8 lg:mx-28">
-        <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%] pt-8" />
-        <Accordion class="snap-start pt-8"/>
-      </div>
-      <Btn
-        class="absolute left-[50%] -translate-x-[50%] text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px]  px-[20px] sm:px-[90px]"
-        label="با امکانات ما آشنا شو" :loading="isLoading" @clicked="handleSubmit" />
+
+          <!-- Right Section (Two stacked boxes inside a flex container) -->
+          <div class="snap-end flex justify-center items-center h-full flex-col gap-2 row-span-1 md:row-span-2 md:col-span-2 pb-8">
+            <div class="bg-[#A5E4EB] w-full h-full  min-h-56 p-6 rounded-3xl">.</div>
+            <div class="bg-[#DAEBD0] w-full h-full min-h-56  p-6 rounded-3xl">.</div>
+          </div>
+
+
+
+        </div>
 
     </div>
 
-
+    <div class="mx-auto relative w-max ">
+    <Btn
+      class="text-nowrap text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px]  px-[20px] sm:px-[90px]"
+      label="با امکانات ما آشنا شو" :loading="isLoading" @clicked="handleSubmit" />
+    </div>
     <div
       class="snap-start pt-8 overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full mt-0 mb-4 mx-auto px-0 gap-4">
       <!-- <CarousalDet/> -->

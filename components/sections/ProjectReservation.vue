@@ -149,7 +149,6 @@ const productOptions = [
 ];
 
 // **Detect if the target is out of viewport**
-import { onMounted, onUnmounted } from "vue";
 
 const handleScroll = () => {
   if (!targetRef.value) return;

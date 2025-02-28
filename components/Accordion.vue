@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full accordionp-0">
+    <div class="w-full accordion p-0">
       <AccordionItem
         v-for="(item, index) in items"
         :key="index"
