@@ -52,7 +52,7 @@
           v-for="(step, index) in steps"
           :key="index"
           ref="stepRefs"
-          class="absolute w-10 h-10 rounded-full bg-white shadow
+          class="absolute w-10 h-10 rounded-full bg-white/0 shadow
                  flex items-center justify-center text-[10px] font-semibold
                  transition-all duration-300"
           :class="{
@@ -91,7 +91,13 @@
   const steps = [
     { icon: orderIcon, text: 'ثبت سفارش' },
     { icon: designIcon, text: 'طراحی' },
+    // { icon: productionIcon, text: 'تولید' },
+//   { icon: warehouseIcon, text: 'انبار' },
+//   { icon: truckIcon, text: 'ارسال' },
+//   { icon: supportIcon, text: 'پشتیبانی' },
+
   ]
+  
   
   // Refs to each step DOM element
   const stepRefs = ref([])
@@ -155,19 +161,7 @@
    * Figures out which offset is closest to 0.25 (the top of this circle).
    */
   function updateActiveIndex() {
-    let bestDist = 999
-    let bestI = 0
-    progresses.forEach((p, i) => {
-      // distance from 0.25
-      let dist = Math.abs(p - 0.25)
-      // handle wrap-around
-      if (dist > 0.5) dist = 1 - dist
-      if (dist < bestDist) {
-        bestDist = dist
-        bestI = i
-      }
-    })
-    activeIndex.value = bestI
+    activeIndex.value = (activeIndex.value + 1)%steps.length
   }
   
   // On mount, place steps, then move+stop every 1 second

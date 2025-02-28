@@ -3,6 +3,7 @@
   <div class="relative bg-gray/10 min-h-screen w-screen prevent-select">
     <!-- SVG Background Gradient -->
     <BackgroundGradient />
+    
 
     <!-- Your Main Content (positioned above the background) -->
     <div class="mx-4 md:mx-8 2xl:mx-28 relative ">
