@@ -1,10 +1,13 @@
 <template>
-    <div class="w-full accordion">
+    <div class="w-full accordionp-0">
       <AccordionItem
         v-for="(item, index) in items"
         :key="index"
         :title="item.title"
         :content="item.content"
+        :isOpen="openIndex === index"
+        @toggle="() => openIndex = openIndex === index ? null : index"
+
       />
     </div>
   </template>
@@ -12,7 +15,8 @@
   <script setup>
   import AccordionItem from "./AccordionItem.vue";
   import { ref } from "vue";
-  
+  const openIndex = ref(null); // Track which item is open
+
   const items = ref([
     { title: "مشاوره و برنامه‌ریزی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
     { title: "طراحی و فرم‌بندی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
@@ -28,7 +32,7 @@
   .accordion {
     margin: auto;
     /* border: 1px solid #ddd; */
-    border-radius: 8px;
+    /* border-radius: 8px; */
     overflow: hidden;
   }
   </style>

@@ -98,7 +98,7 @@ const closePopup = () => {
   // timeout:
   setTimeout(() => {
     isShown.value = false;
-  }, 100);
+  }, 500);
 }
 };
 

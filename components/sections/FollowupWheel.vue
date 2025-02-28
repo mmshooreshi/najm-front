@@ -59,12 +59,12 @@
   import supportIcon from '~/assets/icons/FollowUp/support-step-icon.svg';
   
   const steps = [
-    { icon: orderIcon, text: 'ثبت سفارش' },
-    { icon: designIcon, text: 'طراحی' },
-    { icon: productionIcon, text: 'تولید' },
-    { icon: warehouseIcon, text: 'انبار' },
-    { icon: truckIcon, text: 'ارسال' },
-    { icon: supportIcon, text: 'پشتیبانی' },
+      { icon: supportIcon, text: '۶. پشتیبانی' },
+      { icon: truckIcon, text: '۵. ارسال' },
+      { icon: warehouseIcon, text: '۴. انبار' },
+      { icon: productionIcon, text: '۳. تولید' },
+      { icon: designIcon, text: '۲. طراحی' },
+      { icon: orderIcon, text: '۱. ثبت سفارش' },
   ];
   
   const stepElements = ref([]);

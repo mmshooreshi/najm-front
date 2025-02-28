@@ -1,24 +1,12 @@
 <template>
-  <div dir="rtl" class="text-d4 accordion-item">
-    <div class="header" @click="toggle" :class="{'text-[#1B670E]':isOpen}">
+  <div dir="rtl" @click="$emit('toggle')" class="cursor-pointer hover:bg-[#E5EDED]/100 text-d4 accordion-item rounded-3xl bg-[#E5EDED]/50 transition-all p-6 mt-1" :class="{'!bg-[#E5EDED]/100':isOpen}">
+    <div class="header" :class="{'text-[#1B670E]':isOpen}">
       <span>{{ title }}</span>
-      <svg
-        class="icon"
-        :class="{ open: isOpen }"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg class="icon" :class="{ open: isOpen }" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </div>
-    <transition
-      @enter="enter"
-      @after-enter="afterEnter"
-      @leave="leave"
-      @after-leave="afterLeave"
-    >
-      <!-- v-show controls whether the content is rendered -->
+    <transition @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterLeave">
       <div v-show="isOpen" ref="contentDiv" class="content">
         <p>{{ content }}</p>
       </div>
@@ -27,43 +15,32 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
+import { ref } from "vue";
 
-const props = defineProps({
+defineProps({
   title: String,
-  content: String
+  content: String,
+  isOpen: Boolean // Receive open state from parent
 });
 
-const isOpen = ref(false);
-const contentDiv = ref(null);
-
-const toggle = () => {
-  isOpen.value = !isOpen.value;
-};
-
+// Transition effects remain the same
 const enter = (el) => {
-  // start from zero height and opacity
   el.style.height = "0px";
   el.style.opacity = "0";
-  // force reflow so the starting style is applied
   el.offsetHeight;
-  const height = el.scrollHeight;
   el.style.transition = "height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease";
-  el.style.height = height + "px";
+  el.style.height = el.scrollHeight + "px";
   el.style.opacity = "1";
 };
 
 const afterEnter = (el) => {
-  // clear inline height so that it can adjust if content changes
   el.style.height = "auto";
   el.style.transition = "";
 };
 
 const leave = (el) => {
-  // set height to current pixel value before collapsing
   el.style.height = el.scrollHeight + "px";
   el.style.opacity = "1";
-  // force reflow to register the current height
   el.offsetHeight;
   el.style.transition = "height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease";
   el.style.height = "0px";
@@ -75,6 +52,7 @@ const afterLeave = (el) => {
 };
 </script>
 
+
 <style scoped>
 
 .accordion-item {
@@ -84,7 +62,7 @@ const afterLeave = (el) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 0px;
   /* background: #f8f8f8; */
   cursor: pointer;
   font-weight: bold;
