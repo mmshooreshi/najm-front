@@ -4,7 +4,6 @@
       :class="{'opacity-0': !ready}"
       class="max-w-screen mx-auto text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-hidden transition-opacity duration-300"
     >
-
       <!-- Title/description -->
       <div class="flex flex-col items-center gap-2">
         <h2 class="text-[20px] font-extrabold text-center">
@@ -21,7 +20,7 @@
       </button>
   
       <!-- Main container -->
-      <div class="relative mt-16 w-full max-w-md" >
+      <div class="relative mt-16 w-full max-w-md">
         <!-- Inject raw SVG -->
         <div v-html="circlePathRaw" class="absolute w-full scale-110 opacity-0"></div>
         <img :src="contoursPath" alt="contours" class="w-full h-auto block" />
@@ -31,14 +30,13 @@
           v-for="(step, idx) in steps"
           :key="idx"
           ref="stepElements"
-          @mouseenter="pauseAnimation" @mouseleave="resumeAnimation"
           class="absolute w-10 h-10 flex items-center justify-center"
           style="top:50%; left:50%; transform: translate(-50%, -50%)"
         >
           <FollowupItem
             :icon="step.icon"
             :text="step.text"
-            :active="steps.length - activeIndex - 1 === idx && !animationPaused"
+            :active="steps.length - activeIndex - 1 === idx"
           />
         </div>
       </div>
@@ -71,13 +69,12 @@
   const stepElements = ref([]);
   const activeIndex = ref(0);
   const ready = ref(false);
+  
   const duration = 2;
   let offset = 1;
-  const animationPaused = ref(false);
   
   function animate() {
-    if (animationPaused.value) return;
-  
+    // Update activeIndex with a 500ms delay relative to animation start
     setTimeout(() => {
       activeIndex.value = (activeIndex.value + 1) % steps.length;
     }, 500);
@@ -100,18 +97,11 @@
     setTimeout(animate, duration * 1000);
   }
   
-  function pauseAnimation() {
-    animationPaused.value = true;
-  }
-  
-  function resumeAnimation() {
-    animationPaused.value = false;
-    animate();
-  }
-  
   onMounted(async () => {
+    // Wait for the DOM to update so that stepElements are available
     await nextTick();
   
+    // Set initial positions for each step element immediately with GSAP
     stepElements.value.forEach((el, i) => {
       useGSAP().set(el, {
         motionPath: {
@@ -123,6 +113,7 @@
       });
     });
   
+    // Once GSAP has positioned everything, reveal the container
     ready.value = true;
     animate();
   });
