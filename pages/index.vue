@@ -22,7 +22,7 @@
         <ImagesFloating />
       </div>
 
-
+      <!-- <popDiv/> -->
       <ProjectReservation/>
 
 
@@ -79,6 +79,7 @@ import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
 import CarouselAutoFader from '~/components/sections/CarouselAutoFader.vue'
 import CarouselAutoSlider from '~/components/sections/CarouselAutoSlider.vue'
+import popDiv from '~/components/popDiv.vue'
 
 import CustomPackage from '~/components/sections/CustomPackage.vue'
 import CarousalDet from '~/components/sections/CarousalDet.vue'
