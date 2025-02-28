@@ -1,13 +1,14 @@
 <template>
   <!-- Wrap everything in a relative container -->
-  <div class="relative bg-gray/10 min-h-screen w-screen prevent-select">
+  <BackgroundGradient />
+
+  <div class="px-4 md:px-8 2xl:px-28  relative h-screen  prevent-select  overflow-auto snap-y snap-mandatory ">
     <!-- SVG Background Gradient -->
-    <BackgroundGradient />
     
 
     <!-- Your Main Content (positioned above the background) -->
-    <div class="mx-4 md:mx-8 2xl:mx-28 relative ">
-      <Header />
+    <div  class="snap-start">
+    <Header/>
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
         class="z-10 flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] backdrop-blur-sm"
@@ -25,11 +26,11 @@
       <!-- <popDiv/> -->
       <ProjectReservation/>
 
-
-      <div class="mt-2 mx-auto py-16 px-6">
+    </div>  
+      <div class="snap-start mt-2 mx-auto py-16 px-6" >
         <PrintingSection />
 
-        <div class="flex flex-col md:max-w-screen items-center  md:flex-row gap-8 lg:gap-28 my-8 mx-0 md:mx-8 lg:mx-28">
+        <div class=" flex flex-col md:max-w-screen items-center  md:flex-row gap-8 lg:gap-28 my-8 mx-0 md:mx-8 lg:mx-28">
           <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%] "/>
           <Accordion />
         </div>
@@ -38,15 +39,15 @@
       </div>
 
 
-      <div class="overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full mt-8 mb-4 mx-auto px-0 gap-4">
+      <div class="snap-start pt-8 overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full mt-8 mb-4 mx-auto px-0 gap-4">
         <!-- <CarousalDet/> -->
         <CarouselAutoSlider  class="w-full md:max-w-[350px] lg:max-w-lg"/>
 
-        <CustomPackage/>
+        <CustomPackage class=""/>
 
       </div>
 
-      <div>
+      <div class="pb-8 snap-end">
         <FollowupWheel/>
 
       </div>
@@ -64,7 +65,6 @@
           <!-- Content for column {{ n }} -->
         </div>
       </div>
-    </div>
 
 
   </div>

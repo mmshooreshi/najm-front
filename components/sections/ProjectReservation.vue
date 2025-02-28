@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-0 -mb-28 max-w-md mx-auto animate-pulse-alt" dir="rtl">
+  <div class="h-[400px] mt-0 -mb-28 max-w-md mx-auto animate-pulse-alt" dir="rtl">
     <!-- Target Icon -->
     <div ref="targetRef" class="group relative cursor-pointer  -mt-[50px] fixed -z-10" @click="togglePopup" >
       <div class="w-full mx-auto" dir="rtl">
@@ -18,8 +18,8 @@
           <rect x="0.5" y="0.5" width="247" height="247" rx="115.5" stroke="#FEFDD3" stroke-opacity="0.1"/>
         </svg>
       </div>
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="z-10 w-10 h-10 bg-[#EAFED3] group-active:bg-[#014439] flex items-center justify-center rounded-full group-hover:scale-150 transition-transform duration-300 ease-in-out">
+      <div class="z-10 absolute inset-0 flex items-center justify-center">
+        <div class="w-10 h-10 bg-[#EAFED3] group-active:bg-[#014439] flex items-center justify-center rounded-full group-hover:scale-150 transition-transform duration-300 ease-in-out">
           <TargetIcon />
         </div>
       </div>
@@ -27,7 +27,7 @@
   </div>
 
   <!-- Pop-up with GSAP in/out animation and click-outside -->
-  <div dir="rtl" class="-mt-[650px] h-[600px] z-100 mx-auto max-w-md inset-0" :class="{ '': !isShown }">
+  <div dir="rtl" class="absolute h-0 top-[30vh]  mx-auto max-w-md inset-0" :class="{ '': !isShown }">
     <transition
       @before-enter="beforeEnter"
       @enter="enter"
@@ -83,15 +83,23 @@ const updatePopupPosition = () => {
     };
   }
 };
+const togglePopup = async (event) => {
+  isShown.value = !isShown.value;    
 
-const togglePopup = async () => {
-  isShown.value = !isShown.value;
   await nextTick();
-  updatePopupPosition();
+    updatePopupPosition();
+  
+
+  event.stopPropagation(); // Prevent event from bubbling up and triggering reopen
 };
 
 const closePopup = () => {
-  isShown.value = false;
+  if (isShown.value){
+  // timeout:
+  setTimeout(() => {
+    isShown.value = false;
+  }, 100);
+}
 };
 
 // GSAP animation hooks for the transition
