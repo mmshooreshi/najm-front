@@ -29,7 +29,7 @@
     <div class="snap-start  mt-2 mx-auto py-16 px-6 ">
       <PrintingSection />
     </div>
-    <div class="snap-start py-8">
+    <div class=" py-8">
 
       <div class=" flex flex-col md:max-w-screen items-center  md:flex-row gap-8 lg:gap-28 my-8 mx-0 md:mx-8 lg:mx-28">
         <CarouselAutoFader class="w-[100%] md:w-[50%] h-[100%] " />
