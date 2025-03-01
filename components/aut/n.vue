@@ -9,14 +9,14 @@
     </p>
   </div>
 
-  <div class="flex flex-col md:flex-row w-[70%] lg:w-[100%] h-auto gap-4 p-4">
+  <div class="flex flex-col md:flex-row w-full h-auto gap-4 p-4">
     <!-- Left Sidebar - Calendar Section -->
-    <div class="w-screen md:w-[15%] h-auto p-0 bg-cover rounded-[25px]">
+    <div class="w-screen md:w-[20%] h-auto p-0 bg-cover rounded-[25px]">
       <CalendarTypesComponent />
     </div>
 
     <!-- Right Main Content -->
-    <div class="w-screen md:w-[60%] h-auto flex flex-col gap-4">
+    <div class="w-screen md:w-[70%] h-auto flex flex-col gap-4">
       <OfficePackageComponent />
     </div>
   </div>
