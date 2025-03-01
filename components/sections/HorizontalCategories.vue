@@ -1,11 +1,11 @@
 <template>
-    <div dir="rtl" class="flex flex-col items-start mt-6 py-6 w-screen max-w-screen  scrollbar-hide overflow-x-auto mx-0 -mx-8 px-8 ">
+    <div dir="rtl" class="flex flex-col items-start mt-6 py-6 w-screen max-w-screen overflow-x-auto absolute scrollbar-hide  -mx-8 px-8  -translate-x-4 md:translate-x-0">
       <!-- Scrollable Container -->
       <div class="flex overflow-visible w-full whitespace-nowrap w-max px-0 scrollbar-hide gap-1">
         <button 
           v-for="(item, index) in categories" 
           :key="index" 
-          class="transition-all flex tex-demibold text-d4 text-xs justify-center items-center px-4 py-2 border border-[#C2D3D1] bg-white/50 rounded-full min-w-[120px] cursor-pointer hover:bg-gray-200 transition"
+          class="transition-all flex tex-demibold text-d4 text-xs justify-center items-center px-4 py-4 border border-[#C2D3D1] bg-white/50 rounded-full min-w-[120px] cursor-pointer hover:bg-gray-200 transition"
           :class="{ 'font-bold !bg-gray/20': selectedCategory === item }"
           @click="selectedCategory = item"
         >

@@ -1,19 +1,20 @@
 <template>
-  <div class="relative p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0">
+  <div class="relative p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0 mt-26">
     <ClientOnly>
       <div class="mx-0 px-0 overflow-visible">
         <swiper-container
+        class="overflow-visible"
           ref="containerRefN"
           :init="true"
           :modules="[Autoplay]"
           :slides-per-view="'auto'"
           :space-between="16"
-          :autoplay="{ delay: 3000, disableOnInteraction: false }"
+          :autoplay="{ delay: 900, disableOnInteraction: false }"
         >
           <swiper-slide
             v-for="(box, index) in boxes"
             :key="index"
-            class="w-64 mx-0 my-0"
+            class="w-64 mx-0 my-0 overflow-visible scale-95 transition-transform hover:scale-100"
             @click="selectedBox = index"
           >
             <div
@@ -62,12 +63,19 @@ const selectedBox = ref<number | null>(1);
 
 // Define the Swiper instance
 const boxes = ref([
-  { name: "باکس قفلی", image: "/images/sections/swiperMain/P1.jpg" },
-  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/P2.jpg" },
+  { name: "باکس قفلی", image: "/images/sections/swiperMain/a1.png" },
+  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/a3.png" },
   { name: "باکس دسته‌دار", image: "/images/sections/swiperMain/P3.jpg" },
   { name: "باکس ساکی", image: "/images/sections/swiperMain/P4.jpg" },
-  { name: "باکس هدیه", image: "/images/sections/swiperMain/P5.jpg" },
-  { name: "باکس کوچک", image: "/images/sections/swiperMain/P6.jpg" }
+  { name: "باکس هدیه", image: "/images/sections/swiperMain/a2.png" },
+  { name: "باکس کوچک", image: "/images/sections/swiperMain/P6.jpg" },
+  { name: "باکس قفلی", image: "/images/sections/swiperMain/a1.png" },
+  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/a3.png" },
+  { name: "باکس دسته‌دار", image: "/images/sections/swiperMain/P3.jpg" },
+  { name: "باکس ساکی", image: "/images/sections/swiperMain/P4.jpg" },
+  { name: "باکس هدیه", image: "/images/sections/swiperMain/a2.png" },
+  { name: "باکس کوچک", image: "/images/sections/swiperMain/a4.png" }
+
 ]);
 
 onMounted(() => {
@@ -81,24 +89,7 @@ onMounted(() => {
   overflow: visible;
 }
 
-/* Snapping effect */
-.swiper-slide {
-  scroll-snap-align: center;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
 
-/* Smooth hover effect */
-.swiper-slide:hover {
-  transform: scale(1.02);
-  transition: transform 0.2s ease-in-out;
-}
-
-/* Hide scrollbar */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
 
 /* Pagination dots */
 .swiper-pagination {

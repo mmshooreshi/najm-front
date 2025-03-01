@@ -19,7 +19,7 @@
         </svg>
       </div>
       <div class="z-10 absolute inset-0 flex items-center justify-center">
-        <div class="w-10 h-10 bg-[#EAFED3] group-active:bg-[#014439] flex items-center justify-center rounded-full group-hover:scale-150 transition-transform duration-300 ease-in-out">
+        <div class="w-10 mt-36 h-10 bg-[#EAFED3] group-active:bg-[#014439] flex items-center justify-center rounded-full group-hover:scale-150 transition-transform duration-300 ease-in-out">
           <TargetIcon />
         </div>
       </div>
@@ -27,7 +27,7 @@
   </div>
 
   <!-- Pop-up with GSAP in/out animation and click-outside -->
-  <div dir="rtl" class="absolute h-0 top-[30vh] z-10 mx-auto max-w-md inset-0" :class="{ '': !isShown }">
+  <div dir="rtl" class="mx-8 absolute h-0 top-[30vh] z-10 max-w-md inset-0" :class="{ '': !isShown }">
     <transition
       @before-enter="beforeEnter"
       @enter="enter"

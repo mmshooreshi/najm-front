@@ -1,5 +1,6 @@
 <template>
-    <div class="w-full accordion p-0">
+      <div class="w-full accordion p-0 flex flex-col h-full gap-1">
+        
       <AccordionItem
         v-for="(item, index) in items"
         :key="index"
