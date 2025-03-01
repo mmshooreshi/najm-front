@@ -30,6 +30,7 @@
     <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-6 ">
       <PrintingSection />
     </div>
+
     <div class="snap-start snap-y snap-mandatory  overflow-y-hidden md:pt-8">
       <div
         class=" pt-4 md:pt-0 grid grid-cols-1 md:grid-cols-7  md:grid-rows-2 md:gap-2 h-full my-8 mx-0 md:mx-0  items-start">
@@ -61,6 +62,11 @@
 
     </div>
 
+
+    <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-6 ">
+      <nccc />
+    </div>
+
     <div dir="rtl" class="snap-start m-2 pt-8 mb-12 overflow-visible">
       <div class="flex flex-col md:flex-row justify-between gap-4 md:gap-0">
         <h1 class="text-3xl font-bold text-d4 md:max-w-[30%]">چیزی فراتر از یک جعبه!</h1>
@@ -76,10 +82,17 @@
       <ProductDesignCard class="flex-grow" />
     </div>
 
+    <div dir="rtl" class="my-8 mx-8 flex flex-col md:flex-row justify-between gap-4 md:gap-0">
+        <h1 class="text-3xl font-bold text-d4 md:max-w-[30%]">پیدا کردن یک چاپگر آسان است، اما پیدا کردن یک شریک چاپ سخت است.</h1>
+        <p class="text-md md:text-xl text-justify md:max-w-[470px]">شما لایق شریکی هستید که رسیدن به اهدافتان را آسان کند
+          از سبک های ساده تا بسیار پیچیده، ما طیف کاملی از محصولات و قابلیت ها را برای برآوردن هر نیازی داریم.
+        </p>
+      </div>
 
     <div
       class="snap-start pt-4 overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full mt-0 mb-4 mx-auto px-0 gap-4">
       <!-- <CarousalDet/> -->
+
       <CarouselAutoSlider class="w-full md:max-w-[350px] lg:max-w-lg" />
 
       <CustomPackage class="" />
@@ -116,6 +129,8 @@ import Header from '~/components/Header.vue'
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
+import nccc from '~/components/aut/n.vue'
+
 import CarouselAutoFader from '~/components/sections/CarouselAutoFader.vue'
 import CarouselAutoSlider from '~/components/sections/CarouselAutoSlider.vue'
 import popDiv from '~/components/popDiv.vue'

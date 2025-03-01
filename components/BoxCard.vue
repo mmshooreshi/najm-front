@@ -1,5 +1,5 @@
 <template>
-  <div class="relative p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0 mt-26">
+  <div class="relative p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0 mt-28">
     <ClientOnly>
       <div class="mx-0 px-0 overflow-visible">
         <swiper-container
