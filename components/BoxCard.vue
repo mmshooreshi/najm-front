@@ -12,7 +12,7 @@
           :autoplay="{ delay: 900, disableOnInteraction: false }"
         >
           <swiper-slide
-            v-for="(box, index) in boxes"
+            v-for="(box, index) in filteredBoxes"
             :key="index"
             class="w-64 mx-0 my-0 overflow-visible scale-95 transition-transform hover:scale-100"
             @click="selectedBox = index"
@@ -57,26 +57,39 @@ import { ref, onMounted } from "vue";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Autoplay } from "swiper/modules";
+import { useCategoryStore } from "@/store/category";
 
 const containerRefN = ref(null);
 const selectedBox = ref<number | null>(1);
 
 // Define the Swiper instance
 const boxes = ref([
-  { name: "باکس قفلی", image: "/images/sections/swiperMain/a1.png" },
-  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/a3.png" },
-  { name: "باکس دسته‌دار", image: "/images/sections/swiperMain/P3.jpg" },
-  { name: "باکس ساکی", image: "/images/sections/swiperMain/P4.jpg" },
-  { name: "باکس هدیه", image: "/images/sections/swiperMain/a2.png" },
-  { name: "باکس کوچک", image: "/images/sections/swiperMain/P6.jpg" },
-  { name: "باکس قفلی", image: "/images/sections/swiperMain/a1.png" },
-  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/a3.png" },
-  { name: "باکس دسته‌دار", image: "/images/sections/swiperMain/P3.jpg" },
-  { name: "باکس ساکی", image: "/images/sections/swiperMain/P4.jpg" },
-  { name: "باکس هدیه", image: "/images/sections/swiperMain/a2.png" },
-  { name: "باکس کوچک", image: "/images/sections/swiperMain/a4.png" }
-
+  { name: "باکس قفلی", image: "/images/sections/swiperMain/a1.png", category: "صنعت،تکنولوژی و اکوسیستم" },
+  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/a3.png", category: "آرایشی و بهداشتی" },
+  { name: "باکس دسته‌دار", image: "/images/sections/swiperMain/P3.jpg", category: "پزشکی و دارویی" },
+  { name: "باکس ساکی", image: "/images/sections/swiperMain/P4.jpg", category: "صنعت،تکنولوژی و اکوسیستم" },
+  { name: "باکس هدیه", image: "/images/sections/swiperMain/a2.png", category: "هدیه و مناسبتی" },
+  { name: "باکس کوچک", image: "/images/sections/swiperMain/P6.jpg", category: "فناوری و الکترونیک" },
+  { name: "باکس قفلی", image: "/images/sections/swiperMain/a1.png", category: "غذا، نوشیدنی و رستوران" },
+  { name: "باکس کیبوردی", image: "/images/sections/swiperMain/a3.png", category: "آرایشی و بهداشتی" },
+  { name: "باکس دسته‌دار", image: "/images/sections/swiperMain/P3.jpg", category: "پزشکی و دارویی" },
+  { name: "باکس ساکی", image: "/images/sections/swiperMain/P4.jpg", category: "صنعت،تکنولوژی و اکوسیستم" },
+  { name: "باکس هدیه", image: "/images/sections/swiperMain/a2.png", category: "هدیه و مناسبتی" },
+  { name: "باکس کوچک", image: "/images/sections/swiperMain/a4.png", category: "فناوری و الکترونیک" }
 ]);
+
+const categoryStore = useCategoryStore();
+const filteredBoxes = computed(() => {
+  return categoryStore.selectedCategory === "همه"
+    ? boxes.value
+    : boxes.value.filter(box => box.category === categoryStore.selectedCategory);
+});
+
+
+
+
+
+
 
 onMounted(() => {
   console.log("Swiper initialized");

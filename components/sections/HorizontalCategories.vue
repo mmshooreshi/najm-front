@@ -5,9 +5,10 @@
         <button 
           v-for="(item, index) in categories" 
           :key="index" 
-          class="transition-all flex tex-demibold text-d4 text-xs justify-center items-center px-4 py-4 border border-[#C2D3D1] bg-white/50 rounded-full min-w-[120px] cursor-pointer hover:bg-gray-200 transition"
-          :class="{ 'font-bold !bg-gray/20': selectedCategory === item }"
-          @click="selectedCategory = item"
+          class="transition-all flex tex-demibold text-d4 text-xs justify-center items-center px-4 py-4 border border-[#C2D3D1] bg-white/50 rounded-full min-w-[60px] cursor-pointer hover:bg-gray-200 transition"
+          :class="{ 'font-bold !bg-gray/20': categoryStore.selectedCategory === item }"
+          @click="categoryStore.setCategory(item)"
+
         >
           {{ item }}
         </button>
@@ -17,10 +18,12 @@
   
   <script setup lang="ts">
   import { ref } from "vue";
-  
+  import { useCategoryStore } from "@/store/category";
+
   // Define reactive state
   const selectedCategory = ref<string>("صنعت،تکنولوژی و اکوسیستم");
   const categories = ref<string[]>([
+    "همه",
     "غذا، نوشیدنی و رستوران",
     "آرایشی و بهداشتی",
     "پزشکی و دارویی",
@@ -30,6 +33,8 @@
     "هدیه و مناسبتی",
     "بازاریابی و عمومی"
   ]);
+  const categoryStore = useCategoryStore();
+
   </script>
   
   <style scoped>

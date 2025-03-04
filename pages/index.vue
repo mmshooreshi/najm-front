@@ -67,7 +67,7 @@
       <nccc />
     </div>
 
-    <div dir="rtl" class="snap-start m-2 pt-8 mb-12 overflow-visible">
+    <div dir="rtl" class="snap-start m-2 pt-8 mb-12 overflow-visible mx-8">
       <div class="flex flex-col md:flex-row justify-between gap-4 md:gap-0">
         <h1 class="text-3xl font-bold text-d4 md:max-w-[30%]">چیزی فراتر از یک جعبه!</h1>
         <p class="text-md md:text-xl text-justify md:max-w-[470px]">هر سبک جعبه برای نمایش محصول منحصر به فرد شما طراحی

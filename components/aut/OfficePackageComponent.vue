@@ -24,19 +24,19 @@
       </div>
   
       <!-- Custom Package Section -->
-      <div class="flex flex-row gap-4 h-[264px]">
+      <div class="flex flex-col md:flex-row gap-4 md:h-[264px]">
         <!-- Left Package Info -->
-        <div class="w-[264px] bg-[#e4edf0] rounded-[25px] overflow-hidden p-0 " >
+        <div class="w-full md:w-[33%] bg-[#e4edf0] rounded-[25px] overflow-hidden p-0 content-center" >
           <img src="/images/aut/Frame 26.png" class="object-cover p-0" alt="frame" />
 
           
         </div>
   
         <!-- Right Package Info -->
-        <div dir="rtl" class="flex-1 bg-[#e4edf0] rounded-[25px] p-6">
-          <div class="flex flex-col gap-[50px]">
+        <div dir="rtl" class="flex-1 bg-[#e4edf0] rounded-[25px] p-6 w-full overflow-hidden">
+          <div class="flex flex-col justify-between h-full gap-4">
             <div class="flex flex-col gap-6">
-              <h2 class="text-2xl font-extrabold">پکیج سفارشی خودتو بساز!</h2>
+              <h2 class="text-xl lg:text-2xl font-extrabold">پکیج سفارشی خودتو بساز!</h2>
               <p class="text-sm font-medium">
                 یه پکیج آماده انتخاب کن یا به اونا آیتم‌های جدید اضافه کن، به ازای هر آیتم، تخفیف بیشتری روی اون پکیج بگیر! هرچقدر پکیجت بزرگ‌تر بشه، قیمتش کمتر میشه.
               </p>
