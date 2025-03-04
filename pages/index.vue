@@ -103,20 +103,22 @@
       <FollowupWheel />
 
     </div>
-
+    <div class="snap-start pb-8">
+    <FooterLayout />
+    </div>
     <!-- <testing/> -->
 
-
+<!-- 
 
     <div class="h-[1000px] w-full">
       .
-    </div>
+    </div> -->
     <!-- Grid Layout -->
-    <div class="absolute grid grid-cols-4 gap-4 md:grid-cols-8 lg:grid-cols-12 h-screen">
-      <div v-for="n in columns" :key="n" class="bg-red-200/0 text-center h-full">
+    <!-- <div class="absolute grid grid-cols-4 gap-4 md:grid-cols-8 lg:grid-cols-12 h-screen">
+      <div v-for="n in columns" :key="n" class="bg-red-200/0 text-center h-full"> -->
         <!-- Content for column {{ n }} -->
-      </div>
-    </div>
+      <!-- </div>
+    </div> -->
 
 
   </div>
@@ -126,6 +128,9 @@
 import { computed } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import Header from '~/components/Header.vue'
+import Footer from '~/components/Footer.vue'
+import FooterLayout from '~/components/FooterLayout.vue'
+
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
