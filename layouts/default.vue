@@ -12,7 +12,9 @@
         <slot /> <!-- This is where your page content goes -->
       </div>
   
+      <div class="snap-start">
       <FooterLayout />
+    </div>
     </div>
   </template>
   

@@ -1,15 +1,7 @@
 <template>
-  <!-- Wrap everything in a relative container -->
-  <BackgroundGradient />
-
-  <div
-    class="px-4 md:px-8 2xl:px-28  relative h-screen  prevent-select  overflow-x-visible overflow-y-auto snap-y snap-mandatory ">
-    <!-- SVG Background Gradient -->
-
 
     <!-- Your Main Content (positioned above the background) -->
     <div class="snap-start  max-h-screen">
-      <Header />
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
       <div
         class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px] "
@@ -103,25 +95,7 @@
       <FollowupWheel />
 
     </div>
-    <div class="snap-start pb-8">
-    <FooterLayout />
-    </div>
-    <!-- <testing/> -->
 
-<!-- 
-
-    <div class="h-[1000px] w-full">
-      .
-    </div> -->
-    <!-- Grid Layout -->
-    <!-- <div class="absolute grid grid-cols-4 gap-4 md:grid-cols-8 lg:grid-cols-12 h-screen">
-      <div v-for="n in columns" :key="n" class="bg-red-200/0 text-center h-full"> -->
-        <!-- Content for column {{ n }} -->
-      <!-- </div>
-    </div> -->
-
-
-  </div>
 </template>
 
 <script setup lang="ts">
