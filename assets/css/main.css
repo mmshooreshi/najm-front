@@ -17,7 +17,9 @@ body{
 .text-demibold {
 	font-weight: 600;
 }
-
+.rtl{
+	direction: rtl;
+}
 /* body {
 	font-family: IRANSansX  !important;
 	direction: rtl;
