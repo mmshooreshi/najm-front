@@ -1,5 +1,4 @@
-// File: composables/authUI.ts
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useFetch } from '#app'
 
 export interface AuthUIData {
@@ -18,12 +17,11 @@ export interface AuthUIData {
   }>
 }
 
-// Predefined defaults matching the Figma design.
 const defaultAuthUIData: AuthUIData = {
   tabLoginTitle: 'ورود به حساب',
   tabSignupTitle: 'ساخت حساب جدید',
   headingLogin: 'ورود به حساب کاربری',
-  subheadingLogin:'دسترسی سریع به سفارش‌ها، پیگیری وضعیت و خدمات اختصاصی',
+  subheadingLogin: 'دسترسی سریع به سفارش‌ها، پیگیری وضعیت و خدمات اختصاصی',
   headingSignup: 'ثبت نام کنید',
   subheadingSignup: 'برای ایجاد یک حساب جدید، اطلاعات زیر را وارد کنید.',
   phoneEmailPlaceholder: 'ایمیل یا شماره تلفن خود را وارد کنید',
@@ -36,15 +34,20 @@ const defaultAuthUIData: AuthUIData = {
   ]
 }
 
-// Immediately return defaults while silently fetching backend data.
 export function useAuthUIData() {
-  const { data } = useFetch<AuthUIData>('/api/authui', {
-    key: 'auth-ui',
-    default: () => defaultAuthUIData,
-    transform: (res) => res
-  })
+  const { data } = useFetch<{ items: Array<{ uiData: AuthUIData }> }>(
+    'http://65.108.80.205:8090/api/collections/pages/records?filter=slug="login"',
+    {
+      key: 'auth-ui',
+      default: () => ({
+        items: [{ uiData: defaultAuthUIData }]
+      })
+    }
+  )
+
+  const authUIData = computed(() => data.value?.items?.[0]?.uiData || defaultAuthUIData)
 
   return {
-    authUIData: computed(() => data.value || defaultAuthUIData)
+    authUIData
   }
 }
