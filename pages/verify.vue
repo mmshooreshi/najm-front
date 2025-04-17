@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-9 bg-transparent px-4 py-0 w-full">
-    <AuthHeader icon="mdi:key" title="کد تایید رو وارد کن">
+    <AuthHeader icon="verify-page-icon" title="کد تایید رو وارد کن">
         <template #subtitle>
-          <div class="text-xs md:text-sm">
+          <div class="text-xs ">
             کد تایید، به شماره‌ی {{ toPersianDigits(identifier) }} ارسال شد.
             <span @click="editNumber" class="text-blue-600 underline cursor-pointer">
               ویرایش
@@ -21,7 +21,7 @@
          تایید
        </BaseButton>
 
-       <p class="mt-3 text-center text-xs text-[#797B7D]">
+       <p class="mt-3 text-center text-xs text-[#797B7D]" :class="timer > 0 ? 'cursor-wait' : 'cursor-default'">
         دریافت مجدد کد
         <span v-if="timer > 0">
           {{ toPersianDigits(formattedTime) }}
@@ -121,7 +121,7 @@
     if (code.value.length !== otpLength.value) return
     isLoading.value = true
     token.value = 'mock-jwt'
-    await new Promise((r) => setTimeout(r, 1500))
+    await new Promise((r) => setTimeout(r, 800))
     router.push({ name: 'profile' })
     isLoading.value = false
 

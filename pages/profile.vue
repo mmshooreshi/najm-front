@@ -17,7 +17,7 @@ async function complete() {
   isLoading.value = true
   try {
     // replace this with real API call; using mock here:
-    await new Promise(r => setTimeout(r, 1500))
+    await new Promise(r => setTimeout(r, 1000))
     router.push('/')
   } catch (err) {
     // TODO: handle error (toast, form error, fallback, etc.)
@@ -34,7 +34,7 @@ definePageMeta({ layout: 'auth' })
 <template>
   <div class="space-y-9  bg-transparent px-4 py-0 w-full">
 
-    <AuthHeader icon="mdi:account-circle-outline" title="پروفایلتو کامل کن"
+    <AuthHeader icon="profile-page-icon" title="پروفایلتو کامل کن"
       subtitle="دسترسی سریع به سفارش‌ها، پیگیری وضعیت و خدمات اختصاصی" />
     <div>
       <form @submit.prevent="complete" class="space-y-6">
@@ -48,7 +48,7 @@ definePageMeta({ layout: 'auth' })
       </BaseButton>
     </form>
 
-    <p class="mt-6 underline text-center text-xs text-[#797B7D]">باشه برای بعد</p>
+    <p class="mt-6 underline text-center text-xs text-[#797B7D] cursor-pointer active:text-blue hover:text-black">باشه برای بعد</p>
   </div>
   </div>
 </template>

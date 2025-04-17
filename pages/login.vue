@@ -6,6 +6,7 @@ import BaseButton from '~/components/Base/BaseButton.vue'
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
 import { useAuth } from '~/composables/useAuth'
 import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
+import loginPageIcon from '~/assets/icons/Auth/login-page-icon'
 
 const router = useRouter()
 const { identifier } = useAuth()
@@ -23,7 +24,7 @@ async function sendCode() {
   try {
     identifier.value = phoneEn.value
     // replace this with real API call; using mock here:
-    await new Promise(r => setTimeout(r, 1500))
+    await new Promise(r => setTimeout(r, 1000))
     router.push({ name: 'verify' })
   } catch (err) {
     // TODO: handle error (toast, form error, fallback, etc.)
@@ -37,7 +38,9 @@ definePageMeta({ layout: 'auth' })
 </script>
 <template>
   <div class="space-y-9  bg-transparent px-4 py-0 w-full">
-    <AuthHeader icon="mdi:card-account-details-outline" title="ورود یا ثبت‌نام"
+    <!-- mdi:card-account-details-outline  -->
+    <AuthHeader icon="login-page-icon" title="ورود یا ثبت‌نام"
+    
       subtitle="برای دسترسی سریع به سفارش‌ها، خدمات اختصاصی و پیگیری وضعیت، حساب کاربری می‌تواند خیلی کمک‌کننده باشد!" />
 
     <!-- ⬇ replace ONLY the input + button section -->

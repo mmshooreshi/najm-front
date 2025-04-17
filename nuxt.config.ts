@@ -2,6 +2,7 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import ViteComponents from 'unplugin-vue-components/vite'
 // import IconsResolver from 'unplugin-icons/resolver'
+import { presetUno } from 'unocss'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -47,7 +48,10 @@ export default defineNuxtConfig({
     cookie: {},
     cookieName: 'strapi_jwt'
   },
-  
+  unocss: {
+    include: ['./components/**/*.{vue,js,ts}','./layouts/**/*.{vue,js,ts}', './pages/**/*.{vue,js,ts}'],
+    presets: [presetUno()]
+  },
   features: {
     inlineStyles: false,
   },
