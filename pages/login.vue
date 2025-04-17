@@ -38,6 +38,7 @@ async function sendCode() {
 
 
 definePageMeta({
+  name: 'login',
   layout: 'auth'
 })
 
@@ -52,8 +53,7 @@ definePageMeta({
     <div>
       <form @submit.prevent="sendCode" class="space-y-6">
         <BaseInput v-model="phone" persian
-          :iconName="phone ? (isValid ? 'mdi:check-circle' : 'mdi:alert-circle') : null"
-          dir="ltr"
+          :iconName="phone ? (isValid ? 'mdi:check-circle' : 'mdi:alert-circle') : null" dir="ltr"
           placeholder="شماره موبایل (مثلاً ۰۹۱۲۳۴۵۶۷۸۹)" />
         <BaseButton type="submit" :loading="isLoading" :disabled="!isValid" :class="isValid
           ? 'bg-primary-600'
@@ -83,16 +83,3 @@ definePageMeta({
     </div>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  layout: 'auth',
-  name: 'LoginPage',
-  definePageMeta: {
-    name: 'login',
-
-  },
-
-}
-
-</script>

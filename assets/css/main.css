@@ -21,19 +21,24 @@ body{
 	direction: rtl;
 }
 
-/* ~/assets/css/page-slides.css – unchanged */
+/* global‑styles.css (or just put it in the <style> block of the layout) */
+
+/* shared timing ---------------------------------------------------- */
 .slide-fwd-enter-active,
 .slide-fwd-leave-active,
 .slide-back-enter-active,
 .slide-back-leave-active{
-  transition: all .32s cubic-bezier(.4,0,.2,1);
-  will-change: transform;
-  opacity:100;
+  transition: transform .35s ease, opacity .35s ease;
+  will-change: transform, opacity;
 }
-.slide-fwd-enter-from { transform: translateX(100%); opacity:0 }
-.slide-fwd-leave-to   { transform: translateX(-100%); opacity:0 }
-.slide-back-enter-from{ transform: translateX(-100%); opacity:0 }
-.slide-back-leave-to  { transform: translateX( 100%); opacity:0 }
+
+/* push forward (login ➜ verify ➜ profile …) ------------------------ */
+.slide-fwd-enter-from { transform: translateX( 100%); opacity:0; }
+.slide-fwd-leave-to   { transform: translateX(-100%); opacity:0; }
+
+/* pop back (back‑button) ------------------------------------------ */
+.slide-back-enter-from{ transform: translateX(-100%); opacity:0; }
+.slide-back-leave-to  { transform: translateX( 100%); opacity:0; }
 
 
 /* body {

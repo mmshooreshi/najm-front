@@ -31,7 +31,7 @@ async function complete() {
 
 }
 
-definePageMeta({ layout: 'auth' })
+definePageMeta({ name: 'profile', layout: 'auth' })
 
 </script>
 
@@ -56,10 +56,3 @@ definePageMeta({ layout: 'auth' })
   </div>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  layout: 'auth',
-  name: 'profile',
-}
-</script>
