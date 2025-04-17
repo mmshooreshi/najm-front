@@ -1,7 +1,7 @@
 <template>
     <div class="relative">
         <input  @input="handleInput" v-bind="forward" v-model="display" :class="[
-            'w-full rounded-2xl bg-gray/10 focus:bg-transparent px-6 py-5 text-xs font-semibold outline-none ring-0 border transition-colors',
+            'placeholder-gray-500 focus:placeholder-gray-500/30 w-full rounded-2xl bg-gray/10 focus:bg-transparent px-6 py-5 text-xs font-semibold outline-none ring-0 border transition-colors',
             borderClass,
             forward.class,
             forward.disabled && 'cursor-not-allowed opacity-60',
