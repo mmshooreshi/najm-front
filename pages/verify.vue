@@ -115,8 +115,8 @@ async function verifyCode() {
     if (code.value.length !== otpLength.value) return
     isLoading.value = true
     token.value = 'mock-jwt'
-    await new Promise((r) => setTimeout(r, 800))
     nav.value = 'forward'
+    await new Promise((r) => setTimeout(r, 800))
     router.push({ name: 'profile' })
     isLoading.value = false
 
@@ -148,5 +148,8 @@ async function checkClipboard() {
     // }
 }
 
-definePageMeta({ name:'verify', layout: 'auth' })
+definePageMeta({
+  name: 'verify',
+  layout: 'auth',
+})
 </script>

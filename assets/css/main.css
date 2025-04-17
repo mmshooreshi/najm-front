@@ -23,22 +23,43 @@ body{
 
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
-/* shared timing ---------------------------------------------------- */
+/* ─── SLIDE LEFT (forward) ───────────────────── */
 .slide-fwd-enter-active,
-.slide-fwd-leave-active,
-.slide-back-enter-active,
-.slide-back-leave-active{
-  transition: transform .35s ease, opacity .35s ease;
-  will-change: transform, opacity;
+.slide-fwd-leave-active {
+  transition: transform 0.3s ease-out;
+}
+.slide-fwd-enter-from {
+  transform: translateX(100%);
+}
+.slide-fwd-enter-to {
+  transform: translateX(0%);
+}
+/* ← this is the missing piece: */
+.slide-fwd-leave-from {
+  transform: translateX(0%);
+}
+.slide-fwd-leave-to {
+  transform: translateX(-100%);
 }
 
-/* push forward (login ➜ verify ➜ profile …) ------------------------ */
-.slide-fwd-enter-from { transform: translateX( 100%); opacity:0; }
-.slide-fwd-leave-to   { transform: translateX(-100%); opacity:0; }
-
-/* pop back (back‑button) ------------------------------------------ */
-.slide-back-enter-from{ transform: translateX(-100%); opacity:0; }
-.slide-back-leave-to  { transform: translateX( 100%); opacity:0; }
+/* ─── SLIDE RIGHT (back) ────────────────────── */
+.slide-back-enter-active,
+.slide-back-leave-active {
+  transition: transform 0.3s ease-out;
+}
+.slide-back-enter-from {
+  transform: translateX(-100%);
+}
+.slide-back-enter-to {
+  transform: translateX(0%);
+}
+/* ← likewise for leave: */
+.slide-back-leave-from {
+  transform: translateX(0%);
+}
+.slide-back-leave-to {
+  transform: translateX(100%);
+}
 
 
 /* body {

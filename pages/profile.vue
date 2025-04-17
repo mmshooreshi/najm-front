@@ -20,8 +20,8 @@ async function complete() {
   isLoading.value = true
   try {
     // replace this with real API call; using mock here:
-    await new Promise(r => setTimeout(r, 1000))
     nav.value = 'forward'
+    await new Promise(r => setTimeout(r, 1000))
     router.push('/')
   } catch (err) {
     // TODO: handle error (toast, form error, fallback, etc.)
@@ -30,8 +30,10 @@ async function complete() {
   }
 
 }
-
-definePageMeta({ name: 'profile', layout: 'auth' })
+definePageMeta({
+  name: 'profile',
+  layout: 'auth',
+})
 
 </script>
 

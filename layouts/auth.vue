@@ -1,7 +1,8 @@
 <!-- layouts/auth.vue -->
 <template>
-    <div class="relative flex justify-center bg-[#F9FBFA] pt-14 px-6 overflow-hidden"
+    <div class="relative flex justify-center bg-[#F9FBFA] pt-14 px-6 overflow-visible"
         style="touch-action:none; height:100dvh;">
+        <!-- {{ nav }} -->
         <!-- close btn (returns home) -->
         <NuxtLink to="/"
             class="absolute w-6 h-6 left-5 top-5 cursor-pointer top-0 left-0 text-gray-400 transition hover:text-gray-600  p-0 focus:rotate-45">
@@ -17,22 +18,20 @@
 
         <!-- page container -->
         <div class="page-shell max-w-[375px] w-full">
-            <Transition :name="transitionName" mode="out-in">
-                <slot   :page-key="route.fullPath"  />
-            </Transition>
+            <!-- <Transition :name="transitionName" mode="out-in" > -->
+                <slot :key="route.name" />
+            <!-- </Transition> -->
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useNavDirection } from '~/composables/useNavDirection'
-const nav = useNavDirection()
+
 
 const route = useRoute()
 const router = useRouter()
 
 function goBack() {
-    nav.value = 'back'
     router.back()
 }
 
@@ -41,7 +40,6 @@ useHead({
     htmlAttrs: {
         lang: 'fa',
         dir: 'rtl',
-        style: 'overflow:hidden;'
     },
     bodyAttrs: {
         class: 'text-right rtl bg-[#F9FBFA] antialiased',
@@ -55,10 +53,7 @@ useHead({
     ]
 })
 
-/* choose slide direction */
-const transitionName = computed(() =>
-    nav.value === 'back' ? 'slide-fwd' : 'slide-back'
-)
+
 
 </script>
 
@@ -66,8 +61,7 @@ const transitionName = computed(() =>
 /* ───── keep slot layers stacked ‑‑ no layout shift ───────── */
 .page-shell {
     position: relative;
-    overflow-x: visible;
-    overflow-y: hidden;
+    overflow: visible;
     /* keep vertical scroll bar out               */
     height: 100%;
 }

@@ -1,3 +1,3 @@
 export const useNavDirection = () =>
-    useState<'forward' | 'back'>('navDirection', () => 'back')
+    useState<'forward' | 'back'>('navDirection', () => 'forward')
   

@@ -9,7 +9,7 @@ import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
 import loginPageIcon from '~/assets/icons/Auth/login-page-icon'
 import { useNavDirection } from '~/composables/useNavDirection'
 const nav = useNavDirection()
-
+const route = useRoute()
 const router = useRouter()
 const { identifier } = useAuth()
 
@@ -25,9 +25,9 @@ async function sendCode() {
   isLoading.value = true
   try {
     identifier.value = phoneEn.value
+    nav.value = 'forward'
     // replace this with real API call; using mock here:
     await new Promise(r => setTimeout(r, 1000))
-    nav.value = 'forward'
     router.push({ name: 'verify' })
   } catch (err) {
     // TODO: handle error (toast, form error, fallback, etc.)
@@ -39,8 +39,11 @@ async function sendCode() {
 
 definePageMeta({
   name: 'login',
-  layout: 'auth'
+  layout: 'auth',
 })
+
+
+
 
 </script>
 <template>
@@ -48,6 +51,7 @@ definePageMeta({
     <!-- mdi:card-account-details-outline  -->
     <AuthHeader icon="login-page-icon" title="ورود یا ثبت‌نام"
       subtitle="برای دسترسی سریع به سفارش‌ها، خدمات اختصاصی و پیگیری وضعیت، حساب کاربری می‌تواند خیلی کمک‌کننده باشد!" />
+
 
     <!-- ⬇ replace ONLY the input + button section -->
     <div>
