@@ -4,6 +4,9 @@ import AuthHeader from '~/components/auth/AuthHeader.vue'
 import BaseInput from '~/components/Base/BaseInput.vue'
 import BaseButton from '~/components/Base/BaseButton.vue'
 import { useAuth } from '~/composables/useAuth'
+import { useNavDirection } from '~/composables/useNavDirection'
+const nav = useNavDirection()
+
 const { identifier, token } = useAuth()
 
 const fname = ref('')
@@ -18,6 +21,7 @@ async function complete() {
   try {
     // replace this with real API call; using mock here:
     await new Promise(r => setTimeout(r, 1000))
+    nav.value = 'forward'
     router.push('/')
   } catch (err) {
     // TODO: handle error (toast, form error, fallback, etc.)

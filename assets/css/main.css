@@ -20,6 +20,22 @@ body{
 .rtl{
 	direction: rtl;
 }
+
+/* ~/assets/css/page-slides.css – unchanged */
+.slide-fwd-enter-active,
+.slide-fwd-leave-active,
+.slide-back-enter-active,
+.slide-back-leave-active{
+  transition: all .32s cubic-bezier(.4,0,.2,1);
+  will-change: transform;
+  opacity:100;
+}
+.slide-fwd-enter-from { transform: translateX(100%); opacity:0 }
+.slide-fwd-leave-to   { transform: translateX(-100%); opacity:0 }
+.slide-back-enter-from{ transform: translateX(-100%); opacity:0 }
+.slide-back-leave-to  { transform: translateX( 100%); opacity:0 }
+
+
 /* body {
 	font-family: IRANSansX  !important;
 	direction: rtl;

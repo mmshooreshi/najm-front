@@ -1,4 +1,5 @@
-<template>
+<!-- pages/verify.vue -->
+ <template>
   <div class="space-y-9 bg-transparent px-4 py-0 w-full">
     <AuthHeader icon="verify-page-icon" title="کد تایید رو وارد کن">
         <template #subtitle>
@@ -50,6 +51,8 @@
   import BaseButton from '~/components/Base/BaseButton.vue'
   import { useAuth } from '~/composables/useAuth'
   import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
+  import { useNavDirection } from '~/composables/useNavDirection'
+const nav = useNavDirection()
 
   const router = useRouter()
   const { identifier, token } = useAuth()
@@ -122,6 +125,7 @@
     isLoading.value = true
     token.value = 'mock-jwt'
     await new Promise((r) => setTimeout(r, 800))
+    nav.value = 'forward'
     router.push({ name: 'profile' })
     isLoading.value = false
 

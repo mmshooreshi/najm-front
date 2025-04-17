@@ -1,3 +1,4 @@
+<!-- layouts/auth.vue -->
 <template>
     <div
       class="relative flex justify-center bg-[#F9FBFA] pt-14 px-6 w-full"
@@ -22,16 +23,22 @@
   
       <!-- page container -->
       <div class="w-full max-w-[375px]">
-        <slot />
+        <!-- <Transition :name="transitionName" mode="out-in">
+        <NuxtPage :key="$route.fullPath" />
+      </Transition> -->
+      <slot />
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
   import { useRouter } from 'vue-router'
-  
+    import { useNavDirection } from '~/composables/useNavDirection'
+const nav = useNavDirection()
+
   const router = useRouter()
   function goBack() {
+    nav.value = 'back'
     router.back()
   }
   
@@ -53,6 +60,8 @@
       }
     ]
   })
+
+  
   </script>
   
   <style>
