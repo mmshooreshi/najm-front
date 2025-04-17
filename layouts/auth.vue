@@ -1,7 +1,7 @@
 <template>
   <div
-    class="relative flex min-h-screen justify-center bg-[#F9FBFA] pt-14 px-0 w-full"
-    style="overflow:hidden; touch-action:none; height:100vh;"
+    class="relative flex justify-center bg-[#F9FBFA] pt-14 px-0 w-full"
+    style="touch-action:none; height:100dvh;"
   >
     <!-- close btn (returns home) -->
     <NuxtLink to="/" class="absolute top-5 left-5 text-gray-400 transition hover:text-gray-600">
@@ -25,7 +25,7 @@ useHead({
   },
   bodyAttrs: {
     class: 'text-right rtl bg-[#F9FBFA] antialiased',
-    style: 'overflow:hidden; height:100vh; touch-action:none;'
+    style: 'touch-action:none; height:100dvh;'
   },
   meta: [
     {
