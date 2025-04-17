@@ -18,8 +18,7 @@
         <!-- page container -->
         <div class="page-shell max-w-[375px] w-full">
             <Transition :name="transitionName" mode="out-in">
-                <!-- Keyed to route.fullPath to avoid hydration mismatches -->
-                <slot  />
+                <slot   :page-key="route.fullPath"  />
             </Transition>
         </div>
     </div>
@@ -67,7 +66,8 @@ const transitionName = computed(() =>
 /* ───── keep slot layers stacked ‑‑ no layout shift ───────── */
 .page-shell {
     position: relative;
-    overflow: hidden;
+    overflow-x: visible;
+    overflow-y: hidden;
     /* keep vertical scroll bar out               */
     height: 100%;
 }
