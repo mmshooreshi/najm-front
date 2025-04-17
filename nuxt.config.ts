@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
 import ViteComponents from 'unplugin-vue-components/vite'
-import IconsResolver from 'unplugin-icons/resolver'
+// import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -24,16 +24,19 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@unocss/nuxt',
-    '@pinia/nuxt',
-    'unplugin-icons/nuxt',
-    '@vueuse/nuxt',
-    '@vueuse/motion/nuxt',
-    // '@hypernym/nuxt-gsap',
-    "v-gsap-nuxt",
-    "nuxt-shiki",
-    'nuxt-swiper',
-    '@nuxtjs/strapi'
+   '@unocss/nuxt',
+   '@pinia/nuxt',
+  //  'unplugin-icons/nuxt',
+   '@vueuse/nuxt',
+   '@vueuse/motion/nuxt',
+   '@nuxt/icon',
+   // '@hypernym/nuxt-gsap',
+   "v-gsap-nuxt",
+   // 'nuxt-lodash',
+   "nuxt-shiki",
+   'nuxt-swiper',
+   '@nuxtjs/strapi',
+   '@nuxt/image'
   ],
   strapi:{
     url: process.env.STRAPI_URL || 'http://localhost:1337',
@@ -93,9 +96,9 @@ export default defineNuxtConfig({
       require('vite-svg-loader')(),
       ViteComponents({
         resolvers: [
-          IconsResolver({
-            componentPrefix: ''
-          })
+          // IconsResolver({
+          //   componentPrefix: ''
+          // })
         ],
         dts: true
       })

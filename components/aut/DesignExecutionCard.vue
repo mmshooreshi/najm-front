@@ -44,7 +44,7 @@ const handleUpload = () => {
 <style scoped>
 @font-face {
   font-family: 'IRANSansX';
-  src: url('/fonts/IRANSansX.woff2') format('woff2');
+  /* src: url('/fonts/IRANSansX.woff2') format('woff2'); */
   font-display: swap;
 }
 

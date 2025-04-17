@@ -28,7 +28,6 @@
     </div>
     <!-- Content section: GSAP-controlled transition -->
     <transition
-      css="false"
       @before-enter="beforeEnter"
       @enter="enter"
       @after-enter="afterEnter"

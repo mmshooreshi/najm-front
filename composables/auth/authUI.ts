@@ -24,7 +24,7 @@ const defaultAuthUIData: AuthUIData = {
   subheadingLogin: 'دسترسی سریع به سفارش‌ها، پیگیری وضعیت و خدمات اختصاصی',
   headingSignup: 'ثبت نام کنید',
   subheadingSignup: 'برای ایجاد یک حساب جدید، اطلاعات زیر را وارد کنید.',
-  phoneEmailPlaceholder: 'ایمیل یا شماره تلفن خود را وارد کنید',
+  phoneEmailPlaceholder: 'شماره تلفن خود را وارد کنید',
   buttonLabel: 'دریافت کد',
   orLabel: 'یا',
   socialIcons: [
