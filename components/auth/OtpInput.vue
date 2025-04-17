@@ -6,16 +6,19 @@
         ref="fields"
         type="text"
         maxlength="1"
-
-        inputmode="numeric"
         autocomplete="one-time-code"
-        pattern="\\d*"
-
+        inputmode="numeric"
         class="h-12 w-8 md:w-12 rounded-xl border border-gray-300 text-center text-xl font-bold focus:border-primary-600 focus:outline-none"
         @input="onInput(i, $event)"
         @paste.prevent="onPaste($event, i)"
         @keydown.backspace.prevent="onBackspace(i, $event)"
       />
+
+      <!-- inputmode="numeric"
+        autocomplete="one-time-code"
+        pattern="\\d*"
+ -->
+
     </div>
   </template>
   
