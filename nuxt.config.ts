@@ -87,19 +87,34 @@ export default defineNuxtConfig({
       }
     }
   },
-
+// nuxt.config.ts
+icon: {
+  serverBundle: {
+  collections: ['mdi', 'carbon'] // Only the ones you actually use
+  }
+},
   vite: {
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks(id) {
+              if (id.includes('node_modules')) {
+                if (id.includes('nuxt')) return 'nuxt-vendor'
+                if (id.includes('vue')) return 'vue-vendor'
+                if (id.includes('gsap')) return 'gsap'
+                return 'vendor'
+              }
+            }
+          }
+        }
+      },
+    
     optimizeDeps: {
       include: ["gsap/ScrollSmoother"] // Ensure GSAP plugins are included
     },
     plugins: [
       require('vite-svg-loader')(),
       ViteComponents({
-        resolvers: [
-          // IconsResolver({
-          //   componentPrefix: ''
-          // })
-        ],
         dts: true
       })
     ]
