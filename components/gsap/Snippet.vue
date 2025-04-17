@@ -63,3 +63,7 @@ const html = await codeToHtml(snippets?.[props.name] || '', {
   theme: 'github-dark',
 })
 </script> -->
+
+<template>
+  </template>
+  
