@@ -15,6 +15,7 @@
        <OtpInput numberOnly v-model="code" persian :length="otpLength" />
        <BaseButton
          type="submit"
+         :loading="isLoading"
          :disabled="code.length !== otpLength"
        >
          تایید
@@ -112,12 +113,16 @@
     clearInterval(clipboardInterval)
   })
   
+  const isLoading = ref(false)
   // —— OTP verification & edit number ——
   async function verifyCode() {
     if (code.value.length !== otpLength.value) return
+    isLoading.value = true
     token.value = 'mock-jwt'
-    await new Promise((r) => setTimeout(r, 300))
+    await new Promise((r) => setTimeout(r, 1500))
     router.push({ name: 'profile' })
+    isLoading.value = false
+
   }
   
   function editNumber() {

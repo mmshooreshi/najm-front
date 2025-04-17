@@ -14,12 +14,24 @@ const phone = ref('')                           // Persian digits shown
 const phoneEn = computed(() => toEnglishDigits(phone.value))
 const isValid = computed(() => /^09\d{9}$/.test(phoneEn.value))
 
+
+// pages/login.vue (inside <script setup>)
+const isLoading = ref(false)
 async function sendCode() {
   if (!isValid.value) return
-  identifier.value = phoneEn.value
-  await new Promise(r => setTimeout(r, 300))
-  router.push({ name: 'verify' })
+  isLoading.value = true
+  try {
+    identifier.value = phoneEn.value
+    // replace this with real API call; using mock here:
+    await new Promise(r => setTimeout(r, 1500))
+    router.push({ name: 'verify' })
+  } catch (err) {
+    // TODO: handle error (toast, form error, fallback, etc.)
+  } finally {
+    isLoading.value = false
+  }
 }
+
 
 definePageMeta({ layout: 'auth' })
 </script>
@@ -39,6 +51,7 @@ definePageMeta({ layout: 'auth' })
      />
      <BaseButton
        type="submit"
+       :loading="isLoading"
        :disabled="!isValid"
        :class="isValid
          ? 'bg-primary-600'

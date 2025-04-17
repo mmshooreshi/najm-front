@@ -4,7 +4,7 @@
     style="touch-action:none; height:100dvh;"
   >
     <!-- close btn (returns home) -->
-    <NuxtLink to="/" class="absolute top-5 left-5 text-gray-400 transition hover:text-gray-600">
+    <NuxtLink to="/" class="absolute top-5 left-5 text-gray-400 transition hover:text-gray-600 hover:scale-105">
       <Icon name="mdi:close" class="h-6 w-6" />
     </NuxtLink>
 
@@ -35,3 +35,17 @@ useHead({
   ]
 })
 </script>
+
+
+<style>
+button,
+a,
+[role="button"],
+[tabindex],
+input,
+textarea,
+select,
+label {
+  -webkit-tap-highlight-color: transparent;
+}
+</style>

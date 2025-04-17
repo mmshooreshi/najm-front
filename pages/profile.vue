@@ -10,10 +10,21 @@ const fname = ref('')
 const lname = ref('')
 const router = useRouter()
 
-function complete() {
+const isLoading = ref(false)
+async function complete() {
   if (!fname.value || !lname.value) return
   // TODO: save profile to backend
-  router.push('/')
+  isLoading.value = true
+  try {
+    // replace this with real API call; using mock here:
+    await new Promise(r => setTimeout(r, 1500))
+    router.push('/')
+  } catch (err) {
+    // TODO: handle error (toast, form error, fallback, etc.)
+  } finally {
+    isLoading.value = false
+  }
+
 }
 
 definePageMeta({ layout: 'auth' })
@@ -29,7 +40,7 @@ definePageMeta({ layout: 'auth' })
       <BaseInput v-model="fname" placeholder="نام" />
       <BaseInput v-model="lname" placeholder="نام خانوادگی" />
 
-      <BaseButton type="submit" :disabled="!fname || !lname">
+      <BaseButton  type="submit" :loading="isLoading"  :disabled="!fname || !lname">
         ادامه
       </BaseButton>
     </form>
