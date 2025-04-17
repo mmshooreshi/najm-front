@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <pre
     class="Snippet"
     v-html="html"
@@ -62,4 +62,4 @@ const html = await codeToHtml(snippets?.[props.name] || '', {
   lang: 'html',
   theme: 'github-dark',
 })
-</script>
+</script> -->
