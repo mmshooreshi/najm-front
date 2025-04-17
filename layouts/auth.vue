@@ -14,7 +14,7 @@
       <!-- back btn (goes back) -->
       <div
         @click="goBack"
-        class="absolute cursor-pointer top-0 right-0 text-gray-400 transition hover:text-gray-600  py-4 px-4 hover:scale-110 active:translate-x-4"
+        class="absolute bg-transparent cursor-pointer top-0 right-0 text-gray-400 transition hover:text-gray-600  py-4 px-4 hover:scale-110 active:translate-x-4"
         aria-label="Back"
       >
         <Icon name="mdi:chevron-left" class="h-8 w-8 rotate-180" />
@@ -63,7 +63,8 @@
   input,
   textarea,
   select,
-  label {
+  label,
+  * {
     -webkit-tap-highlight-color: transparent;
   }
 
