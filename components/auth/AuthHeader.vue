@@ -25,27 +25,14 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useAuthIcon } from '@/composables/useAuthIcons'
 
-interface Props {
-  icon: string
-  title: string
-  subtitle?: string
-}
-const props = defineProps<Props>()
+const props = defineProps<{ icon: string; title: string; subtitle?: string }>()
+const { isCustom, src } = useAuthIcon(props.icon)
 
-// 1. Glob-import all SVGs in assets/icons/Auth as URLs (bundled by Vite)
-const svgModules = import.meta.glob('@/assets/icons/Auth/*.svg', { as: 'url', eager: true })
-console.log(svgModules)
-// 2. Build a map from filename (without extension) → URL
-const iconMap: Record<string, string> = {}
-for (const path in svgModules) {
-  const m = path.match(/\/([\w-]+)\.svg$/)
-  if (m) iconMap[m[1]] = svgModules[path] as string
-}
-
-// 3. Computed flags & src
-const isCustomIcon = computed(() => Boolean(iconMap[props.icon]))
-const customIconSrc = computed(() => iconMap[props.icon]!)
+const isCustomIcon = computed(() => isCustom)
+const customIconSrc = computed(() => src)
 </script>

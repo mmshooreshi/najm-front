@@ -49,8 +49,12 @@ export default defineNuxtConfig({
     cookieName: 'strapi_jwt'
   },
   unocss: {
-    include: ['./components/**/*.{vue,js,ts}','./layouts/**/*.{vue,js,ts}', './pages/**/*.{vue,js,ts}'],
-    presets: [presetUno()]
+    content: {
+      pipeline: {
+        include: [/\.vue$/, /\.ts$/]
+      }
+    }
+  
   },
   features: {
     inlineStyles: false,
