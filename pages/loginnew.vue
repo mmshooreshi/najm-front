@@ -36,11 +36,12 @@ async function sendCode() {
 definePageMeta({ layout: 'auth' })
 </script>
 <template>
-  <div class="space-y-9  bg-transparent px-0 py-0 w-full">
+  <div class="space-y-9  bg-transparent px-4 py-0 w-full">
     <AuthHeader icon="mdi:card-account-details-outline" title="ورود یا ثبت‌نام"
       subtitle="برای دسترسی سریع به سفارش‌ها، خدمات اختصاصی و پیگیری وضعیت، حساب کاربری می‌تواند خیلی کمک‌کننده باشد!" />
 
     <!-- ⬇ replace ONLY the input + button section -->
+    <div>
     <form @submit.prevent="sendCode" class="space-y-6">
      <BaseInput
        v-model="phone"
@@ -61,11 +62,13 @@ definePageMeta({ layout: 'auth' })
      </BaseButton>
    </form>
 
-    <p class="mt-4 text-center text-[10px] leading-5 text-[#797B7D]">
-      با ورود به پنچ، تمام قوانین و شرایط استفاده را می‌پذیرم.
+    <p class="mt-3 text-right text-[10px] leading-5 text-[#797B7D]">
+      با ورود یا ثبت‌نام در مجموعه نجم، تمام <a href="/faq" class="underline"> قوانین و شرایط استفاده </a> رو قبول می‌کنم.
     </p>
+  </div>
 
-    <div class="flex items-center gap-2">
+    <div>
+    <div class="flex items-center gap-2 mb-2">
       <div class="h-px flex-grow bg-gray-200"></div>
       <span class="text-xs text-gray-400">یا</span>
       <div class="h-px flex-grow bg-gray-200"></div>
@@ -76,6 +79,7 @@ definePageMeta({ layout: 'auth' })
       { key: 'apple', icon: '/icons/auth/apple-auth-icon.svg', alt: 'Apple' },
       { key: 'microsoft', icon: '/icons/auth/microsoft-auth-icon.svg', alt: 'Microsoft' },
     ]" @social="(k) => console.log('login with', k)" />
+    </div>
   </div>
 </template>
 

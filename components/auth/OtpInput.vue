@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center justify-between gap-0.5 md:gap-2" dir="ltr">
+    <div class="flex items-center gap-2 w-full" dir="ltr">
       <input
         v-for="(_, i) in length"
         :key="i"
@@ -8,19 +8,19 @@
         maxlength="1"
         autocomplete="one-time-code"
         inputmode="numeric"
-        class="h-12 w-8 md:w-12 rounded-xl border border-gray-300 text-center text-xl font-bold focus:border-primary-600 focus:outline-none"
+        class="flex-1 basis-0 min-w-0 h-12 rounded-xl border border-gray-300 text-center text-lg px-3 py-4 font-bold focus:border-primary-600 focus:outline-none"
         @input="onInput(i, $event)"
         @paste.prevent="onPaste($event, i)"
         @keydown.backspace.prevent="onBackspace(i, $event)"
       />
-
       <!-- inputmode="numeric"
         autocomplete="one-time-code"
         pattern="\\d*"
- -->
-
+  -->
     </div>
   </template>
+  
+
   
   <script setup lang="ts">
   import { ref, onMounted, watch, nextTick } from 'vue'

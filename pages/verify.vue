@@ -1,9 +1,9 @@
 <template>
-  <div class="space-y-9  bg-transparent px-0 py-0 w-full">
+  <div class="space-y-9 bg-transparent px-4 py-0 w-full">
     <AuthHeader icon="mdi:key" title="کد تایید رو وارد کن">
         <template #subtitle>
           <div class="text-xs md:text-sm">
-            به شماره شما {{ toPersianDigits(identifier) }} ارسال شد.
+            کد تایید، به شماره‌ی {{ toPersianDigits(identifier) }} ارسال شد.
             <span @click="editNumber" class="text-blue-600 underline cursor-pointer">
               ویرایش
             </span>
@@ -20,11 +20,8 @@
        >
          تایید
        </BaseButton>
-     </form>
-  
 
-  
-      <p class="mt-4 text-center text-xs text-[#797B7D]">
+       <p class="mt-3 text-center text-xs text-[#797B7D]">
         دریافت مجدد کد
         <span v-if="timer > 0">
           {{ toPersianDigits(formattedTime) }}
@@ -37,6 +34,11 @@
           دریافت دوباره
         </span>
       </p>
+
+     </form>
+  
+
+  
     </div>
   </template>
   

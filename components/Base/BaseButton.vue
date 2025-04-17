@@ -1,9 +1,9 @@
 <!-- components/BaseButton.vue -->
 <template>
     <button
-      class="relative w-full rounded-2xl p-4 text-base font-semibold transition-all duration-200
+      class="relative w-full rounded-2xl px-6 py-3 text-base font-semibold transition-all duration-200
              bg-[#E4F0DC] text-[#3A7C2B] hover:scale-102 hover:bg-primary-600 active:scale-98 focus:scale-98
-             disabled:scale-100 disabled:text-black disabled:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60"
+             disabled:scale-100 disabled:text-black disabled:bg-[#EBEBEB] disabled:cursor-not-allowed disabled:opacity-60"
       v-bind="$attrs"
       :disabled="loading || $attrs.disabled"
     >

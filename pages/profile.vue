@@ -32,20 +32,24 @@ definePageMeta({ layout: 'auth' })
 </script>
 
 <template>
-  <div class="space-y-9  bg-transparent px-0 py-0 w-full">
+  <div class="space-y-9  bg-transparent px-4 py-0 w-full">
 
     <AuthHeader icon="mdi:account-circle-outline" title="پروفایلتو کامل کن"
       subtitle="دسترسی سریع به سفارش‌ها، پیگیری وضعیت و خدمات اختصاصی" />
-    <form @submit.prevent="complete" class="space-y-6">
+    <div>
+      <form @submit.prevent="complete" class="space-y-6">
+      <div class="space-y-2">
       <BaseInput v-model="fname" placeholder="نام" />
       <BaseInput v-model="lname" placeholder="نام خانوادگی" />
+    </div>
 
       <BaseButton  type="submit" :loading="isLoading"  :disabled="!fname || !lname">
         ادامه
       </BaseButton>
     </form>
 
-    <p class="mt-4 text-center text-xs text-[#797B7D]">باشه برای بعد</p>
+    <p class="mt-6 underline text-center text-xs text-[#797B7D]">باشه برای بعد</p>
+  </div>
   </div>
 </template>
 
