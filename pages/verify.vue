@@ -1,44 +1,132 @@
-<!-- pages/verify.vue (step 2) -->
-<script setup lang="ts">
-import AuthHeader from '~/components/auth/AuthHeader.vue'
-import OtpInput from '~/components/auth/OtpInput.vue'
-import BaseButton from '~/components/Base/BaseButton.vue'
-import { useAuth } from '~/composables/useAuth'
-import { toPersianDigits } from '~/utils/digits'
+<template>
+  <div class="space-y-9  bg-transparent px-0 py-0 w-full">
+    <AuthHeader icon="mdi:key" title="کد تایید رو وارد کن">
+        <template #subtitle>
+          <div class="text-xs md:text-sm">
+            به شماره شما {{ toPersianDigits(identifier) }} ارسال شد
+            <span @click="editNumber" class="text-blue-600 underline cursor-pointer">
+              ویرایش
+            </span>
+          </div>
+        </template>
+      </AuthHeader>
+  
+     <form @submit.prevent="verifyCode" class="space-y-6">
+       <OtpInput numberOnly v-model="code" persian :length="otpLength" />
+       <BaseButton
+         type="submit"
+         :disabled="code.length !== otpLength"
+       >
+         تایید
+       </BaseButton>
+     </form>
+  
 
-const router = useRouter()
-const { identifier, token } = useAuth()
-const code = ref('')
-
-
-async function verifyCode() {
-    if (code.value.length !== 6) return
-    // TODO: verify code with backend
+  
+      <p class="mt-4 text-center text-xs text-[#797B7D]">
+        دریافت مجدد کد
+        <span v-if="timer > 0">
+          {{ toPersianDigits(formattedTime) }}
+        </span>
+        <span
+          v-else
+          @click="resendCode"
+          class="text-blue-600 underline cursor-pointer"
+        >
+          دریافت دوباره
+        </span>
+      </p>
+    </div>
+  </template>
+  
+  <script setup lang="ts">
+  import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
+  import { useRouter } from 'vue-router'
+  import AuthHeader from '~/components/auth/AuthHeader.vue'
+  import OtpInput from '~/components/auth/OtpInput.vue'
+  import BaseButton from '~/components/Base/BaseButton.vue'
+  import { useAuth } from '~/composables/useAuth'
+  import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
+  
+  const router = useRouter()
+  const { identifier, token } = useAuth()
+  const code = ref('')
+  const otpLength = ref(6)
+  
+  // —— countdown timer logic ——
+  const initialSeconds = 94 // 1 minute 34 seconds
+  const timer = ref<number>(initialSeconds)
+  let timerInterval: number
+  
+  const formattedTime = computed(() => {
+    const m = Math.floor(timer.value / 60)
+    const s = timer.value % 60
+    const sec = s < 10 ? `0${s}` : `${s}`
+    return `${m}:${sec}`
+  })
+  
+  function startTimer() {
+    timer.value = initialSeconds
+    clearInterval(timerInterval)
+    timerInterval = window.setInterval(() => {
+      if (timer.value > 0) {
+        timer.value--
+      } else {
+        clearInterval(timerInterval)
+      }
+    }, 1000)
+  }
+  
+  function resendCode() {
+    // TODO: call your resend API here
+    startTimer()
+  }
+  
+  onMounted(() => {
+    startTimer()
+    window.addEventListener('focus', checkClipboard)
+    clipboardInterval = window.setInterval(checkClipboard, 1000)
+  })
+  
+  onBeforeUnmount(() => {
+    clearInterval(timerInterval)
+    window.removeEventListener('focus', checkClipboard)
+    clearInterval(clipboardInterval)
+  })
+  
+  // —— OTP verification & edit number ——
+  async function verifyCode() {
+    if (code.value.length !== otpLength.value) return
     token.value = 'mock-jwt'
     await new Promise((r) => setTimeout(r, 300))
     router.push({ name: 'profile' })
-}
-
-definePageMeta({ layout: 'auth' })
-
-</script>
-
-<template>
-    <div class="space-y-9 rounded-3xl bg-white px-9 pb-10 pt-14 shadow">
-        <AuthHeader icon="mdi:key" title="کد تایید رو وارد کن"
-            :subtitle="`${toPersianDigits(identifier.value)} به شماره شما ارسال شد`" />
-
-        <OtpInput v-model="code" persian  :length="6" />
-
-        <BaseButton :disabled="code.length !== 6" @click="verifyCode">تایید</BaseButton>
-
-        <p class="mt-4 text-center text-xs text-[#797B7D]">دریافت مجدد کد ۱:۳۴ دقیقه دیگر</p>
-    </div>
-</template>
-
-<script lang="ts">
-export default {
-    layout: 'auth',
-    name: 'verify',
-}
-</script>
+  }
+  
+  function editNumber() {
+    router.back()
+  }
+  
+  // —— clipboard auto-fill ——
+  let clipboardInterval: number
+  let lastText = ''
+  
+  async function checkClipboard() {
+    if (!document.hasFocus()) return
+    try {
+      const rawtext = await navigator.clipboard.readText()
+      const text = toEnglishDigits(rawtext).replace(/\D/g, '')
+      if (text && text !== lastText) {
+        const regex = new RegExp(`^\\d{${otpLength.value}}$`)
+        if (regex.test(text)) {
+          code.value = text
+        }
+        lastText = text
+      }
+    } catch {
+      // ignore
+    }
+  }
+  
+  definePageMeta({ layout: 'auth' })
+  </script>
+  

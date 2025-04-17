@@ -23,22 +23,30 @@ async function sendCode() {
 
 definePageMeta({ layout: 'auth' })
 </script>
-
 <template>
-  <div class="space-y-9 rounded-3xl bg-white px-9 pb-10 pt-14 shadow ">
+  <div class="space-y-9  bg-transparent px-0 py-0 w-full">
     <AuthHeader icon="mdi:card-account-details-outline" title="ورود یا ثبت‌نام"
       subtitle="برای دسترسی سریع به سفارش‌ها، خدمات اختصاصی و پیگیری وضعیت، حساب کاربری می‌تواند خیلی کمک‌کننده باشد!" />
 
     <!-- ⬇ replace ONLY the input + button section -->
-    <BaseInput v-model="phone" persian :iconName="phone ? (isValid ? 'mdi:check-circle' : 'mdi:alert-circle') : null"
-      placeholder="شماره موبایل (مثلاً ۰۹۱۲۳۴۵۶۷۸۹)" dir="ltr" />
-
-
-    <BaseButton :disabled="!isValid" :class="isValid
-      ? 'bg-primary-600'
-      : 'bg-[#EBEBEB] text-gray-400 cursor-not-allowed'" @click="sendCode">
-      دریافت کد ورود
-    </BaseButton>
+    <form @submit.prevent="sendCode" class="space-y-6">
+     <BaseInput
+       v-model="phone"
+       persian
+       :iconName="phone ? (isValid ? 'mdi:check-circle' : 'mdi:alert-circle') : null"
+       placeholder="شماره موبایل (مثلاً ۰۹۱۲۳۴۵۶۷۸۹)"
+       dir="ltr"
+     />
+     <BaseButton
+       type="submit"
+       :disabled="!isValid"
+       :class="isValid
+         ? 'bg-primary-600'
+         : 'bg-[#EBEBEB] text-gray-400 cursor-not-allowed'"
+     >
+       دریافت کد ورود
+     </BaseButton>
+   </form>
 
     <p class="mt-4 text-center text-[10px] leading-5 text-[#797B7D]">
       با ورود به پنچ، تمام قوانین و شرایط استفاده را می‌پذیرم.
