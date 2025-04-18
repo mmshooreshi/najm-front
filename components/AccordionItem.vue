@@ -1,33 +1,19 @@
 <template>
-  <!-- Outer container always fills its parent -->
-  <div
-  dir="rtl"
-    ref="itemRef"
-    class="py-4 md:py-0 accordion-item flex flex-col h-full cursor-pointer hover:bg-[#E5EDED]/100 text-d4 rounded-3xl bg-[#E5EDED]/50 transition-all duration-500 content-center"
-    @click="$emit('toggle')"
-  >
-    <!-- Header: its margin-top will be animated to center or align to top -->
-    
-      <div ref="headerRef" :class="['header flex items-center justify-between px-6 transition-all duration-500', isOpen ? 'pt-6' : 'flex-1']"      >
-      <span>{{ title }}</span>
-      <svg
-        class="icon"
-        :class="{ open: isOpen }"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 5v14M5 12h14"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
+  <div class="bg-white p-6 py-3 rounded-3xl space-y-4">
+    <!-- Collapse Header -->
+    <div
+      class="group flex justify-between items-center cursor-pointer"
+      @click="collapsed = !collapsed"
+    >
+      <h2 class="text-sm font-semibold">{{ title }}</h2>
+      <ChevronDownIcon
+        class="transition-transform duration-300"
+        :class="{ 'rotate-180': !collapsed }"
+      />
     </div>
-    <!-- Content section: GSAP-controlled transition -->
-    <transition
+
+    <!-- Slide Transition with JS hooks -->
+    <Transition
       @before-enter="beforeEnter"
       @enter="enter"
       @after-enter="afterEnter"
@@ -35,82 +21,131 @@
       @leave="leave"
       @after-leave="afterLeave"
     >
-      <div v-show="isOpen" ref="contentDiv" class="content px-6">
-        <p>{{ content }}</p>
+      <div
+        v-if="!collapsed"
+        ref="contentRef"
+        class="overflow-hidden space-y-4"
+      >
+        <!-- Tabs (optional) -->
+        <div
+          v-if="tabs?.length"
+          class="flex w-max mx-auto items-center justify-between p-1 rounded-full border border-gray-300 text-xs"
+        >
+          <button
+            v-for="tab in tabs"
+            :key="tab.key"
+            class="px-6 py-2 rounded-full font-medium text-center bg-transparent"
+            :class="
+              activeTab === tab.key
+                ? '!bg-[#014439] text-white'
+                : 'text-gray-700'
+            "
+            @click="activeTab = tab.key"
+          >
+            {{ tab.label }}
+          </button>
+        </div>
+
+        <!-- Filter Items -->
+        <div class="text-xs space-y-2 text-right">
+          <label
+            v-for="item in shownItems"
+            :key="item.label"
+            class="flex justify-between gap-2 h-6"
+          >
+            <span>
+              {{ item.label }}
+              <span class="m-1 text-gray-400">({{ item.count }} آیتم)</span>
+            </span>
+            <input type="checkbox" class="form-checkbox" />
+          </label>
+        </div>
       </div>
-    </transition>
+    </Transition>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, watch } from "vue";
-import gsap from "gsap";
+<script setup lang="ts">
+import { ref, computed, nextTick } from 'vue'
+import ChevronDownIcon from '~/assets/icons/chevron-down-icon.svg'
 
-const props = defineProps({
-  title: String,
-  content: String,
-  isOpen: Boolean
-});
+// Types
+interface Tab { key: string; label: string }
+interface FilterItem { label: string; count: number; tab?: string }
 
-const itemRef = ref(null);
-const headerRef = ref(null);
+// Props
+defineProps<{ title: string; tabs?: Tab[]; items: FilterItem[]; isCollapsed?: boolean }>()
+const props = defineProps()
 
+// State
+const collapsed = ref(props.isCollapsed ?? true)
+const activeTab = ref(props.tabs?.[0]?.key || '')
+const contentRef = ref<HTMLElement>()
 
-// GSAP content transition functions
-const beforeEnter = (el) => {
-  el.style.height = "0px";
-  el.style.opacity = "0";
-};
-const enter = (el, done) => {
-  gsap.to(el, {
-    height: el.scrollHeight,
-    opacity: 1,
-    duration: 0.5,
-    ease: "expo.out",
-    onComplete: () => {
-      el.style.height = "auto";
-      done();
+// Computed
+const shownItems = computed(() =>
+  props.tabs?.length
+    ? props.items.filter(i => i.tab === activeTab.value)
+    : props.items
+)
+
+// JS Hook Functions
+function beforeEnter(el: HTMLElement) {
+  el.style.height = '0px'
+  el.style.opacity = '0'
+  el.style.overflow = 'hidden'
+  el.style.transition = ''
+}
+
+function enter(el: HTMLElement, done: () => void) {
+  nextTick(() => {
+    const fullHeight = el.scrollHeight + 'px'
+    el.style.transition = 'height 300ms ease, opacity 300ms ease'
+    el.style.height = fullHeight
+    el.style.opacity = '1'
+    const cleanup = (e: TransitionEvent) => {
+      if (e.propertyName === 'height') {
+        el.removeEventListener('transitionend', cleanup)
+        done()
+      }
     }
-  });
-};
-const beforeLeave = (el) => {
-  el.style.height = el.scrollHeight + "px";
-  el.style.opacity = "1";
-};
-const leave = (el, done) => {
-  gsap.to(el, {
-    height: 0,
-    opacity: 0,
-    duration: 0.4,
-    ease: "expo.in",
-    onComplete: done
-  });
-};
-const afterEnter = (el) => {};
-const afterLeave = (el) => {};
-</script>
+    el.addEventListener('transitionend', cleanup)
+  })
+}
 
-<style scoped>
-.accordion-item {
-  /* Ensures the item always fills the parent's height */
+function afterEnter(el: HTMLElement) {
+  el.style.height = ''
+  el.style.opacity = ''
+  el.style.overflow = ''
+  el.style.transition = ''
 }
-.header {
-  font-weight: bold;
+
+function beforeLeave(el: HTMLElement) {
+  el.style.height = el.scrollHeight + 'px'
+  el.style.opacity = '1'
+  el.style.overflow = 'hidden'
+  el.style.transition = ''
 }
-.icon {
-  width: 24px;
-  height: 24px;
-  transition: transform 0.3s ease;
+
+function leave(el: HTMLElement, done: () => void) {
+  nextTick(() => {
+    el.style.transition = 'height 300ms ease, opacity 300ms ease'
+    el.style.height = '0px'
+    el.style.opacity = '0'
+    const cleanup = (e: TransitionEvent) => {
+      if (e.propertyName === 'height') {
+        el.removeEventListener('transitionend', cleanup)
+        done()
+      }
+    }
+    el.addEventListener('transitionend', cleanup)
+  })
 }
-.icon.open {
-  transform: rotate(45deg);
+
+function afterLeave(el: HTMLElement) {
+  el.style.height = ''
+  el.style.opacity = ''
+  el.style.overflow = ''
+  el.style.transition = ''
 }
-.content {
-  overflow: hidden;
-  font-size: 12px;
-  padding-top: 10px;
-}
-.content p {
-  margin: 15px 0;
-}
-</style>
+</script>
