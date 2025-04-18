@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute inset-0 w-full h-full -z-10 bg-[#F8FAFC]">
+    <div class="absolute inset-0 w-full h-full -z-10 bg-[#F1F5F9]">
       <!-- <svg class="w-full h-full" viewBox="0 0 375 3600" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
         <rect width="375" height="3600" fill="url(#smoothGradient)"/>
         <defs>
