@@ -1,8 +1,7 @@
 <template>
   <div class="grid grid-cols-12 gap-6 rtl">
     <!-- Filters -->
-    <aside class="col-span-12 lg:col-span-3 space-y-1">
-      <div class="mb-6 font-bold text-md">فیلتر محصولات</div>
+    <aside class="col-span-12 sm:col-span-6 md:col-span-3 space-y-1">
 
     <FilterCollapse
       v-for="(filter, index) in filters"
@@ -14,7 +13,7 @@
     />
   </aside>
     <!-- Product Grid -->
-    <section class="col-span-12 lg:col-span-9">
+    <section class="col-span-12 sm:col-span-6  md:col-span-9">
       <slot name="products" />
     </section>
   </div>

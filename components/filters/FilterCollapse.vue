@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white  p-6 py-3 rounded-3xl space-y-4">
+    <div :class="collapsed ? 'pb-0' : ''" class="bg-white  p-6 py-3 rounded-3xl space-y-4">
       <!-- Collapse Header -->
       <div class="group flex justify-between items-center cursor-pointer" @click="collapsed = !collapsed">
         <h2 class="text-sm font-semibold">{{ title }}</h2>
@@ -16,13 +16,13 @@
   @after-leave="afterLeave"
 >
 
-        <div v-show="!collapsed" class="overflow-hidden space-y-4" ref="contentRef">
+        <div :class="collapsed ? 'max-h-0' : ''" class="overflow-hidden transition-all duration-300   space-y-4" ref="contentRef">
           <!-- Tabs (optional) -->
-          <div v-if="tabs?.length" class="flex w-max mx-auto items-center justify-between p-1 rounded-full border border-gray-300 text-xs">
+          <div v-if="tabs?.length" class="flex w-max mx-auto items-center justify-between p-1  rounded-full border border-gray-300 text-xs">
             <button
               v-for="tab in tabs"
               :key="tab.key"
-              class="px-6 py-2 rounded-full font-medium text-center bg-transparent"
+              class="px-4 xl:px-6 py-2 rounded-full font-medium text-center bg-transparent"
               :class="activeTab === tab.key ? '!bg-[#014439] text-white' : 'text-gray-700'"
               @click="activeTab = tab.key"
             >
@@ -98,30 +98,30 @@ function afterEnter(el: Element) {
 }
 
 function beforeLeave(el: Element) {
-  const elHtml = el as HTMLElement
-  elHtml.style.height = `${elHtml.scrollHeight}px`
-  elHtml.style.opacity = '1'
-  elHtml.style.overflow = 'hidden'
-  elHtml.style.transition = ''
+  // const elHtml = el as HTMLElement
+  // elHtml.style.height = `${elHtml.scrollHeight}px`
+  // elHtml.style.opacity = '1'
+  // elHtml.style.overflow = 'hidden'
+  // elHtml.style.transition = ''
 }
 
 function leave(el: Element) {
-  const elHtml = el as HTMLElement
+  // const elHtml = el as HTMLElement
 
-  // force reflow
-  void elHtml.offsetHeight
+  // // force reflow
+  // void elHtml.offsetHeight
 
-  elHtml.style.transition = 'height 300ms ease, opacity 300ms ease'
-  elHtml.style.height = '0px'
-  elHtml.style.opacity = '0'
+  // elHtml.style.transition = 'height 300ms ease, opacity 300ms ease'
+  // elHtml.style.height = '0px'
+  // elHtml.style.opacity = '0'
 }
 
 function afterLeave(el: Element) {
-  const elHtml = el as HTMLElement
-  elHtml.style.transition = ''
-  elHtml.style.height = ''
-  elHtml.style.opacity = ''
-  elHtml.style.overflow = ''
+  // const elHtml = el as HTMLElement
+  // elHtml.style.transition = ''
+  // elHtml.style.height = ''
+  // elHtml.style.opacity = ''
+  // elHtml.style.overflow = ''
 }
 
   
