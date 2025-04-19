@@ -56,9 +56,9 @@ definePageMeta({
     <!-- ⬇ replace ONLY the input + button section -->
     <div>
       <form @submit.prevent="sendCode" class="space-y-6">
-        <BaseInput v-model="phone" persian
+        <BaseInput v-model="phone" persian position="left"
           :iconName="phone ? (isValid ? 'mdi:check-circle' : 'mdi:alert-circle') : null" dir="ltr"
-          placeholder="شماره موبایل (مثلاً ۰۹۱۲۳۴۵۶۷۸۹)" />
+          floatinglabel="شمارهٔ موبایل" placeholder="مثلا ۰۹۱۲۸۴۶۲۶۴۸" />
         <BaseButton type="submit" :loading="isLoading" :disabled="!isValid" :class="isValid
           ? 'bg-primary-600'
           : 'bg-[#EBEBEB] text-gray-400 cursor-not-allowed'">

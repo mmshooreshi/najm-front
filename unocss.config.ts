@@ -10,6 +10,11 @@ export default defineConfig({
 
   // Custom theme configurations
   theme: {
+    transitionTimingFunction: {
+      // Springy cubic‑bezier
+      spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    },
+
     colors: {
       primary: '#0070f3',
       secondary: '#ff0000',
@@ -61,3 +66,5 @@ export default defineConfig({
   // Enable UnoCSS transformers
   transformers: [transformerDirectives()],
 });
+
+
