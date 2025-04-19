@@ -1,7 +1,7 @@
 <template>
     <div class="drawer-container">
       <!-- Hamburger button -->
-      <div class="hamburger-icon flex-col" :class="{'flex-row':open}" @click="toggle">
+      <div class="hamburger-icon flex-col" :class="{'flex-row':open}" >
         <span class="icon icon-1" :class="{ 'open': open }"></span>
         <span class="icon icon-2" :class="{ 'open': open }"></span>
         <span class="icon icon-3" :class="{ 'open ': open }"></span>
@@ -10,7 +10,7 @@
       <!-- Full-screen sliding drawer -->
       <transition name="slide-full">
         <div v-if="open" class="drawer-panel">
-          <div class="drawer-body">
+          <div class="drawer-body" @click="maybeClose">
             <slot />
           </div>
         </div>
@@ -19,13 +19,35 @@
   </template>
   
   <script setup lang="ts">
-  import { ref } from 'vue'
+//   import { ref } from 'vue'
   
-  const open = ref(false)
+//   const open = ref(false)
   
-  function toggle() {
-    open.value = !open.value
+
+// Accept an `open` prop and emit `update:open` so parent can v-model it
+const props = defineProps<{ open: boolean }>()
+const emit  = defineEmits<{
+  (e: 'update:open', value: boolean): void
+}>()
+
+// Mirror prop into a local computed so we can `toggle()` it
+const open = computed({
+  get:  () => props.open,
+  set: (v: boolean) => emit('update:open', v),
+})
+
+function toggle() {
+  open.value = !open.value
+}
+
+
+// close if the click came from inside an <a> (e.g. a NuxtLink)
+    function maybeClose(e: MouseEvent) {
+        console.log(e.target)
+  if ((e.target as HTMLElement).closest('a')) {
+    // open.value = false
   }
+}
   </script>
   
   <style scoped lang="scss">

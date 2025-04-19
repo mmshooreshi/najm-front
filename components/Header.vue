@@ -51,12 +51,12 @@
         class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
                transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
         <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
-        <Drawer>
-            <ul class="space-y-4 rtl:text-right p-6">
-              <li><NuxtLink to="/">خانه</NuxtLink></li>
-              <li><NuxtLink to="/products">محصولات</NuxtLink></li>
-              <li><NuxtLink to="/about">درباره ما</NuxtLink></li>
-              <li><NuxtLink to="/contact">تماس با ما</NuxtLink></li>
+        <Drawer v-model:open="menuOpen">
+            <ul class="space-y-0 rtl:text-right p-0">
+              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/">خانه</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/products">محصولات</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/about">درباره ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/contact">تماس با ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
             </ul>
           </Drawer>
 
@@ -93,10 +93,10 @@
           </div> -->
 
           <ul class="flex flex-row ml-4 gap-6 text-sm text-black/70 font-medium">
-              <li><NuxtLink to="/">کاتالوگ</NuxtLink></li>
-              <li><NuxtLink to="/products">فایل‌های راهنما</NuxtLink></li>
-              <li><NuxtLink to="/about">درباره ما</NuxtLink></li>
-              <li><NuxtLink to="/contact">تماس با ما</NuxtLink></li>
+              <li><NuxtLink to="/">کاتالوگ</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li><NuxtLink to="/products">فایل‌های راهنما</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li><NuxtLink to="/about">درباره ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li><NuxtLink to="/contact">تماس با ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
             </ul>
 
 
@@ -124,13 +124,15 @@ import BottomArrowIcon from "~/assets/icons/bottom-arrow-icon.svg";
 import Drawer from "@/components/Drawer.vue";
 
 const { width } = useWindowSize();
-const menuOpen = ref(false);
 const searchOpen = ref(false);
 const searchQuery = ref("");
 
-const toggleMenu = () => {
-menuOpen.value = !menuOpen.value;
-};
+const menuOpen = ref(false)
+
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value
+}
+
 
 
  function openSearch() {
@@ -146,3 +148,28 @@ function closeSearch() {
 }
 
 </script>
+
+
+<style scoped>
+
+
+button,
+a,
+[role="button"],
+[tabindex],
+input,
+textarea,
+select,
+label,
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+</style>
