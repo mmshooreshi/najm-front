@@ -36,7 +36,7 @@ function goBack() {
 }
 
 useHead({
-    titleTemplate: (title?: string) => (title ? `${title} • پنج` : 'پنج'),
+    titleTemplate: (title?: string) => (title ? `${title} • ورود` : 'ورود به نجم'),
     htmlAttrs: {
         lang: 'fa',
         dir: 'rtl',

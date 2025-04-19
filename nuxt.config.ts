@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      title: 'Najm Printing',
+      title: 'چاپ نجم',
       link: [
         { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
         { rel: 'preload', href: '/fonts/woff2/IRANSansX-Regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
