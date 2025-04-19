@@ -45,8 +45,8 @@ definePageMeta({
     <div>
       <form @submit.prevent="complete" class="space-y-6">
       <div class="space-y-2">
-      <BaseInput v-model="fname" placeholder="نام" />
-      <BaseInput v-model="lname" placeholder="نام خانوادگی" />
+      <BaseInput class="z-10  !placeholder-black/40 !focus:placeholder-black/20" position="left" v-model="fname"  placeholder="نام" />
+      <BaseInput class="z-0  !placeholder-black/40 !focus:placeholder-black/20" position="left" v-model="lname"   placeholder="نام خانوادگی" />
     </div>
 
       <BaseButton  type="submit" :loading="isLoading"  :disabled="!fname || !lname">

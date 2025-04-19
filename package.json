@@ -33,7 +33,9 @@
     "vite-svg-loader": "^5.1.0"
   },
   "dependencies": {
+    "@shikijs/transformers": "^3.2.2",
     "@vueuse/motion": "^2.2.6",
+    "minisearch": "^7.1.2",
     "nuxt-icons": "^3.2.1",
     "pinia": "^2.3.1",
     "uuid": "^11.1.0",

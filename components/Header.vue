@@ -76,25 +76,33 @@
       <!-- Left Side: Profile + Hamburger + Search -->
       <div class="flex items-center gap-3">
           <!-- Profile Icon + Dropdown Arrow -->
-          <div 
+          <!-- <div 
             class="flex items-center gap-x-3 h-12 py-3 px-6 p-2 rounded-xl border border-1 border-black/10 
                    transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
               <UserIcon class="text-gray-700" />
               <span class="text-black text-sm">محمدمهدی</span>
               <BottomArrowIcon class="text-gray-500" />
-          </div>
+          </div> -->
 
           <!-- Hamburger Icon -->
-          <div 
+          <!-- <div 
             @click="toggleMenu" 
             class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
                    transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
             <HamburgerIcon class="fill-current text-gray-700" />
-          </div>
+          </div> -->
+
+          <ul class="flex flex-row ml-4 gap-6 text-sm text-black/70 font-medium">
+              <li><NuxtLink to="/">کاتالوگ</NuxtLink></li>
+              <li><NuxtLink to="/products">فایل‌های راهنما</NuxtLink></li>
+              <li><NuxtLink to="/about">درباره ما</NuxtLink></li>
+              <li><NuxtLink to="/contact">تماس با ما</NuxtLink></li>
+            </ul>
+
 
           <!-- Search Icon -->
           <div 
-            class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center 
+            class="p-3 w-12 h-12 rounded-2xl border  flex items-center justify-center 
                    transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
             <SearchIcon class="fill-current text-gray-700" />
           </div>

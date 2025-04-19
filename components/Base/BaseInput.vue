@@ -40,7 +40,7 @@
                     group-hover:scale-150 group-hover:opacity-100"></span>
 
                     <!-- your icon -->
-                    <Icon class="relative h-5 w-5 text-black/80" name="mdi:close-circle" />
+                    <Icon class="relative h-5 w-5 text-black/60" name="mdi:close-circle" />
                 </span>
             </div>
 
@@ -150,8 +150,13 @@ const { persian, ...forward } = attrs as any
 
 <style>
 .ttt {
-
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* only transition the properties we actually change, with a gentle ease-in-out */
+  transition: top 0.2s ease-in-out,
+              transform 0.2s ease-in-out,
+              font-size 0.2s ease-in-out,
+              padding 0.2s ease-in-out;
+  /* hint to the browser what will change for better performance */
+  will-change: top, transform, font-size, padding;
 }
 
 label {
@@ -159,13 +164,15 @@ label {
   transform: translateY(-50%);
   font-size: 1rem;
   padding: 0;
+  /* ensure the label sits above the input background */
+  background-color: #F9FBFA;
 }
 
 /* when focused or has content */
 label.floating {
-  top: 0.5rem;
-  transform: translateY(-100%);
+  top: 0.4rem;                 /* slightly closer to the input’s top edge */
+  transform: translateY(-100%); /* move up fully */
   font-size: 0.65rem;
-  padding: 0 0.5rem;
+  padding: 0 0.5rem;            /* preserve the side padding */
 }
 </style>

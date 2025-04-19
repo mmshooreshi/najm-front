@@ -13,14 +13,8 @@
         @paste.prevent="onPaste($event, i)"
         @keydown.backspace.prevent="onBackspace(i, $event)"
       />
-      <!-- inputmode="numeric"
-        autocomplete="one-time-code"
-        pattern="\\d*"
-  -->
     </div>
   </template>
-  
-
   
   <script setup lang="ts">
   import { ref, onMounted, watch, nextTick } from 'vue'
@@ -29,10 +23,8 @@
   interface Props {
     length?: number
     modelValue?: string
-    /** When true, show Persian digits; otherwise show English */
     persian?: boolean
     numberOnly?: boolean
-
   }
   
   const props = withDefaults(defineProps<Props>(), {
@@ -45,115 +37,101 @@
   const emit = defineEmits(['update:modelValue'])
   const fields = ref<HTMLInputElement[]>([] as any)
   
-  /** Focus input at given index */
+  // defer focus to next frame to batch DOM writes
   function focus(idx: number) {
-    fields.value[idx]?.focus()
+    const el = fields.value[idx]
+    if (el) requestAnimationFrame(() => el.focus())
   }
   
-  onMounted(() => {
-    focus(0)
-  })
+  onMounted(() => focus(0))
   
-  /* ---------- helpers ---------- */
-  function setField(idx: number, ch: string) {
-    const field = fields.value[idx]
-    if (field) {
-      field.value = props.persian ? toPersianDigits(ch) : ch
-    }
+  /** read current values as English digits */
+  function readValue(): string {
+    return fields.value
+      .map(f => toEnglishDigits(f.value))
+      .join('')
   }
   
+  /** write a single digit into a field (with Persian conversion) */
+  function writeField(idx: number, ch: string) {
+    const f = fields.value[idx]
+    if (f) f.value = props.persian ? toPersianDigits(ch) : ch
+  }
+  
+  /** clear a single field */
   function clearField(idx: number) {
-    const field = fields.value[idx]
-    if (field) {
-      field.value = ''
+    const f = fields.value[idx]
+    if (f) f.value = ''
+  }
+  
+  /** emit combined value */
+  function emitValue() {
+    emit('update:modelValue', readValue())
+  }
+  
+  /** distribute a sequence of digits starting at idx */
+  function distribute(seq: string, idx: number) {
+    // slice to max length
+    const max = props.length - idx
+    const digits = toEnglishDigits(seq).replace(/\D/g, '').slice(0, max).split('')
+    digits.forEach((d, i) => writeField(idx + i, d))
+    emitValue()
+    const next = idx + digits.length
+    focus(next < props.length ? next : props.length - 1)
+  }
+  
+  function onInput(idx: number, e: InputEvent) {
+    const f = e.target as HTMLInputElement
+    let v = f.value
+  
+    // strip non-digits immediately
+    v = toEnglishDigits(v).replace(/\D/g, '')
+    if (!v) {
+      // nothing valid → clear and emit
+      f.value = ''
+      emitValue()
+      return
+    }
+  
+    if (v.length === 1) {
+      // quick path: single digit
+      writeField(idx, v)
+      emitValue()
+      focus(idx + 1 < props.length ? idx + 1 : idx)
+    } else {
+      // multi-digit or autofill
+      distribute(v, idx)
     }
   }
   
-  function emitValue() {
-    const val = fields.value.map(f => toEnglishDigits(f.value)).join('')
-    emit('update:modelValue', val)
-  }
-  /* ----------------------------- */
-  
-/** Handles normal typing and multi‑char autofill */
-function onInput(idx: number, e: InputEvent) {
-  const field = e.target as HTMLInputElement
-
-  // 1) normalize & strip
-  let raw = toEnglishDigits(field.value).replace(/\D/g, '')
-
-  // 2) if there's something valid, distribute; otherwise clear this single field
-  if (raw) {
-    distribute(raw, idx)
-  } else {
-    // clear only the current input when user types a non‐digit
-    field.value = ''
-    emitValue()
-  }
-}
-
-
-
-  /** Explicit paste (same distribution logic) */
   function onPaste(e: ClipboardEvent, idx: number) {
-    e.preventDefault()
-    const text = toEnglishDigits(e.clipboardData?.getData('text') || '').replace(/\D/g, '')
+    const text = e.clipboardData?.getData('text') || ''
     distribute(text, idx)
   }
   
-  /** Put every char of `seq` into successive inputs, starting at `idx` */
-  function distribute(seq: string, idx: number) {
-    let cursor = idx
-    for (const ch of seq) {
-      if (cursor >= props.length) break
-      setField(cursor, ch)
-      cursor++
-    }
-    emitValue()
-  
-    // Focus next empty or last
-    if (cursor < props.length) {
-      focus(cursor)
-    } else {
-      focus(props.length - 1)
-    }
-  }
-  
-  /** Improved backspace UX */
   function onBackspace(idx: number, e: KeyboardEvent) {
-    e.preventDefault()
     const cur = fields.value[idx]
     if (cur?.value) {
       cur.value = ''
+      emitValue()
+      focus(idx)
     } else if (idx > 0) {
-      const prev = fields.value[idx - 1]
-      if (prev) {
-        prev.value = ''
-      }
+      fields.value[idx - 1].value = ''
+      emitValue()
       focus(idx - 1)
     }
-    emitValue()
   }
   
-  /** Watch external model changes: update fields and focus */
   watch(
     () => props.modelValue,
     async (newVal = '') => {
-      // Wait for DOM refs to be in place
       await nextTick()
-  
-      const digits = newVal.split('').map(ch => toEnglishDigits(ch))
-      // Populate or clear each field
+      const digits = toEnglishDigits(newVal).replace(/\D/g, '').split('')
       for (let i = 0; i < props.length; i++) {
-        if (i < digits.length) {
-          setField(i, digits[i])
-        } else {
-          clearField(i)
-        }
+        if (i < digits.length) writeField(i, digits[i])
+        else clearField(i)
       }
-      // Determine focus index: next empty or last filled
-      const nextIdx = digits.length < props.length ? digits.length : props.length - 1
-      focus(nextIdx)
+      focus(digits.length < props.length ? digits.length : props.length - 1)
     },
     { immediate: true }
   )
