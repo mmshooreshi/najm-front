@@ -73,7 +73,7 @@ definePageMeta({
     </div>
 
     <div>
-      <div class="flex items-center gap-2 mb-2">
+      <div class="flex items-center gap-2 mb-3">
         <div class="h-px flex-grow bg-gray-200"></div>
         <span class="text-xs text-gray-400">یا</span>
         <div class="h-px flex-grow bg-gray-200"></div>
