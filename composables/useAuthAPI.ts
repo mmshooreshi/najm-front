@@ -2,7 +2,7 @@
 import PocketBase from 'pocketbase'
 import { useAuth } from './useAuth'
 
-const pb = new PocketBase('http://65.108.80.205:8090')
+const pb = new PocketBase('https://aisland.co/najm/')
 
 export function useAuthAPI() {
   const { setIdentifier, setToken, setUser } = useAuth()

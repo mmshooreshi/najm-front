@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
-      title: 'چاپ نجم',
+      title: 'Najm Printing',
       link: [
         { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
         { rel: 'preload', href: '/fonts/woff2/IRANSansX-Regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
@@ -25,6 +25,7 @@ export default defineNuxtConfig({
     transpile: ['gsap'],
   },
 
+  
   modules: [
    '@unocss/nuxt',
    '@pinia/nuxt',
@@ -49,6 +50,11 @@ export default defineNuxtConfig({
     cookie: {},
     cookieName: 'strapi_jwt'
   },
+  proxy: {
+    '/najm/': {
+        target: "http://65.108.80.205:8090"
+    }
+},
   unocss: {
     content: {
       pipeline: {
