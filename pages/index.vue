@@ -1,5 +1,5 @@
 <template>
-
+<div>
     <!-- Your Main Content (positioned above the background) -->
     <div class="snap-start  max-h-screen">
       <!-- Header Container (Frame 277 + 216 + 285 merged) -->
@@ -92,9 +92,10 @@
     </div>
 
     <div class="pb-8 snap-end">
-      <FollowupWheel />
+      <!-- <FollowupWheel /> -->
 
     </div>
+  </div>
 
 </template>
 
@@ -125,6 +126,9 @@ import Btn from "~/components/re/Btn.vue";
 import FollowupWheel from '~/components/sections/FollowupWheel.vue';
 import DesignExecutionCard from '~/components/aut/DesignExecutionCard.vue';
 import ProductDesignCard from '~/components/aut/ProductDesignCard.vue';
+import { useAuth } from '~/composables/useAuth'
+
+const {     token,user,identifier,isAuthenticated,logout} = useAuth()
 
 const isLoading = ref(false);
 

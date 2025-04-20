@@ -5,26 +5,36 @@ import BaseInput from '~/components/Base/BaseInput.vue'
 import BaseButton from '~/components/Base/BaseButton.vue'
 import SocialLoginButtons from '~/components/auth/SocialLoginButtons.vue'
 import { useAuth } from '~/composables/useAuth'
+import { useAuthAPI } from '~/composables/useAuthAPI'
+
 import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
 import loginPageIcon from '~/assets/icons/Auth/login-page-icon'
 import { useNavDirection } from '~/composables/useNavDirection'
 const nav = useNavDirection()
 const route = useRoute()
 const router = useRouter()
-const { identifier } = useAuth()
+// const { identifier } = useAuth()
+const { sendPhoneNumber, verifyOTP } = useAuthAPI()
 
-const phone = ref('')                           // Persian digits shown
+const { setToken, setUser, setOtpId, setIdentifier } = useAuth()
+const { loginOrRegister } = useAuthAPI()
+
+const emailEn = ref('mmshooreshi@gmail.com')
+const phone = ref('')
+const otpId = ref('')
+const isLoading = ref(false)
+
 const phoneEn = computed(() => toEnglishDigits(phone.value))
-const isValid = computed(() => /^09\d{9}$/.test(phoneEn.value))
+const isValidPhone = computed(() => /^09\d{9}$/.test(phoneEn.value))
+const isValidEmail = computed(() => /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(emailEn.value))
 
 
 // pages/login.vue (inside <script setup>)
-const isLoading = ref(false)
 async function sendCode() {
-  if (!isValid.value) return
+  if (!isValidPhone.value) return
   isLoading.value = true
   try {
-    identifier.value = phoneEn.value
+    setIdentifier(phoneEn.value) 
     nav.value = 'forward'
     // replace this with real API call; using mock here:
     await new Promise(r => setTimeout(r, 1000))
@@ -35,6 +45,31 @@ async function sendCode() {
     isLoading.value = false
   }
 }
+
+
+// Step 1: Request OTP (login or register flow)
+const requestOTP = async () => {
+  console.log('Requesting OTP for email:', emailEn.value)
+  if (!isValidEmail.value || !isValidPhone.value) return
+  isLoading.value = true
+  try {
+    // Step 2: Handle login or registration
+    otpId.value = await loginOrRegister(emailEn.value, phone.value)
+    setOtpId(otpId.value)  // Store otpId in Pinia
+    setIdentifier(phoneEn.value)  // Store email/identifier in Pinia
+
+
+    console.log('OTP sent successfully. otpId:', otpId.value)
+    // Navigate to OTP input screen
+    router.push({ name: 'verify' })
+  } catch (err) {
+    console.error('Error during login/register process:', err)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+
 
 
 definePageMeta({
@@ -55,11 +90,11 @@ definePageMeta({
 
     <!-- ⬇ replace ONLY the input + button section -->
     <div>
-      <form @submit.prevent="sendCode" class="space-y-6">
+      <form @submit.prevent="requestOTP" class="space-y-6">
         <BaseInput numberOnly v-model="phone" persian position="left"
-          :iconName="phone ? (isValid ? 'mdi:check-circle' : 'mdi:alert-circle') : null" dir="ltr"
+          :iconName="phone ? (isValidPhone ? 'mdi:check-circle' : 'mdi:alert-circle') : null" dir="ltr"
           floatinglabel="شمارهٔ موبایل" placeholder="مثلا ۰۹۱۲۸۴۶۲۶۴۸" />
-        <BaseButton type="submit" :loading="isLoading" :disabled="!isValid" :class="isValid
+        <BaseButton type="submit" :loading="isLoading" :disabled="!isValidPhone" :class="isValidPhone
           ? 'bg-primary-600'
           : 'bg-[#EBEBEB] text-gray-400 cursor-not-allowed'">
           دریافت کد ورود

@@ -14,9 +14,11 @@
 
         <form @submit.prevent="verifyCode" class="space-y-6">
             <OtpInput numberOnly v-model="code" persian :length="otpLength" />
+            <!-- {{ code }} -->
             <BaseButton type="submit" :loading="isLoading" :disabled="code.length !== otpLength">
                 تایید
             </BaseButton>
+            <!-- {{ otpId }} -->
 
             <p class="mt-3 text-center text-xs text-[#797B7D]" :class="timer > 0 ? 'cursor-wait' : 'cursor-default'">
                 دریافت مجدد کد
@@ -34,118 +36,111 @@
 
     </div>
 </template>
-
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import AuthHeader from '~/components/auth/AuthHeader.vue'
 import OtpInput from '~/components/auth/OtpInput.vue'
 import BaseButton from '~/components/Base/BaseButton.vue'
 import { useAuth } from '~/composables/useAuth'
-import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
+import { useAuthAPI } from '~/composables/useAuthAPI'
 import { useNavDirection } from '~/composables/useNavDirection'
-const nav = useNavDirection()
+import { toPersianDigits } from '~/utils/digits'
 
+const nav = useNavDirection()
 const router = useRouter()
+
 const { identifier, token } = useAuth()
 const code = ref('')
-const otpLength = ref(6)
+const otpLength = computed(() => 6)  // Assuming OTP length is 6
+const { otpId, setUser, setToken } = useAuth()  // Get otpId from Pinia store
 
-// —— countdown timer logic ——
-const initialSeconds = 10 // 1 minute 34 seconds
+const { authenticateWithOTP } = useAuthAPI()
+
+const isLoading = ref(false)
+
+// Countdown timer logic
+const initialSeconds = 10
 const timer = ref<number>(initialSeconds)
 let timerInterval: number
 
 const formattedTime = computed(() => {
-    const m = Math.floor(timer.value / 60)
-    const s = timer.value % 60
-    const sec = s < 10 ? `0${s}` : `${s}`
-    return `${m}:${sec}`
+  const m = Math.floor(timer.value / 60)
+  const s = timer.value % 60
+  const sec = s < 10 ? `0${s}` : `${s}`
+  return `${m}:${sec}`
 })
 
 function startTimer() {
-    timer.value = initialSeconds
-    clearInterval(timerInterval)
-    timerInterval = window.setInterval(() => {
-        if (timer.value > 0) {
-            timer.value--
-        } else {
-            clearInterval(timerInterval)
-        }
-    }, 1000)
+  timer.value = initialSeconds
+  clearInterval(timerInterval)
+  timerInterval = window.setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--
+    } else {
+      clearInterval(timerInterval)
+    }
+  }, 1000)
 }
 
 function resendCode() {
-    // TODO: call your resend API here
-    startTimer()
+  startTimer()
 }
 
-
-async function pasteFromClipboard() {
-    try {
-        const raw = await navigator.clipboard.readText()
-        const digits = toEnglishDigits(raw).replace(/\D/g, '')
-        if (digits.length === otpLength.value) code.value = digits
-    } catch { /* user denied or API unsupported */ }
-}
-
-function tryAutoPasteOnce(e: PointerEvent) {
-    window.removeEventListener('pointerdown', tryAutoPasteOnce)
-    pasteFromClipboard()
-}
-onMounted(() => {
-    startTimer()
-    window.addEventListener('focus', checkClipboard)
-    clipboardInterval = window.setInterval(checkClipboard, 1000)
-
-    if ('clipboard' in navigator) {
-        window.addEventListener('pointerdown', tryAutoPasteOnce, { once: true })
-    }
-
-})
-
-onBeforeUnmount(() => {
-    clearInterval(timerInterval)
-    window.removeEventListener('focus', checkClipboard)
-    clearInterval(clipboardInterval)
-})
-
-const isLoading = ref(false)
-// —— OTP verification & edit number ——
 async function verifyCode() {
-    if (code.value.length !== otpLength.value) return
-    isLoading.value = true
-    token.value = 'mock-jwt'
-    nav.value = 'forward'
-    await new Promise((r) => setTimeout(r, 800))
-    router.push({ name: 'profile' })
+  if (code.value.length !== otpLength.value) return
+  isLoading.value = true
+  try {
+    // Replace with real OTP verification
+    console.log(otpId)
+    const { success } = await authenticateWithOTP(otpId, code.value)
+    if (success) {
+      console.log('OTP verification successful')
+      router.push({ name: 'profile' })
+    } else {
+      console.log('OTP verification failed')
+    }
+  } catch (err) {
+    console.error('Error during OTP verification:', err)
+  } finally {
     isLoading.value = false
-
+  }
 }
 
-function editNumber() {
-    nav.value = 'back'
-    router.back()
-}
-
-// —— clipboard auto-fill ——
+// Clipboard auto-fill logic
 let clipboardInterval: number
 let lastText = ''
 
 async function checkClipboard() {
-    // if (!document.hasFocus()) return
-    // try {
-    //   const rawtext = await navigator.clipboard.readText()
-    //   const text = toEnglishDigits(rawtext).replace(/\D/g, '')
-    //   if (text && text !== lastText) {
-    //     const regex = new RegExp(`^\\d{${otpLength.value}}$`)
-    //     if (regex.test(text)) {
-    //       code.value = text
-    //     }
-    //     lastText = text
-    //   }
-    // } catch {
-    //   // ignore
-    // }
+  try {
+    const rawtext = await navigator.clipboard.readText()
+    const text = toPersianDigits(rawtext).replace(/\D/g, '')
+    if (text && text !== lastText) {
+      const regex = new RegExp(`^\\d{${otpLength.value}}$`)
+      if (regex.test(text)) {
+        code.value = text
+      }
+      lastText = text
+    }
+  } catch {
+    // ignore
+  }
+}
+
+onMounted(() => {
+  startTimer()
+  window.addEventListener('focus', checkClipboard)
+  clipboardInterval = window.setInterval(checkClipboard, 1000)
+})
+
+onBeforeUnmount(() => {
+  clearInterval(timerInterval)
+  window.removeEventListener('focus', checkClipboard)
+  clearInterval(clipboardInterval)
+})
+
+function editNumber() {
+  nav.value = 'back'
+  router.back()
 }
 
 definePageMeta({

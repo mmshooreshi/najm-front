@@ -8,15 +8,32 @@
         <NajmLogo class="h-12 w-12" />
       </NuxtLink>
     </div>
-
+    
+    
     <!-- Left: Language + Search -->
     <div v-if="width < 768" class="flex flex-row items-center gap-1">
+        
+                  <div v-if="isAuthenticated" class="floating-badge">
+                  <router-link :to="`/user/${user.id}`" class="badge-link">
+                    <div class="badge">{{user.name}} {{user.familyName}}</div> <!-- You can customize this to display user initials or avatar -->
+                  </router-link>
+                </div>
+                <div v-else>
+                    <NuxtLink to="/login" class="ml-0 flex items-center gap-3">
+                      <button @click="handleLogin" class="text-xs text-d4 px-3 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold   border border-gray-200 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+                        ورود / ثبت نام
+                      </button>
+                    </NuxtLink>
+            
+                </div>
       <!-- Language Switch -->
       <div 
         class="w-12 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold   border border-gray-200
                transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
         <span class="block">FA</span>
       </div>
+
+
       <!-- Search Button -->
       <!-- Sliding Search Container -->
       <div
@@ -122,6 +139,9 @@ import SearchIcon from "~/assets/icons/search-icon.svg";
 import UserIcon from "~/assets/icons/user-icon.svg";
 import BottomArrowIcon from "~/assets/icons/bottom-arrow-icon.svg";
 import Drawer from "@/components/Drawer.vue";
+import { useAuth } from '~/composables/useAuth'  // Import the useAuth composable to check if the user is authenticated
+
+const { token, user, isAuthenticated } = useAuth()  // Destructure the token and user data from useAuth
 
 const { width } = useWindowSize();
 const searchOpen = ref(false);
@@ -172,4 +192,12 @@ label,
     -ms-user-select: none;
     user-select: none;
 }
+
+.floating-badge {
+  position: fixed;
+  bottom: 20px;
+  right: 80px;
+  z-index: 1000;
+}
+
 </style>
