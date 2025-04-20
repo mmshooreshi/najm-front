@@ -3,6 +3,7 @@
       <input
         v-bind="forward"
         v-model="display"
+        :type="numberOnly ? 'tel' : 'text'"
         :placeholder="forward.placeholder"
         @focus="onFocus"
         @blur="onBlur"
