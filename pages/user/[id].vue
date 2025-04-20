@@ -76,10 +76,10 @@
   </template>
   
   <script setup>
-  import { useAuth } from '~/composables/useAuth'  // Import the useAuth composable to access user data from the store
+  import { useAuthStore } from '~/composables/useAuth'  // Import the useAuth composable to access user data from the store
   import { useRouter } from 'vue-router'
   
-  const { user, token, otpId, identifier, logout } = useAuth()
+  const { user, token, otpId, identifier, logout } = useAuthStore()
   const router = useRouter()
   
   // Logout functionality

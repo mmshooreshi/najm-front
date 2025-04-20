@@ -1,11 +1,11 @@
 // composables/useAuthAPI.ts
 import PocketBase from 'pocketbase'
-import { useAuth } from './useAuth'
+import { useAuthStore } from './useAuth'
 
 const pb = new PocketBase('https://aisland.co/najm/')
 
 export function useAuthAPI() {
-  const { setIdentifier, setToken, setUser } = useAuth()
+  const { setIdentifier, setToken, setUser } = useAuthStore()
 
   // Log every step aggressively for debugging
   console.log("Initializing useAuthAPI...")
@@ -26,9 +26,9 @@ const createUser = async (email: string, phone: string) => {
         // created: "2025-04-20 13:48:10.436Z",
         email: email,
         emailVisibility: false,
-        familyName: "TestFName",
+        familyName: "",
         // id: "8b9up3k36f8v2qx",
-        name: "TestName",
+        name: "",
         phone: phone,
         role: "",
         socialMediaHandles: null,

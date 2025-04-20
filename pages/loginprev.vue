@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import AuthSegmentedTabs from '~/components/auth/AuthSegmentedTabs.vue'
 import AuthSocialButtons from '~/components/auth/AuthSocialButtons.vue'
-import { useAuthUIData } from '~/composables/auth/authUI'
+import { useAuthUIData } from '~/composables/ui/authUI'
 import errorIcon from '~/assets/icons/error-icon.svg'
 
 // Helper functions for digit conversion.

@@ -1,13 +1,16 @@
 <!-- pages/verify.vue -->
 <template>
     <div class="space-y-9  px-4 py-0 w-full">
-        <AuthHeader icon="verify-page-icon" title="کد تایید رو وارد کن">
+        <AuthHeader icon="verify-page-icon" :title="authUIData.verify.heading">
             <template #subtitle>
-                <div class="text-xs ">
-                    کد تایید، به شماره‌ی {{ toPersianDigits(identifier) }} ارسال شد.
-                    <span @click="editNumber" class="text-blue-600 underline cursor-pointer">
-                        ویرایش
-                    </span>
+                <!-- کد تایید، به شماره‌ی {{ toPersianDigits(identifier) }} ارسال شد. -->
+
+                <div class="text-xs gap-1 flex flex-row" >
+                    <div>{{ dynamicSubheading }}</div>
+
+                    <NuxtLink to="/login" class="text-blue-600 underline cursor-pointer">
+                        {{authUIData.verify.editButtonLabel}}
+                    </NuxtLink>
                 </div>
             </template>
         </AuthHeader>
@@ -16,17 +19,17 @@
             <OtpInput numberOnly v-model="code" persian :length="otpLength" />
             <!-- {{ code }} -->
             <BaseButton type="submit" :loading="isLoading" :disabled="code.length !== otpLength">
-                تایید
+                {{authUIData.verify.okButtonLabel}}
             </BaseButton>
             <!-- {{ otpId }} -->
 
             <p class="mt-3 text-center text-xs text-[#797B7D]" :class="timer > 0 ? 'cursor-wait' : 'cursor-default'">
-                دریافت مجدد کد
+                {{authUIData.verify.retryLabel}}
                 <span v-if="timer > 0">
                     {{ toPersianDigits(formattedTime) }}
                 </span>
                 <span v-else @click="resendCode" class="text-blue-600 underline cursor-pointer">
-                    دریافت دوباره
+                    {{authUIData.verify.retryButtonLabel}}
                 </span>
             </p>
 
@@ -45,11 +48,29 @@ import { useAuth } from '~/composables/useAuth'
 import { useAuthAPI } from '~/composables/useAuthAPI'
 import { useNavDirection } from '~/composables/useNavDirection'
 import { toPersianDigits } from '~/utils/digits'
+import { useAuthUIData } from '~/composables/ui/authUI'
+const {authUIData} = useAuthUIData()
 
 const nav = useNavDirection()
 const router = useRouter()
 
 const { identifier, token } = useAuth()
+
+
+// Loading state
+const loading = ref(true)
+
+// Wait for authUIData to load
+watchEffect(() => {
+  if (authUIData.value) {
+    loading.value = false
+  }
+})
+
+const dynamicSubheading = computed(() => {
+  return authUIData.value?.verify.subheading.replace("<phone>", toPersianDigits(identifier)) || ''
+})
+
 const code = ref('')
 const otpLength = computed(() => 6)  // Assuming OTP length is 6
 const { otpId, setUser, setToken } = useAuth()  // Get otpId from Pinia store

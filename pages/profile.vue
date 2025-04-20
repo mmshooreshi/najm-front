@@ -6,13 +6,15 @@ import BaseButton from '~/components/Base/BaseButton.vue'
 import { useAuth } from '~/composables/useAuth'
 import { useAuthAPI } from '~/composables/useAuthAPI'
 import { useNavDirection } from '~/composables/useNavDirection'
+import { useAuthUIData } from '~/composables/ui/authUI'
+const {authUIData} = useAuthUIData()
 
 const nav = useNavDirection()
 const { user, setUser, token } = useAuth()
 const { updateUser } = useAuthAPI()
 
-const fname = ref(user.name)
-const lname = ref(user.familyName)
+const fname = ref(user?.name)
+const lname = ref(user?.familyName)
 const router = useRouter()
 
 const isLoading = ref(false)
@@ -41,20 +43,20 @@ definePageMeta({
 
 <template>
   <div class="space-y-9  bg-transparent px-4 py-0 w-full">
-    <AuthHeader icon="profile-page-icon" title="پروفایلتو کامل کن"
-      subtitle="دسترسی سریع به سفارش‌ها، پیگیری وضعیت و خدمات اختصاصی" />
+    <AuthHeader icon="profile-page-icon" :title="authUIData.profile.heading"
+      :subtitle="authUIData.profile.subheading" />
 
     <form @submit.prevent="complete" class="space-y-6">
       <div class="space-y-2">
-        <BaseInput class="z-10  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="fname"  placeholder="نام" />
-        <BaseInput class="z-0  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="lname"   placeholder="نام خانوادگی" />
+        <BaseInput class="z-10  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="fname"  :placeholder="authUIData.profile.namePlaceholder" />
+        <BaseInput class="z-0  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="lname"   :placeholder="authUIData.profile.familyNamePlaceholder" />
       </div>
 
       <BaseButton type="submit" :loading="isLoading" :disabled="!fname || !lname">
-        ادامه
+        {{authUIData.profile.okButtonLabel}}
       </BaseButton>
     </form>
 
-    <p class="mt-6 underline text-center text-xs text-[#797B7D] cursor-pointer active:text-blue hover:text-black">باشه برای بعد</p>
+    <p class="mt-6 underline text-center text-xs text-[#797B7D] cursor-pointer active:text-blue hover:text-black">{{authUIData.profile.skipButtonLabel}}</p>
   </div>
 </template>

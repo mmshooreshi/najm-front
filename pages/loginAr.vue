@@ -21,7 +21,7 @@ const { sendPhoneNumber, verifyOTP, loginOrRegister } = useAuthAPI()
 
 const { setToken, setUser, setOtpId, setIdentifier } = useAuth()
 
-const {authUIData} = useAuthUIData("")
+const {authUIData} = useAuthUIData("Ar")
 
 const emailEn = ref('mmshooreshi@gmail.com')
 const phone = ref('')
@@ -77,7 +77,7 @@ const requestOTP = async () => {
 
 
 definePageMeta({
-  name: 'login',
+  name: 'loginAr',
   layout: 'auth',
 })
 
