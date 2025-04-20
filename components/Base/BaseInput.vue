@@ -27,7 +27,7 @@
       <!-- clear icon -->
       <div v-if="(display&&state!=='success')||iconName"
      @click="display&&state!=='success'&&(display='')"
-     :class="['absolute inset-y-0 flex items-center h-full w-5 group',position+'-3',iconColor]">
+     :class="['absolute left-3 right-3 inset-y-0 flex items-center h-full w-5 group',position+'-3',iconColor]">
   <span v-if="display&&state!=='success'" class="relative w-5 h-5 cursor-pointer group">
     <span class="absolute inset-0 rounded-full bg-gray-300/50 transform transition duration-200 scale-75 group-hover:scale-150 group-hover:opacity-100"/>
     <Icon name="mdi:close-circle" class="w-5 h-5 text-black/80"/>
@@ -106,7 +106,7 @@
   // Motion for label
   const labelRef = ref<HTMLElement | null>(null)
   const { motionProperties } = useMotionProperties(labelRef, { y: 0, scale: 1 })
-  const { set: animateLabel } = useSpring(motionProperties, { stiffness: 200, damping: 20 })
+  const { set: animateLabel } = useSpring(motionProperties, { stiffness: 500, damping: 30 })
   
   // Trigger animation on floating state change
   const isFloating = computed(() => isFocused.value || !!display.value)
