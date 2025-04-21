@@ -1,16 +1,22 @@
 <!-- Header.vue -->
 <template>
-    <header dir="rtl" class="fixed top-0  z-50 flex items-center justify-between p-2 bg-white/80  backdrop-blur-sm  w-full">
-    <!-- Right: Logo + Hamburger -->
-    <div v-if="width < 768" class="flex flex-row items-center gap-4">
-      <!-- Logo -->
-      <NuxtLink to="/" class="flex justify-center">
-        <NajmLogo class="h-12 w-12" />
-      </NuxtLink>
-    </div>
+    <header  dir="rtl" class="fixed top-0 justify-between z-50 flex  flex-row items-center  p-2 bg-white/80  backdrop-blur-sm  w-full">
+        
+        <!-- Right: Logo + Hamburger -->
+        <div :class="menuOpen?'w-0':'w-max'" v-if="width < 768" class="flex flex-row items-center gap-4 transition-all duration-500">
+            <!-- Logo -->
+            <NuxtLink to="/" class="flex justify-center">
+                <NajmLogo class="h-12 w-12" />
+            </NuxtLink>
+        </div>
+
+
+        
+    
     
     <!-- Left: Language + Search -->
-    <div v-if="width < 768" class="flex flex-row items-center gap-1"  >
+    <div v-if="width < 768" class="flex flex-row items-center gap-1  text-nowrap"  >
+
         
         <div v-if="isAuthenticated" class="floating-badge z-100">
                   <NuxtLink :to="`/user/${user.id}`"  class="group ml-0 flex items-center gap-3 ">
@@ -30,7 +36,7 @@
                         class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white  hover:bg-[#A8ABAE]/20 flex row items-center justify-center text-gray-700  border border-gray-200 transition-transform duration-200 ease-in-out font-medium cursor-pointer"             :class="menuOpen ? 'right-[28vw]' : ''">
                           <div >
                             <profileUserIcon class=""/></div>
-                            <div> ورود / ثبت نام</div>                        
+                            <div>ورود</div>                        
                             <Icon class="transition-all group-hover:-translate-x-2 w-5 h-5 my-auto text-[#A8ABAE] " name="mdi:chevron-left"/>
                       </button>
                     </NuxtLink>
@@ -54,7 +60,7 @@
         @click="openSearch"
         class="relative flex items-center overflow-hidden bg-white border border-gray-200 rounded-2xl
                transition-[width] duration-300 ease-in-out cursor-pointer  p-3"
-        :class="searchOpen ? 'w-44' : 'w-12'"
+        :class="menuOpen ? 'xs:w-20 sm:w-24' : 'w-12'"
         
       >
         <!-- Icon stays put -->
@@ -77,28 +83,27 @@
       <!-- Hamburger Menu -->
    
 
-    
-      <div 
-        @click="toggleMenu" 
-        class="px-6 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
-               transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer " ref="menuContainer" 
-               :class="menuOpen ? 'mr-18' : ''"
-               >
-        <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
-        
-        <Drawer v-model:open="menuOpen"   >
-            <Menu @click="handleWrapperClick" />
-            <!-- <ul class="space-y-0 rtl:text-right p-0">
-              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/">خانه</NuxtLink><Icon name="mdi:arrow-left"/></li>
-              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/products">محصولات</NuxtLink><Icon name="mdi:arrow-left"/></li>
-              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/about">درباره ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
-              <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/contact">تماس با ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
-            </ul> -->
+<!-- Always stay at the far left (RTL) -->
+ <div class="flex items-center" v-if="width < 768">
 
-          </Drawer>
+    <!-- Hamburger always fixed left -->
+  <div
+    @click="toggleMenu"
+    class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center border border-gray-200
+          transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
+    ref="menuContainer"
+  >
+    <!-- You can uncomment icon if needed -->
+    <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
+    <Drawer v-model:open="menuOpen">
+      <Menu @click="handleWrapperClick" />
+    </Drawer>
+  </div>
 
+  <!-- Spacer that grows when menu is open -->
 
-      </div>
+</div>
+
       
 
     </div>
