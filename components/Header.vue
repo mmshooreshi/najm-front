@@ -82,7 +82,7 @@
         @click="toggleMenu" 
         class="px-6 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
                transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer " ref="menuContainer" 
-               :class="menuOpen ? 'mr-36' : ''"
+               :class="menuOpen ? 'mr-18' : ''"
                >
         <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
         
