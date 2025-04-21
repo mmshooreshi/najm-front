@@ -43,7 +43,6 @@
   
   <script setup lang="ts">
   import { computed } from 'vue'
-  import { NuxtLink } from 'vue-router'
   import BaseAccordionGroup from '~/components/Base/BaseAccordionGroup.vue'
   import MenuLevel from '~/components/MenuLevel.vue'
   import { useMenuUIData } from '@/composables/ui/menuUI'
