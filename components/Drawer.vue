@@ -15,6 +15,8 @@
           </div>
         </div>
       </transition>
+
+
     </div>
   </template>
   
@@ -136,6 +138,8 @@ function toggle() {
   }
   
   .drawer-body {
+    top: 0px;
+    
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;

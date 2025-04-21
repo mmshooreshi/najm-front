@@ -1,0 +1,584 @@
+// {
+//   "products": {
+//     "id": 1,
+//     "name": "دسته‌بندی محصولات",
+//     "slug": "products",
+//     "url": "/products",
+//     "description": "Explore our complete range of packaging and printing products across various applications, industries, and formats.",
+//     "icon": "/assets/icons/products.svg",
+//     "tags": ["products", "packaging", "printing"],
+//     "isPopular": false,
+//     "children": [
+//       {
+//         "id": 1,
+//         "name": "برنامه‌ها",
+//         "slug": "applications",
+//         "url": "/products/applications",
+//         "description": "Packaging solutions organized by application or use case.",
+//         "icon": "/assets/icons/applications.svg",
+//         "tags": ["applications", "use-case"],
+//         "isPopular": false,
+//         "children": [
+//           {
+//             "id": 1,
+//             "name": "پکیج سازمانی و اداری",
+//             "slug": "office-packaging",
+//             "url": "/products/applications/office-packaging",
+//             "description": "High‑quality office and administrative packaging solutions designed for professional corporate use.",
+//             "icon": "/assets/icons/applications/office-packaging.svg",
+//             "tags": ["office", "administrative", "corporate"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 2,
+//             "name": "پکیج تبلیغاتی و بازاریابی",
+//             "slug": "marketing-packaging",
+//             "url": "/products/applications/marketing-packaging",
+//             "description": "Eye‑catching promotional packaging to enhance your marketing campaigns and brand visibility.",
+//             "icon": "/assets/icons/applications/marketing-packaging.svg",
+//             "tags": ["marketing", "promotional", "campaign"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 3,
+//             "name": "پکیج صنعتی و فنی",
+//             "slug": "industrial-technical-packaging",
+//             "url": "/products/applications/industrial-technical-packaging",
+//             "description": "Durable, engineered packaging solutions for industrial and technical products in demanding environments.",
+//             "icon": "/assets/icons/applications/industrial-technical-packaging.svg",
+//             "tags": ["industrial", "technical", "engineered"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 4,
+//             "name": "پکیج آموزشی و فرهنگی",
+//             "slug": "educational-cultural-packaging",
+//             "url": "/products/applications/educational-cultural-packaging",
+//             "description": "Vibrant packaging designed for educational materials and cultural events, with custom prints and finishes.",
+//             "icon": "/assets/icons/applications/educational-cultural-packaging.svg",
+//             "tags": ["education", "culture", "books"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 5,
+//             "name": "پکیج مناسبتی و سفارشی",
+//             "slug": "custom-occasional-packaging",
+//             "url": "/products/applications/custom-occasional-packaging",
+//             "description": "Tailor‑made packaging for special occasions, customizable with names, dates, and event themes.",
+//             "icon": "/assets/icons/applications/custom-occasional-packaging.svg",
+//             "tags": ["custom", "occasions", "events"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 6,
+//             "name": "پکیج نمایشگاهی و رویدادی",
+//             "slug": "exhibition-event-packaging",
+//             "url": "/products/applications/exhibition-event-packaging",
+//             "description": "Lightweight yet sturdy packaging ideal for exhibitions, fairs, and live events, designed to impress.",
+//             "icon": "/assets/icons/applications/exhibition-event-packaging.svg",
+//             "tags": ["exhibition", "event", "trade-show"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 7,
+//             "name": "پکیج لوکس و هدیه",
+//             "slug": "luxury-gift-packaging",
+//             "url": "/products/applications/luxury-gift-packaging",
+//             "description": "Premium luxury gift packaging with upscale materials, ribbons, and embossing options for a refined unboxing experience.",
+//             "icon": "/assets/icons/applications/luxury-gift-packaging.svg",
+//             "tags": ["luxury", "gift", "premium"],
+//             "isPopular": true,
+//             "children": []
+//           }
+//         ]
+//       },
+//       {
+//         "id": 2,
+//         "name": "صنایع",
+//         "slug": "industries",
+//         "url": "/products/industries",
+//         "description": "Packaging tailored for specific industries and regulatory requirements.",
+//         "icon": "/assets/icons/industries.svg",
+//         "tags": ["industries", "verticals"],
+//         "isPopular": false,
+//         "children": [
+//           {
+//             "id": 1,
+//             "name": "غذا، نوشیدنی و رستوران",
+//             "slug": "food-beverage-restaurant",
+//             "url": "/products/industries/food-beverage-restaurant",
+//             "description": "Food‑safe packaging solutions tailored for restaurants, cafes, and beverage brands.",
+//             "icon": "/assets/icons/industries/food-beverage-restaurant.svg",
+//             "tags": ["food", "beverage", "restaurant"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 2,
+//             "name": "آرایشی و بهداشتی",
+//             "slug": "beauty-health",
+//             "url": "/products/industries/beauty-health",
+//             "description": "Stylish and compliant packaging for cosmetics, skincare, and personal care products.",
+//             "icon": "/assets/icons/industries/beauty-health.svg",
+//             "tags": ["beauty", "cosmetics", "health"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 3,
+//             "name": "پزشکی و دارویی",
+//             "slug": "medical-pharmaceutical",
+//             "url": "/products/industries/medical-pharmaceutical",
+//             "description": "Regulatory‑compliant pharmaceutical packaging designed to ensure product safety and integrity.",
+//             "icon": "/assets/icons/industries/medical-pharmaceutical.svg",
+//             "tags": ["medical", "pharmaceutical", "compliant"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 4,
+//             "name": "مد، پوشاک و اکسسوری",
+//             "slug": "fashion-apparel-accessories",
+//             "url": "/products/industries/fashion-apparel-accessories",
+//             "description": "Chic packaging solutions for apparel, accessories, and fashion brands to elevate your brand image.",
+//             "icon": "/assets/icons/industries/fashion-apparel-accessories.svg",
+//             "tags": ["fashion", "apparel", "accessories"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 5,
+//             "name": "جواهرات و زیورآلات",
+//             "slug": "jewelry",
+//             "url": "/products/industries/jewelry",
+//             "description": "Luxury packaging crafted for fine jewelry and watches, combining protection with elegance.",
+//             "icon": "/assets/icons/industries/jewelry.svg",
+//             "tags": ["jewelry", "luxury", "accessories"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 6,
+//             "name": "فناوری و الکترونیک",
+//             "slug": "technology-electronics",
+//             "url": "/products/industries/technology-electronics",
+//             "description": "Anti‑static and shock‑absorbent packaging designed for electronic devices and components.",
+//             "icon": "/assets/icons/industries/technology-electronics.svg",
+//             "tags": ["technology", "electronics", "anti-static"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 7,
+//             "name": "بازاریابی و عمومی",
+//             "slug": "marketing-general",
+//             "url": "/products/industries/marketing-general",
+//             "description": "Versatile packaging options for general marketing needs, giveaways, and direct mail campaigns.",
+//             "icon": "/assets/icons/industries/marketing-general.svg",
+//             "tags": ["marketing", "promotional", "general"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 8,
+//             "name": "هدیه و مناسبت",
+//             "slug": "gifts-occasions",
+//             "url": "/products/industries/gifts-occasions",
+//             "description": "Festive and customizable gift packaging perfect for holidays and special celebrations.",
+//             "icon": "/assets/icons/industries/gifts-occasions.svg",
+//             "tags": ["gifts", "occasions", "seasonal"],
+//             "isPopular": false,
+//             "children": []
+//           }
+//         ]
+//       },
+//       {
+//         "id": 3,
+//         "name": "چاپ",
+//         "slug": "printing",
+//         "url": "/products/printing",
+//         "description": "High-quality printing services for stationery, marketing collateral, and more.",
+//         "icon": "/assets/icons/printing.svg",
+//         "tags": ["printing", "stationery", "marketing"],
+//         "isPopular": false,
+//         "children": [
+//           {
+//             "id": 1,
+//             "name": "سربرگ",
+//             "slug": "letterhead",
+//             "url": "/products/printing/letterhead",
+//             "description": "Premium letterhead printing with customizable layouts and high-quality paper.",
+//             "icon": "/assets/icons/printing/letterhead.svg",
+//             "tags": ["letterhead", "stationery", "branding"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 2,
+//             "name": "پاکت‌نامه",
+//             "slug": "envelopes",
+//             "url": "/products/printing/envelopes",
+//             "description": "Custom envelopes in various sizes, finishes, and window options for professional mailing.",
+//             "icon": "/assets/icons/printing/envelopes.svg",
+//             "tags": ["envelope", "mailing", "stationery"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 3,
+//             "name": "کارت ویزیت",
+//             "slug": "business-cards",
+//             "url": "/products/printing/business-cards",
+//             "description": "High-end business card printing with matte, glossy, and soft-touch finish options.",
+//             "icon": "/assets/icons/printing/business-cards.svg",
+//             "tags": ["business-cards", "networking", "branding"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 4,
+//             "name": "بروشور و کاتالوگ",
+//             "slug": "brochures-catalogs",
+//             "url": "/products/printing/brochures-catalogs",
+//             "description": "Informative brochures and catalogs available in bi-fold, tri-fold, and booklet styles.",
+//             "icon": "/assets/icons/printing/brochures-catalogs.svg",
+//             "tags": ["brochures", "catalogs", "marketing"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 5,
+//             "name": "کتاب و مجلات",
+//             "slug": "books-magazines",
+//             "url": "/products/printing/books-magazines",
+//             "description": "High-quality book and magazine printing with perfect binding and saddle-stitch options.",
+//             "icon": "/assets/icons/printing/books-magazines.svg",
+//             "tags": ["books", "magazines", "publishing"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 6,
+//             "name": "تقویم و سررسید",
+//             "slug": "calendars-planners",
+//             "url": "/products/printing/calendars-planners",
+//             "description": "Custom desk and wall calendars, plus planners with coil binding and hardcover finishes.",
+//             "icon": "/assets/icons/printing/calendars-planners.svg",
+//             "tags": ["calendars", "planners", "stationery"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 7,
+//             "name": "پوستر و تراکت",
+//             "slug": "posters-flyers",
+//             "url": "/products/printing/posters-flyers",
+//             "description": "Vibrant poster and flyer printing on heavy‑weight paper for high-impact promotions.",
+//             "icon": "/assets/icons/printing/posters-flyers.svg",
+//             "tags": ["posters", "flyers", "promotions"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 8,
+//             "name": "لیبل و استیکر",
+//             "slug": "labels-stickers",
+//             "url": "/products/printing/labels-stickers",
+//             "description": "Durable labels and stickers with matte, glossy, or waterproof finishes for product branding.",
+//             "icon": "/assets/icons/printing/labels-stickers.svg",
+//             "tags": ["labels", "stickers", "branding"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 9,
+//             "name": "سربرگ و تقویم",
+//             "slug": "letterhead-calendars",
+//             "url": "/products/printing/letterhead-calendars",
+//             "description": "Bundle offer: letterhead and calendar printing at a special rate for cohesive branding.",
+//             "icon": "/assets/icons/printing/letterhead-calendars.svg",
+//             "tags": ["bundle", "stationery", "branding"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 10,
+//             "name": "بنر و استند مناسبتی",
+//             "slug": "banners-stands",
+//             "url": "/products/printing/banners-stands",
+//             "description": "Durable vinyl banners and retractable stands custom‑printed for special events.",
+//             "icon": "/assets/icons/printing/banners-stands.svg",
+//             "tags": ["banners", "stands", "events"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 11,
+//             "name": "کارت دعوت و یادبود",
+//             "slug": "invitations-souvenirs",
+//             "url": "/products/printing/invitations-souvenirs",
+//             "description": "Elegant invitations and souvenir prints with premium paper stocks and finishing options.",
+//             "icon": "/assets/icons/printing/invitations-souvenirs.svg",
+//             "tags": ["invitations", "souvenirs", "events"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 12,
+//             "name": "فولدر و پوشه",
+//             "slug": "folders",
+//             "url": "/products/printing/folders",
+//             "description": "Custom folders with business card slits and pocket configurations for presentations.",
+//             "icon": "/assets/icons/printing/folders.svg",
+//             "tags": ["folders", "presentation", "stationery"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 13,
+//             "name": "اوراق و اسناد مالی و اداری",
+//             "slug": "financial-documents",
+//             "url": "/products/printing/financial-documents",
+//             "description": "Secure financial document printing with security features for checks, invoices, and vouchers.",
+//             "icon": "/assets/icons/printing/financial-documents.svg",
+//             "tags": ["financial", "secure", "documents"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 14,
+//             "name": "دفترچه راهنما",
+//             "slug": "manuals",
+//             "url": "/products/printing/manuals",
+//             "description": "Printed user manuals and guides with indexed sections and optional spiral binding.",
+//             "icon": "/assets/icons/printing/manuals.svg",
+//             "tags": ["manuals", "guides", "documentation"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 15,
+//             "name": "کارت ضمانت",
+//             "slug": "warranty-cards",
+//             "url": "/products/printing/warranty-cards",
+//             "description": "Durable warranty cards with tamper‑proof and RFID‑ready options for product authentication.",
+//             "icon": "/assets/icons/printing/warranty-cards.svg",
+//             "tags": ["warranty", "secure", "authentication"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 16,
+//             "name": "پاکت CD و DVD",
+//             "slug": "cd-dvd-cases",
+//             "url": "/products/printing/cd-dvd-cases",
+//             "description": "Sturdy CD & DVD cases in plastic or eco‑friendly cardboard with full-color print.",
+//             "icon": "/assets/icons/printing/cd-dvd-cases.svg",
+//             "tags": ["cd", "dvd", "media"],
+//             "isPopular": false,
+//             "children": []
+//           }
+//         ]
+//       },
+//       {
+//         "id": 4,
+//         "name": "بسته‌بندی",
+//         "slug": "packaging",
+//         "url": "/products/packaging",
+//         "description": "Durable and customizable packaging formats for shipping, retail, and protection.",
+//         "icon": "/assets/icons/packaging.svg",
+//         "tags": ["packaging", "shipping", "retail"],
+//         "isPopular": false,
+//         "children": [
+//           {
+//             "id": 1,
+//             "name": "جعبه",
+//             "slug": "boxes",
+//             "url": "/products/packaging/boxes",
+//             "description": "Sturdy corrugated and rigid boxes in custom sizes, with optional inserts and dividers.",
+//             "icon": "/assets/icons/packaging/boxes.svg",
+//             "tags": ["boxes", "shipping", "rigid"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 2,
+//             "name": "ساک دستی",
+//             "slug": "shopping-bags",
+//             "url": "/products/packaging/shopping-bags",
+//             "description": "Eco‑friendly paper and reusable fabric shopping bags with custom printing options.",
+//             "icon": "/assets/icons/packaging/shopping-bags.svg",
+//             "tags": ["bags", "retail", "eco-friendly"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 3,
+//             "name": "کارت ویزیت",
+//             "slug": "business-card-packaging",
+//             "url": "/products/packaging/business-card-packaging",
+//             "description": "Stylish packaging sleeves and boxes for business cards to enhance networking impressions.",
+//             "icon": "/assets/icons/packaging/business-card-packaging.svg",
+//             "tags": ["business-cards", "networking", "presentation"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 4,
+//             "name": "بروشور و کاتالوگ",
+//             "slug": "brochure-catalog-packaging",
+//             "url": "/products/packaging/brochure-catalog-packaging",
+//             "description": "Protective slipcases and envelopes for brochures and catalogs during distribution.",
+//             "icon": "/assets/icons/packaging/brochure-catalog-packaging.svg",
+//             "tags": ["brochures", "catalogs", "protective"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 5,
+//             "name": "کتاب و مجلات",
+//             "slug": "book-magazine-packaging",
+//             "url": "/products/packaging/book-magazine-packaging",
+//             "description": "Durable slipcases and shrink wraps designed to keep books and magazines in pristine condition.",
+//             "icon": "/assets/icons/packaging/book-magazine-packaging.svg",
+//             "tags": ["books", "magazines", "protective"],
+//             "isPopular": true,
+//             "children": []
+//           },
+//           {
+//             "id": 6,
+//             "name": "تقویم و سررسید",
+//             "slug": "calendar-planner-packaging",
+//             "url": "/products/packaging/calendar-planner-packaging",
+//             "description": "Custom boxes and sleeves for calendars and planners, with cushioning and branding options.",
+//             "icon": "/assets/icons/packaging/calendar-planner-packaging.svg",
+//             "tags": ["calendars", "planners", "stationery"],
+//             "isPopular": false,
+//             "children": []
+//           },
+//           {
+//             "id": 7,
+//             "name": "پوستر و تراکت",
+//             "slug": "poster-flyer-packaging",
+//             "url": "/products/packaging/poster-flyer-packaging",
+//             "description": "Rigid tubes and flat mailers sized to keep posters and flyers safe during shipping.",
+//             "icon": "/assets/icons/packaging/poster-flyer-packaging.svg",
+//             "tags": ["poster", "flyer", "tube"],
+//             "isPopular": false,
+//             "children": []
+//           }
+//         ]
+//       }
+//     ]
+//   },
+//   "services": {
+//     "id": 2,
+//     "name": "خدمات",
+//     "slug": "services",
+//     "url": "/services",
+//     "description": "Creative design, layout, printing, and finishing services to bring your ideas to life.",
+//     "icon": "/assets/icons/services.svg",
+//     "tags": ["services", "design", "printing"],
+//     "isPopular": false,
+//     "children": [
+//       {
+//         "id": 1,
+//         "name": "طراحی و فرم‌بندی",
+//         "slug": "design-and-layout",
+//         "url": "/services/design-and-layout",
+//         "description": "Creative design and layout services for print and digital materials.",
+//         "icon": "/assets/icons/services/design-and-layout.svg",
+//         "tags": ["design", "layout", "graphic"],
+//         "isPopular": true,
+//         "children": []
+//       },
+//       {
+//         "id": 2,
+//         "name": "لیتوگرافی و زینک",
+//         "slug": "lithography-and-plates",
+//         "url": "/services/lithography-and-plates",
+//         "description": "Precision lithography and plate-making services for high-resolution offset printing.",
+//         "icon": "/assets/icons/services/lithography-and-plates.svg",
+//         "tags": ["lithography", "plates", "prepress"],
+//         "isPopular": false,
+//         "children": []
+//       },
+//       {
+//         "id": 3,
+//         "name": "چاپ و چاپ بسته‌بندی",
+//         "slug": "printing-and-packaging",
+//         "url": "/services/printing-and-packaging",
+//         "description": "End-to-end printing and packaging solutions to streamline your production workflow.",
+//         "icon": "/assets/icons/services/printing-and-packaging.svg",
+//         "tags": ["printing", "packaging", "full-service"],
+//         "isPopular": true,
+//         "children": []
+//       },
+//       {
+//         "id": 4,
+//         "name": "خدمات تکمیلی",
+//         "slug": "finishing-services",
+//         "url": "/services/finishing-services",
+//         "description": "Premium finishing options including lamination, embossing, and die-cutting for a professional touch.",
+//         "icon": "/assets/icons/services/finishing-services.svg",
+//         "tags": ["finishing", "lamination", "embossing"],
+//         "isPopular": false,
+//         "children": []
+//       },
+//       {
+//         "id": 5,
+//         "name": "نگهداری و انبارداری",
+//         "slug": "storage-and-warehousing",
+//         "url": "/services/storage-and-warehousing",
+//         "description": "Secure, climate‑controlled storage and warehousing solutions for your printed goods.",
+//         "icon": "/assets/icons/services/storage-and-warehousing.svg",
+//         "tags": ["storage", "warehousing", "logistics"],
+//         "isPopular": false,
+//         "children": []
+//       }
+//     ]
+//   },
+//   "links": {
+//     "id": 3,
+//     "name": "منابع",
+//     "slug": "resources",
+//     "url": "/resources",
+//     "description": "Download catalogs, guides, and other resources to help you get the most out of our offerings.",
+//     "icon": "/assets/icons/links.svg",
+//     "tags": ["resources", "downloads", "pdf"],
+//     "isPopular": false,
+//     "children": [
+//       {
+//         "id": 1,
+//         "name": "کاتالوگ",
+//         "slug": "catalog",
+//         "url": "/resources/catalog",
+//         "description": "Download our full product catalog in PDF format for detailed specifications and pricing.",
+//         "icon": "/assets/icons/links/catalog.svg",
+//         "tags": ["catalog", "download", "pdf"],
+//         "isPopular": true,
+//         "children": []
+//       },
+//       {
+//         "id": 2,
+//         "name": "فایل‌های راهنما",
+//         "slug": "guides",
+//         "url": "/resources/guides",
+//         "description": "Access setup and usage guides in PDF to help you get the most out of our products.",
+//         "icon": "/assets/icons/links/guides.svg",
+//         "tags": ["guides", "manuals", "pdf"],
+//         "isPopular": false,
+//         "children": []
+//       }
+//     ]
+//   }
+// }
+
+
+

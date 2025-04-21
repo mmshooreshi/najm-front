@@ -3,6 +3,9 @@ html{
 	scroll-behavior: smooth;
 
 }
+:root {
+    interpolate-size: allow-keywords;
+}
 
 body{
     font-family: IRANSansX  !important;

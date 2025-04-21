@@ -66,19 +66,22 @@
       <div 
         @click="toggleMenu" 
         class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
-               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer ">
         <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
         <Drawer v-model:open="menuOpen">
-            <ul class="space-y-0 rtl:text-right p-0">
+            <Menu @click.stop/>
+            <!-- <ul class="space-y-0 rtl:text-right p-0">
               <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/">خانه</NuxtLink><Icon name="mdi:arrow-left"/></li>
               <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/products">محصولات</NuxtLink><Icon name="mdi:arrow-left"/></li>
               <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/about">درباره ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
               <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/contact">تماس با ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
-            </ul>
+            </ul> -->
+
           </Drawer>
 
 
       </div>
+      
 
     </div>
 
