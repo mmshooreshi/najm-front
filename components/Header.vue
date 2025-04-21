@@ -1,6 +1,6 @@
 <!-- Header.vue -->
 <template>
-    <header dir="rtl" class="sticky top-0 z-50 flex items-center justify-between p-2 bg-white/80  backdrop-blur-sm  w-full">
+    <header dir="rtl" class="fixed top-0  z-50 flex items-center justify-between p-2 bg-white/80  backdrop-blur-sm  w-full">
     <!-- Right: Logo + Hamburger -->
     <div v-if="width < 768" class="flex flex-row items-center gap-4">
       <!-- Logo -->
@@ -38,8 +38,7 @@
       <!-- Sliding Search Container -->
       <div
         @click="openSearch"
-        class="relative flex items-center overflow-hidden 
-               bg-white border border-gray-200 rounded-2xl
+        class="relative flex items-center overflow-hidden bg-white border border-gray-200 rounded-2xl
                transition-[width] duration-300 ease-in-out cursor-pointer  p-3"
         :class="searchOpen ? 'w-44' : 'w-12'"
       >
@@ -65,8 +64,8 @@
 
       <div 
         @click="toggleMenu" 
-        class="p-3 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
-               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer ">
+        class="px-6 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
+               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer " ref="menuContainer" >
         <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
         <Drawer v-model:open="menuOpen">
             <Menu @click.stop/>
@@ -143,6 +142,8 @@ import UserIcon from "~/assets/icons/user-icon.svg";
 import BottomArrowIcon from "~/assets/icons/bottom-arrow-icon.svg";
 import Drawer from "@/components/Drawer.vue";
 import { useAuth } from '~/composables/useAuth'  // Import the useAuth composable to check if the user is authenticated
+import { useScrollLock } from '@vueuse/core'
+import { useTemplateRef } from 'vue'
 
 const { token, user, isAuthenticated } = useAuth()  // Destructure the token and user data from useAuth
 
@@ -150,10 +151,20 @@ const { width } = useWindowSize();
 const searchOpen = ref(false);
 const searchQuery = ref("");
 
+
 const menuOpen = ref(false)
+
+
+const menuContainer = useTemplateRef<HTMLElement>('menuContainer')
+const isLocked = useScrollLock(menuContainer)
+
+
 
 function toggleMenu() {
   menuOpen.value = !menuOpen.value
+  isLocked.value = menuOpen.value
+
+  console.log("isLocked: ", isLocked.value)
 }
 
 

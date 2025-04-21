@@ -1,9 +1,7 @@
 <template>
-  <div class="overflow-visible">
+  <div class="overflow-hidden">
     <NuxtLayout >
-
-      <NuxtPage :page-key="route.name" />
-
+      <NuxtPage />
       </NuxtLayout>
   </div>
 </template>
@@ -17,15 +15,3 @@ onMounted(() => {
   useGSAP().registerPlugin(ScrollTrigger)
 })
 </script>
-
-
-<style>
-.page-enter-active,
-.page-leave-active {
-  transition: all 0.4s;
-}
-.page-enter-from,
-.page-leave-to {
-  opacity: 0;
-  filter: blur(1rem);
-}</style>

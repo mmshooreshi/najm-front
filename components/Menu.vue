@@ -1,7 +1,7 @@
 
-<!-- pages/menu.vue -->
+<!-- components/menu.vue -->
 <template>
-    <div class="max-w-xl mx-auto px-6 mt-0 rtl">
+    <div class="max-w-xl mx-auto px-4 mt-8 rtl">
       <div v-for="section in sections || []" :key="section?.id" class="mb-6">
         <!-- {{section.type}} -->
         {{ console.log('[MenuPage] section =', section) }}
@@ -48,9 +48,8 @@
   import BaseAccordionGroup from '~/components/Base/BaseAccordionGroup.vue'
   import MenuLevel from '~/components/MenuLevel.vue'
   import { useMenuUIData } from '@/composables/ui/menuUI'
-  
   const { menuUIData } = useMenuUIData()
-  console.log('[MenuPage] menuUIData products =', menuUIData.value.products)
+//   console.log('[MenuPage] menuUIData products =', menuUIData.value.products)
   
   const sections = computed(() => [
   menuUIData?.value?.products,

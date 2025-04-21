@@ -1,29 +1,34 @@
+<!-- layouts/default.vue -->
+<script setup lang="ts">
+import { ref } from 'vue'
+import Header from '~/components/Header.vue'
+import BackgroundGradient from '~/components/BackgroundGradient.vue'
+import FooterLayout from '~/components/FooterLayout.vue'
+
+const menuOpen = ref(false)
+</script>
+
 <template>
-    <BackgroundGradient />
+  <BackgroundGradient/>
 
-<!-- <NavBar/> -->
-    <div
-      class=" relative h-screen prevent-select overflow-x-visible overflow-y-auto snap-y snap-mandatory"
-    >
-    <Header/>
+  <!-- Pass menuOpen + listener down to Header -->
+  <Header
+    :menu-open="menuOpen"
+    @update:menu-open="menuOpen = $event"
+  />
 
-  
-      <div class="snap-start py-8 px-4 md:px-8 2xl:px-28">
-        <slot /> <!-- This is where your page content goes -->
-      </div>
-  
-      <div class="snap-start">
-      <FooterLayout />
+  <!-- Now lock overflow here, not on body -->
+  <div
+    :class="[
+      'relative h-screen prevent-select snap-y snap-mandatory overflow-x-visible',
+      menuOpen ? 'overflow-y-hidden' : 'overflow-y-auto'
+    ]"
+  >
+    <div class="snap-start py-8 px-4 md:px-8 2xl:px-28">
+      <slot/>
     </div>
+    <div class="snap-start">
+      <FooterLayout/>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import Header from '~/components/Header.vue'
-
-  import FooterLayout from '~/components/FooterLayout.vue'
-//   import NavBar from '~/components/Main/NavBar.vue'
-
-  import BackgroundGradient from '~/components/BackgroundGradient.vue'
-  </script>
-  
+  </div>
+</template>

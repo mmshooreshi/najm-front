@@ -1,20 +1,22 @@
+<!-- /components/Drawer.vue -->
 <template>
     <div class="drawer-container">
       <!-- Hamburger button -->
+  
+             
       <div class="hamburger-icon flex-col" :class="{'flex-row':open}" >
         <span class="icon icon-1" :class="{ 'open': open }"></span>
         <span class="icon icon-2" :class="{ 'open': open }"></span>
         <span class="icon icon-3" :class="{ 'open ': open }"></span>
       </div>
-  
-      <!-- Full-screen sliding drawer -->
-      <transition name="slide-full">
-        <div v-if="open" class="drawer-panel">
-          <div class="drawer-body" @click="maybeClose">
-            <slot />
+
+        <transition name="slide-full">
+          <div v-if="open" class="drawer-panel">
+            <div class="drawer-body">
+              <slot />
+            </div>
           </div>
-        </div>
-      </transition>
+        </transition>
 
 
     </div>
@@ -54,9 +56,7 @@ function toggle() {
   
   <style scoped lang="scss">
   .drawer-container {
-    // position: relative;
-    // width: 100%;
-    // height: 100%;
+
   }
   
   .hamburger-icon {
@@ -66,14 +66,13 @@ function toggle() {
     // width: 60px;
     // height: 60px;
     display: flex;
-
+    z-index: 100;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    z-index: 1000;
   
     &:hover {
       transform: scale(1.2);
@@ -126,15 +125,13 @@ function toggle() {
   
   .drawer-panel {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: white;
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    padding-top: 6rem;
+  top:      0;
+  left:     0;
+  width:    100vw;
+  height:   100vh;
+  background: white;
+  display:  flex;
+  flex-direction: column;
   }
   
   .drawer-body {
@@ -143,6 +140,7 @@ function toggle() {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
+    
   }
   
   /* Slide-full transition classes */

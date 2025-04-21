@@ -1,9 +1,12 @@
 <!-- components/MenuLevel.vue -->
 <template>
     <div>
+        
       <div v-for="item in items || []" :key="item.id" class="mb-0">
         <!-- only use the accordion when type=accordion -->
+        
         <BaseAccordionGroupNew
+        :activeFiltersCount="trueCounts[item.id]"
         :open=false
           v-if="item.type === 'accordion'"
           :title="item.name"
@@ -45,6 +48,23 @@
           <Icon name="mdi:arrow-left" class="w-6 h-6 " />
         </RouterLink>
 
+        <div
+          v-else-if="item.type === 'filter'"
+          :to="fullSlug(item)"
+          @click="item.value=!item.value"
+          class="py-0 my-2 flex gap-2 justify-start items-center"
+        >
+        
+
+            <Icon v-if="item.value" name="mdi:checkbox-marked" class="w-6 h-6 text-black" />
+            <Icon v-else name="mdi:checkbox-blank-outline"  class="w-6 h-6 text-[#A8ABAE] hover:text-gray-500" />
+            
+            <div :class="{'!text-black':item.value}" class="text-xs text-demibold group-hover:text-black/80 text-black/50">{{ item.name }}</div>
+            <div class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+
+        </div>
+
+
         <RouterLink
           v-else-if="item.type === 'link-simple'"
           :to="fullSlug(item)"
@@ -61,7 +81,8 @@
   import { RouterLink } from 'vue-router'
   import BaseAccordionGroupNew from '~/components/Base/BaseAccordionGroupNew.vue'
   import MenuLevel from '~/components/MenuLevel.vue'
-  
+  import { toPersianDigits } from '~/utils/digits'
+
   const props = defineProps<{
     items?: Array<any>
     parentSlug?: string
@@ -71,5 +92,38 @@
     props.parentSlug
       ? `${props.parentSlug}/${item.slug}`
       : `${item.slug}`
+
+
+
+      function onAccordionOpen(itemId: string|number) {
+        console.log(trueCounts,"itemId: ",itemId)
+  const n = trueCounts.value[itemId] || 0
+  console.log(`Accordion ${itemId} has ${n} active filters`)
+}
+
+
+// lazy, but correct
+// helper to count grandchildren values
+function countGrandchildrenTrue(children: Array<any> = []) {
+  return children.reduce((sum, child) => {
+    if (Array.isArray(child.children)) {
+      // count all grandchildren with value === true
+      sum += child.children.filter(gc => gc.value === true).length
+      console.log(child.children.filter(gc => gc.value === true).length)
+
+    }
+    return sum
+  }, 0)
+}
+
+const trueCounts = computed<Record<string|number, number>>(() =>
+  (props.items || []).reduce((acc, item) => {
+    if (item.type === 'accordion' && Array.isArray(item.children)) {
+      acc[item.id] = countGrandchildrenTrue(item.children)
+    }
+    // console.log(item)
+    return acc
+  }, {} as Record<string|number, number>)
+)
   </script>
   

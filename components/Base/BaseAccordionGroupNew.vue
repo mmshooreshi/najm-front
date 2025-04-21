@@ -1,37 +1,46 @@
 <template>
-    <div class="border rounded-xl overflow-hidden">
+    <div class="group transition-colors transition-border duration-1000 hover:bg-white bg-[#F1F5F9] hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-[#014439]': activeFiltersCount>0}">
       <!-- Header -->
       <button
-        class="w-full flex transition-colors justify-between items-center py-3 px-6 text-sm bg-[#F1F5F9] hover:bg-gray-200/50"
-        :class="{'!bg-gray-200':openValue}"
+        class="w-full flex bg-transparent transition-colors justify-between items-center py-3 px-6 text-sm "
+        :class="{'!bg-[#F1F5F9]':openValue}"
         @click="toggleOpen"
       >
-        <span class="text-demibold text-d4">{{ title }}</span>
+        
+        <span class="text-demibold text-d4 flex flex-row gap-2">{{ title }}
+            <div v-show="activeFiltersCount>0"
+  class="text-xs text-white font-semibold bg-[#014439] border border-[#014439] rounded-lg p-2 pt-0.5 pr-1.2 h-5 w-5"
+  :class="{ '!w-6': activeFiltersCount > 9 }"
+>
+  {{ toPersianDigits(activeFiltersCount) }}
+</div>
+        </span>
         <Icon
           :name="openValue ? 'mdi:chevron-up' : 'mdi:chevron-down'"
           ref="arrowRef"
           :style="arrowStyles"
-          class="w-5 h-5 text-gray-600"
+          class="w-5 h-5 text-gray-600/50 group-hover:text-gray-600 "
         />
       </button>
   
-      <!-- Animated content container -->
+
+
       <div
-        ref="containerRef"
-        class="overflow-hidden transition-colors bg-gray-200/50"
-        :class="{'!bg-gray-200':openValue}"
-        :style="containerStyles"
-      >
-        <div class="p-4">
+  ref="containerRef"
+  class="overflow-hidden transition-colors"
+  :class="{'!bg-[#F1F5F9]': openValue}"
+  :style="containerStyles"
+>
+  <div ref="contentRef" class="overflow-auto p-4">
           <div v-if="tabs && panes?.length">
-            <nav class="flex space-x-4 border-b mb-4">
+            <nav class="flex w-max mx-auto items-center justify-between p-1  rounded-full border border-gray-300 text-xs">
               <button
                 v-for="(pane, idx) in panes"
                 :key="pane.slug || idx"
                 @click="activeTab = idx"
+                class="px-8 py-2 rounded-2xl font-medium text-center bg-transparent transition-all duration-200" 
                 :class="[
-                  'py-2 px-4 -mb-px',
-                  activeTab === idx ? 'border-b-2 border-blue-500 font-medium' : 'text-gray-500'
+                  activeTab === idx ? '!bg-[#014439] text-white' : 'text-gray-700'
                 ]"
               >
                 {{ pane.name }}
@@ -51,79 +60,69 @@
   import { ref, watch, nextTick, onMounted } from 'vue'
   import { useMediaQuery } from '@vueuse/core'
   import { useMotionProperties, useSpring } from '@vueuse/motion'
-  
-  // Props
+  import { toPersianDigits } from '~/utils/digits'
   const props = defineProps<{
     title: string
     tabs?: boolean
     open?: boolean
-    panes?: Array<{ name: string; slug: string; children?: any[] }>
+    activeFiltersCount?: number
+    panes?: Array<{ name: string; slug: string }>
   }>()
   
-  // Local open state
-  const openValue = ref(props.open ?? false)
-  const activeTab = ref(0)
+  // state & refs
+  const openValue   = ref(props.open ?? false)
+  const activeTab   = ref(0)
+  const containerRef = ref<HTMLElement|null>(null)
+  const contentRef   = ref<HTMLElement|null>(null)    // <— measure this!
+  const arrowRef     = ref<SVGSVGElement|null>(null)
   
-  // Refs to DOM elements
-  const containerRef = ref<HTMLElement | null>(null)
-  const arrowRef = ref<SVGSVGElement | null>(null)
-  
-  // Respect user motion preference
-  const prefersReduced = useMediaQuery('(prefers-reduced-motion)')
-  
-  // Motion properties for container (height, opacity, translateY)
+  // motion props
   const { motionProperties: containerStyles } = useMotionProperties(containerRef, {
-    height: 0,
-    opacity: 0,
-    translateY: -10,
+    height: 0, opacity: 0, translateY: -10,
   })
-  
-  // Motion properties for arrow rotation
   const { motionProperties: arrowStyles } = useMotionProperties(arrowRef, {
-    rotate: 0,
+    rotate: 0, scale: 1,
   })
   
-  // Spring config
-  const springConfig = prefersReduced.value
+  const springConfig = useMediaQuery('(prefers-reduced-motion)')
+    .value
     ? { duration: 0 }
-    : { stiffness: 200, damping:30  }
-
-    // : { stiffness: 100, damping: 40, mass: 0.8, restDelta: 0.5, overshootClamping: true }
+    : { stiffness: 200, damping: 30, overshootClamping: true }
   
-  // Springs
   const { set: animateContainer, stop: stopContainer } = useSpring(containerStyles, springConfig)
-  const { set: animateArrow, stop: stopArrow } = useSpring(arrowStyles, springConfig)
+  const { set: animateArrow,     stop: stopArrow     } = useSpring(arrowStyles,     springConfig)
   
-  // Toggle function
+  // toggle open
   function toggleOpen() {
     openValue.value = !openValue.value
   }
   
-  // Update animation on open change
-  async function updateAnimation() {
-    await nextTick()
-    const el = containerRef.value
-    stopContainer(); stopArrow()
+  // unified watcher
+  watch(
+    [openValue, activeTab],
+    async () => {
+      await nextTick()
   
-    if (openValue.value && el) {
-      const fullHeight = el.scrollHeight
-      animateContainer({ height: fullHeight+10, opacity: 1, translateY: 0 })
-      animateArrow({ rotate: 180 })
-    } else {
-      animateContainer({ height: 0, opacity: 1, translateY: 0 })
-      animateArrow({ rotate: 0 })
-    }
-  }
+      stopContainer()
+      stopArrow()
   
-  watch(openValue, updateAnimation)
-  onMounted(updateAnimation)
+      if (openValue.value && contentRef.value) {
+        const fullHeight = contentRef.value.scrollHeight
+        animateContainer({ height: fullHeight, opacity: 1, translateY: 0 })
+        animateArrow({ rotate: 180, scale: 1.1 })
+      }
+      else {
+        animateContainer({ height: 0, opacity: 0, translateY: -10 })
+        animateArrow({ rotate: 0, scale: 1 })
+      }
+    },
+    { immediate: true }
+  )
   
-  // Reflect external open prop
-  watch(() => props.open, val => {
-    if (val !== undefined) openValue.value = val
-  })
+  // keep prop sync’d
+  watch(() => props.open, v => v !== undefined && (openValue.value = v))
   </script>
-  
+    
   <style scoped>
   /* Overflow handled via motion inline styles */
   </style>
