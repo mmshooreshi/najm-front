@@ -1,9 +1,9 @@
 <template>
-    <div class="group transition-colors transition-border duration-1000 hover:bg-white bg-[#F1F5F9] hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-[#014439]': activeFiltersCount>0}">
+    <div class="group transition-colors transition-border duration-1000  bg-[#F1F5F9] hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-[#014439]': activeFiltersCount>0}">
       <!-- Header -->
       <button
         class="w-full flex bg-transparent transition-colors justify-between items-center py-3 px-6 text-sm "
-        :class="{'!bg-[#F1F5F9]':openValue}"
+        :class="{'!bg-white':openValue}"
         @click="toggleOpen"
       >
         
@@ -28,12 +28,12 @@
       <div
   ref="containerRef"
   class="overflow-hidden transition-colors"
-  :class="{'!bg-[#F1F5F9]': openValue}"
+  :class="{'!bg-white': openValue}"
   :style="containerStyles"
 >
-  <div ref="contentRef" class="overflow-auto p-4">
+  <div ref="contentRef" class="overflow-auto p-2">
           <div v-if="tabs && panes?.length">
-            <nav class="flex w-max mx-auto items-center justify-between p-1  rounded-full border border-gray-300 text-xs">
+            <nav class="flex w-max mx-auto items-center justify-between p-1 mb-5 rounded-full border border-gray-300 text-xs">
               <button
                 v-for="(pane, idx) in panes"
                 :key="pane.slug || idx"
@@ -81,7 +81,7 @@
     height: 0, opacity: 0, translateY: -10,
   })
   const { motionProperties: arrowStyles } = useMotionProperties(arrowRef, {
-    rotate: 0, scale: 1,
+    rotate: 180, scale: 1,
   })
   
   const springConfig = useMediaQuery('(prefers-reduced-motion)')

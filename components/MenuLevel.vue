@@ -2,7 +2,7 @@
 <template>
     <div>
         
-      <div v-for="item in items || []" :key="item.id" class="mb-0">
+      <div v-for="item in items || []" :key="item.id" class="mb-4">
         <!-- only use the accordion when type=accordion -->
         
         <BaseAccordionGroupNew
@@ -68,9 +68,11 @@
         <RouterLink
           v-else-if="item.type === 'link-simple'"
           :to="fullSlug(item)"
-          class="py-3 my-0  flex justify-between items-center"
+          class="py-0  flex gap-2 justify-start items-center"
         >
-          <span>{{ item.name }}</span>
+          <div  class="text-xs text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
+          <div class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+
         </RouterLink>
 
       </div>
