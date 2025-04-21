@@ -10,14 +10,20 @@
         <span class="icon icon-3" :class="{ 'open ': open }"></span>
       </div>
 
-        <transition name="slide-full">
-          <div v-if="open" class="drawer-panel">
-            <div class="drawer-body">
-              <slot />
-            </div>
-          </div>
-        </transition>
-
+      <transition name="slide-full">
+  <div
+    v-if="open"
+    class="fixed inset-0 z-50 flex justify-end sm:justify-center items-start md:items-center "
+  >
+    <div
+      class="flex flex-col  h-screen w-screen mr-0 sm:h-[96vh] sm:mt-2 sm:mr-[15vw] sm:-ml-8  sm:w-[85vw]  bg-white sm:rounded-3xl relative "
+    >
+      <div class="drawer-body px-2 sm:px-[1.5rem]">
+        <slot />
+      </div>
+    </div>
+  </div>
+</transition>
 
     </div>
   </template>
@@ -123,23 +129,13 @@ function toggle() {
 
   }
   
-  .drawer-panel {
-    position: absolute;
-  top:      0;
-  right:     15vw;
-  width:    85vw;
-  height:   100vh;
-  background: white;
-  display:  flex;
-  flex-direction: column;
-  }
   
   .drawer-body {
     top: 0px;
-    
+    white-space: nowrap;
     flex: 1;
     overflow-y: auto;
-    padding: 1.5rem;
+    
     
   }
   

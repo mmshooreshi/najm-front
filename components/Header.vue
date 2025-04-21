@@ -2,7 +2,7 @@
 <template>
     <header dir="rtl" class="fixed top-0  z-50 flex items-center justify-between p-2 bg-white/80  backdrop-blur-sm  w-full">
     <!-- Right: Logo + Hamburger -->
-    <div v-if="width < 768" class="flex flex-row items-center gap-4">
+    <div v-if="width < 7680" class="flex flex-row items-center gap-4">
       <!-- Logo -->
       <NuxtLink to="/" class="flex justify-center">
         <NajmLogo class="h-12 w-12" />
@@ -84,7 +84,7 @@
 
     </div>
 
-    <!-- Desktop Navigation (>= 768px) -->
+    <!-- Desktop Navigation (>= 7680px) -->
     <nav v-if="width >= 768" class="flex items-center justify-between w-full">
       <!-- Right Side: Logo -->
       <NuxtLink to="/" class="flex items-center gap-3">

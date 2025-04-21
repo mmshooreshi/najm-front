@@ -77,7 +77,7 @@
         <NuxtLink
           v-else-if="item.type === 'link-simple-xs'"
           :to="fullSlug(item)"
-          class="py-0 my-3 px-5 flex gap-2 justify-start items-center"
+          class="py-0 my-3 px-3 sm:px-5 flex gap-2 justify-start items-center"
         >
           <div  class="text-xs text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
           <div v-if="item.count" class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
