@@ -11,7 +11,7 @@
     
     
     <!-- Left: Language + Search -->
-    <div v-if="width < 768" class="flex flex-row items-center gap-1">
+    <div v-if="width < 768" class="flex flex-row items-center gap-1"  >
         
                   <div v-if="isAuthenticated" class="floating-badge">
                   <router-link :to="`/user/${user.id}`" class="badge-link">
@@ -112,10 +112,14 @@
           </div> -->
 
           <ul class="flex flex-row ml-4 gap-6 text-sm text-black/70 font-medium">
-              <li><NuxtLink to="/">کاتالوگ</NuxtLink><Icon name="mdi:arrow-left"/></li>
+            <template v-for="section in sections">
+                <li v-for="child in section.children" >
+                    <NuxtLink :to="child.slug">{{child.name}}</NuxtLink></li>
+            </template>
+              <!-- <li><NuxtLink to="/">کاتالوگ</NuxtLink><Icon name="mdi:arrow-left"/></li>
               <li><NuxtLink to="/products">فایل‌های راهنما</NuxtLink><Icon name="mdi:arrow-left"/></li>
               <li><NuxtLink to="/about">درباره ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
-              <li><NuxtLink to="/contact">تماس با ما</NuxtLink><Icon name="mdi:arrow-left"/></li>
+              <li><NuxtLink to="/contact">تماس با ما</NuxtLink><Icon name="mdi:arrow-left"/></li> -->
             </ul>
 
 
@@ -145,6 +149,16 @@ import { useAuth } from '~/composables/useAuth'  // Import the useAuth composabl
 import { useScrollLock } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
 
+import { useMenuUIData } from '@/composables/ui/menuUI'
+  const { menuUIData } = useMenuUIData()
+//   console.log('[MenuPage] menuUIData products =', menuUIData.value.products)
+  
+  const sections = computed(() => [
+  menuUIData?.value?.links,
+  menuUIData?.value?.contact
+
+  ])
+
 const { token, user, isAuthenticated } = useAuth()  // Destructure the token and user data from useAuth
 
 const { width } = useWindowSize();
@@ -173,6 +187,13 @@ function toggleMenu() {
 
   console.log("isLocked: ", isLocked.value)
 }
+function closeMenu() {
+  menuOpen.value = false
+  isLocked.value = false
+
+  console.log("isLocked: ", isLocked.value)
+}
+
 
 
 
@@ -187,6 +208,32 @@ function toggleMenu() {
 function closeSearch() {
   searchOpen.value = false
 }
+
+
+
+function handleClickOutside(event: MouseEvent) {
+  const drawerEl = document.querySelector('.drawer-container') // adjust to your actual drawer class or ref
+  const menuEl = menuContainer.value
+
+  if (
+    menuOpen.value &&
+    drawerEl &&
+    !drawerEl.contains(event.target as Node) &&
+    menuEl &&
+    !menuEl.contains(event.target as Node)
+  ) {
+    closeMenu()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
 
 </script>
 
@@ -221,4 +268,4 @@ label,
   z-index: 1000;
 }
 
-</style>
+</style>    

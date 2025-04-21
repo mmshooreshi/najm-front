@@ -126,8 +126,8 @@ function toggle() {
   .drawer-panel {
     position: absolute;
   top:      0;
-  left:     0;
-  width:    100vw;
+  right:     15vw;
+  width:    85vw;
   height:   100vh;
   background: white;
   display:  flex;
@@ -145,19 +145,19 @@ function toggle() {
   
   /* Slide-full transition classes */
   .slide-full-enter-from {
-    transform: translateY(-100%);
+    transform: translateX(-100%);
     opacity: 0;
   }
   .slide-full-enter-to {
-    transform: translateY(0);
+    transform: translateX(0);
     opacity: 1;
   }
   .slide-full-leave-from {
-    transform: translateY(0);
+    transform: translateX(0);
     opacity: 1;
   }
   .slide-full-leave-to {
-    transform: translateY(-100%);
+    transform: translateX(-100%);
     opacity: 0;
   }
   .slide-full-enter-active,
