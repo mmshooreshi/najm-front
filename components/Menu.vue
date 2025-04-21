@@ -1,12 +1,12 @@
 
 <!-- components/menu.vue -->
 <template>
-    <div class="max-w-xl mx-auto px-4 mt-8 rtl">
+    <div class="max-w-xl mx-auto px-4 mt-8 rtl" >
       <div v-for="section in sections || []" :key="section?.id" class="my-0 py-0">
         <!-- {{section.type}} -->
         {{ console.log('[MenuPage] section =', section) }}
   
-        <BaseAccordionGroup
+        <BaseAccordionGroup 
           v-if="section && section.type === 'accordion'"
           :title="section.name"
           :tabs="section.tabs"

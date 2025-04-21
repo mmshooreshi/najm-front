@@ -67,8 +67,8 @@
         class="px-6 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
                transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer " ref="menuContainer" >
         <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
-        <Drawer v-model:open="menuOpen">
-            <Menu @click.stop/>
+        <Drawer v-model:open="menuOpen"   >
+            <Menu @click="handleWrapperClick" />
             <!-- <ul class="space-y-0 rtl:text-right p-0">
               <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/">خانه</NuxtLink><Icon name="mdi:arrow-left"/></li>
               <li class="hover:pl-0 transition-all rounded-lg flex justify-between items-center px-2 pl-6 py-3"><NuxtLink to="/products">محصولات</NuxtLink><Icon name="mdi:arrow-left"/></li>
@@ -153,6 +153,13 @@ const searchQuery = ref("");
 
 
 const menuOpen = ref(false)
+function handleWrapperClick(event: MouseEvent) {
+  const target = event.target as HTMLElement
+  // If the click is inside a NuxtLink (or any <a>), allow it
+  console.log(target)
+  if (target.closest('a')) return
+  event.stopPropagation()
+}
 
 
 const menuContainer = useTemplateRef<HTMLElement>('menuContainer')
