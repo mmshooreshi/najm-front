@@ -2,34 +2,48 @@
 <template>
     <header dir="rtl" class="fixed top-0  z-50 flex items-center justify-between p-2 bg-white/80  backdrop-blur-sm  w-full">
     <!-- Right: Logo + Hamburger -->
-    <div v-if="width < 7680" class="flex flex-row items-center gap-4">
+    <div v-if="width < 768" class="flex flex-row items-center gap-4">
       <!-- Logo -->
       <NuxtLink to="/" class="flex justify-center">
         <NajmLogo class="h-12 w-12" />
       </NuxtLink>
     </div>
     
-    
     <!-- Left: Language + Search -->
     <div v-if="width < 768" class="flex flex-row items-center gap-1"  >
         
-                  <div v-if="isAuthenticated" class="floating-badge">
-                  <router-link :to="`/user/${user.id}`" class="badge-link">
-                    <div class="badge">{{user.name}} {{user.familyName}}</div> <!-- You can customize this to display user initials or avatar -->
-                  </router-link>
+        <div v-if="isAuthenticated" class="floating-badge z-100">
+                  <NuxtLink :to="`/user/${user.id}`"  class="group ml-0 flex items-center gap-3 ">
+                        <button @click="handleLogin"    
+                        class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white  hover:bg-[#A8ABAE]/20 flex row items-center justify-center text-gray-700  border border-gray-200 transition-transform duration-200 ease-in-out font-medium cursor-pointer"             :class="menuOpen ? 'right-[28vw]' : ''">
+                          <div >
+                            <profileUserIcon class=""/></div>
+                            <div>{{user.name}} {{user.familyName}} </div>                        
+                            <Icon class="transition-all group-hover:-translate-x-2 w-5 h-5 my-auto text-[#A8ABAE] " name="mdi:chevron-left"/>
+                      </button>
+                    </NuxtLink>
                 </div>
-                <div v-else>
-                    <NuxtLink to="/login" class="ml-0 flex items-center gap-3">
-                      <button @click="handleLogin" class="text-xs text-d4 px-3 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold   border border-gray-200 transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
-                        ورود / ثبت نام
+                <div v-else class="z-100">
+                    
+                    <NuxtLink to="/login" class="group ml-0 flex items-center gap-3 ">
+                        <button @click="handleLogin"    
+                        class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white  hover:bg-[#A8ABAE]/20 flex row items-center justify-center text-gray-700  border border-gray-200 transition-transform duration-200 ease-in-out font-medium cursor-pointer"             :class="menuOpen ? 'right-[28vw]' : ''">
+                          <div >
+                            <profileUserIcon class=""/></div>
+                            <div> ورود / ثبت نام</div>                        
+                            <Icon class="transition-all group-hover:-translate-x-2 w-5 h-5 my-auto text-[#A8ABAE] " name="mdi:chevron-left"/>
                       </button>
                     </NuxtLink>
             
                 </div>
+
+
       <!-- Language Switch -->
       <div 
-        class="w-12 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold   border border-gray-200
-               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer">
+        class="z-100 w-12 h-12 rounded-2xl bg-white flex flex-col items-center justify-center text-gray-700 font-bold   border border-gray-200
+               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
+               :class="menuOpen ? '!border-0' : ''"
+               >
         <span class="block">FA</span>
       </div>
 
@@ -41,6 +55,7 @@
         class="relative flex items-center overflow-hidden bg-white border border-gray-200 rounded-2xl
                transition-[width] duration-300 ease-in-out cursor-pointer  p-3"
         :class="searchOpen ? 'w-44' : 'w-12'"
+        
       >
         <!-- Icon stays put -->
         <SearchIcon class="fill-current text-gray-700 flex-shrink-0 w-6 h-6"  :class="searchOpen ? '' : ''" />
@@ -62,11 +77,15 @@
       <!-- Hamburger Menu -->
    
 
+    
       <div 
         @click="toggleMenu" 
         class="px-6 w-12 h-12 rounded-2xl bg-white flex items-center justify-center   border border-gray-200
-               transition-transform duration-200 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer " ref="menuContainer" >
+               transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer " ref="menuContainer" 
+               :class="menuOpen ? 'mr-36' : ''"
+               >
         <!-- <HamburgerIcon class="fill-current text-gray-700" /> -->
+        
         <Drawer v-model:open="menuOpen"   >
             <Menu @click="handleWrapperClick" />
             <!-- <ul class="space-y-0 rtl:text-right p-0">
@@ -149,6 +168,7 @@ import { useAuth } from '~/composables/useAuth'  // Import the useAuth composabl
 import { useScrollLock } from '@vueuse/core'
 import { useTemplateRef } from 'vue'
 
+import profileUserIcon from '~/assets/icons/profile-user-icon.svg'
 import { useMenuUIData } from '@/composables/ui/menuUI'
   const { menuUIData } = useMenuUIData()
 //   console.log('[MenuPage] menuUIData products =', menuUIData.value.products)
