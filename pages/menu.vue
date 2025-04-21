@@ -27,7 +27,7 @@
 
         </div>
   
-        <RouterLink
+        <NuxtLink
           v-else-if="section && section.type === 'hidden'"
           :to="`/${section.slug}`"
           class="py-3 border-t flex justify-between items-center"
@@ -36,14 +36,14 @@
             <MenuLevel :items="section.children" :parent-slug="section.slug" />
           </template>
 
-        </RouterLink>
+        </NuxtLink>
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
   import { computed } from 'vue'
-  import { RouterLink } from 'vue-router'
+  import { NuxtLink } from 'vue-router'
   import BaseAccordionGroup from '~/components/Base/BaseAccordionGroup.vue'
   import MenuLevel from '~/components/MenuLevel.vue'
   import { useMenuUIData } from '@/composables/ui/menuUI'

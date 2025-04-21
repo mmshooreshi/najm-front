@@ -31,9 +31,9 @@
   :class="{'!bg-white': openValue}"
   :style="containerStyles"
 >
-  <div ref="contentRef" class="overflow-auto p-2">
+  <div ref="contentRef" class="overflow-auto pb-4">
           <div v-if="tabs && panes?.length">
-            <nav class="flex w-max mx-auto items-center justify-between p-1 mb-5 rounded-full border border-gray-300 text-xs">
+            <nav class="flex w-max mx-auto items-center justify-between p-1 mb-5 mt-2 rounded-full border border-gray-300 text-xs">
               <button
                 v-for="(pane, idx) in panes"
                 :key="pane.slug || idx"

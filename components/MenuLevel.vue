@@ -2,7 +2,7 @@
 <template>
     <div>
         
-      <div v-for="item in items || []" :key="item.id" class="mb-4">
+      <div v-for="item in items || []" :key="item.id" class="mb-1">
         <!-- only use the accordion when type=accordion -->
         
         <BaseAccordionGroupNew
@@ -12,7 +12,7 @@
           :title="item.name"
           :tabs="item.tabs"
           :panes="item.children"   
-          class="border rounded overflow-hidden mb-1"
+          class="border rounded overflow-hidden"
         >
           <!-- ② named slot for each pane when tabs=true -->
           <template #pane="{ pane }">
@@ -39,14 +39,14 @@
           {{ item.name }}
         </div>
   
-        <RouterLink
+        <NuxtLink
           v-else-if="item.type === 'link'"
           :to="fullSlug(item)"
           class="py-3 my-0  flex justify-between items-center"
         >
           <span>{{ item.name }}</span>
           <Icon name="mdi:arrow-left" class="w-6 h-6 " />
-        </RouterLink>
+        </NuxtLink>
 
         <div
           v-else-if="item.type === 'filter'"
@@ -65,22 +65,31 @@
         </div>
 
 
-        <RouterLink
+        <NuxtLink
           v-else-if="item.type === 'link-simple'"
           :to="fullSlug(item)"
-          class="py-0  flex gap-2 justify-start items-center"
+          class="py-0 my-3 px-5 flex gap-2 justify-start items-center"
+        >
+          <div  class="text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
+          <div v-if="item.count" class="text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+
+        </NuxtLink>
+        <NuxtLink
+          v-else-if="item.type === 'link-simple-xs'"
+          :to="fullSlug(item)"
+          class="py-0 my-3 px-5 flex gap-2 justify-start items-center"
         >
           <div  class="text-xs text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
-          <div class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+          <div v-if="item.count" class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
 
-        </RouterLink>
+        </NuxtLink>
+
 
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
-  import { RouterLink } from 'vue-router'
   import BaseAccordionGroupNew from '~/components/Base/BaseAccordionGroupNew.vue'
   import MenuLevel from '~/components/MenuLevel.vue'
   import { toPersianDigits } from '~/utils/digits'
@@ -90,11 +99,16 @@
     parentSlug?: string
   }>()
   
+//   const fullSlug = (item: any) =>
+//     props.parentSlug
+//       ? `${props.parentSlug}/${item.slug}`
+//       : `${item.slug}`
+
+  
   const fullSlug = (item: any) =>
     props.parentSlug
       ? `${props.parentSlug}/${item.slug}`
       : `${item.slug}`
-
 
 
       function onAccordionOpen(itemId: string|number) {
