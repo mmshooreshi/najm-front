@@ -496,7 +496,7 @@
     ]
   },
   "links": {
-    "id": 3,
+    "id": 1,
     "name": "منابع",
     "slug": "resources",
     "type": "hidden",
@@ -514,6 +514,31 @@
         "id": 2,
         "name": "فایل‌های راهنما",
         "slug": "guides",
+        "type": "link-simple",
+        "order": 2,
+        "children": []
+      }
+    ]
+  },
+  "contact": {
+    "id": 1,
+    "name": "تماس با ما",
+    "slug": "contact",
+    "type": "hidden",
+    "order": 4,
+    "children": [
+      {
+        "id": 1,
+        "name": "درباره‌ما",
+        "slug": "about",
+        "type": "link-simple",
+        "order": 1,
+        "children": []
+      },
+      {
+        "id": 2,
+        "name": "تماس با ما",
+        "slug": "contact",
         "type": "link-simple",
         "order": 2,
         "children": []

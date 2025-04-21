@@ -54,7 +54,9 @@
   const sections = computed(() => [
   menuUIData?.value?.products,
   menuUIData?.value?.services,
-  menuUIData?.value?.links
+  menuUIData?.value?.links,
+  menuUIData?.value?.contact
+
   ])
   </script>
   
