@@ -1,7 +1,7 @@
 <!-- components/ProfileButton.vue -->
 <template>
-  <div     :class="{ 'max-w-0 scale-0 -mx-1':!isDesktop && !menuOpen }"
-class="z-100 overflow-hidden flex items-center gap-3 whitespace-nowrap transition-all duration-500 ccc max-w-[300px]">
+  <div     :class="{ 'invisible max-w-50px': !isDesktop&&!menuOpen }"
+class="z-100 overflow-hidden flex transition-all duration-100 items-center gap-3 whitespace-nowrap  ccc max-w-[300px]">
 
     <NuxtLink :to="isAuthenticated ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
       <button

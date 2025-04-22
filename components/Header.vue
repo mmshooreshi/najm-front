@@ -30,7 +30,7 @@
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
-    <div     :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class="transition-all duration-500 -mx-1"     > </div>
+    <div     :class="!menuOpen ? 'flex-shrink' : 'flex-grow'" class=" -mx-1 duration-500 transition-all"     > </div>
 
     <!-- search box flexes only when menu is open -->
     <SearchBox 
