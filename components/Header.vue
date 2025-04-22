@@ -72,7 +72,7 @@
   import SearchIcon from '~/assets/icons/search-icon.svg'
   
   // Modular Components
-  import Logo from '@/components/atom/Logo.vue'
+  import Logo from '~/components/atom/Logo.vue'
   import ProfileButton from '@/components/atom/ProfileButton.vue'
   import LanguageSwitcher from '@/components/atom/LanguageSwitcher.vue'
   import SearchBox from '@/components/atom/SearchBox.vue'
