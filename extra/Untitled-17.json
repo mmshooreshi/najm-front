@@ -1,0 +1,1601 @@
+{
+  "products": {
+    "applications": [
+      {
+        "id": 1,
+        "name": "پکیج سازمانی و اداری",
+        "slug": "office-packaging",
+        "count": 16,
+        "url": "/products/applications/office-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/office-packaging.svg",
+        "thumbnail": "/assets/images/applications/office-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/office-packaging/banner.jpg",
+        "primaryColor": "#FFD700",
+        "secondaryColor": "#333333",
+        "shortDescription": "High‑quality packaging solutions for office and administrative needs.",
+        "longDescription": "Our office packaging range includes customizable boxes and folders designed to protect your corporate documents and gifts during transit or storage. Durable, elegant and fully brandable.",
+        "tags": [
+          "office",
+          "administrative",
+          "corporate"
+        ],
+        "isFeatured": true,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/office-packaging/1.jpg",
+          "/assets/images/applications/office-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Office Packaging Solutions | OurCompany",
+          "description": "Discover premium office packaging solutions for corporate and administrative use.",
+          "keywords": [
+            "office packaging",
+            "corporate packaging",
+            "administrative packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 2,
+        "name": "پکیج تبلیغاتی و بازاریابی",
+        "slug": "marketing-packaging",
+        "count": 8,
+        "url": "/products/applications/marketing-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/marketing-packaging.svg",
+        "thumbnail": "/assets/images/applications/marketing-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/marketing-packaging/banner.jpg",
+        "primaryColor": "#FF6347",
+        "secondaryColor": "#333333",
+        "shortDescription": "Eye‑catching packaging for promotional and marketing campaigns.",
+        "longDescription": "Stand out at events and trade shows with our marketing packaging designed to highlight your brand message. Available in various shapes and finishes.",
+        "tags": [
+          "marketing",
+          "promotional",
+          "campaign"
+        ],
+        "isFeatured": true,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/marketing-packaging/1.jpg",
+          "/assets/images/applications/marketing-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Marketing Packaging | OurCompany",
+          "description": "Get custom packaging solutions for your next marketing campaign.",
+          "keywords": [
+            "marketing packaging",
+            "promotional packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 3,
+        "name": "پکیج صنعتی و فنی",
+        "slug": "industrial-technical-packaging",
+        "count": 6,
+        "url": "/products/applications/industrial-technical-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/industrial-technical-packaging.svg",
+        "thumbnail": "/assets/images/applications/industrial-technical-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/industrial-technical-packaging/banner.jpg",
+        "primaryColor": "#708090",
+        "secondaryColor": "#FFFFFF",
+        "shortDescription": "Rugged packaging engineered for industrial and technical products.",
+        "longDescription": "Protect heavy‑duty equipment and sensitive technical components with our industrial packaging solutions, designed to withstand harsh environments.",
+        "tags": [
+          "industrial",
+          "technical",
+          "engineered"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/industrial-technical-packaging/1.jpg",
+          "/assets/images/applications/industrial-technical-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Industrial & Technical Packaging | OurCompany",
+          "description": "Durable industrial and technical packaging for equipment protection.",
+          "keywords": [
+            "industrial packaging",
+            "technical packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 4,
+        "name": "پکیج آموزشی و فرهنگی",
+        "slug": "educational-cultural-packaging",
+        "count": 12,
+        "url": "/products/applications/educational-cultural-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/educational-cultural-packaging.svg",
+        "thumbnail": "/assets/images/applications/educational-cultural-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/educational-cultural-packaging/banner.jpg",
+        "primaryColor": "#8A2BE2",
+        "secondaryColor": "#FFFFFF",
+        "shortDescription": "Colorful packaging solutions for educational and cultural materials.",
+        "longDescription": "Ideal for booklets, teaching aids and cultural event giveaways. Our packaging is fully customizable with educational motifs and durable finishes.",
+        "tags": [
+          "education",
+          "culture",
+          "books"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/educational-cultural-packaging/1.jpg",
+          "/assets/images/applications/educational-cultural-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Educational & Cultural Packaging | OurCompany",
+          "description": "Vibrant packaging for educational materials and cultural events.",
+          "keywords": [
+            "educational packaging",
+            "cultural packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 5,
+        "name": "پکیج مناسبتی و سفارشی",
+        "slug": "custom-occasional-packaging",
+        "count": 5,
+        "url": "/products/applications/custom-occasional-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/custom-occasional-packaging.svg",
+        "thumbnail": "/assets/images/applications/custom-occasional-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/custom-occasional-packaging/banner.jpg",
+        "primaryColor": "#FF69B4",
+        "secondaryColor": "#FFFFFF",
+        "shortDescription": "Tailor‑made packaging for special occasions and events.",
+        "longDescription": "From weddings to corporate anniversaries, our custom‑occasional packaging can be personalized with names, dates and special messages.",
+        "tags": [
+          "custom",
+          "occasions",
+          "events"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/custom-occasional-packaging/1.jpg",
+          "/assets/images/applications/custom-occasional-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Custom Occasional Packaging | OurCompany",
+          "description": "Personalized packaging for weddings, birthdays and corporate events.",
+          "keywords": [
+            "custom packaging",
+            "occasion packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 6,
+        "name": "پکیج نمایشگاهی و رویدادی",
+        "slug": "exhibition-event-packaging",
+        "count": 12,
+        "url": "/products/applications/exhibition-event-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/exhibition-event-packaging.svg",
+        "thumbnail": "/assets/images/applications/exhibition-event-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/exhibition-event-packaging/banner.jpg",
+        "primaryColor": "#20B2AA",
+        "secondaryColor": "#FFFFFF",
+        "shortDescription": "Impactful packaging for exhibitions, fairs and live events.",
+        "longDescription": "Durable yet lightweight, our event packaging helps you transport samples and literature while making a strong visual impression.",
+        "tags": [
+          "exhibition",
+          "event",
+          "trade show"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/exhibition-event-packaging/1.jpg",
+          "/assets/images/applications/exhibition-event-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Exhibition & Event Packaging | OurCompany",
+          "description": "Professional packaging solutions for exhibitions and live events.",
+          "keywords": [
+            "exhibition packaging",
+            "event packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 7,
+        "name": "پکیج لوکس و هدیه",
+        "slug": "luxury-gift-packaging",
+        "count": 22,
+        "url": "/products/applications/luxury-gift-packaging",
+        "description": "",
+        "icon": "/assets/icons/applications/luxury-gift-packaging.svg",
+        "thumbnail": "/assets/images/applications/luxury-gift-packaging/thumb.jpg",
+        "banner": "/assets/images/applications/luxury-gift-packaging/banner.jpg",
+        "primaryColor": "#C0C0C0",
+        "secondaryColor": "#333333",
+        "shortDescription": "Elegant luxury packaging perfect for high‑end gifts.",
+        "longDescription": "Featuring premium materials, ribbons and embossing options, our luxury gift packaging elevates your brand’s presentation.",
+        "tags": [
+          "luxury",
+          "gift",
+          "premium"
+        ],
+        "isFeatured": true,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/applications/luxury-gift-packaging/1.jpg",
+          "/assets/images/applications/luxury-gift-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Luxury Gift Packaging | OurCompany",
+          "description": "Premium luxury packaging solutions for upscale gift items.",
+          "keywords": [
+            "luxury packaging",
+            "gift packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      }
+    ],
+    "industries": [
+      {
+        "id": 1,
+        "name": "غذا، نوشیدنی و رستوران",
+        "slug": "food-beverage-restaurant",
+        "count": 16,
+        "url": "/products/industries/food-beverage-restaurant",
+        "description": "",
+        "icon": "/assets/icons/industries/food-beverage-restaurant.svg",
+        "thumbnail": "/assets/images/industries/food-beverage-restaurant/thumb.jpg",
+        "banner": "/assets/images/industries/food-beverage-restaurant/banner.jpg",
+        "primaryColor": "#FFA07A",
+        "secondaryColor": "#333333",
+        "shortDescription": "Packaging designed for restaurants, cafes and beverage brands.",
+        "longDescription": "Food‑safe materials and custom printing options ensure your products look great and stay fresh from kitchen to customer.",
+        "tags": [
+          "food",
+          "beverage",
+          "restaurant"
+        ],
+        "isFeatured": true,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/food-beverage-restaurant/1.jpg",
+          "/assets/images/industries/food-beverage-restaurant/2.jpg"
+        ],
+        "seo": {
+          "title": "Food & Beverage Packaging | OurCompany",
+          "description": "Safe, attractive packaging solutions for the food and beverage industry.",
+          "keywords": [
+            "food packaging",
+            "beverage packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 2,
+        "name": "آرایشی و بهداشتی",
+        "slug": "beauty-health",
+        "count": 16,
+        "url": "/products/industries/beauty-health",
+        "description": "",
+        "icon": "/assets/icons/industries/beauty-health.svg",
+        "thumbnail": "/assets/images/industries/beauty-health/thumb.jpg",
+        "banner": "/assets/images/industries/beauty-health/banner.jpg",
+        "primaryColor": "#FFB6C1",
+        "secondaryColor": "#333333",
+        "shortDescription": "Stylish, safe packaging for cosmetics and personal care.",
+        "longDescription": "Our beauty and health packaging is compliant with industry regulations and offers elegant finishes to showcase your brand.",
+        "tags": [
+          "beauty",
+          "cosmetics",
+          "health"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/beauty-health/1.jpg",
+          "/assets/images/industries/beauty-health/2.jpg"
+        ],
+        "seo": {
+          "title": "Beauty & Health Packaging | OurCompany",
+          "description": "Elegant, compliant packaging for cosmetics and personal care.",
+          "keywords": [
+            "beauty packaging",
+            "health packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 3,
+        "name": "پزشکی و دارویی",
+        "slug": "medical-pharmaceutical",
+        "count": 16,
+        "url": "/products/industries/medical-pharmaceutical",
+        "description": "",
+        "icon": "/assets/icons/industries/medical-pharmaceutical.svg",
+        "thumbnail": "/assets/images/industries/medical-pharmaceutical/thumb.jpg",
+        "banner": "/assets/images/industries/medical-pharmaceutical/banner.jpg",
+        "primaryColor": "#7FFFD4",
+        "secondaryColor": "#333333",
+        "shortDescription": "Regulatory‑compliant packaging for medical and pharmaceutical products.",
+        "longDescription": "Our materials and print processes meet strict pharma regulations, ensuring product integrity and patient safety.",
+        "tags": [
+          "medical",
+          "pharmaceutical",
+          "compliant"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/medical-pharmaceutical/1.jpg",
+          "/assets/images/industries/medical-pharmaceutical/2.jpg"
+        ],
+        "seo": {
+          "title": "Medical & Pharmaceutical Packaging | OurCompany",
+          "description": "Safe, compliant packaging solutions for the healthcare industry.",
+          "keywords": [
+            "medical packaging",
+            "pharma packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 4,
+        "name": "مد، پوشاک و اکسسوری",
+        "slug": "fashion-apparel-accessories",
+        "count": 16,
+        "url": "/products/industries/fashion-apparel-accessories",
+        "description": "",
+        "icon": "/assets/icons/industries/fashion-apparel-accessories.svg",
+        "thumbnail": "/assets/images/industries/fashion-apparel-accessories/thumb.jpg",
+        "banner": "/assets/images/industries/fashion-apparel-accessories/banner.jpg",
+        "primaryColor": "#DA70D6",
+        "secondaryColor": "#333333",
+        "shortDescription": "Chic packaging for clothing, jewelry and fashion accessories.",
+        "longDescription": "From garment bags to jewelry boxes, we offer a variety of stylish solutions to complement your brand’s aesthetic.",
+        "tags": [
+          "fashion",
+          "apparel",
+          "accessories"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/fashion-apparel-accessories/1.jpg",
+          "/assets/images/industries/fashion-apparel-accessories/2.jpg"
+        ],
+        "seo": {
+          "title": "Fashion & Apparel Packaging | OurCompany",
+          "description": "Stylish packaging for fashion, apparel and accessories.",
+          "keywords": [
+            "fashion packaging",
+            "apparel packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 5,
+        "name": "جواهرات و زیورآلات",
+        "slug": "jewelry",
+        "count": 16,
+        "url": "/products/industries/jewelry",
+        "description": "",
+        "icon": "/assets/icons/industries/jewelry.svg",
+        "thumbnail": "/assets/images/industries/jewelry/thumb.jpg",
+        "banner": "/assets/images/industries/jewelry/banner.jpg",
+        "primaryColor": "#FFDAB9",
+        "secondaryColor": "#333333",
+        "shortDescription": "Luxury packaging perfect for jewelry and fine accessories.",
+        "longDescription": "Our jewelry boxes and pouches protect delicate pieces while providing a premium unboxing experience.",
+        "tags": [
+          "jewelry",
+          "accessories",
+          "luxury"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/jewelry/1.jpg",
+          "/assets/images/industries/jewelry/2.jpg"
+        ],
+        "seo": {
+          "title": "Jewelry Packaging | OurCompany",
+          "description": "Elegant, protective packaging solutions for fine jewelry.",
+          "keywords": [
+            "jewelry packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 6,
+        "name": "فناوری و الکترونیک",
+        "slug": "technology-electronics",
+        "count": 16,
+        "url": "/products/industries/technology-electronics",
+        "description": "",
+        "icon": "/assets/icons/industries/technology-electronics.svg",
+        "thumbnail": "/assets/images/industries/technology-electronics/thumb.jpg",
+        "banner": "/assets/images/industries/technology-electronics/banner.jpg",
+        "primaryColor": "#87CEFA",
+        "secondaryColor": "#333333",
+        "shortDescription": "Protective packaging for gadgets, devices and electronic components.",
+        "longDescription": "Anti‑static materials and custom inserts keep your electronics safe during shipping and storage.",
+        "tags": [
+          "technology",
+          "electronics",
+          "gadgets"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/technology-electronics/1.jpg",
+          "/assets/images/industries/technology-electronics/2.jpg"
+        ],
+        "seo": {
+          "title": "Technology & Electronics Packaging | OurCompany",
+          "description": "Secure, anti‑static packaging for electronic products.",
+          "keywords": [
+            "electronics packaging",
+            "tech packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 7,
+        "name": "بازاریابی و عمومی",
+        "slug": "marketing-general",
+        "count": 16,
+        "url": "/products/industries/marketing-general",
+        "description": "",
+        "icon": "/assets/icons/industries/marketing-general.svg",
+        "thumbnail": "/assets/images/industries/marketing-general/thumb.jpg",
+        "banner": "/assets/images/industries/marketing-general/banner.jpg",
+        "primaryColor": "#FFE4B5",
+        "secondaryColor": "#333333",
+        "shortDescription": "General packaging solutions for a wide range of marketing needs.",
+        "longDescription": "Ideal for giveaways, direct mail and general promotional campaigns. Custom sizes and finishes available.",
+        "tags": [
+          "marketing",
+          "promotional",
+          "general"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/marketing-general/1.jpg",
+          "/assets/images/industries/marketing-general/2.jpg"
+        ],
+        "seo": {
+          "title": "Marketing & General Packaging | OurCompany",
+          "description": "Versatile packaging solutions for all your marketing needs.",
+          "keywords": [
+            "general packaging",
+            "promotional packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 8,
+        "name": "هدیه و مناسبت",
+        "slug": "gifts-occasions",
+        "count": 16,
+        "url": "/products/industries/gifts-occasions",
+        "description": "",
+        "icon": "/assets/icons/industries/gifts-occasions.svg",
+        "thumbnail": "/assets/images/industries/gifts-occasions/thumb.jpg",
+        "banner": "/assets/images/industries/gifts-occasions/banner.jpg",
+        "primaryColor": "#E6E6FA",
+        "secondaryColor": "#333333",
+        "shortDescription": "Festive packaging for gift shops and seasonal occasions.",
+        "longDescription": "Bright colors and customizable ribbons make our gift packaging perfect for holidays and special celebrations.",
+        "tags": [
+          "gifts",
+          "occasions",
+          "seasonal"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/industries/gifts-occasions/1.jpg",
+          "/assets/images/industries/gifts-occasions/2.jpg"
+        ],
+        "seo": {
+          "title": "Gifts & Occasions Packaging | OurCompany",
+          "description": "Colorful, festive packaging for gifts and seasonal events.",
+          "keywords": [
+            "gift packaging",
+            "occasion packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      }
+    ],
+    "printing": [
+      {
+        "id": 1,
+        "name": "سربرگ",
+        "slug": "letterhead",
+        "modelCount": 4,
+        "url": "/products/printing/letterhead",
+        "description": "",
+        "icon": "/assets/icons/printing/letterhead.svg",
+        "thumbnail": "/assets/images/printing/letterhead/thumb.jpg",
+        "banner": "/assets/images/printing/letterhead/banner.jpg",
+        "primaryColor": "#F0E68C",
+        "secondaryColor": "#333333",
+        "shortDescription": "Professional letterhead designs ready to print.",
+        "longDescription": "Choose from a variety of layouts, paper types and finishes to create a letterhead that reflects your brand identity.",
+        "tags": [
+          "letterhead",
+          "stationery"
+        ],
+        "isFeatured": true,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/letterhead/1.jpg",
+          "/assets/images/printing/letterhead/2.jpg"
+        ],
+        "seo": {
+          "title": "Letterhead Printing | OurCompany",
+          "description": "Custom letterhead printing with premium paper options.",
+          "keywords": [
+            "letterhead printing",
+            "stationery"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 2,
+        "name": "پاکت‌نامه",
+        "slug": "envelopes",
+        "modelCount": 3,
+        "url": "/products/printing/envelopes",
+        "description": "",
+        "icon": "/assets/icons/printing/envelopes.svg",
+        "thumbnail": "/assets/images/printing/envelopes/thumb.jpg",
+        "banner": "/assets/images/printing/envelopes/banner.jpg",
+        "primaryColor": "#FAFAD2",
+        "secondaryColor": "#333333",
+        "shortDescription": "High‑quality envelopes in standard and custom sizes.",
+        "longDescription": "Available with window and no‑window styles, our envelopes come in various weights and colors to suit your mailing needs.",
+        "tags": [
+          "envelopes",
+          "mailing"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/envelopes/1.jpg",
+          "/assets/images/printing/envelopes/2.jpg"
+        ],
+        "seo": {
+          "title": "Envelope Printing | OurCompany",
+          "description": "Custom envelope printing in multiple sizes and styles.",
+          "keywords": [
+            "envelope printing",
+            "mailing envelopes"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 3,
+        "name": "کارت ویزیت",
+        "slug": "business-cards",
+        "modelCount": 2,
+        "url": "/products/printing/business-cards",
+        "description": "",
+        "icon": "/assets/icons/printing/business-cards.svg",
+        "thumbnail": "/assets/images/printing/business-cards/thumb.jpg",
+        "banner": "/assets/images/printing/business-cards/banner.jpg",
+        "primaryColor": "#D3D3D3",
+        "secondaryColor": "#333333",
+        "shortDescription": "Premium business card designs with various finishes.",
+        "longDescription": "Select from matte, glossy or soft‑touch lamination, plus foil stamping and embossing options for a memorable first impression.",
+        "tags": [
+          "business cards",
+          "networking"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/business-cards/1.jpg",
+          "/assets/images/printing/business-cards/2.jpg"
+        ],
+        "seo": {
+          "title": "Business Card Printing | OurCompany",
+          "description": "Custom business card printing with luxury finishes.",
+          "keywords": [
+            "business cards printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 4,
+        "name": "بروشور و کاتالوگ",
+        "slug": "brochures-catalogs",
+        "modelCount": 4,
+        "url": "/products/printing/brochures-catalogs",
+        "description": "",
+        "icon": "/assets/icons/printing/brochures-catalogs.svg",
+        "thumbnail": "/assets/images/printing/brochures-catalogs/thumb.jpg",
+        "banner": "/assets/images/printing/brochures-catalogs/banner.jpg",
+        "primaryColor": "#F5DEB3",
+        "secondaryColor": "#333333",
+        "shortDescription": "Informative brochures and catalogs in multiple fold styles.",
+        "longDescription": "Design and print bi‑fold, tri‑fold or booklet‑style brochures with high‑resolution images and vivid color reproduction.",
+        "tags": [
+          "brochures",
+          "catalogs"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/brochures-catalogs/1.jpg",
+          "/assets/images/printing/brochures-catalogs/2.jpg"
+        ],
+        "seo": {
+          "title": "Brochure & Catalog Printing | OurCompany",
+          "description": "Custom brochure and catalog printing with vibrant color.",
+          "keywords": [
+            "brochure printing",
+            "catalog printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 5,
+        "name": "کتاب و مجلات",
+        "slug": "books-magazines",
+        "modelCount": 2,
+        "url": "/products/printing/books-magazines",
+        "description": "",
+        "icon": "/assets/icons/printing/books-magazines.svg",
+        "thumbnail": "/assets/images/printing/books-magazines/thumb.jpg",
+        "banner": "/assets/images/printing/books-magazines/banner.jpg",
+        "primaryColor": "#FFEFD5",
+        "secondaryColor": "#333333",
+        "shortDescription": "High‑quality book and magazine printing services.",
+        "longDescription": "Perfect for small runs or large orders, our book and magazine printing offers perfect binding and saddle stitch options.",
+        "tags": [
+          "books",
+          "magazines"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/books-magazines/1.jpg",
+          "/assets/images/printing/books-magazines/2.jpg"
+        ],
+        "seo": {
+          "title": "Book & Magazine Printing | OurCompany",
+          "description": "Professional book and magazine printing with binding options.",
+          "keywords": [
+            "book printing",
+            "magazine printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 6,
+        "name": "تقویم و سررسید",
+        "slug": "calendars-planners",
+        "modelCount": 5,
+        "url": "/products/printing/calendars-planners",
+        "description": "",
+        "icon": "/assets/icons/printing/calendars-planners.svg",
+        "thumbnail": "/assets/images/printing/calendars-planners/thumb.jpg",
+        "banner": "/assets/images/printing/calendars-planners/banner.jpg",
+        "primaryColor": "#E0FFFF",
+        "secondaryColor": "#333333",
+        "shortDescription": "Custom calendars and planners for any format.",
+        "longDescription": "Desk, wall and pocket calendars with custom layouts, plus planners with coil binding and hardcover options.",
+        "tags": [
+          "calendars",
+          "planners"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/calendars-planners/1.jpg",
+          "/assets/images/printing/calendars-planners/2.jpg"
+        ],
+        "seo": {
+          "title": "Calendar & Planner Printing | OurCompany",
+          "description": "Personalized calendars and planners in various formats.",
+          "keywords": [
+            "calendar printing",
+            "planner printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 7,
+        "name": "پوستر و تراکت",
+        "slug": "posters-flyers",
+        "modelCount": 4,
+        "url": "/products/printing/posters-flyers",
+        "description": "",
+        "icon": "/assets/icons/printing/posters-flyers.svg",
+        "thumbnail": "/assets/images/printing/posters-flyers/thumb.jpg",
+        "banner": "/assets/images/printing/posters-flyers/banner.jpg",
+        "primaryColor": "#F0FFF0",
+        "secondaryColor": "#333333",
+        "shortDescription": "Vibrant poster and flyer printing in multiple sizes.",
+        "longDescription": "Ideal for promotions and events, our posters and flyers deliver sharp images and bold colors on heavy‑weight paper.",
+        "tags": [
+          "posters",
+          "flyers"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/posters-flyers/1.jpg",
+          "/assets/images/printing/posters-flyers/2.jpg"
+        ],
+        "seo": {
+          "title": "Poster & Flyer Printing | OurCompany",
+          "description": "High-impact poster and flyer printing services.",
+          "keywords": [
+            "poster printing",
+            "flyer printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 8,
+        "name": "لیبل و استیکر",
+        "slug": "labels-stickers",
+        "modelCount": 8,
+        "url": "/products/printing/labels-stickers",
+        "description": "",
+        "icon": "/assets/icons/printing/labels-stickers.svg",
+        "thumbnail": "/assets/images/printing/labels-stickers/thumb.jpg",
+        "banner": "/assets/images/printing/labels-stickers/banner.jpg",
+        "primaryColor": "#FFFACD",
+        "secondaryColor": "#333333",
+        "shortDescription": "Durable labels and stickers in custom shapes.",
+        "longDescription": "Waterproof, matte or glossy finishes available. Perfect for branding, product labeling and promotional giveaways.",
+        "tags": [
+          "labels",
+          "stickers"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/labels-stickers/1.jpg",
+          "/assets/images/printing/labels-stickers/2.jpg"
+        ],
+        "seo": {
+          "title": "Label & Sticker Printing | OurCompany",
+          "description": "Custom label and sticker printing with multiple finishes.",
+          "keywords": [
+            "label printing",
+            "sticker printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 9,
+        "name": "سربرگ و تقویم",
+        "slug": "letterhead-calendars",
+        "modelCount": 4,
+        "url": "/products/printing/letterhead-calendars",
+        "description": "",
+        "icon": "/assets/icons/printing/letterhead-calendars.svg",
+        "thumbnail": "/assets/images/printing/letterhead-calendars/thumb.jpg",
+        "banner": "/assets/images/printing/letterhead-calendars/banner.jpg",
+        "primaryColor": "#F5F5DC",
+        "secondaryColor": "#333333",
+        "shortDescription": "Bundle letterhead and calendar printing at a special rate.",
+        "longDescription": "Combine two of our most popular stationery items—letterhead and calendars—for a cohesive branded package.",
+        "tags": [
+          "bundle",
+          "stationery"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/letterhead-calendars/1.jpg",
+          "/assets/images/printing/letterhead-calendars/2.jpg"
+        ],
+        "seo": {
+          "title": "Letterhead & Calendar Bundle | OurCompany",
+          "description": "Special bundle pricing on letterhead and calendar printing.",
+          "keywords": [
+            "stationery bundle"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 10,
+        "name": "بنر و استند مناسبتی",
+        "slug": "banners-stands",
+        "modelCount": 3,
+        "url": "/products/printing/banners-stands",
+        "description": "",
+        "icon": "/assets/icons/printing/banners-stands.svg",
+        "thumbnail": "/assets/images/printing/banners-stands/thumb.jpg",
+        "banner": "/assets/images/printing/banners-stands/banner.jpg",
+        "primaryColor": "#FFE4E1",
+        "secondaryColor": "#333333",
+        "shortDescription": "Custom banners and stands for special events.",
+        "longDescription": "Durable vinyl banners and retractable stands available in multiple sizes. Easy setup and transport.",
+        "tags": [
+          "banners",
+          "stands",
+          "events"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/banners-stands/1.jpg",
+          "/assets/images/printing/banners-stands/2.jpg"
+        ],
+        "seo": {
+          "title": "Banner & Stand Printing | OurCompany",
+          "description": "High-quality banners and stands for events and promotions.",
+          "keywords": [
+            "banner printing",
+            "stand printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 11,
+        "name": "کارت دعوت و یادبود",
+        "slug": "invitations-souvenirs",
+        "modelCount": 5,
+        "url": "/products/printing/invitations-souvenirs",
+        "description": "",
+        "icon": "/assets/icons/printing/invitations-souvenirs.svg",
+        "thumbnail": "/assets/images/printing/invitations-souvenirs/thumb.jpg",
+        "banner": "/assets/images/printing/invitations-souvenirs/banner.jpg",
+        "primaryColor": "#FFF0F5",
+        "secondaryColor": "#333333",
+        "shortDescription": "Elegant invitations and keepsakes for memorable events.",
+        "longDescription": "Wedding invitations, event cards and souvenir prints with premium paper stocks and finishing options.",
+        "tags": [
+          "invitations",
+          "souvenirs"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/invitations-souvenirs/1.jpg",
+          "/assets/images/printing/invitations-souvenirs/2.jpg"
+        ],
+        "seo": {
+          "title": "Invitation & Souvenir Printing | OurCompany",
+          "description": "Custom invitations and keepsakes for weddings and events.",
+          "keywords": [
+            "invitation printing",
+            "souvenir printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 12,
+        "name": "فولدر و پوشه",
+        "slug": "folders",
+        "modelCount": 8,
+        "url": "/products/printing/folders",
+        "description": "",
+        "icon": "/assets/icons/printing/folders.svg",
+        "thumbnail": "/assets/images/printing/folders/thumb.jpg",
+        "banner": "/assets/images/printing/folders/banner.jpg",
+        "primaryColor": "#F8F8FF",
+        "secondaryColor": "#333333",
+        "shortDescription": "Durable folders and presentation packs.",
+        "longDescription": "Choose from business card slits, pocket configurations and custom embossing to present your documents professionally.",
+        "tags": [
+          "folders",
+          "presentation"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/folders/1.jpg",
+          "/assets/images/printing/folders/2.jpg"
+        ],
+        "seo": {
+          "title": "Folder Printing | OurCompany",
+          "description": "Custom folder printing with multiple pocket options.",
+          "keywords": [
+            "folder printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 13,
+        "name": "اوراق و اسناد مالی و اداری",
+        "slug": "financial-documents",
+        "modelCount": 4,
+        "url": "/products/printing/financial-documents",
+        "description": "",
+        "icon": "/assets/icons/printing/financial-documents.svg",
+        "thumbnail": "/assets/images/printing/financial-documents/thumb.jpg",
+        "banner": "/assets/images/printing/financial-documents/banner.jpg",
+        "primaryColor": "#FFFFE0",
+        "secondaryColor": "#333333",
+        "shortDescription": "Specialized forms and financial document printing.",
+        "longDescription": "Customized invoice pads, checks, vouchers and other financial stationery printed with security features.",
+        "tags": [
+          "financial",
+          "documents",
+          "secure"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/financial-documents/1.jpg",
+          "/assets/images/printing/financial-documents/2.jpg"
+        ],
+        "seo": {
+          "title": "Financial Document Printing | OurCompany",
+          "description": "Secure, customizable financial document printing.",
+          "keywords": [
+            "financial printing",
+            "secure forms"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 14,
+        "name": "دفترچه راهنما",
+        "slug": "manuals",
+        "modelCount": 6,
+        "url": "/products/printing/manuals",
+        "description": "",
+        "icon": "/assets/icons/printing/manuals.svg",
+        "thumbnail": "/assets/images/printing/manuals/thumb.jpg",
+        "banner": "/assets/images/printing/manuals/banner.jpg",
+        "primaryColor": "#F5F5F5",
+        "secondaryColor": "#333333",
+        "shortDescription": "Comprehensive user manuals and guides.",
+        "longDescription": "Printed and bound manuals with clear layouts, indexed sections and optional spiral binding for ease of use.",
+        "tags": [
+          "manuals",
+          "guides"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/manuals/1.jpg",
+          "/assets/images/printing/manuals/2.jpg"
+        ],
+        "seo": {
+          "title": "Manual Printing | OurCompany",
+          "description": "Professional printing of user manuals and guides.",
+          "keywords": [
+            "manual printing",
+            "guide printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 15,
+        "name": "کارت ضمانت",
+        "slug": "warranty-cards",
+        "modelCount": 4,
+        "url": "/products/printing/warranty-cards",
+        "description": "",
+        "icon": "/assets/icons/printing/warranty-cards.svg",
+        "thumbnail": "/assets/images/printing/warranty-cards/thumb.jpg",
+        "banner": "/assets/images/printing/warranty-cards/banner.jpg",
+        "primaryColor": "#FFF8DC",
+        "secondaryColor": "#333333",
+        "shortDescription": "Durable warranty cards with secure printing.",
+        "longDescription": "RFID‐ready and tamper‐proof options available for product warranty cards, ensuring traceability and authenticity.",
+        "tags": [
+          "warranty",
+          "secure"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/warranty-cards/1.jpg",
+          "/assets/images/printing/warranty-cards/2.jpg"
+        ],
+        "seo": {
+          "title": "Warranty Card Printing | OurCompany",
+          "description": "Secure warranty card printing with tamper‑proof options.",
+          "keywords": [
+            "warranty cards printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 16,
+        "name": "پاکت CD و DVD",
+        "slug": "cd-dvd-cases",
+        "modelCount": 3,
+        "url": "/products/printing/cd-dvd-cases",
+        "description": "",
+        "icon": "/assets/icons/printing/cd-dvd-cases.svg",
+        "thumbnail": "/assets/images/printing/cd-dvd-cases/thumb.jpg",
+        "banner": "/assets/images/printing/cd-dvd-cases/banner.jpg",
+        "primaryColor": "#FDF5E6",
+        "secondaryColor": "#333333",
+        "shortDescription": "Sturdy CD & DVD cases with custom print.",
+        "longDescription": "Choose from plastic jewel cases, paper sleeves or eco‑friendly cardboard cases with full‑color printing.",
+        "tags": [
+          "cd",
+          "dvd",
+          "media"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/printing/cd-dvd-cases/1.jpg",
+          "/assets/images/printing/cd-dvd-cases/2.jpg"
+        ],
+        "seo": {
+          "title": "CD & DVD Case Printing | OurCompany",
+          "description": "Custom CD and DVD case printing on multiple substrates.",
+          "keywords": [
+            "cd printing",
+            "dvd printing"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      }
+    ],
+    "packaging": [
+      {
+        "id": 1,
+        "name": "جعبه",
+        "slug": "boxes",
+        "modelCount": 12,
+        "url": "/products/packaging/boxes",
+        "description": "",
+        "icon": "/assets/icons/packaging/boxes.svg",
+        "thumbnail": "/assets/images/packaging/boxes/thumb.jpg",
+        "banner": "/assets/images/packaging/boxes/banner.jpg",
+        "primaryColor": "#E6FFE6",
+        "secondaryColor": "#333333",
+        "shortDescription": "Sturdy corrugated and rigid boxes in custom sizes.",
+        "longDescription": "Ideal for shipping and presentation, our boxes can be printed inside and out, with optional inserts and dividers.",
+        "tags": [
+          "boxes",
+          "shipping",
+          "rigid"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/boxes/1.jpg",
+          "/assets/images/packaging/boxes/2.jpg"
+        ],
+        "seo": {
+          "title": "Custom Boxes | OurCompany",
+          "description": "Corrugated and rigid boxes in a variety of sizes and finishes.",
+          "keywords": [
+            "custom boxes",
+            "shipping boxes"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 2,
+        "name": "ساک دستی",
+        "slug": "shopping-bags",
+        "modelCount": 9,
+        "url": "/products/packaging/shopping-bags",
+        "description": "",
+        "icon": "/assets/icons/packaging/shopping-bags.svg",
+        "thumbnail": "/assets/images/packaging/shopping-bags/thumb.jpg",
+        "banner": "/assets/images/packaging/shopping-bags/banner.jpg",
+        "primaryColor": "#FFE6E6",
+        "secondaryColor": "#333333",
+        "shortDescription": "Durable shopping bags in paper and fabric options.",
+        "longDescription": "Eco‑friendly paper bags with custom handles, or reusable fabric totes with screen printing or embroidery.",
+        "tags": [
+          "bags",
+          "retail",
+          "eco-friendly"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/shopping-bags/1.jpg",
+          "/assets/images/packaging/shopping-bags/2.jpg"
+        ],
+        "seo": {
+          "title": "Shopping Bags | OurCompany",
+          "description": "Paper and fabric shopping bags with custom printing.",
+          "keywords": [
+            "shopping bags",
+            "retail bags"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 3,
+        "name": "کارت ویزیت",
+        "slug": "business-card-packaging",
+        "modelCount": 5,
+        "url": "/products/packaging/business-card-packaging",
+        "description": "",
+        "icon": "/assets/icons/packaging/business-card-packaging.svg",
+        "thumbnail": "/assets/images/packaging/business-card-packaging/thumb.jpg",
+        "banner": "/assets/images/packaging/business-card-packaging/banner.jpg",
+        "primaryColor": "#E6E6FF",
+        "secondaryColor": "#333333",
+        "shortDescription": "Pack your business cards in style.",
+        "longDescription": "Custom sleeves and boxes for business cards to leave a lasting impression at networking events.",
+        "tags": [
+          "business cards",
+          "networking"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/business-card-packaging/1.jpg",
+          "/assets/images/packaging/business-card-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Business Card Packaging | OurCompany",
+          "description": "Stylish packaging solutions for your business cards.",
+          "keywords": [
+            "business card packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 4,
+        "name": "بروشور و کاتالوگ",
+        "slug": "brochure-catalog-packaging",
+        "modelCount": 3,
+        "url": "/products/packaging/brochure-catalog-packaging",
+        "description": "",
+        "icon": "/assets/icons/packaging/brochure-catalog-packaging.svg",
+        "thumbnail": "/assets/images/packaging/brochure-catalog-packaging/thumb.jpg",
+        "banner": "/assets/images/packaging/brochure-catalog-packaging/banner.jpg",
+        "primaryColor": "#F0F8FF",
+        "secondaryColor": "#333333",
+        "shortDescription": "Protective packaging for brochures and catalogs.",
+        "longDescription": "Custom slipcases and envelopes to keep your printed marketing materials safe and professional during distribution.",
+        "tags": [
+          "brochures",
+          "catalogs"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/brochure-catalog-packaging/1.jpg",
+          "/assets/images/packaging/brochure-catalog-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Brochure & Catalog Packaging | OurCompany",
+          "description": "Custom packaging solutions for brochures and catalogs.",
+          "keywords": [
+            "brochure packaging",
+            "catalog packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 5,
+        "name": "کتاب و مجلات",
+        "slug": "book-magazine-packaging",
+        "modelCount": 5,
+        "url": "/products/packaging/book-magazine-packaging",
+        "description": "",
+        "icon": "/assets/icons/packaging/book-magazine-packaging.svg",
+        "thumbnail": "/assets/images/packaging/book-magazine-packaging/thumb.jpg",
+        "banner": "/assets/images/packaging/book-magazine-packaging/banner.jpg",
+        "primaryColor": "#FFF5EE",
+        "secondaryColor": "#333333",
+        "shortDescription": "Protective cases and covers for books and magazines.",
+        "longDescription": "Durable slipcases and shrink wraps designed to keep publications in pristine condition.",
+        "tags": [
+          "books",
+          "magazines"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/book-magazine-packaging/1.jpg",
+          "/assets/images/packaging/book-magazine-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Book & Magazine Packaging | OurCompany",
+          "description": "Sturdy packaging solutions for books and magazines.",
+          "keywords": [
+            "book packaging",
+            "magazine packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 6,
+        "name": "تقویم و سررسید",
+        "slug": "calendar-planner-packaging",
+        "modelCount": 2,
+        "url": "/products/packaging/calendar-planner-packaging",
+        "description": "",
+        "icon": "/assets/icons/packaging/calendar-planner-packaging.svg",
+        "thumbnail": "/assets/images/packaging/calendar-planner-packaging/thumb.jpg",
+        "banner": "/assets/images/packaging/calendar-planner-packaging/banner.jpg",
+        "primaryColor": "#F5FFFA",
+        "secondaryColor": "#333333",
+        "shortDescription": "Custom packaging for calendars and planners.",
+        "longDescription": "Boxes and sleeves designed to fit various calendar and planner formats, with cushioning and branding options.",
+        "tags": [
+          "calendar",
+          "planner"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/calendar-planner-packaging/1.jpg",
+          "/assets/images/packaging/calendar-planner-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Calendar & Planner Packaging | OurCompany",
+          "description": "Tailored packaging for calendars and planners.",
+          "keywords": [
+            "calendar packaging",
+            "planner packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      },
+      {
+        "id": 7,
+        "name": "پوستر و تراکت",
+        "slug": "poster-flyer-packaging",
+        "modelCount": 2,
+        "url": "/products/packaging/poster-flyer-packaging",
+        "description": "",
+        "icon": "/assets/icons/packaging/poster-flyer-packaging.svg",
+        "thumbnail": "/assets/images/packaging/poster-flyer-packaging/thumb.jpg",
+        "banner": "/assets/images/packaging/poster-flyer-packaging/banner.jpg",
+        "primaryColor": "#F5F5DC",
+        "secondaryColor": "#333333",
+        "shortDescription": "Protective tubes and tubes for posters and flyers.",
+        "longDescription": "Rigid tubes and flat mailers specifically sized to keep large‑format prints safe during shipping.",
+        "tags": [
+          "poster",
+          "flyer",
+          "tube"
+        ],
+        "isFeatured": false,
+        "available": true,
+        "sampleImages": [
+          "/assets/images/packaging/poster-flyer-packaging/1.jpg",
+          "/assets/images/packaging/poster-flyer-packaging/2.jpg"
+        ],
+        "seo": {
+          "title": "Poster & Flyer Packaging | OurCompany",
+          "description": "Durable packaging tubes for posters and flyers.",
+          "keywords": [
+            "poster packaging",
+            "flyer packaging"
+          ]
+        },
+        "createdAt": "2024-01-01T00:00:00Z",
+        "updatedAt": "2024-04-01T00:00:00Z"
+      }
+    ]
+  },
+  "services": [
+    {
+      "id": 1,
+      "name": "طراحی و فرم‌بندی",
+      "slug": "design-and-layout",
+      "url": "/services/design-and-layout",
+      "description": "",
+      "icon": "/assets/icons/services/design-and-layout.svg",
+      "thumbnail": "/assets/images/services/design-and-layout/thumb.jpg",
+      "primaryColor": "#FFDEAD",
+      "secondaryColor": "#333333",
+      "shortDescription": "Creative design and page layout services.",
+      "longDescription": "Our team will craft visually appealing layouts for print and digital, ensuring brand consistency across all materials.",
+      "tags": [
+        "design",
+        "layout",
+        "graphic"
+      ],
+      "isFeatured": false,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/services/design-and-layout/1.jpg",
+        "/assets/images/services/design-and-layout/2.jpg"
+      ],
+      "seo": {
+        "title": "Design & Layout Services | OurCompany",
+        "description": "Professional graphic design and layout for your projects.",
+        "keywords": [
+          "design services",
+          "layout services"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "لیتوگرافی و زینک",
+      "slug": "lithography-and-plates",
+      "url": "/services/lithography-and-plates",
+      "description": "",
+      "icon": "/assets/icons/services/lithography-and-plates.svg",
+      "thumbnail": "/assets/images/services/lithography-and-plates/thumb.jpg",
+      "primaryColor": "#D8BFD8",
+      "secondaryColor": "#333333",
+      "shortDescription": "Expert lithography and plate-making services.",
+      "longDescription": "State‑of‑the‑art plate production for high‑resolution offset printing, ensuring sharp detail and consistent color.",
+      "tags": [
+        "lithography",
+        "plates",
+        "prepress"
+      ],
+      "isFeatured": false,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/services/lithography-and-plates/1.jpg",
+        "/assets/images/services/lithography-and-plates/2.jpg"
+      ],
+      "seo": {
+        "title": "Lithography & Plate-Making | OurCompany",
+        "description": "Precision lithography and prepress plate services.",
+        "keywords": [
+          "lithography",
+          "plate making"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    },
+    {
+      "id": 3,
+      "name": "چاپ و چاپ بسته‌بندی",
+      "slug": "printing-and-packaging",
+      "url": "/services/printing-and-packaging",
+      "description": "",
+      "icon": "/assets/icons/services/printing-and-packaging.svg",
+      "thumbnail": "/assets/images/services/printing-and-packaging/thumb.jpg",
+      "primaryColor": "#B0E0E6",
+      "secondaryColor": "#333333",
+      "shortDescription": "Full-service printing and packaging solutions.",
+      "longDescription": "From design to final delivery, we handle all aspects of printing and packaging to streamline your workflow and ensure quality.",
+      "tags": [
+        "printing",
+        "packaging",
+        "full-service"
+      ],
+      "isFeatured": true,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/services/printing-and-packaging/1.jpg",
+        "/assets/images/services/printing-and-packaging/2.jpg"
+      ],
+      "seo": {
+        "title": "Printing & Packaging Services | OurCompany",
+        "description": "Comprehensive printing and packaging services under one roof.",
+        "keywords": [
+          "printing services",
+          "packaging services"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    },
+    {
+      "id": 4,
+      "name": "خدمات تکمیلی",
+      "slug": "finishing-services",
+      "url": "/services/finishing-services",
+      "description": "",
+      "icon": "/assets/icons/services/finishing-services.svg",
+      "thumbnail": "/assets/images/services/finishing-services/thumb.jpg",
+      "primaryColor": "#FAF0E6",
+      "secondaryColor": "#333333",
+      "shortDescription": "Specialized finishing: lamination, embossing, die-cutting.",
+      "longDescription": "Enhance your printed materials with varnish, foil stamping, embossing and custom die‑cuts for a premium tactile experience.",
+      "tags": [
+        "finishing",
+        "lamination",
+        "embossing"
+      ],
+      "isFeatured": false,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/services/finishing-services/1.jpg",
+        "/assets/images/services/finishing-services/2.jpg"
+      ],
+      "seo": {
+        "title": "Finishing Services | OurCompany",
+        "description": "Premium finishing options for printed materials.",
+        "keywords": [
+          "finishing services",
+          "embossing",
+          "lamination"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    },
+    {
+      "id": 5,
+      "name": "نگهداری و انبارداری",
+      "slug": "storage-and-warehousing",
+      "url": "/services/storage-and-warehousing",
+      "description": "",
+      "icon": "/assets/icons/services/storage-and-warehousing.svg",
+      "thumbnail": "/assets/images/services/storage-and-warehousing/thumb.jpg",
+      "primaryColor": "#F0FFF0",
+      "secondaryColor": "#333333",
+      "shortDescription": "Secure storage and warehousing facilities.",
+      "longDescription": "Climate‑controlled warehouses and inventory management to keep your printed goods safe until they’re ready for distribution.",
+      "tags": [
+        "storage",
+        "warehousing",
+        "logistics"
+      ],
+      "isFeatured": false,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/services/storage-and-warehousing/1.jpg",
+        "/assets/images/services/storage-and-warehousing/2.jpg"
+      ],
+      "seo": {
+        "title": "Storage & Warehousing | OurCompany",
+        "description": "Safe, climate‑controlled storage solutions for printed products.",
+        "keywords": [
+          "storage services",
+          "warehousing"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    }
+  ],
+  "links": [
+    {
+      "id": 1,
+      "name": "کاتالوگ",
+      "slug": "catalog",
+      "url": "/resources/catalog",
+      "description": "",
+      "icon": "/assets/icons/links/catalog.svg",
+      "thumbnail": "/assets/images/links/catalog/thumb.jpg",
+      "primaryColor": "#DB7093",
+      "secondaryColor": "#FFFFFF",
+      "shortDescription": "Download our full product catalog (PDF).",
+      "longDescription": "Browse all our product lines, specifications and pricing in one comprehensive PDF catalog.",
+      "tags": [
+        "catalog",
+        "download",
+        "pdf"
+      ],
+      "isFeatured": false,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/links/catalog/1.jpg",
+        "/assets/images/links/catalog/2.jpg"
+      ],
+      "seo": {
+        "title": "Product Catalog | OurCompany",
+        "description": "Full PDF catalog of all products and services.",
+        "keywords": [
+          "catalog",
+          "pdf download"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "فایل‌های راهنما",
+      "slug": "guides",
+      "url": "/resources/guides",
+      "description": "",
+      "icon": "/assets/icons/links/guides.svg",
+      "thumbnail": "/assets/images/links/guides/thumb.jpg",
+      "primaryColor": "#8FBC8F",
+      "secondaryColor": "#FFFFFF",
+      "shortDescription": "Download setup and usage guides.",
+      "longDescription": "Detailed PDF guides covering product setup, maintenance tips and troubleshooting steps.",
+      "tags": [
+        "guides",
+        "download",
+        "pdf"
+      ],
+      "isFeatured": false,
+      "available": true,
+      "sampleImages": [
+        "/assets/images/links/guides/1.jpg",
+        "/assets/images/links/guides/2.jpg"
+      ],
+      "seo": {
+        "title": "User Guides & Manuals | OurCompany",
+        "description": "Download PDF guides for setup and maintenance.",
+        "keywords": [
+          "user guides",
+          "manuals"
+        ]
+      },
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-04-01T00:00:00Z"
+    }
+  ]
+}
