@@ -42,7 +42,7 @@
         <NuxtLink
           v-else-if="item.type === 'link'"
           :to="fullSlug(item)"
-          class="py-3 my-0  flex justify-between items-center"
+          class="pb-6 my-0 px-6 flex text-sm text-d4 text-demibold justify-between items-center"
         >
           <span>{{ item.name }}</span>
           <Icon name="mdi:arrow-left" class="w-6 h-6 " />
@@ -68,16 +68,16 @@
         <NuxtLink
           v-else-if="item.type === 'link-simple'"
           :to="fullSlug(item)"
-          class="py-0 my-3 px-5 flex gap-2 justify-start items-center"
+          class="py-0 my-6 px-6 flex gap-2 justify-start items-center"
         >
-          <div  class="text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
+          <div  class="text-sm text-d4 text-demibold ">{{ item.name }}</div>
           <div v-if="item.count" class="text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
 
         </NuxtLink>
         <NuxtLink
           v-else-if="item.type === 'link-simple-xs'"
           :to="fullSlug(item)"
-          class="py-0 my-3 px-3 sm:px-5 flex gap-2 justify-start items-center"
+          class="py-0 my-6 px-3 sm:px-6 flex gap-2 justify-start items-center"
         >
           <div  class="text-xs text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
           <div v-if="item.count" class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>

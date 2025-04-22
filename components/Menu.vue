@@ -21,7 +21,7 @@
           v-else-if="section && section.type === 'label'"
           class="mb-2"
         >
-        <div class="text-[#797B7D] text-d4 text-sm mb-3 mt-12">          {{ section.name }}
+        <div class="text-[#797B7D] text-d4 text-sm px-6  mb-5 mt-12">          {{ section.name }}
         </div>
 
             <MenuLevel :items="section.children" :parent-slug="section.slug" />

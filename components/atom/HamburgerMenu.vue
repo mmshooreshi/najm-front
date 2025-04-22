@@ -2,7 +2,6 @@
 <!-- components/HamburgerMenu.vue -->
 <template>
   <div
-    md:hidden
     @click="toggleMenu"
     class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center border border-gray-200 transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
     ref="menuContainer"

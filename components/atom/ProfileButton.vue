@@ -1,6 +1,6 @@
 <!-- components/ProfileButton.vue -->
 <template>
-  <div md:hidden class="z-100">
+  <div class="z-100">
     <NuxtLink :to="isAuthenticated ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
       <button
         @click="handleLogin"
@@ -17,6 +17,8 @@
     </NuxtLink>
   </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { useAuth } from '~/composables/useAuth'

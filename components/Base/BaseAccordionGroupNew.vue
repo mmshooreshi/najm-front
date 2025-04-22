@@ -38,7 +38,7 @@
                 v-for="(pane, idx) in panes"
                 :key="pane.slug || idx"
                 @click="activeTab = idx"
-                class="sm:px-8 px-4 py-2 rounded-2xl font-medium text-center bg-transparent transition-all duration-200" 
+                class="sm:px-8 px-4 py-2 sm:min-w-[90px] rounded-2xl font-medium text-center bg-transparent transition-all duration-200" 
                 :class="[
                   activeTab === idx ? '!bg-[#014439] text-white' : 'text-gray-700'
                 ]"
