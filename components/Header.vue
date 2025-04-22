@@ -35,6 +35,15 @@
     <!-- search box flexes only when menu is open -->
     <SearchBox 
       :menuOpen="menuOpen" 
+      :class="[
+      'transition-all duration-1000',
+      isDesktop || !menuOpen
+        ? ''
+        : '-mx-8 sm:-mx-0'
+    ]"
+
+      class="flex-shrink-0 flex-grow-0" 
+
     />
 
     <!-- hamburger never grows -->
