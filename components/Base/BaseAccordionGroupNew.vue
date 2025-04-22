@@ -16,7 +16,7 @@
 </div>
         </span>
         <Icon
-          :name="openValue ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+          name="mdi:chevron-down"
           ref="arrowRef"
           :style="arrowStyles"
           class="w-5 h-5 text-gray-600/50 group-hover:text-gray-600 "

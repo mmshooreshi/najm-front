@@ -17,7 +17,7 @@
     />
     <div         :class="menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"     > </div>
 
-    <NavLinks  :class="menuOpen ? 'w-0 -mx-4' : 'w-68'"   class="transition-all duration-500 text-nowrap overflow-hidden" v-if="isDesktop"/>
+    <NavLinks  :class="menuOpen ? 'w-0 -mx-4' : 'mx-0 max-w-98'"   class="transition-all duration-500 text-nowrap overflow-hidden" v-if="isDesktop"/>
 
     <!-- profile & language never grow -->
     <ProfileButton 
@@ -30,19 +30,13 @@
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
-    <div         :class="!menuOpen ? '' : '!flex-grow'" class="transition-all duration-500 -mx-1"     > </div>
+    <div     :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class="transition-all duration-500 -mx-1"     > </div>
 
     <!-- search box flexes only when menu is open -->
     <SearchBox 
       :menuOpen="menuOpen" 
-      :class="[
-      'transition-all duration-1000',
-      isDesktop || !menuOpen
-        ? ''
-        : '-mx-8 sm:-mx-0'
-    ]"
-
-      class="flex-shrink-0 flex-grow-0" 
+      v-if="!isSmall"
+      class="" 
 
     />
 
@@ -75,6 +69,7 @@ import { useMediaQuery } from '@vueuse/core'
 
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')
+const isSmall = useMediaQuery('(max-width: 380px)')
 
 // Menu state
 const menuOpen = ref(false)

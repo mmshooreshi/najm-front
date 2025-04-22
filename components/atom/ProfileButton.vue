@@ -1,13 +1,8 @@
 <!-- components/ProfileButton.vue -->
 <template>
-  <div     :class="[
-      'overflow-hidden flex items-center gap-3 whitespace-nowrap',
-      'transition-all duration-500 ccc',
-      isDesktop || menuOpen
-        ? 'max-w-[300px] scale-100  mx-0'
-        : 'max-w-0 scale-0 -mx-1'
-    ]"
-class="z-100">
+  <div     :class="{ 'max-w-0 scale-0 -mx-1':!isDesktop && !menuOpen }"
+class="z-100 overflow-hidden flex items-center gap-3 whitespace-nowrap transition-all duration-500 ccc max-w-[300px]">
+
     <NuxtLink :to="isAuthenticated ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
       <button
         @click="handleLogin"
