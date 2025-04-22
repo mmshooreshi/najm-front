@@ -8,7 +8,7 @@ import { useAuth } from '~/composables/useAuth'
 import { useAuthAPI } from '~/composables/useAuthAPI'
 
 import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
-import loginPageIcon from '~/assets/icons/Auth/login-page-icon'
+import loginPageIcon from '~/assets/icons/Auth/login-page-icon.svg'
 import { useNavDirection } from '~/composables/useNavDirection'
 
 import { useAuthUIData } from '~/composables/ui/authUI'

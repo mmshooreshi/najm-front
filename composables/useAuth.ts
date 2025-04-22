@@ -7,7 +7,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
     user: null as any | null,
-    otpId: null as string | null,
+    otpId: 'noid' as string,
     identifier: '' as string,
   }),
   actions: {
