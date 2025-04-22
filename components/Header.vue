@@ -9,7 +9,7 @@
     class="flex flex-row w-full transition-all duration-500 justify-end gap-2 items-center z-100"
   >
     <!-- always keep logo at the very right → give it order-first and no grow/shrink -->
-     <div  :class="menuOpen ? 'visible' : 'invisible'" class="absolute bg-white left-0 w-full h-full right-[68px] z-100 transition-all "></div>
+     <div  :class="menuOpen ? 'visible' : 'invisible'" class="absolute bg-white left-0 w-full h-full right-[68px] md: z-100 transition-all "></div>
     <Logo 
       
       :menuOpen="menuOpen" 
@@ -30,7 +30,7 @@
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
-    <div         :class="!menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 -mx-1"     > </div>
+    <div         :class="!menuOpen ? '' : '!flex-grow'" class="transition-all duration-500 -mx-1"     > </div>
 
     <!-- search box flexes only when menu is open -->
     <SearchBox 
