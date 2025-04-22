@@ -43,7 +43,7 @@
     setTimeout(() => {
         searchOpen.value = true
 
-    }, 200)
+    }, 300)
     nextTick(() => document.getElementById('mobile-search-input')?.focus())
   }
   
