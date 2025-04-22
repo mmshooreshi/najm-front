@@ -1,7 +1,7 @@
 <!-- components/ProfileButton.vue -->
 <template>
-  <div     :class="{ 'invisible max-w-50px': !isDesktop&&!menuOpen }"
-class="z-100 overflow-hidden flex transition-all duration-100 items-center gap-3 whitespace-nowrap  ccc max-w-[300px]">
+  <div     :class="{ 'max-w-50px': !isDesktop&&!menuOpen }"
+class="z-100 max-w-full overflow-hidden flex transition-all duration-100 items-center gap-3 whitespace-nowrap  ccc max-w-[300px]">
 
     <NuxtLink :to="isAuthenticated ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
       <button
@@ -13,7 +13,7 @@ class="z-100 overflow-hidden flex transition-all duration-100 items-center gap-3
 
     {{ isAuthenticated 
         ? `${user.name} ${user.familyName}` 
-        : 'مهدی شورشی' 
+        : 'ورود' 
     }}
 
             <Icon
