@@ -22,7 +22,7 @@
   <!-- Profile Button with blur transition -->
   <transition name="blur">
     <ProfileButton 
-      v-if="!searchIsOpen && !isDesktop"
+      v-if="(!searchIsOpen && !isDesktop) || isDesktop"
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
@@ -31,7 +31,7 @@
   <!-- Language Switcher with blur transition -->
   <transition name="blur">
     <LanguageSwitcher 
-      v-if="!searchIsOpen && !isDesktop"
+      v-if="(!searchIsOpen && !isDesktop) || isDesktop"
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
