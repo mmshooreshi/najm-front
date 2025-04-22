@@ -5,7 +5,7 @@ import defaultMenuUIData from '@/schemas/menu-ui.json'
 export type MenuUIData = typeof defaultMenuUIData
 
 export function useMenuUIData(lang?: string) {
-  const url = `http://65.108.80.205:8090/api/collections/pages/records?filter=slug="menu"`
+  const url = `https://aisland.co/najm/api/collections/pages/records?filter=slug="menu"`
   const { data } = useFetch<{ items: { uiData: MenuUIData }[] }>(
     url,
     {

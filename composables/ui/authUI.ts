@@ -71,11 +71,11 @@ const defaultAuthUIData: AuthUIData = {
 }
 
 export function useAuthUIData(lang?: string) {
-  const url = `http://65.108.80.205:8090/api/collections/pages/records?filter=slug="login${lang}"`
+  const url = `https://aisland.co/najm/api/collections/pages/records?filter=slug="login"`
   console.log("url is --> ", url)
   // Fetch data for all pages in a single request
   const { data } = useFetch<{ items: Array<{ uiData: AuthUIData }> }>(
-    `http://65.108.80.205:8090/api/collections/pages/records?filter=slug="login${lang}"`,
+    url,
     {
       key: 'auth-ui',
       default: () => ({
