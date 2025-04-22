@@ -2,7 +2,7 @@
 <!-- components/menu.vue -->
 <template>
     <div class="max-w-xl mx-auto px-4 my-20rtl" >
-      <div  class="absolute bg-red h-16  left-3 right-3 top-0 z-100 transition-all "></div>
+      <div  class="absolute h-16  left-3 right-3 top-0 z-100 transition-all "></div>
 
       <div v-for="section in sections || []" :key="section?.id" class="my-0 py-0" >
 
