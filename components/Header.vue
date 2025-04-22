@@ -19,27 +19,33 @@
 
     <NavLinks  :class="menuOpen ? 'w-0 -mx-4' : 'mx-0 max-w-98'"   class="transition-all duration-500 text-nowrap overflow-hidden" v-if="isDesktop"/>
 
-    <!-- profile & language never grow -->
+  <!-- Profile Button with blur transition -->
+  <transition name="blur">
     <ProfileButton 
+      v-if="!searchIsOpen && !isDesktop"
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
+  </transition>
 
-
+  <!-- Language Switcher with blur transition -->
+  <transition name="blur">
     <LanguageSwitcher 
+      v-if="!searchIsOpen && !isDesktop"
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
+  </transition>
     <div     :class="!menuOpen ? 'flex-shrink' : 'flex-grow'" class=" -mx-1 duration-500 transition-all"     > </div>
 
     <!-- search box flexes only when menu is open -->
     <SearchBox 
+       @update:searchOpen="searchIsOpen = $event" 
       :menuOpen="menuOpen" 
       v-if="!isSmall"
       class="" 
 
     />
-
     <!-- hamburger never grows -->
     <HamburgerMenu 
       v-model:menuOpen="menuOpen" 
@@ -70,7 +76,7 @@ import { useMediaQuery } from '@vueuse/core'
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')
 const isSmall = useMediaQuery('(max-width: 380px)')
-
+const searchIsOpen = ref(false)
 // Menu state
 const menuOpen = ref(false)
 
@@ -78,3 +84,25 @@ function openDesktopSearch() {
   // placeholder for desktop search action
 }
 </script>
+
+
+
+
+<style scoped>
+/* 1) Duration & easing of the transition */
+.blur-enter-active, .blur-leave-active {
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+/* 2) Initial state when component is inserted, or after removal */
+.blur-enter-from, .blur-leave-to {
+  filter: blur(10px);
+  opacity: 0;
+}
+
+/* 3) Final state once the transition finishes */
+.blur-enter-to, .blur-leave-from {
+  filter: blur(0);
+  opacity: 1;
+}
+</style>

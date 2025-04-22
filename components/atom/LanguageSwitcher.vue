@@ -8,7 +8,7 @@
   >
   <transition name="scale" mode="out-in">
            <!-- inline-block so transform is centered -->
-           <span :key="currentLabel" class="inline-block origin-center text-lg font-medium">
+           <span :key="currentLabel" class="inline-block origin-center text-lg  mt-1">
              {{ currentLabel }}
             </span>
           </transition>
@@ -31,7 +31,7 @@ function nextLanguage() {
 <style scoped>
 .scale-enter-active,
 .scale-leave-active {
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) , opacity 0.1s ease-in-out;
 }
 
 /* OLD → NEW */
