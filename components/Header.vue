@@ -9,7 +9,6 @@
     class="flex flex-row w-full transition-all duration-500 justify-end gap-2 items-center z-100"
   >
     <!-- always keep logo at the very right → give it order-first and no grow/shrink -->
-     <div  :class="menuOpen ? 'visible' : 'invisible'" class="absolute bg-white left-3 h-full right-[68px] md: z-100 transition-all "></div>
     <Logo 
       
       :menuOpen="menuOpen" 
