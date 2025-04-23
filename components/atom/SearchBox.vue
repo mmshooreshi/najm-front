@@ -1,13 +1,9 @@
 <template>
     <div
-      @click="openSearch"
-      class="grid items-center bg-white border border-gray-200 rounded-2xl cursor-pointer p-3 overflow-hidden hover:bg-[#A8ABAE]/20"
+      @pointerdown.prevent="openSearch"
+      class="grid items-center bg-white border border-gray-200 rounded-2xl cursor-pointer p-3 overflow-hidden hover:bg-[#A8ABAE]/20 transition-all "
       :style="{
-        gridTemplateColumns: searchOpen ? 'auto 1fr' : 'auto 0fr',
-        transition: searchOpen
-          ? 'grid-template-columns 0.2s ease'
-          : 'grid-template-columns 0.2s ease'
-      }"
+        gridTemplateColumns: searchOpen ? 'auto 1fr' : 'auto 0fr'      }"
     >
       <SearchIcon class="fill-current text-gray-700 flex-shrink-0 w-6 h-6" />
   
@@ -43,7 +39,7 @@
     setTimeout(() => {
         searchOpen.value = true
 
-    }, 300)
+    }, 200)
     nextTick(() => document.getElementById('mobile-search-input')?.focus())
   }
   

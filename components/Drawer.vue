@@ -4,10 +4,10 @@
     <!-- Hamburger button -->
 
            
-    <div class="hamburger-icon flex-col" :class="{'flex-row':open}" >
-      <span class="icon icon-1" :class="{ 'open': open }"></span>
-      <span class="icon icon-2" :class="{ 'open': open }"></span>
-      <span class="icon icon-3" :class="{ 'open ': open }"></span>
+    <div class="hh hamburger-icon flex-col" :class="{'flex-row':open}" >
+      <span class="hh icon icon-1" :class="{ 'open': open }"></span>
+      <span class="hh icon icon-2" :class="{ 'open': open }"></span>
+      <span class="hh icon icon-3" :class="{ 'open ': open }"></span>
     </div>
 
     <transition name="slide-full">
