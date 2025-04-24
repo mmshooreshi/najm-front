@@ -25,12 +25,7 @@
   
 
 
-      <div
-  ref="containerRef"
-  class="overflow-hidden transition-colors"
-  :class="{'!bg-white': openValue}"
-  :style="containerStyles"
->
+      <div ref="containerRef" class="overflow-hidden transition-colors" :class="{'!bg-white': openValue}"   :style="containerStyles"      >
   <div ref="contentRef" class="overflow-auto pb-4">
           <div v-if="tabs && panes?.length">
             <nav class="flex w-max mx-auto items-center justify-between p-1 mb-5 mt-2 rounded-full border border-gray-300 text-xs">
@@ -57,15 +52,15 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, watch, nextTick, onMounted } from 'vue'
   import { useMediaQuery } from '@vueuse/core'
   import { useMotionProperties, useSpring } from '@vueuse/motion'
   import { toPersianDigits } from '~/utils/digits'
+  
   const props = defineProps<{
     title: string
     tabs?: boolean
     open?: boolean
-    activeFiltersCount?: number
+    activeFiltersCount: number
     panes?: Array<{ name: string; slug: string }>
   }>()
   
