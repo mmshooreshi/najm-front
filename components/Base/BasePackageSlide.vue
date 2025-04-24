@@ -160,9 +160,9 @@ function toggleExpand(){ emit('toggleExpand') }
 
 .package-slide {
   position: relative;
-  width: 100%;
+  width: 100% !important;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   cursor: pointer;
 }
 .package-slide.expanded {
