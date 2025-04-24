@@ -1,3 +1,4 @@
+<!-- CustomPackageBetter.vue -->
 <script setup lang="ts">
 import BasePackageSlider from '@/components/Base/BasePackageSlider.vue'
 import type { Package } from '~/types'
@@ -215,36 +216,74 @@ const packages = ref<Package[]>([
   }
 ])
 
-
+const sideHidden = ref(false)
 </script>
-
 <template>
-
-    <div dir="rtl" class="snap-start m-2 pt-8 mb-12 overflow-visible mx-8">
-        <div class="flex flex-col md:flex-row justify-between gap-4 md:gap-0">
-
-
-            <h1 class="text-3xl font-bold text-d4 md:max-w-[30%]">اینجا هر کار پیچیده‌ای رو میشه ساده کرد!</h1>
-            <p class="text-base text-justify md:max-w-[470px]">برای سازمان یا برند شما، تا آموزشگاه یا کارخانه شما، ما
-                ملاحظات منحصر به فردی که هر صنعت نیاز دارد را درک می کنیم. بازارهایی که به آنها خدمت می کنیم.
-            </p>
+    <section class="wrapper">
+      <!-- header collapses vertically (just fades) -->
+      <header class="intro" :class="{ off: sideHidden }">
+        <h1>اینجا هر کار پیچیده‌ای رو میشه ساده کرد!</h1>
+        <p>برای سازمان یا برند شما …</p>
+      </header>
+  
+      <div class="row">
+        <!-- side panes shrink to zero width -->
+        <aside class="side" :class="{ off: sideHidden }">Left</aside>
+  
+        <div class="slider-box  h-[500px]" :class="{ full: sideHidden }">
+          <BasePackageSlider
+            :packages="packages"
+            class="h-full"
+            @expanded-change="sideHidden = $event"
+          />
         </div>
-
-    </div>
-
-    <div class="flex-stack md:grid-121">
-        <div class="bg-[#DDDDD7] rounded-3xl p-6 min-h-[500px]">Left</div>
-        <div class="bg-[#DDDDD7] rounded-3xl w-[500px] min-h-[500px]">
-
-            <div class="w-full h-full overflow-hidden">
-
-                <BasePackageSlider :packages="packages" />
-            </div>
-        </div>
-        <div class="flex flex-row md:flex-col gap-3 min-h-[100px]">
-
-            <div class="flex-grow-1 bg-[#DDDDD7] rounded-3xl p-6 "></div>
-            <div class="flex-grow-1  bg-[#DDDDD7] rounded-3xl p-6 "></div>
-        </div>
-    </div>
-</template>
+  
+        <aside class="side" :class="{ off: sideHidden }">Right</aside>
+      </div>
+    </section>
+  </template>
+  
+  <style scoped>
+  .wrapper { width: 100%; }
+  .row     { display: flex; gap: 1rem; align-items: stretch; }
+  
+  /* ------------------------- panes & slider ------------------------- */
+  .side {
+    flex: 1 0 220px;                /* basis 220px, can grow a bit */
+    max-width: 220px;
+    background: #DDDDD7;
+    border-radius: 1rem;
+    transition: flex-basis .5s ease, max-width .5s ease, opacity .4s ease;
+  }
+  .side.off {
+    flex-basis: 0;
+    max-width: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .slider-box {
+    flex: 2 1 0;
+    min-width: 0;                  /* allow shrink */
+    background: #DDDDD7;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: flex-grow .5s ease;
+  }
+  .slider-box.full {
+    flex-grow: 999;                /* gobble up free space smoothly */
+  }
+  
+  /* ------------------------- header fade ---------------------------- */
+  .intro {
+    margin-bottom: 2rem;
+    transition: opacity .4s ease, height .4s ease;
+  }
+  .intro.off {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+  }
+  .intro h1 { font-size: 1.8rem; font-weight: 700; }
+  </style>
+  

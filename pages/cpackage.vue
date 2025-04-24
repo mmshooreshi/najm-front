@@ -1,3 +1,4 @@
+<!-- pages/cpackage.vue -->
 <template>
   <div>
     <CustomPackageBetter/>
