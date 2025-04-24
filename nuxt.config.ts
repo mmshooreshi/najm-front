@@ -102,7 +102,7 @@ export default defineNuxtConfig({
 // nuxt.config.ts
 icon: {
   serverBundle: {
-  collections: ['mdi', 'carbon', 'MageIcons'] // Only the ones you actually use
+  collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
   }
 },
   vite: {
