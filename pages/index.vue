@@ -90,17 +90,18 @@
       <CarouselAutoSlider class="w-full md:max-w-[350px] lg:max-w-lg" />
 
       <!-- <CustomPackage class="" /> -->
-      <CustomPackageBetter />
-
 
     </div>
+    
 
 
 
     <div class="pb-8 snap-end">
-      <!-- <FollowupWheel /> -->
+      <CustomPackageBetter />
+
 
     </div>
+    
 
     <div class="pb-8 snap-start">
       <!-- <FollowupWheel /> -->
