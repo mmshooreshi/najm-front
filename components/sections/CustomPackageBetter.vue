@@ -296,7 +296,7 @@ const sideHidden = ref(false)
   
   .slider-box {
     /* flex: 2 1 0; */
-    min-width: 0;                 /* allow shrink */
+    min-width: 300px;                 /* allow shrink */
     background: #DDDDD7;
     border-radius: 1rem;
     overflow: hidden;
