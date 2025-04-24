@@ -9,6 +9,9 @@ export default defineConfig({
   // Define utility shortcuts for reusability
   shortcuts: {
     'flex-center': 'flex justify-center items-center',
+    'grid-121': 'grid grid-cols-[1fr_2fr_1fr] gap-4',
+    'grid-stack': 'grid grid-cols-1 gap-4',
+
   },
 
   // Custom theme configurations

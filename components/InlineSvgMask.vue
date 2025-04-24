@@ -34,14 +34,24 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 const props = defineProps({
-  src: { type: String, required: true }
+  src:    { type: String, required: true },
+  width:  { type: Number, required: true },
+  height: { type: Number, required: true },
 })
+
+
+
+
 const emit = defineEmits(['hover', 'leave'])
 
 // Reactive state for dimensions and polygon data.
 const W = ref(0)
 const H = ref(0)
 const pts = ref('')
+
+W.value = props.width
+H.value = props.height
+
 // Hover state: '' (not hovered), 'top' (on top), or 'back' (hovered but behind).
 const hovered = ref('')
 
@@ -128,15 +138,30 @@ function loadAndTraceImage(src) {
   img.src = src
   img.onload = () => {
     // Set dimensions based on the loaded image.
-    W.value = img.width
-    H.value = img.height
+    // W.value = img.width
+    // H.value = img.height
+
+    // const c = document.createElement('canvas')
+    // c.width = img.width
+    // c.height = img.height
+    // const ctx = c.getContext('2d')
+    // ctx.drawImage(img, 0, 0)
+    // const d = ctx.getImageData(0, 0, img.width, img.height).data
+
+
+    // use the supplied width & height
+    const w = props.width
+    const h = props.height
 
     const c = document.createElement('canvas')
-    c.width = img.width
-    c.height = img.height
+    c.width  = w
+    c.height = h
     const ctx = c.getContext('2d')
-    ctx.drawImage(img, 0, 0)
-    const d = ctx.getImageData(0, 0, img.width, img.height).data
+    // draw & scale the image into our fixed-size canvas
+    ctx.drawImage(img, 0, 0, w, h)
+
+    const d = ctx.getImageData(0, 0, w, h).data
+
     const m = []
     for (let y = 0; y < img.height; y++) {
       let row = []

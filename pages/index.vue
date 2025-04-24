@@ -89,7 +89,9 @@
 
       <CarouselAutoSlider class="w-full md:max-w-[350px] lg:max-w-lg" />
 
-      <CustomPackage class="" />
+      <!-- <CustomPackage class="" /> -->
+      <CustomPackageBetter />
+
 
     </div>
 
@@ -129,6 +131,8 @@ import CarouselAutoSlider from '~/components/sections/CarouselAutoSlider.vue'
 import popDiv from '~/components/popDiv.vue'
 import HorizontalCategories from '~/components/sections/HorizontalCategories.vue'
 import CustomPackage from '~/components/sections/CustomPackage.vue'
+import CustomPackageBetter from '~/components/sections/CustomPackageBetter.vue'
+
 import CarousalDet from '~/components/sections/CarousalDet.vue'
 import BoxCard from '~/components/BoxCard.vue'
 import Accordion from '~/components/Accordion.vue'

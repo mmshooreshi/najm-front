@@ -14,6 +14,8 @@ const nav = useNavDirection()
 const { user, setUser, token, isAuthenticated } = useAuth()
 const { updateUser } = useAuthAPI()
 
+
+
 const fname = ref(user.value.name)
 const lname = ref(user.value.familyName)
 const router = useRouter()
@@ -40,7 +42,7 @@ async function complete() {
 }
 
 definePageMeta({
-  middleawre: 'auth',
+  middleware: ['auth'],
   name: 'profile',
   layout: 'auth',
 })

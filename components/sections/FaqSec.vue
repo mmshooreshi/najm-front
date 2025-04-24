@@ -30,6 +30,7 @@
       <div class="divide-y border-gray-300 -mt-6 px-6 h-[70vh] overflow-auto">
  
 
+        <ClientOnly>
     <FaqItem
        v-for="(item, idx) in categories[activeTab].items"
        :key="item.key"
@@ -39,7 +40,7 @@
        :open="activeItem === idx"
        @toggle="activeItem = activeItem === idx ? null : idx"
      />
-
+</ClientOnly>
       </div>
     </div>
   </section>

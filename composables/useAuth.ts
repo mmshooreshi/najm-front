@@ -10,7 +10,7 @@ import { setWithExpiry, getWithExpiry } from '~/helpers/localStorageWithExpiry'
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
-    user: null as any | null,
+    user: {} as any ,
     otpId: 'noid' as string,
     identifier: '' as string,
     phone: '' as string,

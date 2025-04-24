@@ -16,7 +16,7 @@
            class="image-item absolute"
            :style="getStyle(image, index)">
         <!-- Use InlineSvg, now with pixel–aware hover effects -->
-        <InlineSvgMask  v-motion-pop :delay="index*100" class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
+        <InlineSvgMask  v-motion-pop :height="image.height" :width="image.width" :delay="index*100" class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
       </div>
     </div>
   </div>
@@ -128,12 +128,12 @@ let images = [
     { name: "Free Coffee Cup Paper Holder", src: "main/1.png", width: 158, height: 189, left: 264, top: 66, rotate: 5, zIndex: 4 },
     { name: "Free Lunch Kraft Paper Bag", src: "main/9.png", width: 122, height: 216, left: 429, top: 42, rotate: 10, zIndex: 5 },
     { name: "Free Facial Tissue Box", src: "main/6.png", width: 181, height: 153, left: 460, top: 140, rotate: 7, zIndex: 6 },
-    { name: "Free Coffee Cup Paper Holder (purple)", src: "main/8.png", width: 123, height: 220, left: 588, top: 37, rotate: -6, zIndex: 7 },
+    { name: "Free Coffee Cup Paper Holder (purple)", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 123, height: 220, left: 588, top: 37, rotate: -6, zIndex: 7 },
     { name: "Floating Square Gift Box", src: "main/3.png", width: 156, height: 152, left: 720, top: 132, rotate: -10, zIndex: 8 },
     { name: "Cardboard Paper Box with Handle", src: "main/10.png", width: 178, height: 168, left: 768, top: 42, rotate: 5, zIndex: 9 },
     { name: "Free Floating Hardcover Book", src: "main/5.png", width: 140, height: 194, left: 916, top: 100, rotate: 20, zIndex: 10 },
     { name: "Open Paper Box", src: "main/4.png", width: 144, height: 151, left: 1002, top: 175, rotate: -20, zIndex: 11 },
-    { name: "Free Coffee Cup Paper Holder (purple)", src: "main/8.png", width: 141, height: 221, left: 1120, top: 18, rotate: 2, zIndex: 12 },
+    { name: "Free Coffee Cup Paper Holder (purple)", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 141, height: 221, left: 1120, top: 18, rotate: 2, zIndex: 12 },
     { name: "Free Coffee Branding", src: "main/7.png", width: 168, height: 167, left: 1269, top: 117, rotate: -6, zIndex: 13 },
     { name: "Floating Square Gift Box", src: "main/3.png", width: 156, height: 152, left: 1331, top: 20, rotate: -12, zIndex: 14 },
     { name: "Kraft Paper Mailing Box", src: "main/2.png", width: 216, height: 190, left: 1406, top: 49, rotate: 8, zIndex: 15 },
@@ -150,7 +150,7 @@ let images = [
     // { name: "Free Lunch Kraft Paper Bag", src: "Free-Lunch-Kraft-Paper-Bag-Mockup-1.png", width: 122, height: 216, left: 429, top: 42, rotate: 10, zIndex: 5 },
     // { name: "Free Facial Tissue Box", src: "Free-Facial-Tissue-Box-Mockup-1.png", width: 181, height: 153, left: 460, top: 140, rotate: 7, zIndex: 6 },
     // { name: "Kraft Paper Shopping Bag", src: "free-kraft-paper-shopping-bag-mockup-1.png", width: 123, height: 220, left: 588, top: 37, rotate: -6, zIndex: 7 },
-    // { name: "Floating Square Gift Box", src: "floating-square-gIft-box-mockup-2-6828.png", width: 156, height: 152, left: 720, top: 132, rotate: -10, zIndex: 8 },
+    // { name: "Floating Square Gift Box", src: "floating-square-gIft-box-zmockup-2-6828.png", width: 156, height: 152, left: 720, top: 132, rotate: -10, zIndex: 8 },
     // { name: "Cardboard Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.png", width: 178, height: 168, left: 768, top: 42, rotate: 5, zIndex: 9 },
     // { name: "Free Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.png", width: 140, height: 194, left: 916, top: 100, rotate: -5, zIndex: 10 },
     // { name: "Open Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.png", width: 144, height: 151, left: 1002, top: 175, rotate: -8, zIndex: 11 },
