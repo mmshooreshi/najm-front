@@ -20,7 +20,7 @@ const menuOpen = ref(false)
   <!-- Now lock overflow here, not on body -->
   <div
     :class="[
-      'relative h-screen prevent-select snap-y snap-mandatory overflow-x-visible',
+      'relative h-screen prevent-select snap-y snap-mandatory overflow-x-visible mt-16 ',
       menuOpen ? 'overflow-y-hidden' : 'overflow-y-auto'
     ]"
   >

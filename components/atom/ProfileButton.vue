@@ -11,7 +11,7 @@ class="z-100 max-w-full overflow-hidden flex transition-all duration-100 items-c
       >
         <profileUserIcon />
 
-    {{ isAuthenticated 
+    {{ isAuthenticated
         ? `${user.name} ${user.familyName}` 
         : 'ورود' 
     }}

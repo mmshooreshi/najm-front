@@ -18,55 +18,50 @@ const route = useRoute()
 const router = useRouter()
 // const { identifier } = useAuth()
 const { sendPhoneNumber, verifyOTP, loginOrRegister } = useAuthAPI()
+const { setToken, setUser, setOtpId, setIdentifier,identifier, token, otpId,phone ,setPhone} = useAuth()
 
-const { setToken, setUser, setOtpId, setIdentifier } = useAuth()
 
 const {authUIData} = useAuthUIData("")
 
 const emailEn = ref('mmshooreshi@gmail.com')
-const phone = ref('')
-const otpId = ref('')
 const isLoading = ref(false)
 
-const phoneEn = computed(() => toEnglishDigits(phone.value))
+const phoneModel = ref('')
+const phoneEn = computed(() => toEnglishDigits(phoneModel.value))
 const isValidPhone = computed(() => /^09\d{9}$/.test(phoneEn.value))
 const isValidEmail = computed(() => /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(emailEn.value))
 
+const errorMessage = ref('')      // ← new
 
-// pages/login.vue (inside <script setup>)
-async function sendCode() {
-  if (!isValidPhone.value) return
-  isLoading.value = true
-  try {
-    setIdentifier(phoneEn.value) 
-    nav.value = 'forward'
-    // replace this with real API call; using mock here:
-    await new Promise(r => setTimeout(r, 1000))
-    router.push({ name: 'verify' })
-  } catch (err) {
-    // TODO: handle error (toast, form error, fallback, etc.)
-  } finally {
-    isLoading.value = false
-  }
-}
-
+const newOtpId = ref('')
 
 // Step 1: Request OTP (login or register flow)
 const requestOTP = async () => {
   console.log('Requesting OTP for email:', emailEn.value)
+  errorMessage.value = ''         // ← clear previous error
   if (!isValidEmail.value || !isValidPhone.value) return
   isLoading.value = true
   try {
-    // Step 2: Handle login or registration
-    otpId.value = await loginOrRegister(emailEn.value, phone.value)
-    setOtpId(otpId.value)  // Store otpId in Pinia
-    setIdentifier(phoneEn.value)  // Store email/identifier in Pinia
+    // Re-request a new OTP for this identifier
+    if (phoneModel) {
+      let newOtpId = await loginOrRegister(emailEn.value, phoneModel.value)
+      if (newOtpId)
+      {
+        setOtpId(newOtpId)
+      }
+
+    } else{
+      errorMessage.value = 'خطا در ارسال کد. لطفا دوباره تلاش کنید.'
+    }
 
 
-    console.log('OTP sent successfully. otpId:', otpId.value)
+
+    console.log('OTP sent successfully. otpId:', otpId)
     // Navigate to OTP input screen
     router.push({ name: 'verify' })
-  } catch (err) {
+  } catch (err: any) {
+    errorMessage.value = err.message || 'خطا در ارسال کد. لطفا دوباره تلاش کنید.' 
+
     console.error('Error during login/register process:', err)
   } finally {
     isLoading.value = false
@@ -96,14 +91,52 @@ definePageMeta({
 
     <div>
       <form @submit.prevent="requestOTP" class="space-y-6">
+
+         <BaseInput
+         class="ltr"
+   numberOnly
+   v-model="phoneModel"
+   persian
+   :iconName="phone
+     ? (isValidPhone ? 'mdi:check-circle' : 'mdi:alert-circle')
+     : null"
+   :error="phone && !isValidPhone
+     ? 'شماره‌ی موبایل باید با ۰۹ شروع شود.'
+     : ''"
+   dir="ltr"
+   :floatinglabel="authUIData.login.phoneEmailFloatingLabel"
+   :placeholder="authUIData.login.phoneEmailPlaceholder"
+/>
+
+<div class="rtl">
+        <br>
+        OtpId: [ {{otpId}} ]
+        <br>
+        Phone: [ {{phone}} ]
+        <br>
+        Identifier: [ {{identifier}} ]
+        <br>
+        Token: [ {{token}} ]
+
+       </div>
+<!-- 
         <BaseInput numberOnly v-model="phone" persian position="left"
           :iconName="phone ? (isValidPhone ? 'mdi:check-circle' : 'mdi:alert-circle') : null" dir="ltr"
-          :floatinglabel="authUIData.login.phoneEmailFloatingLabel" :placeholder="authUIData.login.phoneEmailPlaceholder" />
+          :floatinglabel="authUIData.login.phoneEmailFloatingLabel" :placeholder="authUIData.login.phoneEmailPlaceholder" /> -->
         <BaseButton type="submit" :loading="isLoading" :disabled="!isValidPhone" :class="isValidPhone
           ? 'bg-primary-600'
           : 'bg-[#EBEBEB] text-gray-400 cursor-not-allowed'">
           {{ authUIData.login.buttonLabel }}
         </BaseButton>
+
+       <p
+      v-motion-pop-visible-once
+        v-show="errorMessage"
+        class="mt-2 text-center text-sm text-red-600"
+      >
+        {{ errorMessage }}
+      </p>
+
       </form>
 
       <p  class="mt-3 text-right text-[10px] leading-5 text-[#797B7D]" v-html="authUIData.login.legalText"></p>

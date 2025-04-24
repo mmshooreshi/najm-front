@@ -8,13 +8,14 @@ import { useAuthAPI } from '~/composables/useAuthAPI'
 import { useNavDirection } from '~/composables/useNavDirection'
 import { useAuthUIData } from '~/composables/ui/authUI'
 const {authUIData} = useAuthUIData()
+const errorMessage = ref('')      // ← new
 
 const nav = useNavDirection()
 const { user, setUser, token } = useAuth()
 const { updateUser } = useAuthAPI()
 
-const fname = ref(user?.name)
-const lname = ref(user?.familyName)
+const fname = ref(user.value.name)
+const lname = ref(user.value.familyName)
 const router = useRouter()
 
 const isLoading = ref(false)
@@ -23,11 +24,15 @@ async function complete() {
   if (!fname.value || !lname.value) return
   // Update user profile (replace this with a real API call)
   isLoading.value = true
+  errorMessage.value = ''
+
   try {
     // Call the updateUser API to update the profile in PocketBase
-    await updateUser(user.id, fname.value, lname.value)
+    await updateUser(user.value.id, fname.value, lname.value)
     router.push('/')  // Navigate after successful update
-  } catch (err) {
+  } catch (err: any) {
+    errorMessage.value = err.message || 'خطا در ویرایش حساب کاربری. لطفا دوباره تلاش کنید.' 
+
     console.error('Error during profile update:', err)
   } finally {
     isLoading.value = false
@@ -56,6 +61,15 @@ definePageMeta({
         {{authUIData.profile.okButtonLabel}}
       </BaseButton>
     </form>
+
+
+    <p
+      v-motion-pop-visible-once
+        v-show="errorMessage"
+        class="mt-2 text-center text-sm text-red-600"
+      >
+        {{ errorMessage }}
+      </p>
 
     <p class="mt-6 underline text-center text-xs text-[#797B7D] cursor-pointer active:text-blue hover:text-black">{{authUIData.profile.skipButtonLabel}}</p>
   </div>

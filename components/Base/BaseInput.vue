@@ -41,8 +41,12 @@
     <Icon v-if="iconName!=='mdi:alert-circle'" :name="iconName" class="w-5 h-5"/>
   </span>
 </div>
+<!-- <p v-if="props.error" class="-mt-2 border-red border rounded-xl  text-center left-[20%] right-[20%]  absolute  bg-[#F9FBFA] text-xs rtl text-xs scale-90 text-red-600">{{ props.error }}</p> -->
+<!-- class="absolute right-5 top-4 bg-[#F9FBFA] text-gray-500 pointer-events-none z-10 will-change-transform px-2" -->
+
 
     </div>
+
   </template>
   
   <script setup lang="ts">
@@ -51,13 +55,15 @@
   import { useMotionProperties, useSpring } from '@vueuse/motion'
   
   // Props
-  const props = withDefaults(defineProps<{ persian?: boolean; iconName?: string | null; position?: 'right' | 'left'; tooltip?: string; numberOnly?: boolean }>(), {
+  const props = withDefaults(defineProps<{ persian?: boolean; iconName?: string | null; position?: 'right' | 'left'; tooltip?: string; numberOnly?: boolean; error?: string }>(), {
     persian: false,
     iconName: null,
     position: 'right',
     tooltip: 'هیچ',
     numberOnly: false,
+    error: ''
   })
+
   
   // Forward attrs & v-model
   const attrs = useAttrs()
@@ -87,13 +93,15 @@
     : 'default'
   )
   const borderClass = computed(() =>
-    state.value === 'success' ? 'border-green-500 text-green-600 focus:border-green-500'
-    : state.value === 'error'   ? ''
-    : 'border-gray-300 text-gray-500'
+      state.value === 'success' ? 'border-green-500 text-green-600 focus:border-green-500'    
+      // : props.error  ? 'border-red-500 text-red-600 focus:border-red-500'
+   : state.value === 'error'   ? ''  // (fallback, though iconName.alert now covered by props.error)
+   : 'border-gray-300 text-gray-500'
   )
   const iconColor = computed(() =>
-    state.value === 'success' ? 'text-green-500'
-    : state.value === 'error'   ? ''
+     state.value === 'success'  ? 'text-green-500'
+    : props.error               ? 'text-red-500'
+    : state.value === 'error'    ? ''  // fallback
     : 'text-gray-400'
   )
   const tooltipText = computed(() =>

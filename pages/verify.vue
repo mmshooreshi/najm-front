@@ -15,6 +15,20 @@
             </template>
         </AuthHeader>
 
+        <div class="rtl">
+        prevOtpId:[ {{prevOtpId}} ]
+        <br>
+        OtpId: [ {{otpId}} ]
+        <br>
+        <br>
+        Phone: [ {{phone}} ]
+        <br>
+        Identifier: [ {{identifier}} ]
+        <br>
+        Token: [ {{token}} ]
+
+       </div>
+
         <form @submit.prevent="verifyCode" class="space-y-6">
             <OtpInput numberOnly v-model="code" persian :length="otpLength" />
             <!-- {{ code }} -->
@@ -23,6 +37,14 @@
             </BaseButton>
             <!-- {{ otpId }} -->
 
+                  <!-- نمایش خطای تأیید -->
+      <p
+      v-motion-pop-visible-once
+        v-show="errorMessage"
+        class="mt-2 text-center text-sm text-red-600"
+      >
+        {{ errorMessage }}
+      </p>
             <p class="mt-3 text-center text-xs text-[#797B7D]" :class="timer > 0 ? 'cursor-wait' : 'cursor-default'">
                 {{authUIData.verify.retryLabel}}
                 <span v-if="timer > 0">
@@ -54,7 +76,6 @@ const {authUIData} = useAuthUIData()
 const nav = useNavDirection()
 const router = useRouter()
 
-const { identifier, token } = useAuth()
 
 
 // Loading state
@@ -67,22 +88,25 @@ watchEffect(() => {
   }
 })
 
+
+const { setToken, setUser, setOtpId, setIdentifier,identifier, token, otpId,phone } = useAuth()
+
+const { authenticateWithOTP, loginOrRegister } = useAuthAPI()
+
+
 const dynamicSubheading = computed(() => {
-  return authUIData.value?.verify.subheading.replace("<phone>", toPersianDigits(identifier)) || ''
+  return authUIData.value?.verify.subheading.replace("<phone>", toPersianDigits(identifier.value)) || ''
 })
 
 const code = ref('')
 const otpLength = computed(() => 6)  // Assuming OTP length is 6
-const { otpId, setUser, setToken } = useAuth()  // Get otpId from Pinia store
-
-const { authenticateWithOTP } = useAuthAPI()
 
 const isLoading = ref(false)
-
 // Countdown timer logic
-const initialSeconds = 10
+const initialSeconds = 2
 const timer = ref<number>(initialSeconds)
 let timerInterval: number
+const errorMessage = ref('')      // ← new
 
 const formattedTime = computed(() => {
   const m = Math.floor(timer.value / 60)
@@ -103,8 +127,42 @@ function startTimer() {
   }, 1000)
 }
 
-function resendCode() {
-  startTimer()
+// function resendCode() {
+//   startTimer()
+// }
+
+const prevOtpId =  ref()
+const resendCode = async () => {
+  // Prevent hammer-tapping
+  if (timer.value > 0) return
+
+  isLoading.value = true
+  errorMessage.value = ''
+  prevOtpId.value = otpId.value ?? ''
+  try {
+    if (phone.value) {
+      let newOtpId = await loginOrRegister(identifier.value, phone.value)
+      if (newOtpId)
+      {
+        setOtpId(newOtpId)
+      }
+
+    } else{
+      errorMessage.value = 'خطا در ارسال کد. لطفا دوباره تلاش کنید.'
+    }
+    code.value = ''
+
+    // Navigate to OTP input screen
+    // router.push({ name: 'verify' })
+
+    startTimer()
+
+  } catch (err: any) {
+    errorMessage.value = err.message || 'خطا در ارسال کد. لطفا دوباره تلاش کنید.'
+  } finally {
+
+    isLoading.value = false
+  }
 }
 
 async function verifyCode() {
@@ -112,15 +170,23 @@ async function verifyCode() {
   isLoading.value = true
   try {
     // Replace with real OTP verification
-    console.log(otpId)
-    const { success } = await authenticateWithOTP(otpId, code.value)
+    errorMessage.value = ''         // ← clear previous error
+    console.log(otpId.value)
+    if (otpId.value)
+    {   
+        const { success } = await authenticateWithOTP(otpId.value, code.value)
+    
     if (success) {
       console.log('OTP verification successful')
       router.push({ name: 'profile' })
     } else {
+      errorMessage.value =  'کد وارد شده صحیح نیست. لطفاً دوباره تلاش کنید.'
+
       console.log('OTP verification failed')
     }
-  } catch (err) {
+  }
+  } catch (err: any) {
+    errorMessage.value = err.message || 'خطا در ارسال کد. لطفا دوباره تلاش کنید.' 
     console.error('Error during OTP verification:', err)
   } finally {
     isLoading.value = false

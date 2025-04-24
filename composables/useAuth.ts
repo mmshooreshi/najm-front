@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
 import nuxtStorage from 'nuxt-storage' // Import Nuxt Storage
+import { storeToRefs } from 'pinia'
 
 // 1. Define the Pinia store for authentication
 export const useAuthStore = defineStore('auth', {
@@ -9,6 +10,7 @@ export const useAuthStore = defineStore('auth', {
     user: null as any | null,
     otpId: 'noid' as string,
     identifier: '' as string,
+    phone: '' as string,
   }),
   actions: {
     setToken(newToken: string) {
@@ -25,6 +27,11 @@ export const useAuthStore = defineStore('auth', {
       this.otpId = newOtpId
       console.log("otpId set in Pinia store:", newOtpId)  // Debugging log
       nuxtStorage.localStorage.setData('auth-otpId', newOtpId)  // Persist to localStorage
+    },
+    setPhone(newPhone: string) {
+      this.phone = newPhone
+      console.log("Phone set in Pinia store:", newPhone)  // Debugging log
+      nuxtStorage.localStorage.setData('auth-phone', newPhone)  // Persist to localStorage
     },
     setIdentifier(newIdentifier: string) {
       this.identifier = newIdentifier
@@ -54,28 +61,33 @@ export function useAuth() {
   if (isClient) {
     const persistedToken = nuxtStorage.localStorage.getData('auth-token')
     const persistedUser = nuxtStorage.localStorage.getData('auth-user')
+    const persistedPhone = nuxtStorage.localStorage.getData('auth-phone')
     const persistedOtpId = nuxtStorage.localStorage.getData('auth-otpId')
     const persistedIdentifier = nuxtStorage.localStorage.getData('auth-identifier')
 
     // Set the persisted values to the store if they exist
     if (persistedToken) authStore.setToken(persistedToken)
     if (persistedUser) authStore.setUser(persistedUser)
+    if (persistedPhone) authStore.setPhone(persistedPhone)
     if (persistedOtpId) authStore.setOtpId(persistedOtpId)
     if (persistedIdentifier) authStore.setIdentifier(persistedIdentifier)
   }
 
   // Check if token is still valid
   const isAuthenticated = computed(() => !!authStore.token)
+  const { token, user, otpId, identifier, phone } = storeToRefs(authStore)
 
   return {
-    token: authStore.token,
-    user: authStore.user,
-    otpId: authStore.otpId,
-    identifier: authStore.identifier,
+    token,
+    user,
+    otpId,
+    identifier,
+    phone,
     isAuthenticated,
     setToken: authStore.setToken,
     setUser: authStore.setUser,
     setOtpId: authStore.setOtpId,
+    setPhone: authStore.setPhone,
     setIdentifier: authStore.setIdentifier,
     logout: authStore.logout,
   }

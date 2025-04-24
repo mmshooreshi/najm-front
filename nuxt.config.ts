@@ -2,7 +2,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
 import ViteComponents from 'unplugin-vue-components/vite'
 // import IconsResolver from 'unplugin-icons/resolver'
-import { presetUno } from 'unocss'
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -40,6 +39,7 @@ export default defineNuxtConfig({
    'nuxt-swiper',
    '@nuxtjs/strapi',
    '@nuxt/image'
+   
   ],
   strapi:{
     url: process.env.STRAPI_URL || 'http://localhost:1337',
@@ -56,13 +56,10 @@ export default defineNuxtConfig({
     }
 },
   unocss: {
-    content: {
-      pipeline: {
-        include: [/\.vue$/, /\.ts$/]
-      }
-    }
+    configFile: './unocss.config.ts'
   
   },
+  
   features: {
     inlineStyles: false,
   },
@@ -105,7 +102,7 @@ export default defineNuxtConfig({
 // nuxt.config.ts
 icon: {
   serverBundle: {
-  collections: ['mdi', 'carbon'] // Only the ones you actually use
+  collections: ['mdi', 'carbon', 'MageIcons'] // Only the ones you actually use
   }
 },
   vite: {
@@ -134,6 +131,8 @@ icon: {
       })
     ]
   },
-
+  image: {
+    // Options
+  },
   compatibilityDate: '2025-02-18'
 })

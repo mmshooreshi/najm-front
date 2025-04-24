@@ -8,7 +8,7 @@
     ref="menuContainer"
   >
     <Drawer v-model:open="menuOpen">
-      <Menu @pointerdown="handleWrapperClick" />
+      <Menu @click="handleWrapperClick" />
     </Drawer>
   </div>
 </template>
