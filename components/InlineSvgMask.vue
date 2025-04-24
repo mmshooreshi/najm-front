@@ -170,7 +170,11 @@ function onMove(e) {
   const pt = svgEl.value.createSVGPoint()
   pt.x = clientX
   pt.y = clientY
-  const svgP = pt.matrixTransform(svgEl.value.getScreenCTM().inverse())
+  const ctm = svgEl.value.getScreenCTM()
+if (!ctm || isNaN(ctm.a) || isNaN(ctm.d) || (ctm.a === 0 && ctm.d === 0)) {
+  return // Avoid inverting an invalid or non-invertible matrix
+}
+const svgP = pt.matrixTransform(ctm.inverse())
 
   if (polyEl.value.isPointInFill(svgP)) {
     const elements = document.elementsFromPoint(clientX, clientY)

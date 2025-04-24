@@ -10,12 +10,13 @@
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <!-- Settings Button -->
 
-    <div class="slider-inner absolute flex">
+    <div class="slider-inner absolute flex" > 
       <div v-for="(image, index) in images" :key="index"
+      
            class="image-item absolute"
            :style="getStyle(image, index)">
         <!-- Use InlineSvg, now with pixel–aware hover effects -->
-        <InlineSvgMask class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
+        <InlineSvgMask  v-motion-pop :delay="index*100" class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
       </div>
     </div>
   </div>
