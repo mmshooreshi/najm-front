@@ -1,11 +1,11 @@
 <template>
     <div
       @pointerdown.prevent="openSearch"
-      class="grid items-center bg-white border border-gray-200 rounded-2xl cursor-pointer p-3 min-w-12 overflow-hidden hover:bg-[#A8ABAE]/20 transition-all "
+      class="grid items-center bg-white  rounded-2xl cursor-pointer p-3 min-w-12  bg-red overflow-hidden hover:bg-[#A8ABAE]/20 transition-all "
       :style="{
         gridTemplateColumns: searchOpen ? 'auto 1fr' : 'auto 0fr'      }"
     >
-      <SearchIcon class="fill-current text-gray-700 flex-shrink-0 w-6 h-6" />
+      <SearchIcon class="fill-current text-gray-700 flex-shrink-0 w-6 h-6 z-100" />
   
       <input
         v-model="searchQuery"

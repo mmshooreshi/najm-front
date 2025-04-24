@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" class="fixed top-0 z-50 w-full backdrop-blur-sm bg-white/80 flex  p-2 w-full">
+  <div dir="rtl" class="fixed top-0 z-50 w-full backdrop-blur bg-white bg-opacity-10 flex  p-2 w-full">
     <!-- Mobile View -->
     <div class=" flex flex-row-reverse w-full transition-all justify-between items-center  z-100">
 <transition name="menu-switch" mode="out-in">
@@ -21,7 +21,7 @@
   <!-- Profile Button with blur transition -->
   <transition name="blur">
     <ProfileButton 
-      v-if="(!searchIsOpen && !isDesktop) || isDesktop"
+    v-show="!searchIsOpen && (menuOpen || !isSmall)"
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
@@ -30,18 +30,18 @@
   <!-- Language Switcher with blur transition -->
   <transition name="blur">
     <LanguageSwitcher 
-      v-if="(!searchIsOpen && !isDesktop) || isDesktop"
+      v-show="!searchIsOpen && (menuOpen || !isSmall)"
+
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
   </transition>
-    <div     :class="!menuOpen ? 'flex-shrink' : 'flex-grow'" class=" -mx-1 duration-500 transition-all"     > </div>
+    <div     :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class=" -mx-1 duration-500 transition-all"     > </div>
 
     <!-- search box flexes only when menu is open -->
     <SearchBox 
        @update:searchOpen="searchIsOpen = $event" 
       :menuOpen="menuOpen" 
-      v-if="!isSmall"
       class="" 
 
     />

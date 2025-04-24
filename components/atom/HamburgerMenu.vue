@@ -4,7 +4,7 @@
   <div
   @pointerdown="toggleMenu"
 
-    class="hh w-12 h-12 rounded-2xl bg-white flex items-center justify-center border border-gray-200 transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
+    class="hh w-12 h-12 rounded-2xl bg-white flex items-center justify-center  transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
     ref="menuContainer"
   >
     <Drawer v-model:open="menuOpen">
@@ -47,6 +47,8 @@ function handleWrapperClick(event: PointerEvent) {
   console.log("wrapper clicked by: ", event.target)
   if ((event.target as HTMLElement).closest('a')) {
     menuOpen.value = false;
+    emit('update:menuOpen', menuOpen.value);
+
     return;
   }
   event.stopPropagation()

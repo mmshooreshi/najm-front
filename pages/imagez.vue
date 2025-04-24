@@ -72,9 +72,10 @@ onMounted(() => {
       :key="index"
       
     >
-      <BaseSkeleton v-if="i%2" :imageDelay="imageDelays[index]"  :src="imageSrcs[index]"  :index="index" :randomClass="randomClass" />
-
-      <BaseSkeleton2 v-else  :imageDelay="imageDelays[index]"  :src="imageSrcs[index]"  :index="index" :randomClass="randomClass" />
+      <BaseSkeleton2 :showSliderTimer=true :showCounter=true v-if="i%4==0" :imageDelay="imageDelays[index]"  :src="imageSrcs[index]"  :index="index" :randomClass="randomClass" />
+      <BaseSkeleton2 :showSliderTimer=false :showCounter=true v-if="i%4==1" :imageDelay="imageDelays[index]"  :src="imageSrcs[index]"  :index="index" :randomClass="randomClass" />
+      <BaseSkeleton :showSliderTimer=true :showCounter=true v-if="i%4==2" :imageDelay="imageDelays[index]"  :src="imageSrcs[index]"  :index="index" :randomClass="randomClass" />
+      <BaseSkeleton :showSliderTimer=false :showCounter=true v-if="i%4==3" :imageDelay="imageDelays[index]"  :src="imageSrcs[index]"  :index="index" :randomClass="randomClass" />
 
     </div>
   </div>

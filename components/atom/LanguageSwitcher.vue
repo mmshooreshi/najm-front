@@ -3,7 +3,7 @@
   <div
   @click="nextLanguage"
   class="z-100 w-12 h-12 rounded-2xl active:bg-gray-300/50 bg-white flex items-center justify-center
-  text-gray-700 border border-gray-200
+  text-gray-700 
   hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
   >
   <transition name="scale" mode="out-in">

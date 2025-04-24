@@ -19,11 +19,12 @@
         class="w-10 h-10 text-gray-200 dark:text-gray-600 fixed "
         :customize="customize"
       />
-      <div 
+      <div v-if="showSliderTimer"
   class="h-48 absolute w-auto  right-0 transition-all duration-1000 left-0 bottom-0  bg-gray/20" 
-  :style="'right: ' +( 100 - (((countdown) % 50)*2) ) + '%'"
-></div>
-<span class="absolute  font-mono text-xs bottom-2 scale-100 font-extrabold translate-y-0 text-gray-800/30 transition-all" :class="{'text-3xl bottom-unset scale-500 text-gray-800/10':countdown<4, '!scale-0':src}">
+  :style="'right: ' +( 100 - (((countdown) % 50)*2) )  + '%'"
+>
+</div>
+<span v-if="showCounter" class="absolute  font-mono text-xs bottom-2 scale-100 font-extrabold translate-y-0 text-gray-800/30 transition-all" :class="{'text-3xl bottom-unset scale-500 text-gray-800/10':countdown<4, '!scale-0':src}">
   {{ countdown<4? countdown : (c / 1000).toFixed(3) }}</span>
 
 
@@ -53,6 +54,9 @@ const props = defineProps<{
   randomClass: string
   src: string
   imageDelay: number
+  showCounter: boolean
+  showSliderTimer: boolean
+
 }>()
 const loaded = ref(false)
 
