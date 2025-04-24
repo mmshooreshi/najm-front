@@ -21,7 +21,7 @@
   <!-- Profile Button with blur transition -->
   <transition name="blur">
     <ProfileButton 
-    v-show="!searchIsOpen && (menuOpen || !isSmall)"
+    v-if="!searchIsOpen && (menuOpen || !isSmall)"
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
     />
@@ -30,7 +30,7 @@
   <!-- Language Switcher with blur transition -->
   <transition name="blur">
     <LanguageSwitcher 
-      v-show="!searchIsOpen && (menuOpen || !isSmall)"
+      v-if="!searchIsOpen && (menuOpen || !isSmall)"
 
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
@@ -90,7 +90,7 @@ function openDesktopSearch() {
 <style scoped>
 /* 1) Duration & easing of the transition */
 .blur-enter-active, .blur-leave-active {
-  transition: filter 0.2s ease, opacity 0.2s ease;
+  transition: filter 0.1s ease, opacity 0.1s ease;
 }
 
 /* 2) Initial state when component is inserted, or after removal */

@@ -120,7 +120,33 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useWindowSize, useThrottleFn } from '@vueuse/core'
 import InlineSvgMask from '~/components/InlineSvgMask.vue'
 
+
 let images = [
+  { name: "Free Coffee Cup Paper Holder", src: "main/1.png", width: 158, height: 189, left: 264, top: 66, rotate: 15, zIndex: 4 },
+  { name: "Kraft Paper Mailing Box", src: "main/2.png", width: 239, height: 210, left: 74, top: -4, rotate: 8, zIndex: 2 },
+  { name: "Floating Square Gift Box", src: "main/3.png", width: 156, height: 152, left: 720, top: 182, rotate: -10, zIndex: 8 },
+  { name: "Open Paper Box", src: "main/4.png", width: 145, height: 152, left: -92, top: 91, rotate: -12, zIndex: 1 },
+  { name: "Free Floating Hardcover Book", src: "main/5.png", width: 140, height: 194, left: 916, top: 100, rotate: -5, zIndex: 10 },
+  { name: "Free Facial Tissue Box", src: "main/6.png", width: 181, height: 153, left: 560, top: 140, rotate: 7, zIndex: 6 },
+  { name: "Free Coffee Branding", src: "main/7.png", width: 167, height: 167, left: 180, top: 106, rotate: -8, zIndex: 3 },
+    { name: "Free Coffee Cup Paper Holder color 2", src: "main/8.png", width: 158, height: 189, left: 64, top: 66, rotate: 15, zIndex: 4 },
+    { name: "Free Lunch Kraft Paper Bag", src: "main/9.png", width: 122, height: 216, left: 429, top: 42, rotate: 10, zIndex: 5 },
+    { name: "Cardboard Paper Box with Handle", src: "main/10.png", width: 178, height: 168, left: 768, top: 42, rotate: 5, zIndex: 9 },
+    { name: "Free Coffee Cup Paper Holder", src: "main/1.png", width: 158, height: 189, left: 1717, top: 77, rotate: 15, zIndex: 18 },
+    { name: "Kraft Paper Mailing Box", src: "main/2.png", width: 216, height: 190, left: 1406, top: 49, rotate: 5, zIndex: 15 },
+    { name: "Floating Square Gift Box", src: "main/3.png", width: 156, height: 152, left: 1531, top: 20, rotate: -12, zIndex: 14 },
+    { name: "Open Paper Box", src: "main/4.png", width: 144, height: 151, left: 1002, top: 175, rotate: -8, zIndex: 11 },
+    { name: "Free Floating Hardcover Book", src: "main/5.png", width: 140, height: 194, left: 1862, top: 111, rotate: -5, zIndex: 19 },
+    { name: "Free Facial Tissue Box", src: "main/6.png", width: 181, height: 153, left: 1691, top: 184, rotate: 7, zIndex: 17 },
+    { name: "Free Coffee Branding", src: "main/7.png", width: 168, height: 167, left: 1269, top: 117, rotate: -6, zIndex: 13 },
+    { name: "Free Coffee Cup Paper Holder color 2", src: "main/8.png", width: 158, height: 189, left: 1117, top: 77, rotate: 15, zIndex: 18 },
+    { name: "Free Lunch Kraft Paper Bag", src: "main/9.png", width: 138, height: 218, left: 1577, top: 25, rotate: -4, zIndex: 16 },
+    { name: "Cardboard Paper Box with Handle", src: "main/10.png", width: 181, height: 168, left: 1946, top: 116, rotate: 6, zIndex: 20 }
+]
+
+
+
+let images2 = [
     { name: "Open Paper Box", src: "open-paper-box-mockup-half-side-view-2-8943.png", width: 145, height: 152, left: -52, top: 91, rotate: -12, zIndex: 1 },
     { name: "Kraft Paper Mailing Box", src: "kraft-paper-open-mailing-box-mockup-2-6737.png", width: 239, height: 210, left: 74, top: -4, rotate: 8, zIndex: 2 },
     { name: "Free Coffee Branding", src: "Free-Coffee-Branding-PSD-Mockup-1.png", width: 167, height: 167, left: 180, top: 106, rotate: -8, zIndex: 3 },
@@ -142,6 +168,7 @@ let images = [
     { name: "Free Floating Hardcover Book", src: "Free-Floating-Hardcover-Book-Mockup-1.png", width: 140, height: 194, left: 1862, top: 111, rotate: -5, zIndex: 19 },
     { name: "Cardboard Paper Box with Handle", src: "cardboard-paper-box-with-handle-mockup-2-10296.png", width: 181, height: 168, left: 1946, top: 116, rotate: 6, zIndex: 20 }
 ]
+
 
 
 // Initialize each image’s baseZIndex (if not already set)

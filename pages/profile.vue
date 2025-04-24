@@ -11,7 +11,7 @@ const {authUIData} = useAuthUIData()
 const errorMessage = ref('')      // ← new
 
 const nav = useNavDirection()
-const { user, setUser, token } = useAuth()
+const { user, setUser, token, isAuthenticated } = useAuth()
 const { updateUser } = useAuthAPI()
 
 const fname = ref(user.value.name)
@@ -28,7 +28,7 @@ async function complete() {
 
   try {
     // Call the updateUser API to update the profile in PocketBase
-    await updateUser(user.value.id, fname.value, lname.value)
+    await updateUser(user.value, fname.value, lname.value)
     router.push('/')  // Navigate after successful update
   } catch (err: any) {
     errorMessage.value = err.message || 'خطا در ویرایش حساب کاربری. لطفا دوباره تلاش کنید.' 
@@ -40,6 +40,7 @@ async function complete() {
 }
 
 definePageMeta({
+  middleawre: 'auth',
   name: 'profile',
   layout: 'auth',
 })

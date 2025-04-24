@@ -231,6 +231,7 @@ function editNumber() {
 }
 
 definePageMeta({
+  middleawre: 'auth',
   name: 'verify',
   layout: 'auth',
 })

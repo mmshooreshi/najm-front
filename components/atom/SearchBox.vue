@@ -39,7 +39,7 @@
     setTimeout(() => {
         searchOpen.value = true
 
-    }, 200)
+    }, 100)
     nextTick(() => document.getElementById('mobile-search-input')?.focus())
   }
   
@@ -49,7 +49,7 @@
   // wait 1000 ms (1 second) before running the close logic
   setTimeout(() => {
     emit('update:searchOpen', false)
-  }, 200)
+  }, 100)
 }
 
   </script>

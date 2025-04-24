@@ -72,6 +72,7 @@ const requestOTP = async () => {
 
 
 definePageMeta({
+  middleawre: 'auth',
   name: 'login',
   layout: 'auth',
 })
