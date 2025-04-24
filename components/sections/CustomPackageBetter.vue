@@ -299,7 +299,9 @@ const sideHidden = ref(false)
     min-width: 300px;                 /* allow shrink */
     background: #DDDDD7;
     border-radius: 1rem;
-    overflow: hidden;
+    /* overflow: hidden; */
+
+    overflow-x: auto; /* let the inner strip scroll */
     transition: flex-grow 0.5s ease;
   }
   .slider-box.full {

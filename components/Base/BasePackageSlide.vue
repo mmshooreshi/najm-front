@@ -141,6 +141,8 @@ function toggleExpand(){ emit('toggleExpand') }
   overflow-y:hidden;
   cursor:pointer;
   scroll-behavior:smooth;
+
+  
 }
 .card{
   position:absolute;
@@ -153,4 +155,64 @@ function toggleExpand(){ emit('toggleExpand') }
   position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
   background:rgba(0,0,0,.75);color:#fff;padding:2px 6px;border-radius:4px;font-size:.75rem;white-space:nowrap;user-select:none;
 }
+
+
+
+.package-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+}
+.package-slide.expanded {
+  display: flex;
+  align-items: flex-end;
+  overflow-x: auto;
+  padding: 1rem;
+}
+.product-wrapper {
+  position: absolute;
+  will-change: transform;
+  transition: transform 0.4s ease;
+}
+.package-slide.expanded .product-wrapper {
+  position: static;
+  margin-right: 1rem;
+}
+.floating-item {
+  display: block;
+  max-width: 200px;
+  height: auto;
+  transition: transform 0.3s ease; /* Smooth transformation on hover */
+}
+
+.floating-item:hover {
+  transform: scale(1.05); /* Slight scaling effect */
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.3s ease; /* Smooth fade-in transition */
+}
+
+.tooltip:hover {
+  opacity: 1; /* Make tooltip visible */
+}
+
 </style>
+
+
+
+
