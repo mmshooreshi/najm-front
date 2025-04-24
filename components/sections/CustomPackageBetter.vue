@@ -221,16 +221,25 @@ const sideHidden = ref(false)
 <template>
     <section class="wrapper">
       <!-- header collapses vertically (just fades) -->
-      <header class="intro" :class="{ off: sideHidden }">
+      <header class="intro" :class="{ on: sideHidden }">
         <h1>اینجا هر کار پیچیده‌ای رو میشه ساده کرد!</h1>
         <p>برای سازمان یا برند شما …</p>
       </header>
   
-      <div class="row">
+      <!--
+        Mobile‑first (column stack).
+        From the md breakpoint up it becomes a classic 1‑2‑1 flex‑row.
+        Keeping pure flexbox preserves the smooth flex‑basis animation while
+        still giving us a fully responsive layout.
+      -->
+      <div class="row gap-4" :class="{ full: sideHidden }">
         <!-- side panes shrink to zero width -->
         <aside class="side" :class="{ off: sideHidden }">Left</aside>
   
-        <div class="slider-box  h-[500px]" :class="{ full: sideHidden }">
+        <div
+          class="slider-box h-[500px]"
+          :class="{ full: sideHidden }"
+        >
           <BasePackageSlider
             :packages="packages"
             class="h-full"
@@ -244,17 +253,40 @@ const sideHidden = ref(false)
   </template>
   
   <style scoped>
-  .wrapper { width: 100%; }
-  .row     { display: flex; gap: 1rem; align-items: stretch; }
+  /* ---------------- layout helpers ---------------- */
+  .row {
+    display: flex;
+    flex-direction: column;       /* mobile (stack) */
+    align-items: stretch;
+  }
+  @media (min-width: 768px) {
+    .row {
+      flex-direction: row;       /* 1‑2‑1 layout from md */
+    }
+  }
   
-  /* ------------------------- panes & slider ------------------------- */
+  .wrapper {
+    width: 100%;
+  }
+  
+  /* ------------- panes & slider ------------------- */
   .side {
-    flex: 1 0 220px;                /* basis 220px, can grow a bit */
+    flex: 1 0 220px;              /* basis 220px, can grow a bit */
     max-width: 220px;
     background: #DDDDD7;
     border-radius: 1rem;
-    transition: flex-basis .5s ease, max-width .5s ease, opacity .4s ease;
+    transition: flex-basis 0.5s ease, max-width 0.5s ease, opacity 0.4s ease;
   }
+  
+  /* Make side panes full‑width in the stacked mobile layout */
+  @media (max-width: 767px) {
+    .side {
+      flex-basis: auto;
+      max-width: none;
+      width: 100%;
+    }
+  }
+  
   .side.off {
     flex-basis: 0;
     max-width: 0;
@@ -263,27 +295,30 @@ const sideHidden = ref(false)
   }
   
   .slider-box {
-    flex: 2 1 0;
-    min-width: 0;                  /* allow shrink */
+    /* flex: 2 1 0; */
+    min-width: 0;                 /* allow shrink */
     background: #DDDDD7;
     border-radius: 1rem;
     overflow: hidden;
-    transition: flex-grow .5s ease;
+    transition: flex-grow 0.5s ease;
   }
   .slider-box.full {
-    flex-grow: 999;                /* gobble up free space smoothly */
+    flex-grow: 999;               /* gobble up free space smoothly */
   }
   
-  /* ------------------------- header fade ---------------------------- */
+  /* ----------------- header fade ------------------ */
   .intro {
     margin-bottom: 2rem;
-    transition: opacity .4s ease, height .4s ease;
+    transition: opacity 0.4s ease, height 0.4s ease;
   }
   .intro.off {
     opacity: 0;
     height: 0;
     overflow: hidden;
   }
-  .intro h1 { font-size: 1.8rem; font-weight: 700; }
+  .intro h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
   </style>
   
