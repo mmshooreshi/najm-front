@@ -108,7 +108,7 @@ definePageMeta({
    :placeholder="authUIData.login.phoneEmailPlaceholder"
 />
 
-<div class="rtl">
+<!-- <div class="rtl">
         <br>
         OtpId: [ {{otpId}} ]
         <br>
@@ -118,7 +118,7 @@ definePageMeta({
         <br>
         Token: [ {{token}} ]
 
-       </div>
+       </div> -->
 <!-- 
         <BaseInput numberOnly v-model="phone" persian position="left"
           :iconName="phone ? (isValidPhone ? 'mdi:check-circle' : 'mdi:alert-circle') : null" dir="ltr"

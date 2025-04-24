@@ -14,7 +14,7 @@
                 </div>
             </template>
         </AuthHeader>
-
+<!-- 
         <div class="rtl">
         prevOtpId:[ {{prevOtpId}} ]
         <br>
@@ -27,7 +27,7 @@
         <br>
         Token: [ {{token}} ]
 
-       </div>
+       </div> -->
 
         <form @submit.prevent="verifyCode" class="space-y-6">
             <OtpInput numberOnly v-model="code" persian :length="otpLength" />
