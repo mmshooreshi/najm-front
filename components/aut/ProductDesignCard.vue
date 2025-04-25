@@ -19,7 +19,7 @@
       <!-- Header Section -->
       <div class="flex flex-col gap-6">
         <div class="flex justify-start">
-          <div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#eafed3] p-2">
+          <div class="flex items-center justify-center w-10 h-10 rounded-full  bg-[#eafed3]/100  p-2">
             <img src="https://dashboard.codeparrot.ai/api/image/Z8LZelj1kitRpYPc/palette.png" alt="palette" class="w-6 h-6" />
           </div>
         </div>

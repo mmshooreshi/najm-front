@@ -1,6 +1,6 @@
 <!-- layouts/auth.vue -->
 <template>
-    <div class="relative flex justify-center bg-[#F9FBFA] pt-14 px-6 overflow-visible"
+    <div class="relative flex justify-center  bg-[#F9FBFA]/100  pt-14 px-6 overflow-visible"
         style="touch-action:none; height:100dvh;">
         <!-- {{ nav }} -->
         <!-- close btn (returns home) -->
@@ -42,7 +42,7 @@ useHead({
         dir: 'rtl',
     },
     bodyAttrs: {
-        class: 'text-right rtl bg-[#F9FBFA] antialiased',
+        class: 'text-right rtl  bg-[#F9FBFA]/100  antialiased',
         style: 'touch-action:none; height:100dvh;'
     },
     meta: [

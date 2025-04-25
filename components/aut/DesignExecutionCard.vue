@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col w-full md:max-w-xs h-auto gap-6 p-6 bg-[#daebd0] rounded-[25px] ">
+  <div class="flex flex-col w-full md:max-w-xs h-auto gap-6 p-6  bg-[#daebd0]/100  rounded-[25px] ">
     <!-- Top Section -->
     <div class="flex flex-col gap-6 justify-between items-start">
       <!-- Icon Section -->
-      <div class="w-10 h-10 flex items-center justify-center rounded-full bg-[#eafed3] p-2">
+      <div class="w-10 h-10 flex items-center justify-center rounded-full  bg-[#eafed3]/100  p-2">
         <img src="https://dashboard.codeparrot.ai/api/image/Z8LZelj1kitRpYPc/transfor.png" alt="transform" class="w-6 h-6" />
       </div>
       <!-- Text Section -->

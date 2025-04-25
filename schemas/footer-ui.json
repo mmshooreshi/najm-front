@@ -1,0 +1,69 @@
+{
+    "hero": {
+      "paragraphs": [
+        "در دنیای رقابتی امروز، چاپ و بسته‌بندی دیگر فقط یک مرحله از تولید نیست؛ بلکه اولین نقطه تماس برند شما با مشتریان است. ما باور داریم که هر پروژه یک داستان است. داستانی که باید به‌طور ویژه و با دقت روایت شود.",
+        "از طراحی تا اجرا، همه چیز در یک مجموعه. با راهکارهای خلاقانه و انعطاف‌پذیر ما اینجا هستیم تا داستان شما را تبدیل به یک تجربه‌ی ماندگار کنیم."
+      ]
+    },
+  
+    "sections": [
+      {
+        "id": "services",
+        "name": "خدمات",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "packaging", "name": "بسته‌بندی (4 مدل)", "slug": "/services/packaging" },
+          { "id": "printing",  "name": "چاپ",             "slug": "/services/printing" }
+        ]
+      },
+      {
+        "id": "najm-collection",
+        "name": "مجموعه نجم",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "about",   "name": "درباره ما", "slug": "/about-us" },
+          { "id": "history", "name": "تاریخچه",   "slug": "/history" }
+        ]
+      },
+      {
+        "id": "customer-service",
+        "name": "سرویس مشتریان",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "faq", "name": "سؤالات متداول", "slug": "/help/faq" }
+        ]
+      },
+      {
+        "id": "latest",
+        "name": "آخرین‌ها",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "blog", "name": "مقالات",      "slug": "/blog" },
+          { "id": "news", "name": "اخبار صنعت", "slug": "/news" }
+        ]
+      }
+    ],
+  
+    "contact": {
+      "items": [
+        { "id": "phone",  "name": "تلفن", "value": "+98 21 6679 7911", "slug": "tel:+982166797911" , "ltr": true},
+        { "id": "fax",    "name": "فکس",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712"  , "ltr": true},
+        { "id": "email",  "name": "ایمیل", "value": "chapnajm@gmail.com", "slug": "mailto:chapnajm@gmail.com"  , "ltr": true},
+        { "id": "hours1", "name": "شنبه تا چهارشنبه:", "value": "۹ تا ۱۹" },
+        { "id": "hours2", "name": "پنج‌شنبه‌ها:",      "value": "تا ساعت ۱۶" }
+      ],
+      "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
+    },
+  
+    "seals": [
+      { "img": "/images/enamad.png",  "url":"",     "alt": "نماد اعتماد الکترونیکی" },
+      { "img": "/images/samandehi.png", "url":"",  "alt": "نشان ملی ثبت رسانه‌های دیجیتال" }
+    ],
+  
+    "copyright": "کلیه حقوق این سایت متعلق به مجموعه\u200cی چاپ نجم می\u200cباشد."
+  }
+  

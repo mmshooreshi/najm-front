@@ -28,7 +28,7 @@
             v-for="(result, index) in searchResults"
             :key="index"
             @click="selectSearchResult(result)"
-            class="px-4 py-3 cursor-pointer transition-all hover:bg-[#014439] hover:text-white"
+            class="px-4 py-3 cursor-pointer transition-all hover:bg-[#014439]/100 hover:text-white"
           >
             {{ result }}
           </li>

@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" class="max-w-screen text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-visible">
+  <div dir="rtl" class="max-w-screen text-d4 p-6 flex flex-col items-center  bg-[#CBCBFB]/100  rounded-3xl gap-6 pb-0 overflow-visible">
     <h2 class="text-[20px] font-extrabold text-center">سفارش آسون، پیگیریِ آسون‌تر!</h2>
     <p class="text-sm text-center">
       وضعیت سفارشتو از لحظه‌ی ثبت تا تحویل روی یک تایم‌لاین دقیق ببین! هر مرحله که جلوتر بری، ما بهت اطلاع میدیم.

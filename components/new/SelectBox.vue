@@ -28,7 +28,7 @@
             @mouseover="hoverIndex = index"
             :class="[
               'px-4 py-3 cursor-pointer transition-all',
-              hoverIndex === index ? 'bg-[#014439] text-[#66BA58]' : 'hover:bg-gray-100'
+              hoverIndex === index ? 'bg-[#014439]/100 text-[#66BA58]' : 'hover:bg-gray-100'
             ]"
             tabindex="0"
           >

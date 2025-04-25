@@ -1,7 +1,7 @@
 <template>
     <div class="container">
       <h1>Enhanced Buttons</h1>
-      <ButtonComponent class="text-d4 text-demibold text-base hover:tracking-wide bg-[#014439] bg-opacity-90 text-white hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو" @clicked="handleSubmit" />
+      <ButtonComponent class="text-d4 text-demibold text-base hover:tracking-wide  bg-[#014439]/100  bg-opacity-90 text-white/100 hover:bg-opacity-100 py-[20px] px-[90px]" label="با امکانات ما آشنا شو" @clicked="handleSubmit" />
 
     </div>
   </template>

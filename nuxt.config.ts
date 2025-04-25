@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
-import ViteComponents from 'unplugin-vue-components/vite'
+// import ViteComponents from 'unplugin-vue-components/vite'
 // import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineNuxtConfig({
@@ -25,22 +25,10 @@ export default defineNuxtConfig({
   },
 
   
-  modules: [
-   '@unocss/nuxt',
-   '@pinia/nuxt',
-  //  'unplugin-icons/nuxt',
-   '@vueuse/nuxt',
-   '@vueuse/motion/nuxt',
-   '@nuxt/icon',
-   // '@hypernym/nuxt-gsap',
-   "v-gsap-nuxt",
-   // 'nuxt-lodash',
-   "nuxt-shiki",
-   'nuxt-swiper',
-   '@nuxtjs/strapi',
-   '@nuxt/image'
-   
-  ],
+  modules: ['@unocss/nuxt', '@pinia/nuxt', //  'unplugin-icons/nuxt',
+  '@vueuse/nuxt', '@vueuse/motion/nuxt', '@nuxt/icon', // '@hypernym/nuxt-gsap',
+  "v-gsap-nuxt", // 'nuxt-lodash',
+  "nuxt-shiki", 'nuxt-swiper', '@nuxtjs/strapi', '@nuxt/image', 'nuxt-mapbox'],
   strapi:{
     url: process.env.STRAPI_URL || 'http://localhost:1337',
     token: process.env.STRAPI_TOKEN || undefined,
@@ -78,6 +66,7 @@ export default defineNuxtConfig({
   }
 },
 
+
   css: ['~/assets/css/fontiran.css','~/assets/css/main.css', '~/assets/css/shiki.css'],
   runtimeConfig: {
     public: {
@@ -105,6 +94,9 @@ icon: {
   collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
   }
 },
+mapbox: {
+  accessToken: 'pk.eyJ1IjoibW1zaG9vcmVzaGkiLCJhIjoiY205eGJla2tyMTB3ejJrc2Vma2VwY2VlaiJ9.PGekyHty46Af6FxyKY3HIw'
+},
   vite: {
       build: {
         rollupOptions: {
@@ -126,9 +118,9 @@ icon: {
     },
     plugins: [
       require('vite-svg-loader')(),
-      ViteComponents({
-        dts: true
-      })
+      // ViteComponents({
+      //   dts: true
+      // })
     ]
   },
   image: {

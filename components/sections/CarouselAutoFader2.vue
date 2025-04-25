@@ -81,7 +81,7 @@ onMounted(() => {
             class="w-full h-96 md:h-full object-cover rounded-3xl"
           />
           <!-- Overlay Button with Chevron Icon -->
-          <div class="absolute left-[50%] -translate-x-[50%] top-[5%] group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max bg-[#DAEBD0] py-0 px-2 sm:px-4 sm:py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-4">
+          <div class="absolute left-[50%] -translate-x-[50%] top-[5%] group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max  bg-[#DAEBD0]/100  py-0 px-2 sm:px-4 sm:py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-4">
             <div class="mr-2 flex justify-center items-center w-6 h-6 transition-transform rotate-90" :class="{ 'rotate-180': isOpen }">
                 <ChevronDownIcon class="group-hover:translate-y-2 transition-all duration-300" />
             </div>

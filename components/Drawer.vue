@@ -19,7 +19,7 @@
     class="flex flex-col  h-screen w-screen mr-0 sm:h-[96vh] sm:mt-2 sm:mr-[15vw] sm:-ml-8  sm:w-[85vw]  bg-white sm:rounded-3xl relative "
   > -->
 
-  <div class="w-full xs:mr-[0vw]  sm:mr-[66px] flex flex-col h-screen bg-white sm:rounded-3xl relative md:absolute  md:top-0 md:left-0 md:max-w-[600px]  ">
+  <div class="w-full xs:mr-[0vw]  sm:mr-[66px] flex flex-col h-screen bg-white/100 sm:rounded-3xl relative md:absolute  md:top-0 md:left-0 md:max-w-[600px]  ">
 
     <div class="drawer-body">
       <slot />
@@ -80,7 +80,6 @@ if ((e.target as HTMLElement).closest('a')) {
   justify-content: center;
   cursor: pointer;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
   &:hover {

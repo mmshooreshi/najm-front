@@ -1,5 +1,6 @@
 <template>
-  <div dir="rtl" class="fixed top-0 z-50 w-full backdrop-blur bg-white bg-opacity-10  flex  p-2 w-full">
+  <!-- backdrop-blur -->
+  <div dir="rtl" class="fixed top-0 z-50 w-full  bg-white bg-opacity-100  flex  p-2 w-full">
     <!-- Mobile View -->
     <div class=" flex flex-row-reverse w-full transition-all justify-between items-center  z-100">
 <transition name="menu-switch" mode="out-in">

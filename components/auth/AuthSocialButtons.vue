@@ -15,7 +15,7 @@ const props = defineProps<Props>()
     <div
       v-for="(icon, i) in props.icons"
       :key="i"
-      class="w-full cursor-pointer hover:opacity-80 transition bg-[#E5EDED] px-6 py-3 rounded-xl"
+      class="w-full cursor-pointer hover:opacity-80 transition  bg-[#E5EDED]/100  px-6 py-3 rounded-xl"
     >
       <img :src="icon.src" :alt="icon.alt" loading="lazy" class="w-6 h-6 mx-auto object-contain" />
     </div>

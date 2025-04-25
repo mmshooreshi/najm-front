@@ -17,7 +17,6 @@
 
       <!-- <popDiv/> -->
       <ProjectReservation />
-
     </div>
     <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-6 ">
       <PrintingSection />
@@ -39,13 +38,13 @@
         <!-- Right Section (Two stacked boxes inside a flex container) -->
         <div
           class="snap-end flex justify-center items-center h-full flex-col gap-2 row-span-1 md:row-span-2 md:col-span-2 py-4 md:py-0">
-          <div class="bg-[#A5E4EB] w-full h-full relative overflow-hidden min-h-56 p-6 rounded-3xl"> 
+          <div class="bg-[#A5E4EB]/100 w-full h-full relative overflow-hidden min-h-56 p-6 rounded-3xl"> 
             
             <img ref="imageRef"
               src="/images/aut/trade-box.gif" alt="Box Mapping"
               class="absolute inset-0 w-full h-full object-cover object-center" />
           </div>
-          <div class="bg-[#DAEBD0] w-full h-full min-h-56  p-6 rounded-3xl">
+          <div class="bg-[#DAEBD0]/100 w-full h-full min-h-56  p-6 rounded-3xl">
 
           </div>
         </div>
@@ -73,7 +72,11 @@
     </div>
 
 
+    <div  class="snap-start ">
+
     <PromoFeatureCards />
+    </div>
+    <!-- <PromoFeatureCards2 /> -->
 
     <div class="snap-start flex flex-col md:flex-row w-full h-auto gap-4 p-4">
       <DesignExecutionCard class="flex-grow" />
@@ -152,6 +155,7 @@ import { useAuthStore } from '~/composables/useAuth'
 import FaqSection from '~/components/sections/FaqSection.vue'
 import FaqSec from '~/components/sections/FaqSec.vue'
 import PromoFeatureCards from '~/components/sections/PromoFeatureCards.vue'
+import PromoFeatureCards2 from '~/components/sections/PromoFeatureCards2.vue'
 
 
 const {     token,user,identifier,isAuthenticated,logout} = useAuthStore()

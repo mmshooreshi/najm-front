@@ -3,7 +3,7 @@
     <div
     dir="rtl"
       :class="{'opacity-0': !ready}"
-      class="max-w-screen mx-auto text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-hidden transition-opacity duration-300"
+      class="max-w-screen mx-auto text-d4 p-6 flex flex-col items-center  bg-[#CBCBFB]/100  rounded-3xl gap-6 pb-0 overflow-hidden transition-opacity duration-300"
     >
       <!-- Title/description -->
       <div class="flex flex-col items-center gap-2">

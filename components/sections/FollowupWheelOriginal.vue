@@ -1,7 +1,7 @@
 <template>
     <div
       dir="rtl"
-      class="max-w-screen text-d4 p-6 flex flex-col items-center bg-[#CBCBFB] rounded-3xl gap-6 pb-0 overflow-visible"
+      class="max-w-screen text-d4 p-6 flex flex-col items-center  bg-[#CBCBFB]/100  rounded-3xl gap-6 pb-0 overflow-visible"
     >
       <!-- Title/description -->
       <div class="flex flex-col items-center gap-2">

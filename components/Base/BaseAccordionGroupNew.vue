@@ -1,5 +1,5 @@
 <template>
-    <div class="group transition-colors transition-border duration-1000  bg-[#F1F5F9] hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-[#014439]': activeFiltersCount>0}">
+    <div class="group transition-colors transition-border duration-1000bg-[#F1F5F9]/100 hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-[#014439]': activeFiltersCount>0}">
       <!-- Header -->
       <button
         class="w-full flex bg-transparent transition-colors justify-between items-center py-3 px-6 text-sm "
@@ -9,7 +9,7 @@
         
         <span class="text-demibold text-d4 flex flex-row gap-2">{{ title }}
             <div v-show="activeFiltersCount>0"
-  class="text-xs text-white font-semibold bg-[#014439] border border-[#014439] rounded-lg p-2 pt-0.5 pr-1.2 h-5 w-5"
+  class="text-xs text-white/100 font-semibold  bg-[#014439]/100  border border-[#014439] rounded-lg p-2 pt-0.5 pr-1.2 h-5 w-5"
   :class="{ '!w-6': activeFiltersCount > 9 }"
 >
   {{ toPersianDigits(activeFiltersCount) }}
@@ -35,7 +35,7 @@
                 @click="activeTab = idx"
                 class="sm:px-8 px-4 py-2 sm:min-w-[90px] rounded-2xl font-medium text-center bg-transparent transition-all duration-200" 
                 :class="[
-                  activeTab === idx ? '!bg-[#014439] text-white' : 'text-gray-700'
+                  activeTab === idx ? '!bg-[#014439]/100 text-white' : 'text-gray-700'
                 ]"
               >
                 {{ pane.name }}

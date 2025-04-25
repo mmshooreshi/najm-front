@@ -19,7 +19,7 @@
       <!-- floating label using VueUse Motion -->
       <label
         ref="labelRef"
-        class="absolute right-5 top-4 bg-[#F9FBFA] text-gray-500 pointer-events-none z-10 will-change-transform px-2"
+        class="absolute right-5 top-4  bg-[#F9FBFA]/100  text-gray-500 pointer-events-none z-10 will-change-transform px-2"
       >
         {{ forward.floatinglabel }}
       </label>
@@ -33,7 +33,7 @@
     <Icon name="mdi:close-circle" class="w-5 h-5 text-black/80"/>
   </span>
   <span v-else class="relative w-5 h-5 flex flex-row">
-    <div class="rtl absolute z-10 w-max max-w-xs px-3 -mt-2 pt-1.5 pb-1.5 flex items-center text-xs text-white bg-black/80 rounded-xl shadow-sm opacity-0 leading-6 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+    <div class="rtl absolute z-10 w-max max-w-xs px-3 -mt-2 pt-1.5 pb-1.5 flex items-center text-xs text-white/100 bg-black/80 rounded-xl shadow-sm opacity-0 leading-6 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
                 :class="[position === 'right' ? 'left-full ml-2' : 'right-full mr-2']">
                 {{ tooltipText }}
             </div>
@@ -41,8 +41,8 @@
     <Icon v-if="iconName!=='mdi:alert-circle'" :name="iconName" class="w-5 h-5"/>
   </span>
 </div>
-<!-- <p v-if="props.error" class="-mt-2 border-red border rounded-xl  text-center left-[20%] right-[20%]  absolute  bg-[#F9FBFA] text-xs rtl text-xs scale-90 text-red-600">{{ props.error }}</p> -->
-<!-- class="absolute right-5 top-4 bg-[#F9FBFA] text-gray-500 pointer-events-none z-10 will-change-transform px-2" -->
+<!-- <p v-if="props.error" class="-mt-2 border-red border rounded-xl  text-center left-[20%] right-[20%]  absolutebg-[#F9FBFA]/100 text-xs rtl text-xs scale-90 text-red-600">{{ props.error }}</p> -->
+<!-- class="absolute right-5 top-4  bg-[#F9FBFA]/100  text-gray-500 pointer-events-none z-10 will-change-transform px-2" -->
 
 
     </div>

@@ -19,7 +19,7 @@
         </svg>
       </div>
       <div class="z-10 absolute inset-0 flex items-center justify-center">
-        <div class="w-10 mt-36 h-10 bg-[#EAFED3] group-active:bg-[#014439] flex items-center justify-center rounded-full group-hover:scale-150 transition-transform duration-300 ease-in-out">
+        <div class="w-10 mt-36 h-10  bg-[#EAFED3]/100  group-active:bg-[#014439]/100 flex items-center justify-center rounded-full group-hover:scale-150 transition-transform duration-300 ease-in-out">
           <TargetIcon />
         </div>
       </div>
@@ -49,10 +49,10 @@
           <SelectBox v-model="selectedCategory" :options="categoryOptions" />
           <SearchBox v-model="searchQuery" :options="productOptions" />
         </div>
-        <div class="group mt-6 bg-[#014439] rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50] transition-all">
+        <div class="group mt-6  bg-[#014439]/100  rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white/100 hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]/100 transition-all">
           <span class="text-lg font-semibold">رزرو پروژه جدید</span>
           <p class="animate-pulse-alt text-white/50 text-sm font-normal mt-2">
-            شروع دهی از <span class="text-white underline underline-offset-4">۵</span> روز دیگر
+            شروع دهی از <span class="text-white/100 underline underline-offset-4">۵</span> روز دیگر
           </p>
         </div>
       </div>

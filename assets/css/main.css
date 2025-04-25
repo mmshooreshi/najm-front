@@ -24,6 +24,9 @@ body{
 	direction: rtl;
 }
 
+.ltr{
+	direction: ltr;
+}
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
 /* ─── SLIDE LEFT (forward) ───────────────────── */

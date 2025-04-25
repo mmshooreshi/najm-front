@@ -99,9 +99,9 @@ function handleInput(e: Event) {
 </script>
 
 <template>
-  <div class="relative min-h-screen bg-[#F9FBFA] text-right rtl">
+  <div class="relative min-h-screen  bg-[#F9FBFA]/100  text-right rtl">
     <!-- Fixed segmented tabs -->
-    <div class="fixed top-24 sm:top-16 left-0 w-full flex justify-center bg-[#F9FBFA] z-50 shadow-sm py-4">
+    <div class="fixed top-24 sm:top-16 left-0 w-full flex justify-center  bg-[#F9FBFA]/100  z-50 shadow-sm py-4">
       <div class="max-w-sm w-full px-4">
         <AuthSegmentedTabs
           v-model="currentTab"
@@ -158,7 +158,7 @@ function handleInput(e: Event) {
                 </p>
                 <button
                   @click="onSubmit"
-                  class="w-full bg-[#EBEBEB] rounded-2xl p-3 text-base font-semibold transition-all duration-300 hover:text-black hover:bg-primary hover:shadow-sm hover:scale-105 active:scale-95"
+                  class="w-full  bg-[#EBEBEB]/100  rounded-2xl p-3 text-base font-semibold transition-all duration-300 hover:text-black hover:bg-primary hover:shadow-sm hover:scale-105 active:scale-95"
                 >
                   {{ authUIData.buttonLabel }}
                 </button>

@@ -57,7 +57,7 @@
   
         <!-- Logout Button -->
         <div class="flex justify-center mt-8">
-          <button @click="handleLogout" class="bg-red-500 text-white px-6 py-3 rounded-lg font-medium text-lg hover:bg-red-600 transition duration-300">
+          <button @click="handleLogout" class="bg-red-500 text-white/100 px-6 py-3 rounded-lg font-medium text-lg hover:bg-red-600 transition duration-300">
             Logout
           </button>
         </div>
@@ -67,7 +67,7 @@
       <div v-else class="flex flex-col items-center justify-center space-y-4">
         <p class="text-xl text-gray-600">No user found.</p>
         <NuxtLink to="/login" class="flex items-center gap-3">
-          <button @click="handleLogin" class="bg-green-500 text-white px-6 py-3 rounded-lg font-medium text-lg hover:bg-green-600 transition duration-300">
+          <button @click="handleLogin" class="bg-green-500 text-white/100 px-6 py-3 rounded-lg font-medium text-lg hover:bg-green-600 transition duration-300">
             Login / Sign Up
           </button>
         </NuxtLink>

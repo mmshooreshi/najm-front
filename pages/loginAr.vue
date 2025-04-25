@@ -101,7 +101,7 @@ definePageMeta({
           :floatinglabel="authUIData.login.phoneEmailFloatingLabel" :placeholder="authUIData.login.phoneEmailPlaceholder" />
         <BaseButton type="submit" :loading="isLoading" :disabled="!isValidPhone" :class="isValidPhone
           ? 'bg-primary-600'
-          : 'bg-[#EBEBEB] text-gray-400 cursor-not-allowed'">
+          : 'bg-[#EBEBEB]/100 text-gray-400 cursor-not-allowed'">
           {{ authUIData.login.buttonLabel }}
         </BaseButton>
       </form>

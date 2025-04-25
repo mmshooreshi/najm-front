@@ -19,7 +19,7 @@
       <!-- floating label -->
       <label
         :class="[
-          'absolute right-5 bg-[#F9FBFA] text-gray-500 pointer-events-none z-10 transition-all duration-300 ease-in-out ttt',
+          'absolute right-5  bg-[#F9FBFA]/100  text-gray-500 pointer-events-none z-10 transition-all duration-300 ease-in-out ttt',
           { floating: isFocused || !!display }
         ]"
       >
@@ -51,7 +51,7 @@
             iconColor,
         ]">
             <Icon class="h-5 w-5" v-if="iconName != 'mdi:alert-circle'" :name="iconName" />
-            <div class="rtl absolute z-10 w-max max-w-xs px-3 pt-1.5 pb-1.5 flex items-center text-xs text-white bg-black/80 rounded-xl shadow-sm opacity-0 leading-6 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            <div class="rtl absolute z-10 w-max max-w-xs px-3 pt-1.5 pb-1.5 flex items-center text-xs text-white/100 bg-black/80 rounded-xl shadow-sm opacity-0 leading-6 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
                 :class="[position === 'right' ? 'left-full ml-2' : 'right-full mr-2']">
                 {{ tooltipText }}
             </div>

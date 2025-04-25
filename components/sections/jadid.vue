@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col w-full h-auto gap-[236px] p-6 bg-[url('https://dashboard.codeparrot.ai/api/image/Z8MAvVj1kitRpYP1/frame-33.png')] bg-cover rounded-[25px]">
       <!-- Header section -->
-      <div class="flex flex-row items-center bg-[#daebd0] rounded-[25px] border border-[#c2d3d1] p-3 px-6 w-fit">
+      <div class="flex flex-row items-center  bg-[#daebd0]/100  rounded-[25px] border border-[#c2d3d1] p-3 px-6 w-fit">
         <img 
           src="https://dashboard.codeparrot.ai/api/image/Z8MAvVj1kitRpYP1/arrow-up.png" 
           alt="arrow" 

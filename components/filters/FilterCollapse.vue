@@ -23,7 +23,7 @@
             v-for="tab in tabs"
             :key="tab.key"
             class="px-6 py-2 rounded-full font-medium text-center bg-transparent"
-            :class="activeTab === tab.key ? '!bg-[#014439] text-white' : 'text-gray-700'"
+            :class="activeTab === tab.key ? '!bg-[#014439]/100 text-white' : 'text-gray-700'"
             @click="activeTab = tab.key"
           >
             {{ tab.label }}

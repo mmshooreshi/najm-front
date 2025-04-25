@@ -1,9 +1,10 @@
 // uno.config.ts
-import {  presetAttributify, presetUno, presetIcons, transformerDirectives } from 'unocss';
+// import {  presetAttributify, presetUno, presetIcons, transformerDirectives } from 'unocss';
 
 // import { presetMagicss } from 'unocss-preset-magicss';
 import { animatedUno } from 'animated-unocss'
-import { presetWind3, defineConfig } from 'unocss'
+import {  defineConfig } from 'unocss'
+import presetWind4 from '@unocss/preset-wind4'
 
 export default defineConfig({
   // Define utility shortcuts for reusability
@@ -69,7 +70,7 @@ export default defineConfig({
   
 
     // Responsive breakpoints
-    breakpoints: {
+    breakpoint: {
       xs: '320px',
       sm: '375px',
       md: '768px',
@@ -85,7 +86,12 @@ export default defineConfig({
 
   // Presets for additional functionality
   presets: [
-    presetWind3(),
+    presetWind4({
+      reset: true, 
+      themePreflight: 'on-demand', // or just leave it default
+
+
+    }),
     // presetAttributify(), 
     // presetIcons(), 
 

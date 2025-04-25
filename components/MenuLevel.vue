@@ -1,7 +1,7 @@
 <!-- components/MenuLevel.vue -->
 <template>
     <div>
-        
+
       <div v-for="item in items || []" :key="item.id" class="mb-1">
         <!-- only use the accordion when type=accordion -->
         
@@ -14,12 +14,15 @@
           :panes="item.children"   
           class="border rounded overflow-hidden"
         >
+
+
           <!-- ② named slot for each pane when tabs=true -->
           <template #pane="{ pane }">
             <MenuLevel
               :items="pane.children"
               :parent-slug="fullSlug(pane)"
             />
+
           </template>
   
           <!-- ③ default-slot fallback (e.g. when tabs is false) -->
@@ -28,7 +31,11 @@
               :items="item.children"
               :parent-slug="fullSlug(item)"
             />
+
+
           </template>
+
+
         </BaseAccordionGroupNew>
   
         <!-- non-accordion items -->

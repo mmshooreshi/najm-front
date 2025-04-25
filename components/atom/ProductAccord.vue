@@ -27,7 +27,7 @@
     </span>
             <div
               v-if="activeFiltersCount > 0"
-              class="text-xs text-white font-semibold border border-[#014439] rounded-lg p-2 pt-0.5 pr-1.2 h-5 w-5"
+              class="text-xs text-white/100 font-semibold border border-[#014439] rounded-lg p-2 pt-0.5 pr-1.2 h-5 w-5"
               :class="{'!w-6': activeFiltersCount > 9}"
             >
               {{ toPersianDigits(activeFiltersCount) }}

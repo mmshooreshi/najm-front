@@ -2,7 +2,7 @@
   <div class="p-4">
     <button
       @click="show = !show"
-      class="mb-4 px-3 py-1 bg-blue-500 text-white rounded"
+      class="mb-4 px-3 py-1 bg-blue-500 text-white/100 rounded"
     >
       Toggle
     </button>

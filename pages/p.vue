@@ -33,7 +33,7 @@
               </span>
               <NuxtLink
                 :to="`/products/${prod.slug}`"
-                class="block mt-2 px-4 py-2 bg-green-600 text-white text-center rounded"
+                class="block mt-2 px-4 py-2 bg-green-600 text-white/100 text-center rounded"
               >
                 مشاهده جزئیات
               </NuxtLink>

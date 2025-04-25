@@ -76,7 +76,7 @@ onMounted(() => {
             <div class="absolute inset-0 flex flex-col items-center justify-between p-6">
               <!-- Caption -->
               <div
-                class="group-hover:opacity-100 transition-all duration-1000 group-hover:-translate-x-[5px] opacity-50 bg-[#DFEED7] text-d4 text-base font-extrabold px-4 py-2 rounded-3xl transition-all self-end">
+                class="group-hover:opacity-100 transition-all duration-1000 group-hover:-translate-x-[5px] opacity-50  bg-[#DFEED7]/100  text-d4 text-base font-extrabold px-4 py-2 rounded-3xl transition-all self-end">
                 {{ slide.text }}
               </div>
 

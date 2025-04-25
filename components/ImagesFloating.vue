@@ -1,6 +1,6 @@
 <template>
 <!-- <button @click="showSettings = !showSettings"
-            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded focus:bg-red">
+            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white/100 px-3 py-1 rounded focus:bg-red">
       Settings
     </button>
  -->
@@ -107,7 +107,7 @@
                         class="w-full border rounded p-1" />
                 </label>
             </div>
-            <button @click="showSettings = false" class="mt-4 bg-blue-500 text-white rounded px-4 py-2">
+            <button @click="showSettings = false" class="mt-4 bg-blue-500 text-white/100 rounded px-4 py-2">
                 Close
             </button>
         </div>

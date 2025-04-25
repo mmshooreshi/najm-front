@@ -1,11 +1,11 @@
 <template>
-  <div class="text-secondary-darker dark:text-white bg-white dark:bg-black">
+  <div class="text-secondary-darker dark:text-white/100 bg-white dark:bg-black">
     <div
       class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0"
     >
       <div class="max-w-screen-2xl grid grid-cols-2 mx-auto sm:px-6 lg:px-8">
         <NuxtWelcome />
-        <div class="py-20 px-12 bg-black text-white flex flex-col gap-4">
+        <div class="py-20 px-12 bg-black text-white/100 flex flex-col gap-4">
           <!-- Plugins -->
           <div class="rounded p-4 gradient-border">
             <div class="mb-4">
@@ -108,7 +108,7 @@
               </button>
               <ClientOnly>
                 <button
-                  class="bg-transparent px-2 py-1 focus:outline-transparent rounded-sm bg-white dark:bg-black text-black dark:text-white rounded-md hover:text-primary"
+                  class="bg-transparent px-2 py-1 focus:outline-transparent rounded-sm bg-white dark:bg-black text-black dark:text-white/100 rounded-md hover:text-primary"
                   @click="(e) => toggleDark()"
                 >
                   <carbon:moon class="h-5 w-5" v-if="isDark" />

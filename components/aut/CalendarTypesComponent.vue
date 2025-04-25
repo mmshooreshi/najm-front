@@ -7,7 +7,7 @@
   <CarouselAutoFader2 class="w-full h-full" />
 
     <!-- Header section -->
-    <!-- <div class="flex flex-row items-center bg-[#daebd0] rounded-[25px]  p-3 px-6 w-fit">
+    <!-- <div class="flex flex-row items-center  bg-[#daebd0]/100  rounded-[25px]  p-3 px-6 w-fit">
       <img 
         src="https://dashboard.codeparrot.ai/api/image/Z8MAvVj1kitRpYP1/arrow-up.png" 
         alt="arrow" 

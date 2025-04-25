@@ -371,7 +371,7 @@ sections/ProjectReservation.vue
             d="M290 0C283.032 0 276.54 2.03601 271.086 5.54554C254.831 16.0054 239.33 35 220 35H35C15.67 35 0 50.67 0 70V114C0 114.552 0.447712 115 0.999997 115H342C342.552 115 343 114.552 343 114V35C343 15.67 327.33 0 308 0H290Z" 
             fill="white" />
         </svg>
-        <div class="z-2 w-10 h-10 bg-[#EAFED3] flex items-center justify-center rounded-full top-4 right-4 mr-5 right-0 absolute" dir="rtl">
+        <div class="z-2 w-10 h-10  bg-[#EAFED3]/100  flex items-center justify-center rounded-full top-4 right-4 mr-5 right-0 absolute" dir="rtl">
             <TargetIcon />
         </div>
 
@@ -400,10 +400,10 @@ sections/ProjectReservation.vue
   
       <!-- CTA Button -->
       <div
-        class="group mt-6 bg-[#014439] rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white transition-all duration-300 ease-in-out transform hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]">
+        class="group mt-6  bg-[#014439]/100  rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white/100 transition-all duration-300 ease-in-out transform hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]">
         <span class="text-lg font-semibold">رزرو پروژه جدید</span>
         <p class="animate-pulse-alt text-white/50 text-sm font-normal mt-2">
-            شروع دهی از <span class=" text-white underline underline-offset-4">۵</span> روز دیگر
+            شروع دهی از <span class=" text-white/100 underline underline-offset-4">۵</span> روز دیگر
         </p>
         </div>
 
@@ -564,7 +564,7 @@ new/SelectBox.vue
             @mouseover="hoverIndex = index"
             :class="[
               'px-4 py-3 cursor-pointer transition-all',
-              hoverIndex === index ? 'bg-[#014439] text-[#66BA58]' : 'hover:bg-gray-100'
+              hoverIndex === index ? 'bg-[#014439]/100 text-[#66BA58]' : 'hover:bg-gray-100'
             ]"
             tabindex="0"
           >
@@ -641,7 +641,7 @@ ImagesFloating.vue
 ```
 <template>
 <!-- <button @click="showSettings = !showSettings"
-            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white px-3 py-1 rounded focus:bg-red">
+            class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white/100 px-3 py-1 rounded focus:bg-red">
       Settings
     </button>
  -->
@@ -747,7 +747,7 @@ ImagesFloating.vue
                         class="w-full border rounded p-1" />
                 </label>
             </div>
-            <button @click="showSettings = false" class="mt-4 bg-blue-500 text-white rounded px-4 py-2">
+            <button @click="showSettings = false" class="mt-4 bg-blue-500 text-white/100 rounded px-4 py-2">
                 Close
             </button>
         </div>
@@ -1176,7 +1176,7 @@ new/SearchBox.vue
             v-for="(result, index) in searchResults"
             :key="index"
             @click="selectSearchResult(result)"
-            class="px-4 py-3 cursor-pointer transition-all hover:bg-[#014439] hover:text-white"
+            class="px-4 py-3 cursor-pointer transition-all hover:bg-[#014439]/100 hover:text-white"
           >
             {{ result }}
           </li>
@@ -1349,7 +1349,7 @@ section {
 h1 {
   @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -mt-[8%];
   @apply w-[80%];
-  @apply font-bold text-white text-[3rem] lg:text-[4rem] leading-[110%] text-center;
+  @apply font-bold text-white/100 text-[3rem] lg:text-[4rem] leading-[110%] text-center;
 
 	&:nth-child(2) {
 		@apply text-black;
@@ -2097,13 +2097,13 @@ const toggleMenu = () => {
 NuxtDemo.vue
 ```
 <template>
-  <div class="text-secondary-darker dark:text-white bg-white dark:bg-black">
+  <div class="text-secondary-darker dark:text-white/100 bg-white dark:bg-black">
     <div
       class="relative flex items-top justify-center min-h-screen sm:items-center sm:pt-0"
     >
       <div class="max-w-screen-2xl grid grid-cols-2 mx-auto sm:px-6 lg:px-8">
         <NuxtWelcome />
-        <div class="py-20 px-12 bg-black text-white flex flex-col gap-4">
+        <div class="py-20 px-12 bg-black text-white/100 flex flex-col gap-4">
           <!-- Plugins -->
           <div class="rounded p-4 gradient-border">
             <div class="mb-4">
@@ -2206,7 +2206,7 @@ NuxtDemo.vue
               </button>
               <ClientOnly>
                 <button
-                  class="bg-transparent px-2 py-1 focus:outline-transparent rounded-sm bg-white dark:bg-black text-black dark:text-white rounded-md hover:text-primary"
+                  class="bg-transparent px-2 py-1 focus:outline-transparent rounded-sm bg-white dark:bg-black text-black dark:text-white/100 rounded-md hover:text-primary"
                   @click="(e) => toggleDark()"
                 >
                   <carbon:moon class="h-5 w-5" v-if="isDark" />

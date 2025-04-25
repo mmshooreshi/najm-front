@@ -63,7 +63,7 @@ function replay() {
       class="h-24 w-24 rounded-3xl border-8 border-indigo-400 bg-indigo-500 shadow-xl cursor-pointer"
     />
 
-    <button @click="replay" class="px-4 py-2 bg-blue-500 text-white rounded">Reset All</button>
+    <button @click="replay" class="px-4 py-2 bg-blue-500 text-white/100 rounded">Reset All</button>
 
     <!-- Controls grouped into Position, Transform, Custom -->
     <div class="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-8">

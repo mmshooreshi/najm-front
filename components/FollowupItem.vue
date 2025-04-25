@@ -15,7 +15,7 @@
       <div
         class="relative flex items-center justify-center p-2 rounded-full shadow-md transition-all duration-500"
         :class="{
-          'bg-[#D3DAFE] p-6': active || isHovered,
+          'bg-[#D3DAFE]/100 p-6': active || isHovered,
           'bg-[#EAFED3]': !active && !isHovered
         }"
         @mouseenter="isHovered = true"
