@@ -110,7 +110,7 @@ onMounted(() => {
     // elapsed ms
     const elapsed = now - start
     // remaining = initial - elapsed
-    countdown.value = Math.floor(Math.max(0, props.imageDelay - elapsed) /100 0)
+    countdown.value = Math.floor(Math.max(0, props.imageDelay - elapsed) /1000)
     c.value = Math.floor(Math.max(0, props.imageDelay - elapsed))
 
     if (countdown.value > 0) {

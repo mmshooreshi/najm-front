@@ -27,7 +27,7 @@
       </div>
 
       <!-- FAQ List -->
-      <div class="divide-y border-gray-300 -mt-6 px-6 h-[70vh] overflow-auto">
+      <div class="divide-y  border-gray-300 -mt-6 px-6 h-[70vh] overflow-auto">
  
 
         <ClientOnly>

@@ -59,9 +59,9 @@ definePageMeta({
         <BaseInput class="z-10  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="fname"  :placeholder="authUIData.profile.namePlaceholder" />
         <BaseInput class="z-0  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="lname"   :placeholder="authUIData.profile.familyNamePlaceholder" />
       </div>
-{{ fname }} {{  lname }} 
+<!-- {{ fname }} {{  lname }} 
 
-{{  user }}
+{{  user }} -->
       <BaseButton type="submit" :loading="isLoading" :disabled="!fname || !lname">
         {{authUIData.profile.okButtonLabel}}
       </BaseButton>

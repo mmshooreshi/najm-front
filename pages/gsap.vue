@@ -639,7 +639,7 @@ import Snippet from '@/components/gsap/Snippet.vue';
 
 </script>
 
-<style lang="sass" scoped>
+<style lang="scss" scoped>
 div.container {
   @apply max-w-[1280px];
   @apply px-6 py-12 mx-auto;
@@ -691,7 +691,7 @@ section {
 
     pre {
       @apply py-1 px-3 bg-black/5 text-gray-700  rounded-lg;
-      @apply dark:text-white/100 dark:bg-white/10;
+      @apply dark:text-white dark:bg-white/10;
     }
   }
 
