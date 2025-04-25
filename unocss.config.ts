@@ -17,6 +17,8 @@ export default defineConfig({
   // Custom theme configurations
   theme: {
     extend: {
+
+    
     
     
       animation: {
