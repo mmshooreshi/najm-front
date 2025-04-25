@@ -15,7 +15,7 @@ const { user, setUser, token, isAuthenticated } = useAuth()
 const { updateUser } = useAuthAPI()
 
 
-
+console.log(user)
 const fname = ref(user.value.name)
 const lname = ref(user.value.familyName)
 const router = useRouter()
@@ -30,7 +30,7 @@ async function complete() {
 
   try {
     // Call the updateUser API to update the profile in PocketBase
-    await updateUser(user.value, fname.value, lname.value)
+    await updateUser(user.value.id, fname.value, lname.value)
     router.push('/')  // Navigate after successful update
   } catch (err: any) {
     errorMessage.value = err.message || 'خطا در ویرایش حساب کاربری. لطفا دوباره تلاش کنید.' 
@@ -59,7 +59,9 @@ definePageMeta({
         <BaseInput class="z-10  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="fname"  :placeholder="authUIData.profile.namePlaceholder" />
         <BaseInput class="z-0  !placeholder-black/40 !focus:placeholder-black/20" persian  dir="ltr" position="left" v-model="lname"   :placeholder="authUIData.profile.familyNamePlaceholder" />
       </div>
+{{ fname }} {{  lname }} 
 
+{{  user }}
       <BaseButton type="submit" :loading="isLoading" :disabled="!fname || !lname">
         {{authUIData.profile.okButtonLabel}}
       </BaseButton>

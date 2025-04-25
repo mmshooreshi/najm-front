@@ -145,6 +145,11 @@ function toggleExpand(){ emit('toggleExpand') }
   
 }
 .card{
+  background-color: white 20%;
+  overflow: visible;
+  /* max-width: 80px; */
+  border-radius: 20%;
+  /* backdrop-filter: blur(15px); */
   position:absolute;
   width:160px;height:190px;
   display:flex;align-items:center;justify-content:center;

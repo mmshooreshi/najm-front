@@ -71,6 +71,10 @@
       <HorizontalCategories />
       <BoxCard />
     </div>
+
+
+    <PromoFeatureCards />
+
     <div class="snap-start flex flex-col md:flex-row w-full h-auto gap-4 p-4">
       <DesignExecutionCard class="flex-grow" />
       <ProductDesignCard class="flex-grow" />
@@ -147,6 +151,8 @@ import ProductDesignCard from '~/components/aut/ProductDesignCard.vue';
 import { useAuthStore } from '~/composables/useAuth'
 import FaqSection from '~/components/sections/FaqSection.vue'
 import FaqSec from '~/components/sections/FaqSec.vue'
+import PromoFeatureCards from '~/components/sections/PromoFeatureCards.vue'
+
 
 const {     token,user,identifier,isAuthenticated,logout} = useAuthStore()
 
