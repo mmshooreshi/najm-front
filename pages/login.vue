@@ -12,6 +12,8 @@ import loginPageIcon from '~/assets/icons/Auth/login-page-icon.svg'
 import { useNavDirection } from '~/composables/useNavDirection'
 
 import { useAuthUIData } from '~/composables/ui/authUI'
+import {useLocale} from "@/composables/useLocale"
+const { language } = useLocale()
 
 const nav = useNavDirection()
 const route = useRoute()
@@ -21,7 +23,7 @@ const { sendPhoneNumber, verifyOTP, loginOrRegister } = useAuthAPI()
 const { setToken, setUser, setOtpId, setIdentifier,identifier, token, otpId,phone ,setPhone} = useAuth()
 
 
-const {authUIData} = useAuthUIData("")
+const {authUIData} = useAuthUIData(language)
 
 const emailEn = ref('mmshooreshi@gmail.com')
 const isLoading = ref(false)

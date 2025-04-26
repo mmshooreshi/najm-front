@@ -30,12 +30,19 @@
 
   <!-- Language Switcher with blur transition -->
   <transition name="blur">
-    <LanguageSwitcher 
+    <!-- <LanguageSwitcher 
       v-if="!searchIsOpen && (menuOpen || !isSmall)"
 
       :menuOpen="menuOpen" 
       class="flex-shrink-0 flex-grow-0" 
-    />
+    /> -->
+
+    <LanguageSwitcher
+    v-if="!searchIsOpen && (menuOpen || !isSmall)"
+    v-model="language"
+    class="flex-shrink-0 flex-grow-0"
+  />
+
   </transition>
     <div     :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class=" -mx-1 duration-500 transition-all"     > </div>
 
@@ -46,6 +53,7 @@
        :class="searchIsOpen ? ' z-100' : ''" 
 
     />
+
     <!-- hamburger never grows -->
     <HamburgerMenu 
       v-model:menuOpen="menuOpen" 
@@ -69,9 +77,13 @@ import Logo from '~/components/atom/logo.vue'
 import ProfileButton from '@/components/atom/ProfileButton.vue'
 import LanguageSwitcher from '@/components/atom/LanguageSwitcher.vue'
 import SearchBox from '@/components/atom/SearchBox.vue'
+
 import HamburgerMenu from '@/components/atom/HamburgerMenu.vue'
 import NavLinks from '@/components/atom/NavLinks.vue'
 import { useMediaQuery } from '@vueuse/core'
+import { useLocale } from '~/composables/useLocale'
+
+const { language } = useLocale()
 
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')

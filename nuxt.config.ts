@@ -25,10 +25,10 @@ export default defineNuxtConfig({
   },
 
   
-  modules: ['@unocss/nuxt', '@pinia/nuxt', //  'unplugin-icons/nuxt',
+  modules: [ '@pinia/nuxt', //  'unplugin-icons/nuxt',
   '@vueuse/nuxt', '@vueuse/motion/nuxt', '@nuxt/icon', // '@hypernym/nuxt-gsap',
   "v-gsap-nuxt", // 'nuxt-lodash',
-  "nuxt-shiki", 'nuxt-swiper', '@nuxtjs/strapi', '@nuxt/image', 'nuxt-mapbox'],
+  "nuxt-shiki", 'nuxt-swiper', '@nuxtjs/strapi', '@nuxt/image', 'nuxt-mapbox','@unocss/nuxt'],
   strapi:{
     url: process.env.STRAPI_URL || 'http://localhost:1337',
     token: process.env.STRAPI_TOKEN || undefined,

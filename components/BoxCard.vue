@@ -1,5 +1,5 @@
 <template>
-  <div class="relative p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0 mt-28">
+  <div class="relative p-0 md:p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0 mt-28 -mr-6 md:mr-0">
     <ClientOnly>
       <div class="mx-0 px-0 overflow-visible">
         <swiper-container
@@ -14,11 +14,11 @@
           <swiper-slide
             v-for="(box, index) in filteredBoxes"
             :key="index"
-            class="w-64 mx-0 my-0 overflow-visible scale-95 transition-transform hover:scale-100"
+            class="w-48 md:w-56 mx-0 my-0 overflow-visible scale-95 transition-transform hover:scale-100"
             @click="selectedBox = index"
           >
             <div
-              class="w-64 h-72 flex flex-col items-start justify-end bg-opacity-70 rounded-3xl px-4 cursor-pointer transition snap-center relative"
+              class="w-48 md:w-56 h-56 flex flex-col items-start justify-end bg-opacity-70 rounded-3xl px-4 cursor-pointer transition snap-center relative"
               :class="{
                 'bg-yellow-300': selectedBox === index,
                 'bg-yellow-200 border-transparent': selectedBox !== index

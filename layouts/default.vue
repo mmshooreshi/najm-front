@@ -20,7 +20,7 @@ const menuOpen = ref(false)
   <!-- Now lock overflow here, not on body -->
   <div
     :class="[
-      'relative h-screen prevent-select snap-y snap-mandatory overflow-x-visible mt-16 ',
+      'relative h-screen prevent-select snap-y snap-mandatory overflow-x-visible pt-16 top-16 ',
       menuOpen ? 'overflow-y-hidden' : 'overflow-y-auto'
     ]"
   >
@@ -29,7 +29,7 @@ const menuOpen = ref(false)
       <slot/>
     </div>
     <div class="snap-start">
-      <FooterLayout/>
+      <!-- <FooterLayout/> -->
       <Footer2/>
     </div>
   </div>

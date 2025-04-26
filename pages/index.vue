@@ -18,7 +18,7 @@
       <!-- <popDiv/> -->
       <ProjectReservation />
     </div>
-    <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-6 ">
+    <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-2 md:px-6 ">
       <PrintingSection />
     </div>
 
@@ -42,11 +42,11 @@
             
             <img ref="imageRef"
               src="/images/aut/trade-box.gif" alt="Box Mapping"
-              class="absolute inset-0 w-full h-full object-cover object-center" />
+              class="absolute inset-0 w-full h-full object-contain object-center" />
           </div>
-          <div class="bg-[#DAEBD0]/100 w-full h-full min-h-56  p-6 rounded-3xl">
+          <!-- <div class="bg-[#DAEBD0]/100 w-full h-full min-h-56  p-6 rounded-3xl">
 
-          </div>
+          </div> -->
         </div>
 
 
@@ -56,11 +56,11 @@
     </div>
 
 
-    <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-6 ">
+    <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-2 md:px-6 ">
       <nccc />
     </div>
 
-    <div dir="rtl" class="snap-start m-2 pt-8 mb-12 overflow-visible mx-8">
+    <div dir="rtl" class="snap-start m-2 pt-8 mb-12 overflow-visible md:mx-8">
       <div class="flex flex-col md:flex-row justify-between gap-4 md:gap-0">
         <h1 class="text-3xl font-bold text-d4 md:max-w-[30%]">چیزی فراتر از یک جعبه!</h1>
         <p class="text-md md:text-xl text-justify md:max-w-[470px]">هر سبک جعبه برای نمایش محصول منحصر به فرد شما طراحی
@@ -79,11 +79,11 @@
     <!-- <PromoFeatureCards2 /> -->
 
     <div class="snap-start flex flex-col md:flex-row w-full h-auto gap-4 p-4">
-      <DesignExecutionCard class="flex-grow" />
-      <ProductDesignCard class="flex-grow" />
+      <!-- <DesignExecutionCard class="flex-grow" /> -->
+      <!-- <ProductDesignCard class="flex-grow" /> -->
     </div>
 
-    <div dir="rtl" class="my-8 mx-8 flex flex-col md:flex-row justify-between gap-4 md:gap-0">
+    <div dir="rtl" class="my-8  flex flex-col md:flex-row justify-between gap-4 md:gap-0">
         <h1 class="text-3xl font-bold text-d4 md:max-w-[30%]">پیدا کردن یک چاپگر آسان است، اما پیدا کردن یک شریک چاپ سخت است.</h1>
         <p class="text-md md:text-xl text-justify md:max-w-[470px]">شما لایق شریکی هستید که رسیدن به اهدافتان را آسان کند
           از سبک های ساده تا بسیار پیچیده، ما طیف کاملی از محصولات و قابلیت ها را برای برآوردن هر نیازی داریم.
@@ -94,7 +94,7 @@
       class="snap-start pt-4 overflow-hidden border border-0 border-black rounded-3xl flex flex-col md:flex-row max-w-[450px] md:max-w-screen items-center justify-center w-full mt-0 mb-4 mx-auto px-0 gap-4">
       <!-- <CarousalDet/> -->
 
-      <CarouselAutoSlider class="w-full md:max-w-[350px] lg:max-w-lg" />
+      <CarouselAutoSlider class="w-full " />
 
       <!-- <CustomPackage class="" /> -->
 
@@ -104,7 +104,7 @@
 
 
     <div class="pb-8 snap-end">
-      <CustomPackageBetter />
+      <!-- <CustomPackageBetter /> -->
 
 
     </div>
@@ -113,6 +113,7 @@
     <div class="pb-8 snap-start">
       <!-- <FollowupWheel /> -->
       <FaqSec/>
+      <Imagez></Imagez>
 
     </div>
 
@@ -133,7 +134,7 @@ import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'
 import PrintingSection from '~/components/sections/PrintingSection.vue'
 import nccc from '~/components/aut/n.vue'
-
+import Imagez from '@/components/imagez.vue'
 import CarouselAutoFader from '~/components/sections/CarouselAutoFader.vue'
 import CarouselAutoSlider from '~/components/sections/CarouselAutoSlider.vue'
 import popDiv from '~/components/popDiv.vue'

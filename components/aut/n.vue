@@ -1,5 +1,7 @@
+
+<!-- asli -->
 <template>
-  <div dir="rtl" class="my-8 mx-8 flex flex-col md:flex-row justify-between gap-4 md:gap-0">
+  <div dir="rtl" class="my-8 md:mx-8 flex flex-col md:flex-row justify-between gap-4 md:gap-0">
     <h1 class="text-3xl font-bold text-d4 md:max-w-[40%] text-center md:text-start">
       پیدا کردن یک چاپگر آسان است، اما پیدا کردن یک شریک چاپ سخت است.
     </h1>

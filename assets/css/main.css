@@ -21,11 +21,12 @@ body{
 	font-weight: 600;
 }
 .rtl{
-	direction: rtl;
+	direction: rtl !important;
+	text-align: right;
 }
 
 .ltr{
-	direction: ltr;
+	direction: ltr !important;
 }
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 

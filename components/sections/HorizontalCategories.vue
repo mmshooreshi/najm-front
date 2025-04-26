@@ -1,5 +1,5 @@
 <template>
-    <div dir="rtl" class="flex flex-col items-start mt-6 py-6 w-screen max-w-screen overflow-x-auto absolute scrollbar-hide  -mx-8 px-8  -translate-x-4 md:translate-x-0">
+    <div dir="rtl" class="flex flex-col items-start mt-6 py-6 w-screen max-w-screen overflow-x-auto absolute scrollbar-hide  -mx-8 md:mx-0 md:px-8  -translate-x-4 md:translate-x-0">
       <!-- Scrollable Container -->
       <div class="flex overflow-visible w-full whitespace-nowrap w-max px-0 scrollbar-hide gap-1">
         <button 

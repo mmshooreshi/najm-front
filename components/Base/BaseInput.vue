@@ -19,7 +19,7 @@
       <!-- floating label using VueUse Motion -->
       <label
         ref="labelRef"
-        class="absolute right-5 top-4  bg-[#F9FBFA]/100  text-gray-500 pointer-events-none z-10 will-change-transform px-2"
+        class="absolute right-5 top-4 -mt-3  bg-[#F9FBFA]/100  text-gray-500 pointer-events-none z-10 will-change-transform px-2"
       >
         {{ forward.floatinglabel }}
       </label>

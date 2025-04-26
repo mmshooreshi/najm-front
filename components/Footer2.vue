@@ -6,7 +6,7 @@
 
     <div class="max-w-screen-xl px-0 grid grid-cols-1 md:grid-cols-2 ">
 
-      <div class="col-span-1 px-10 md:mt-16 ">
+      <div class="col-span-1 px-10 md:mt-16 max-h-[60vh] ">
         <div class="max-w-xl mx-auto md:px-10 flex flex-col-reverse md:flex-col gap-1">
           <BaseFooterAccordion
             v-for="section in accordionSections"
@@ -18,8 +18,8 @@
             @toggle="handleAccordionToggle"
           />
 
-          <div class="grid gap-8 py-12">
-            <div class="flex flex-col gap-4">
+          <div class="grid gap-8 pt-12 pb-0">
+            <div class="flex flex-col gap-4 h-[50%] mb-8 md:mb-0">
               <p
                 v-for="(paragraph, index) in footerUIData.hero.paragraphs"
                 :key="index"
@@ -31,16 +31,19 @@
           </div>
 
         </div>
+
+        <NuxtImg class="invisible md:visible md:max-h-full max-w-sm mx-auto w-[80%] mt-12 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+
       </div>
 
-      <div class="max-w-screen-xl  col-span-1 px-10">
+      <div class="max-w-screen-xl overflow-hidden col-span-1 px-10">
         <div class="flex flex-col w-full max-w-xl mx-auto md:px-10  gap-0 text-sm  py-12">
           <div
             v-for="(item, index) in footerUIData.contact.items"
             :key="index"
             class="flex flex-col"
           >
-            <div class="flex w-full justify-between border-b border-white/10 border-b-0.5 py-3">
+            <div class="flex mt-8 w-full justify-between border-b border-white/10 border-b-0.5 py-3">
               <span class="text-demibold text-d4 text-sm">{{ item.name }}</span>
               <a
                 v-if="item.slug"
@@ -59,7 +62,7 @@
           </div>
         </div>
 
-        <MarkerIcon class="absolute top-[48%] left-[48%] z-10" />
+        <!-- <MarkerIcon class="absolute top-[48%] left-[48%] z-10" /> -->
         <Map/>
         <!-- <div class="relative mx-0 md:mx-8 mt-0 h-[300px] md:h-[500px] rounded-3xl overflow-hidden">
           
@@ -75,13 +78,15 @@
           />
         </div> -->
         
-        <NuxtImg class="md:invisible !visible max-w-sm mx-auto w-full mt-12 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+        <NuxtImg class="md:invisible md:hidden visible max-w-sm mx-auto w-full mt-12 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
 
       </div>
 
+
+
     </div>
 
-    <div class="max-w-sm mx-12 overflow-hidden h-px bg-white/20"></div>
+    <div class="max-w-sm md:max-w-screen mx-12 overflow-hidden h-px bg-white/20"></div>
 
     <div class="mx-12 flex flex-col items-center justify-between gap-2 py-4 text-xs md:flex-row">
       <span>کلیه حقوق این سایت متعلق به مجموعه‌ی چاپ نجم می‌باشد.</span>

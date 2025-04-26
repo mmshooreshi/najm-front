@@ -17,7 +17,7 @@ export default defineConfig({
 
   // Custom theme configurations
   theme: {
-    extend: {
+    // extend: {
 
     
     
@@ -70,7 +70,7 @@ export default defineConfig({
   
 
     // Responsive breakpoints
-    breakpoint: {
+    breakpoints: {
       xs: '320px',
       sm: '375px',
       md: '768px',
@@ -80,7 +80,7 @@ export default defineConfig({
       '3xl': '1920px',
       '4xl': '2560px',
     },
-  }
+  // }
 },
 
 
@@ -90,7 +90,7 @@ export default defineConfig({
     // presetAttributify(), 
     // presetIcons(), 
 
-    animatedUno(),
+    // animatedUno(),
 
     // presetMagicss()
   ],

@@ -1,3 +1,4 @@
+<!-- components/atom/SearchBox.vue: -->
 <template>
     <div
       @pointerdown.prevent="openSearch"
@@ -17,13 +18,21 @@
         class="mr-0 w-full bg-transparent outline-none text-gray-800 transition-all duration-200 ease-in-out"
         :class="searchOpen ? 'opacity-100 mr-2' : 'opacity-0 pointer-events-none'"
       />
+
+   <SearchModal
+     :visible="searchOpen && searchQuery.trim() !== ''"
+     :query="searchQuery"
+   />
+
     </div>
   </template>
   
   <script setup lang="ts">
   import { ref, nextTick } from 'vue'
   import SearchIcon from '~/assets/icons/search-icon.svg'
-  
+  import SearchModal from './SearchModal.vue'
+
+
   // Declare emitted events for parent communication
   const emit = defineEmits<{
     (e: 'update:searchOpen', open: boolean): void

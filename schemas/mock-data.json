@@ -1,0 +1,35 @@
+{
+  "recentSearches": [
+    "جعبه هاردباکس",
+    "بروشور دولت",
+    "استیکر براق"
+  ],
+  "categoryShortcuts": [
+    {
+      "label": "کاتالوگ",
+      "path": "محصولات > چاپ"
+    },
+    {
+      "label": "کاتالوگ",
+      "path": "محصولات > بسته‌بندی"
+    }
+  ],
+  "usagePackages": [
+    { "name": "پکیج سازمانی و اداری",           "slug": "office-packaging" },
+    { "name": "پکیج تبلیغاتی و بازاریابی",      "slug": "marketing-packaging" },
+    { "name": "پکیج آموزشی و فرهنگی",          "slug": "educational-cultural-packaging" },
+    { "name": "پکیج مناسبتی و سفارشی",          "slug": "custom-occasional-packaging" },
+    { "name": "پکیج نمایشگاهی و رویدادی",       "slug": "exhibition-event-packaging" },
+    { "name": "پکیج لوکس و هدیه",               "slug": "luxury-gift-packaging" }
+  ],
+  "industryPackages": [
+    { "name": "غذا، نوشیدنی و رستوران",        "slug": "food-beverage-restaurant" },
+    { "name": "آرایشی و بهداشتی",               "slug": "beauty-health" },
+    { "name": "پزشکی و دارویی",                 "slug": "medical-pharmaceutical" },
+    { "name": "مد، پوشاک و اکسسوری",            "slug": "fashion-apparel-accessories" },
+    { "name": "جواهرات و زیورآلات",              "slug": "jewelry" },
+    { "name": "فناوری و الکترونیک",             "slug": "technology-electronics" },
+    { "name": "بازاریابی و عمومی",              "slug": "marketing-general" },
+    { "name": "هدیه و مناسبت",                  "slug": "gifts-occasions" }
+  ]
+}

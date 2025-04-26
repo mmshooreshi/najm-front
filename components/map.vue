@@ -2,11 +2,11 @@
     <div>
       <!-- Map Thumbnail -->
       <div  v-motion-pop-visible
-        class="relative mx-0 md:mx-8 mt-0 h-[300px] md:h-[500px] rounded-3xl overflow-hidden cursor-pointer transition-all duration-200"
+        class=" relative mx-0 md:mx-8 md:my-4 h-[300px] max-h-[300px] rounded-3xl overflow-hidden cursor-pointer transition-all duration-200"
         @click="openMap"
       >
         <MarkerIcon class="absolute top-[48%] left-[48%] z-10" />
-        <MapboxMap
+        <MapboxMap 
           style="position: absolute; width: 100%; height: 100%;"
           map-id="<MAP_ID>"
           :options="{
@@ -37,7 +37,7 @@
             :options="{
               style: 'mapbox://styles/mmshooreshi/cm9xbga9n009p01sictvq5wgu',
               center: [51.306003, 35.6735325],
-              zoom: 11
+              zoom: 16
             }"
           />
         </div>
@@ -58,4 +58,11 @@
     isFullScreen.value = false
   }
   </script>
+
+  <style scoped>
+.cliplip{
+  clip-path: inset(0px 0px 50px 0px);
+}
+
+  </style>
   
