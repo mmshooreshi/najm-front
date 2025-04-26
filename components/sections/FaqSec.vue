@@ -27,8 +27,13 @@
       </div>
 
       <!-- FAQ List -->
-      <div class="divide-y  border-gray-300 -mt-6 px-6 h-[70vh] overflow-auto">
+      <div class="divide-y border border-gray-300 -mt-6 px-6 h-[70vh] overflow-auto">
  
+        <div class="grid grid-cols-3 divide-x divide-gray-400">
+  <div class="text-center">1</div>
+  <div class="text-center">2</div>
+  <div class="text-center">3</div>
+</div>
 
         <ClientOnly>
     <FaqItem

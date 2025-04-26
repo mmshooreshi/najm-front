@@ -8,9 +8,9 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-12 gap-6 rtl">
+        <div class="grid grid-cols-12 gap-6 rtl mt-4">
           <div class="col-span-12 sm:col-span-6  md:col-span-3 font-bold text-md my-auto invisible md:visible">فیلتر محصولات</div>
-          <div class="col-span-12 sm:col-span-6  md:col-span-9 flex justify-between ">
+          <div class="col-span-12 sm:col-span-6  md:col-span-9 flex justify-between mb-2">
             <div @click="isSortOptionsOpen = !isSortOptionsOpen" class="bg-transparent border border-1 border-[#C2D3D1] cursor-pointer hover:bg-[#C2D3D1]/20 rounded-3xl flex items-center gap-1 p-2 h-max my-auto md:px-4 md:gap-2 md:py-2 text-xs md:text-base">
               مرتب سازی
 

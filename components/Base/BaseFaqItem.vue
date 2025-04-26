@@ -1,5 +1,5 @@
 <template>
-    <div v-motion-slide-up-down   :delay="index*100" class="py-1 text-sm text-d4 text-demibold border border-red">
+    <div    :delay="index*100" class="py-1 text-sm text-d4 text-demibold">
       <!-- question row -->
       <!-- {{index}} -->
 

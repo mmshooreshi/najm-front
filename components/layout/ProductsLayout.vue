@@ -3,7 +3,7 @@
     <!-- Filters -->
     <aside class="col-span-12 sm:col-span-6 md:col-span-3 space-y-1">
 
-    <FilterCollapse
+      <FilterCollapse
       v-for="(filter, index) in filters"
       :key="index"
       :title="filter.title"

@@ -53,8 +53,7 @@
         { "id": "phone",  "name": "تلفن", "value": "+98 21 6679 7911", "slug": "tel:+982166797911" , "ltr": true},
         { "id": "fax",    "name": "فکس",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712"  , "ltr": true},
         { "id": "email",  "name": "ایمیل", "value": "chapnajm@gmail.com", "slug": "mailto:chapnajm@gmail.com"  , "ltr": true},
-        { "id": "hours1", "name": "شنبه تا چهارشنبه:", "value": "۹ تا ۱۹" },
-        { "id": "hours2", "name": "پنج‌شنبه‌ها:",      "value": "تا ساعت ۱۶" }
+        { "id": "hours1", "name": "ساعت‌های کاری", "value": "شنبه تا چهارشنبه:<br>  9 تا 19<br><br>پنج‌شنبه‌ها:<br>  تا ساعت 16" }
       ],
       "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
     },

@@ -123,7 +123,7 @@
   }, { immediate: true })
   </script>
   
-  <style>
+  <style scoped>
   label {
     position: absolute;
     right: 1.25rem;
