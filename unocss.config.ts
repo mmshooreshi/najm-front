@@ -3,8 +3,8 @@
 
 // import { presetMagicss } from 'unocss-preset-magicss';
 import { animatedUno } from 'animated-unocss'
-import {  defineConfig } from 'unocss'
-import presetWind4 from '@unocss/preset-wind4'
+import {  presetWind3, defineConfig } from 'unocss'
+// import presetWind4 from '@unocss/preset-wind4'
 
 export default defineConfig({
   // Define utility shortcuts for reusability
@@ -86,12 +86,7 @@ export default defineConfig({
 
   // Presets for additional functionality
   presets: [
-    presetWind4({
-      reset: true, 
-      themePreflight: 'on-demand', // or just leave it default
-
-
-    }),
+    presetWind3(),
     // presetAttributify(), 
     // presetIcons(), 
 
