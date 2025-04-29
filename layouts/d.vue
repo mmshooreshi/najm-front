@@ -10,28 +10,18 @@ const menuOpen = ref(false)
 
 <template>
   <BackgroundGradient/>
-
   <!-- Pass menuOpen + listener down to Header -->
   <Header  class=""
-    :menu-open="menuOpen"
-    @update:menu-open="menuOpen = $event"
+  :menu-open="menuOpen"
+  @update:menu-open="menuOpen = $event"
   />
+  <div class="px-8 mt-20">
 
-  <!-- Now lock overflow here, not on body -->
-  <!-- snap-y snap-mandatory -->
-  <div
-    :class="[
-      'relative h-screen prevent-select  overflow-x-visible pt-8 top-16 ',
-      menuOpen ? 'overflow-y-hidden' : 'overflow-y-auto'
-    ]"
-  >
-    <!-- <div class="snap-start py-8 px-4 md:px-8 2xl:px-28"> -->
-    <div class="snap-start py-0 px-4 md:px-8 2xl:px-28">
-      <slot/>
-    </div>
+
+  <slot/>
+
     <div class="">
       <!-- <FooterLayout/> -->
-      <Footer2/>
     </div>
   </div>
 </template>

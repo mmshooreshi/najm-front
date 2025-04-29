@@ -6,7 +6,7 @@
         @click="openMap"
       >
         <MarkerIcon class="absolute top-[48%] left-[48%] z-10" />
-        <MapboxMap 
+        <!-- <MapboxMap 
           style="position: absolute; width: 100%; height: 100%;"
           map-id="<MAP_ID>"
           :options="{
@@ -14,7 +14,7 @@
             center: [51.306003, 35.6735325],
             zoom: 11
           }"
-        />
+        /> -->
       </div>
   
       <!-- Fullscreen Map Modal -->
@@ -31,7 +31,7 @@
         </div>
         <div    
         class="flex-1 h-[100vh] relative">
-          <MapboxMap
+          <!-- <MapboxMap
             style="position: absolute; width: 100%; height: 100%;"
             map-id="<MAP_ID>"
             :options="{
@@ -39,7 +39,7 @@
               center: [51.306003, 35.6735325],
               zoom: 16
             }"
-          />
+          /> -->
         </div>
       </div>
     </div>

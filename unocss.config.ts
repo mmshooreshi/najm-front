@@ -12,6 +12,7 @@ export default defineConfig({
     'flex-center': 'flex justify-center items-center',
     'grid-121': 'grid grid-cols-[1fr_2fr_1fr] gap-3',
     'flex-stack': 'flex flex-col-reverse  gap-4',
+    'pressable': 'active:bg-black/90 active:scale-95 transition duration-100 font-mono cursor-pointer rounded-xl text-center flex items-center justify-around'
 
   },
 

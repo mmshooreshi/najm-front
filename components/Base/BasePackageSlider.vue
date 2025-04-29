@@ -1,3 +1,4 @@
+<!-- components/Base/BasePackageSlider.vue -->
 <template>
   <div class="package-slider">
     <Swiper
