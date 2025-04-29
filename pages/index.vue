@@ -69,6 +69,8 @@
       </div>
       <HorizontalCategories />
       <BoxCard />
+
+      <d/>
     </div>
 
 
@@ -129,6 +131,7 @@ import { useWindowSize } from '@vueuse/core'
 import Header from '~/components/Header.vue'
 import Footer from '~/components/Footer.vue'
 import FooterLayout from '~/components/FooterLayout.vue'
+import d from '~/components/d.vue'
 
 import ImagesFloating from '~/components/ImagesFloating.vue'
 import ProjectReservation from '~/components/sections/ProjectReservation.vue'

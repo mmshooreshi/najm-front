@@ -1,36 +1,22 @@
 <template>
     <!-- note the ref="wrapper" here -->
-    <div ref="wrapper" class="-mx-4 overflow-visible">
+    <div ref="wrapper" class="-mx-4 overflow-visible pt-8">
         <!-- Outer Swiper: one slide per package -->
         <!-- Toggle button -->
-        <div class="mb-4 flex justify-between w-full gap-2 w-full px-4">
-            <button @click.prevent="editModeToggle(pkgIdx)"
-                class="px-4 py-2  text-white rounded  transition z-50"
-                :class="[editMode ? 'bg-red-600 hover:bg-red-600':'bg-green-500 hover:bg-green-600']"
-                >
-                {{ editMode ? 'Locked' : 'Lock' }}
-            </button>
-            <div class="flex-grow"></div>
 
-        <!-- Export/Import buttons -->
-            <button @click="exportPositions" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                Export Positions
-            </button>
-
-            <label class="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 cursor-pointer">
-                Import Positions
-                <input type="file" accept="application/json" @change="importPositions" class="hidden" />
-            </label>
-        </div>
-
+        <!-- {{ selectedBgColor }}
+                {{ activeSlideIndex }}
+                {{ activeItemRef }}
+ -->
         <Swiper slides-per-view="1" space-between="20"
             :autoplay="{ delay: 50000, disableOnInteraction: false, pauseOnMouseEnter: true }"
+            @slideChange="onSlideChange"
             @swiper="(swiper) => onOuterSwiper(swiper)" class="h-[500px] w-full !px-2 mb-8 outer-swiper">
 
             <SwiperSlide v-for="(pkg, pkgIdx) in packages" :key="pkgIdx" @click.prevent="toggle(pkgIdx)"
-                class="border flex flex-col p-2 bg-[#F6EC9E] rounded-3xl overflow-hidden content-end cont-slide"
-                :class="[editMode ? 'border-red-600':'border-transparent']"
-                >
+                class="border flex flex-col p-2 rounded-3xl overflow-hidden content-end cont-slide"
+                :style="outerSwiperSlideStyle(pkgIdx)"
+                :class="[editMode ? 'border-red-600':'border-transparent' ]">
 
 
                 <!-- Inner Swiper -->
@@ -91,31 +77,70 @@ import 'swiper/css'
 import interact from 'interactjs'
 
 SwiperCore.use([FreeMode, Autoplay])
-
-interface Product { id: number; image: string }
+interface Product { id: number; image: string, bgColor: string }
+// Track the active slide and active item references
+const activeSlideRef = ref<SwiperSlide | null>(null)
+const activeSlideIndex = ref<number>(0)
+const activeItemRef = ref<Product | null>(null)
+const selectedBgColor = ref("#F6EC9E")
 
 // your data
 const packages: Product[][] = [
     [
-        { id: 1, image: '/images/main/1.png' },
-        { id: 2, image: '/images/main/2.png' },
-        { id: 3, image: '/images/main/3.png' },
-        { id: 4, image: '/images/main/4.png' },
-        { id: 5, image: '/images/main/5.png' }
+        { id: 1, image: '/images/main/1.png', bgColor: '#F6EC9E' },
+        { id: 2, image: '/images/main/2.png', bgColor: '#F6EC9E' },
+        { id: 3, image: '/images/main/3.png', bgColor: '#F6EC9E' },
+        { id: 4, image: '/images/main/4.png', bgColor: '#F6EC9E' },
+        { id: 5, image: '/images/main/5.png', bgColor: '#F6EC9E' }
     ],
     [
-        { id: 6, image: '/images/main/6.png' },
-        { id: 7, image: '/images/main/7.png' },
-        { id: 8, image: '/images/main/8.png' },
-        { id: 9, image: '/images/main/9.png' },
-        { id: 10, image: '/images/main/10.png' }
+        { id: 6, image: '/images/main/6.png',  bgColor: '#A8A5F9' },
+        { id: 7, image: '/images/main/7.png',  bgColor: '#A8A5F9' },
+        { id: 8, image: '/images/main/8.png',  bgColor: '#A8A5F9' },
+        { id: 9, image: '/images/main/9.png',  bgColor: '#A8A5F9' },
+        { id: 10, image: '/images/main/10.png', bgColor: '#A8A5F9' }
     ],
     [
-        { id: 11, image: '/images/main/1.png' },
-        { id: 12, image: '/images/main/2.png' },
-        { id: 13, image: '/images/main/3.png' },
-        { id: 14, image: '/images/main/4.png' },
-        { id: 15, image: '/images/main/5.png' }
+        { id: 11, image: '/images/main/1.png',  bgColor: '#A5D0F9' },
+        { id: 12, image: '/images/main/2.png',  bgColor: '#A5D0F9' },
+        { id: 13, image: '/images/main/3.png',  bgColor: '#A5D0F9' },
+        { id: 14, image: '/images/main/4.png',  bgColor: '#A5D0F9' },
+        { id: 15, image: '/images/main/5.png',  bgColor: '#A5D0F9' }
+    ],
+    [
+        { id: 6, image: '/images/main/6.png',  bgColor: '#A8A5F9' },
+        { id: 7, image: '/images/main/7.png',  bgColor: '#A8A5F9' },
+        { id: 8, image: '/images/main/8.png',  bgColor: '#A8A5F9' },
+        { id: 9, image: '/images/main/9.png',  bgColor: '#A8A5F9' },
+        { id: 10, image: '/images/main/10.png', bgColor: '#A8A5F9' }
+    ],
+    [
+        { id: 11, image: '/images/main/1.png',  bgColor: '#A5F9D5' },
+        { id: 12, image: '/images/main/2.png',  bgColor: '#A5F9D5' },
+        { id: 13, image: '/images/main/3.png',  bgColor: '#A5F9D5' },
+        { id: 14, image: '/images/main/4.png',  bgColor: '#A5F9D5' },
+        { id: 15, image: '/images/main/5.png',  bgColor: '#A5F9D5' }
+    ],
+    [
+        { id: 6, image: '/images/main/6.png',  bgColor: '#F9D6A5' },
+        { id: 7, image: '/images/main/7.png',  bgColor: '#F9D6A5' },
+        { id: 8, image: '/images/main/8.png',  bgColor: '#F9D6A5' },
+        { id: 9, image: '/images/main/9.png',  bgColor: '#F9D6A5' },
+        { id: 10, image: '/images/main/10.png', bgColor: '#F9D6A5' }
+    ],
+    [
+        { id: 11, image: '/images/main/1.png',  bgColor: '#F9A5A9' },
+        { id: 12, image: '/images/main/2.png',  bgColor: '#F9A5A9' },
+        { id: 13, image: '/images/main/3.png',  bgColor: '#F9A5A9' },
+        { id: 14, image: '/images/main/4.png',  bgColor: '#F9A5A9' },
+        { id: 15, image: '/images/main/5.png',  bgColor: '#F9A5A9' }
+    ],
+    [
+        { id: 6, image: '/images/main/6.png',  bgColor: '#E5F9A5' },
+        { id: 7, image: '/images/main/7.png',  bgColor: '#E5F9A5' },
+        { id: 8, image: '/images/main/8.png',  bgColor: '#E5F9A5' },
+        { id: 9, image: '/images/main/9.png',  bgColor: '#E5F9A5' },
+        { id: 10, image: '/images/main/10.png', bgColor: '#E5F9A5' }
     ]
 ]
 
@@ -176,6 +201,12 @@ function selectTarget(pkgIdx: number, idx: number) {
     if (card) {
       enableEditMode(pkgIdx, idx, card)
     }
+
+    activeItemRef.value = packages[pkgIdx][idx]
+
+    // Update selected background color
+    selectedBgColor.value = activeItemRef.value.bgColor
+
   })
 }
 
@@ -373,8 +404,8 @@ async function toggle(pkgIdx: number) {
 
                 // Fixed radius = 100px
                 
-                const scatterX = Math.cos(angleRad) * clientWidth/3
-                const scatterY = Math.sin(angleRad) * clientHeight/3
+                const scatterX = Math.cos(angleRad) * clientWidth/3 + 50
+                const scatterY = Math.sin(angleRad) * clientHeight/3+100
 
                 const finalX = offsetX + scatterX
                 const finalY = offsetY + scatterY+100
@@ -475,6 +506,18 @@ function endDrag() {
     dragging.value = null
 }
 
+function onSlideChange(swiper: SwiperCore) {
+  // Update activeSlideRef when the slide changes
+  activeSlideRef.value = swiper.slides[swiper.activeIndex] as SwiperSlide
+
+  activeSlideIndex.value = swiper.activeIndex
+  console.log('Updated activeSlideIndex:', activeSlideIndex.value)
+  console.log('Updated activeSlideRef:', activeSlideRef.value)
+  activeItemRef.value = packages[activeSlideIndex.value][0]
+  selectedBgColor.value = activeItemRef.value.bgColor
+
+}
+
 // Card styles
 function cardStyle(pkgIdx: number, idx: number) {
   const { x, y, r, s, z } = isFree.value[pkgIdx]
@@ -526,6 +569,16 @@ function importPositions(e: Event) {
     }
     reader.readAsText(file)
 }
+
+
+// Computed property for dynamic background color of outer swiper
+const outerSwiperSlideStyle = (pkgIdx) => {
+  console.log(selectedBgColor.value);
+  console.log(pkgIdx);
+  return {
+    backgroundColor: packages[pkgIdx][0].bgColor || 'transparent',
+  };
+};
 
 
 definePageMeta({
@@ -640,3 +693,6 @@ definePageMeta({
 }
 
 </style>
+
+
+
