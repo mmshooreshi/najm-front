@@ -19,6 +19,15 @@ const route = useRoute()
 onMounted(() => {
   useGSAP().registerPlugin(ScrollTrigger)
 })
+
+
+
+const { $lenis } = useNuxtApp()
+
+function scrollToTop () {
+  $lenis.scrollTo(0, { duration: 1 })
+}
+
 </script>
 
 

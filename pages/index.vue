@@ -16,7 +16,7 @@
       </div>
 
       <!-- <popDiv/> -->
-      <ProjectReservation />
+      <LazyProjectReservation />
     </div>
     <div class="snap-start  mt-2 mx-auto py-8 pb-0 px-2 md:px-6 ">
       <PrintingSection />
@@ -134,7 +134,9 @@ import FooterLayout from '~/components/FooterLayout.vue'
 import d from '~/components/d.vue'
 
 import ImagesFloating from '~/components/ImagesFloating.vue'
-import ProjectReservation from '~/components/sections/ProjectReservation.vue'
+// import ProjectReservation from '~/components/sections/ProjectReservation.vue'
+import LazyProjectReservation from '~/components/sections/LazyProjectReservation.vue'
+
 import PrintingSection from '~/components/sections/PrintingSection.vue'
 import nccc from '~/components/aut/n.vue'
 import Imagez from '@/components/imagez.vue'

@@ -19,14 +19,9 @@ const menuOpen = ref(false)
 
   <!-- Now lock overflow here, not on body -->
   <!-- snap-y snap-mandatory -->
-  <div
-    :class="[
-      'relative h-screen prevent-select  overflow-x-visible pt-8 top-16 ',
-      menuOpen ? 'overflow-y-hidden' : 'overflow-y-auto'
-    ]"
-  >
+  <div class="relative prevent-select overflow-x-visible pt-8 top-16 bg-[#e4eaeb]">
     <!-- <div class="snap-start py-8 px-4 md:px-8 2xl:px-28"> -->
-    <div class="snap-start py-0 px-4 md:px-8 2xl:px-28">
+    <div class=" py-0 px-4 md:px-8 2xl:px-28">
       <slot/>
     </div>
     <div class="">

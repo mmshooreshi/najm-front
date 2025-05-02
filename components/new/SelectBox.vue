@@ -27,7 +27,7 @@
             @keydown.enter="selectOption(option)"
             @mouseover="hoverIndex = index"
             :class="[
-              'px-4 py-3 cursor-pointer transition-all',
+              'px-4 py-2 text-sm cursor-pointer transition-all',
               hoverIndex === index ? 'bg-[#014439]/100 text-[#66BA58]' : 'hover:bg-gray-100'
             ]"
             tabindex="0"
