@@ -122,7 +122,7 @@ onMounted(() => {
       scrollTrigger: {
         trigger: card,
         start,
-        scrub: true,
+        scrub: false,
         markers: false,
       },
     });
