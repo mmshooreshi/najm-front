@@ -12,6 +12,9 @@ body{
     font-family: IRANSansX  !important;
 }
 
+.animdur{
+    animation-duration: 500ms !important;
+}
 .text-d4{
     font-family: 'IRANSansX-d4', sans-serif;
     font-style: normal;

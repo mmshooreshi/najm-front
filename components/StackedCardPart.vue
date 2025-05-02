@@ -18,7 +18,7 @@
       </span>
 
       <!-- Decorative blob underneath (your own SVG) -->
-      <DecorBlobSvg class="-mt-3 -ml-9 h-14 w-full" />
+      <DecorBlobSvg class="animdur -mt-3 -ml-9 h-14 w-full" />
     </div>
   </section>
 </template>
@@ -31,7 +31,7 @@ defineProps<{ bubble: string }>()
 
 // Import your existing SVG components (names are placeholders)
 import CheckIconSvg from '~/assets/svg/CheckIcon.svg'
-import DecorBlobSvg from '~/assets/svg/DecorBlob.svg'
+import DecorBlobSvg from '~/assets/svg/DecorBlob.vue'
 </script>
 
 <!-- Styling is handled entirely with UnoCSS utility classes → no extra CSS here -->
@@ -59,4 +59,6 @@ border-radius: 25px 5px 25px 25px;
 transform: rotate(6.41deg);
 
 }
+
+
 </style>

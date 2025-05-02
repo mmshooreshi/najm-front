@@ -22,7 +22,7 @@
       <h2 class="text-md  font-extrabold text-gray-900 mt-6 leading-relaxed" v-html="card.title" />
     </div>
     <StackedCardPart :bubble="card.bubble" />
-    <p class="mt-6 sm:mt-12 rtl text-d4 font-medium text-xs text-black" v-html="card.description" />
+    <p class="mt-12 rtl text-d4 font-medium text-xs text-black" v-html="card.description" />
 </div>
 </div>
       </div>
@@ -115,30 +115,25 @@ onMounted(() => {
     gsap.set(outer, { y: i * initialGap ,     rotation: Rot    });
     // Set initial stack spacing
 
+    
+    
+    
+    // 3. pin each card at the centre while it animates
+    ScrollTrigger.create({
+        trigger: card,
+        start: 'top 120px',
+        endTrigger: `.container2`,
+        end: 'top bottm',
+        pin: true,
+        scrub: true,
+        pinSpacing: false,
+        anticipatePin: 1,
+        markers: false,
+    });
     // Animate to final stacked spacing
     gsap.to(outer, {
       y: i * finalGap,
-      
-      scrollTrigger: {
-        trigger: card,
-        start,
-        scrub: false,
-        markers: false,
-      },
-    });
-
-
-
-    // 3. pin each card at the centre while it animates
-    ScrollTrigger.create({
-      trigger: card,
-      start: 'top 120px',
-      endTrigger: `.container2`,
-      end: 'top 120px',
-      pin: true,
-      scrub: false,
-      pinSpacing: false,
-      markers: false,
+      ease: 'none',              
     });
   });
 });
@@ -171,7 +166,7 @@ h1 {
 .container2 {
   margin-top: 0vh;
   width: 100%;
-  height: 80vh;
+  height: 90vh;
   /* border-top: 1px solid red; */
 }
 
