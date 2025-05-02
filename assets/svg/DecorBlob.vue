@@ -32,13 +32,13 @@
 
 <script setup>
 /* Rotation of the baseline the dots sit on */
-const rotation = -20.5183
+const rotation = -20
 
 /* Dot positions + stagger (0 / 200 / 400 ms) */
 const dots = [
-  { x: 21.293, y: 29.4763, delay:   0 },
-  { x: 28.7852, y: 26.6724, delay: 200 },
-  { x: 36.2773, y: 23.8684, delay: 400 }
+  { x: 21, y: 29, delay:   0 },
+  { x: 28, y: 26, delay: 200 },
+  { x: 36, y: 23, delay: 400 }
 ]
 </script>
 

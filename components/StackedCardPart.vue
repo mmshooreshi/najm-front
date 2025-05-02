@@ -56,7 +56,7 @@ top: 12px;
 background: #826DFB;
 box-shadow: 0px 80px 32px rgba(80, 5, 255, 0.01), 0px 45px 27px rgba(80, 5, 255, 0.05), 0px 20px 20px rgba(80, 5, 255, 0.09), 0px 5px 11px rgba(80, 5, 255, 0.1);
 border-radius: 25px 5px 25px 25px;
-transform: rotate(6.41deg);
+transform: rotate(6deg);
 
 }
 
