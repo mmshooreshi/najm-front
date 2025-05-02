@@ -22,11 +22,11 @@ onMounted(() => {
 
 
 
-const { $lenis } = useNuxtApp()
+// const { $lenis } = useNuxtApp()
 
-function scrollToTop () {
-  $lenis.scrollTo(0, { duration: 1 })
-}
+// function scrollToTop () {
+//   $lenis.scrollTo(0, { duration: 1 })
+// }
 
 </script>
 
