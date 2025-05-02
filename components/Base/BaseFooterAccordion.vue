@@ -26,7 +26,7 @@
         class="overflow-hidden  ease transition-height duration-300  bg-[#115247]/100 "
       >
         <ul class="my-0">
-          <div class="divide-y divide-gray-400">
+          <div class="divide-y divide-white/20">
           <div class="hover:bg-white/10  text-center py-2 border-t border-t-0.5 border-white/20" v-for="item in items" :key="item.id">
             <NuxtLink
               :to="item.slug"

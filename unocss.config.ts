@@ -2,8 +2,9 @@
 // import {  presetAttributify, presetUno, presetIcons, transformerDirectives } from 'unocss';
 
 // import { presetMagicss } from 'unocss-preset-magicss';
-import { animatedUno } from 'animated-unocss'
-import {  presetWind3, defineConfig } from 'unocss'
+// import { animatedUno } from 'animated-unocss'
+// import presetWind3 from '@unocss/preset-wind3'
+import { defineConfig, presetWind } from 'unocss'
 // import presetWind4 from '@unocss/preset-wind4'
 
 export default defineConfig({
@@ -87,7 +88,7 @@ export default defineConfig({
 
   // Presets for additional functionality
   presets: [
-    presetWind3(),
+    presetWind(),
     // presetAttributify(), 
     // presetIcons(), 
 

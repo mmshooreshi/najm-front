@@ -5,7 +5,7 @@ class="z-100 max-w-full overflow-hidden flex transition-all duration-100 items-c
 <NuxtLink :to="isAuthenticated&& user.name ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
       <button
         @click="handleLogin"
-        class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white transition-all duration-1000 hover:bg-[#A8ABAE]/20 flex row items-center justify-center text-gray-700 border border-gray-200 transition-transform  font-medium cursor-pointer"
+        class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white transition-all duration-1000 hover:bg-[#A8ABAE]/20 flex rowP items-center justify-center text-gray-700 border border-gray-200 transition-transform  font-medium cursor-pointer"
         :class="menuOpen ? 'right-[28vw]' : ''"
       >
         <profileUserIcon />

@@ -15,8 +15,8 @@ const menuOpen = ref(false)
   :menu-open="menuOpen"
   @update:menu-open="menuOpen = $event"
   />
-  <div class="px-8 mt-20">
-
+  <!-- <div class="px-8 mt-20"> -->
+<div>
 
   <slot/>
 

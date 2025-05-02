@@ -1,7 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
+import { fontPreloadLinks } from './utils/font-preload';
 // import ViteComponents from 'unplugin-vue-components/vite'
 // import IconsResolver from 'unplugin-icons/resolver'
+
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
@@ -12,10 +14,7 @@ export default defineNuxtConfig({
       title: 'Najm Printing',
       link: [
         { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
-        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Regular.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
-        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Bold.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
-        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Medium.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
-        { rel: 'preload', href: '/fonts/woff2/IRANSansX-Light.woff2', as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }
+        ...fontPreloadLinks
       ]
 
     }
@@ -23,12 +22,33 @@ export default defineNuxtConfig({
   build: {
     transpile: ['gsap'],
   },
+  // routeRules: {
+  //     // Homepage pre-rendered at build time
+  //     '/': { prerender: true },  
+  //   // apply to all files under /images
+  //   '**/_ipx/**': {
+  //     headers: {
+  //       'cache-control': 'public, max-age=31536000, immutable'
+  //     }
+  //   },
+  //   '**/main/**': {
+  //     headers: {
+  //       'cache-control': 'public, max-age=31536000, immutable'
+  //     }
+  //   },
+  //   // you can add other static folders too:
+  //   '/fonts/**': {
+  //     headers: {
+  //       'cache-control': 'public, max-age=31536000, immutable'
+  //     }
+  //   }
+  // },
 
   
-  modules: [ '@pinia/nuxt', //  'unplugin-icons/nuxt',
-  '@vueuse/nuxt', '@vueuse/motion/nuxt', '@nuxt/icon', // '@hypernym/nuxt-gsap',
-  "v-gsap-nuxt", // 'nuxt-lodash',
-  "nuxt-shiki", 'nuxt-swiper', '@nuxtjs/strapi', '@nuxt/image', 'nuxt-mapbox','@unocss/nuxt'],
+  modules: [//  'unplugin-icons/nuxt',
+  '@pinia/nuxt', '@unocss/nuxt', '@vueuse/nuxt', '@vueuse/motion/nuxt', // '@hypernym/nuxt-gsap',
+  '@nuxt/icon', // 'nuxt-lodash',
+  "v-gsap-nuxt", "nuxt-shiki", 'nuxt-swiper', '@nuxtjs/strapi', '@nuxt/image', 'nuxt-mapbox'],
   strapi:{
     url: process.env.STRAPI_URL || 'http://localhost:1337',
     token: process.env.STRAPI_TOKEN || undefined,
@@ -43,10 +63,6 @@ export default defineNuxtConfig({
         target: "http://65.108.80.205:8090"
     }
 },
-  unocss: {
-    configFile: './unocss.config.ts'
-  
-  },
   
   features: {
     inlineStyles: false,

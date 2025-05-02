@@ -4,7 +4,7 @@
       <logoWhite class="col-span-2  mx-auto " />
     </div>
 
-    <div class="max-w-screen-xl px-0 grid grid-cols-1 md:grid-cols-2 ">
+    <div class="max-w-screen-xl px-0 grid grid-cols-1 md:grid-cols-2 items-baseline">
 
       <div class="col-span-1 px-10 md:mt-16 max-h-[60vh] ">
         <div class="max-w-xl mx-auto md:px-10 flex flex-col-reverse md:flex-col gap-1">
@@ -32,18 +32,18 @@
 
         </div>
 
-        <NuxtImg class="invisible md:visible md:max-h-full max-w-sm mx-auto w-[80%] mt-12 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+        <NuxtImg class="invisible md:visible md:max-h-full max-w-sm mx-auto w-[80%] mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
 
       </div>
 
       <div class="max-w-screen-xl overflow-hidden col-span-1 px-10">
-        <div class="flex flex-col w-full max-w-xl mx-auto md:px-10  gap-0 text-sm  py-12">
+        <div class="flex flex-col w-full max-w-xl mx-auto md:px-10  gap-0 text-sm  pt-12 pb-2">
           <div
             v-for="(item, index) in footerUIData.contact.items"
             :key="index"
             class="flex flex-col"
           >
-            <div class="flex mt-8 w-full justify-between border-b border-white/10 border-b-0.5 py-3">
+            <div class="flex w-full justify-between border-b border-white/10 border-b-0.5 py-3">
               <span class="text-demibold text-d4 text-sm">{{ item.name }}</span>
               <a
                 v-if="item.slug"
@@ -64,6 +64,10 @@
 
         <!-- <MarkerIcon class="absolute top-[48%] left-[48%] z-10" /> -->
         <Map/>
+<!-- 
+        <ClientOnly>
+        <NeshanMap/>
+      </ClientOnly> -->
         <!-- <div class="relative mx-0 md:mx-8 mt-0 h-[300px] md:h-[500px] rounded-3xl overflow-hidden">
           
           <MapboxMap
@@ -78,7 +82,7 @@
           />
         </div> -->
         
-        <NuxtImg class="md:invisible md:hidden visible max-w-sm mx-auto w-full mt-12 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+        <NuxtImg class="md:invisible md:hidden visible max-w-sm mx-auto w-full mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
 
       </div>
 
@@ -86,7 +90,7 @@
 
     </div>
 
-    <div class="max-w-sm md:max-w-screen mx-12 overflow-hidden h-px bg-white/20"></div>
+    <div class="max-w-sm md:max-w-screen mx-12 overflow-hidden h-px bg-white/20 mx-auto"></div>
 
     <div class="mx-12 flex flex-col items-center justify-between gap-2 py-4 text-xs md:flex-row">
       <span>کلیه حقوق این سایت متعلق به مجموعه‌ی چاپ نجم می‌باشد.</span>
@@ -100,7 +104,8 @@ import logoWhite from '~/assets/icons/logo-white.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import { usefooterUIData } from '@/composables/ui/footerUI'
 import MarkerIcon from '~/assets/icons/marker-icon.svg'
-import Map from '@/components/map.vue'
+import Map from '~/components/map.vue'
+import NeshanMap from '~/components/neshan-container.client.vue'
 
 const openAccordionId = ref<string | null>(null)
 const { footerUIData } = usefooterUIData()
