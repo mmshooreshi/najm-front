@@ -136,7 +136,7 @@ onMounted(() => {
       endTrigger: `.container2`,
       end: 'top 120px',
       pin: true,
-      scrub: true,
+      scrub: false,
       pinSpacing: false,
       markers: false,
     });
