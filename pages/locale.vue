@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 // see ./composables/locale.ts for the implementation
 import {useLocales, useLocale, useLocaleDate} from '@/composables/locale'
 const locales = useLocales()
@@ -19,4 +19,8 @@ const date = useLocaleDate(new Date('2016-10-26') /* NUXT_BIRTHDAY */)
         {{ date }}
       </p>
     </div>
-</template>
+</template> -->
+
+
+<template>
+  </template>

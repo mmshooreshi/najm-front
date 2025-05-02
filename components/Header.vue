@@ -87,7 +87,7 @@ const { language } = useLocale()
 
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')
-const isSmall = useMediaQuery('(max-width: 380px)')
+const isSmall = useMediaQuery('(max-width: 390px)')
 const searchIsOpen = ref(false)
 // Menu state
 const menuOpen = ref(false)
