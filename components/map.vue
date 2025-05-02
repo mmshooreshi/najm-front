@@ -30,7 +30,8 @@ const closeMap = () => (isFullScreen.value = false)
   </div>
 
   <!-- ────────────────  Fullscreen modal  ──────────────── -->
-  <Transition name="fade-scale">
+  <Transition name="bounce-up">
+    
     <div
       v-if="isFullScreen"
       class="fixed inset-0 z-50 flex flex-col bg-[#014439] dark:bg-black"
@@ -72,4 +73,51 @@ const closeMap = () => (isFullScreen.value = false)
   opacity: 0;
   transform: scale(0.98);
 }
+
+
+/* slide-up transition */
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.slide-up-enter-from,
+.slide-up-leave-to {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.slide-up-enter-to,
+.slide-up-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+
+.bounce-up-enter-active {
+  animation: bounceEnter 0.3s ease-in-out both;
+}
+.bounce-up-leave-active {
+  animation: bounceLeave 0.3s ease-in-out both;
+}
+
+@keyframes bounceEnter {
+  0% {
+    transform: translateY(120%) scale(1);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+ 
+}
+
+@keyframes bounceLeave {
+  to {
+    transform: translateY(120%) scale(1);
+    opacity: 0;
+  }
+}
+
 </style>
