@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import { SplitText } from 'gsap/SplitText'
+import {CustomEase} from 'gsap/CustomEase'
 
 import { Draggable } from 'gsap/Draggable';
 
@@ -17,7 +18,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       Draggable,
       ScrollTrigger,
       MotionPathPlugin,
-      SplitText
+      SplitText,
+      CustomEase
       
     },
   };
