@@ -6,7 +6,7 @@
 
     <div class="max-w-screen-xl px-0 grid grid-cols-1 md:grid-cols-2 items-baseline">
 
-      <div class="col-span-1 px-10 md:mt-16 max-h-[60vh] ">
+      <div class="col-span-1 px-10 md:mt-16 md:max-h-[60vh] ">
         <div class="max-w-xl mx-auto md:px-10 flex flex-col-reverse md:flex-col gap-1">
           <BaseFooterAccordion
             v-for="section in accordionSections"
@@ -32,7 +32,7 @@
 
         </div>
 
-        <NuxtImg class="invisible md:visible md:max-h-full max-w-sm mx-auto w-[80%] mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+        <NuxtImg v-if="isDesktop" class="invisible md:visible md:max-h-full max-w-sm mx-auto w-[80%] mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
 
       </div>
 
@@ -119,6 +119,8 @@ function handleAccordionToggle(id: string) {
 }
 
 const year = new Date().getFullYear()
+const isDesktop = useMediaQuery('(min-width: 768px)')
+
 </script>
 
 <style scoped>
