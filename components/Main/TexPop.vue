@@ -111,7 +111,7 @@ onMounted(async () => {
       trigger: sectionRef.value,
       start,
       scrub,
-      markers: true,
+      markers: false,
       toggleActions: 'play none none reverse',
       onEnter(self) {
         // bring back full opacity…
@@ -194,14 +194,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="py-24 lg:px-56 pt-88">
+  <div class="py-24 px-0 sm:px-2 lg:px-56 pt-88">
     <section
       ref="sectionRef"
-      class="rtl mx-auto max-w-screen-md space-y-0 text-right leading-relaxed flex flex-wrap justify-start w-[200px] sm:w-[410px] lg:w-[43vw]"
-    >
+      class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
+      
+      >
+      <!--top classes can get these added tO: border border-4 border-black rounded-3xl -->
       <template v-for="(h, i) in highlights" :key="i">
-        <div v-if="h.label === 'break'"></div>
-        <div v-else class="flex flex-row justify-start items-center">
+        <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
+        <div v-else class="flex flex-row justify-start items-center text-nowrap">
           <span
             v-if="h.label !== ''"
             :ref="el => (highlightRefs[i] = el as HTMLElement)"
@@ -220,14 +222,14 @@ onMounted(async () => {
           ></span>
         </div>
       </template>
-      <div class="basis-full h-16"></div>
+      <div class="basis-full h-0"></div>
     </section>
-    <div class="rtl flex flex-col w-full">
+    <div class="rtl flex flex-col w-full mt-8 max-w-xl mx-auto">
       <template v-for="(p, i) in paragraphes" :key="i">
         <p
           :ref="el => (paragraphRefs[i] = el as HTMLElement)"
           :class="[i === 0 ? 'font-extrabold' : '']"
-          class="text-base text-center mb-4"
+          class="text-sm md:text-base text-center mb-4"
         ></p>
       </template>
     </div>

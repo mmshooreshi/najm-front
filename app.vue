@@ -22,6 +22,7 @@ onMounted(() => {
 
 
 
+
 // const { $lenis } = useNuxtApp()
 
 // function scrollToTop () {
