@@ -2,11 +2,11 @@
 <template>
   <div class="">
     <!-- border-t-2 border-red-500 -->
-    <div class="fixed top-[65px] left-0 w-full  z-[9999] pointer-events-none">
+    <!-- <div class="fixed top-[65px] left-0 w-full  z-[9999] pointer-events-none"> -->
   <!-- <p class="text-red-500 text-xs ml-2">rootMargin top (-200px)</p> -->
-</div>
+<!-- </div> -->
 
-    <div class="fixed bottom-4 right-4 bg-white/90 p-4 rounded-xl shadow-md text-xs text-black z-50">
+    <!-- <div class="fixed bottom-4 right-4 bg-white/90 p-4 rounded-xl shadow-md text-xs text-black z-50">
       <p><strong>Debug:</strong></p>
       <p><code>initialDelay</code>: {{ initialDelay }}</p>
       <p><code>Speed</code>: {{ speed }}</p>
@@ -14,7 +14,7 @@
   <p><code>isVisible</code>: {{ isVisible }}</p>
   <p><code>intersectionRatio</code>: {{ intersectionRatio.toFixed(2) }}</p>
   <p><code>playedOnce</code>: {{ playedOnce }}</p>
-</div>
+</div> -->
     <section
       ref="sectionRef"
       class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
