@@ -4,7 +4,7 @@
       <AccordionItem
       v-motion-pop-visible 
         v-for="(item, index) in items"
-        :delay="index*10"
+        :delay="index*50"
         :key="index"
         :title="item.title"
         :content="item.content"
