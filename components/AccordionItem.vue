@@ -3,13 +3,13 @@
   <div
   dir="rtl"
     ref="itemRef"
-    :class="[isOpen?'bg-transparent':'']"
-    class="flex-grow py-4 md:py-0 accordion-item flex flex-col h-full cursor-pointer  text-d4 rounded-2xl bg-[#EBF0F3] transition-all duration-100 content-center"
+    :class="[isOpen?'bg-transparent mt-2':'min-h-12']"
+    class="accordion-item flex flex-col h-full cursor-pointer  text-d4 rounded-2xl bg-[#EBF0F3] transition-all duration-600 ease content-center"
     @click="$emit('toggle')"
   >
     <!-- Header: its margin-top will be animated to center or align to top -->
     
-      <div ref="headerRef" :class="['header flex items-center justify-between px-6 transition-all duration-500', isOpen ? 'pt-6' : 'flex-1']"      >
+      <div ref="headerRef" :class="['header flex items-center justify-between px-6 transition-all duration-600 ease ', isOpen ? 'flex-2' : 'flex-1']"      >
       <span>{{ title }}</span>
       <svg
         class="icon"
@@ -66,8 +66,8 @@ const enter = (el, done) => {
   gsap.to(el, {
     height: el.scrollHeight,
     opacity: 1,
-    duration: 0.5,
-    ease: "expo.out",
+    duration: 0.6,
+    ease: "none",
     onComplete: () => {
       el.style.height = "auto";
       done();
@@ -82,8 +82,8 @@ const leave = (el, done) => {
   gsap.to(el, {
     height: 0,
     opacity: 0,
-    duration: 0.4,
-    ease: "expo.in",
+    duration: 0.6,
+    ease: "none",
     onComplete: done
   });
 };
@@ -93,6 +93,7 @@ const afterLeave = (el) => {};
 
 <style scoped>
 .accordion-item {
+  /* height: 48px; */
   /* Ensures the item always fills the parent's height */
 }
 .header {

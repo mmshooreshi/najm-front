@@ -1,5 +1,5 @@
 <template>
-      <div class="snap-end w-full  min-h-[80vh]  md:min-h-[30vh] p-0 md:py-0  accordion flex flex-col h-full gap-4 md:gap-1">
+      <div class=" w-full  p-0 md:py-0  accordion flex flex-col h-full gap-1 md:gap-1">
         
       <AccordionItem
       v-motion-pop-visible 

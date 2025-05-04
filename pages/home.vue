@@ -1,30 +1,30 @@
 <template>
   <!-- bg-[#FFEBEE] -->
-   <div class="touch-pan-y snap-y snap-mandatory overflow-y-scroll h-screen">
-    <div id="scene-hero" class=" scene-full snap-start ">
+   <div class="touch-pan-y overflow-hidden w-full">
+    <div id="scene-hero" class=" scene-full  ">
       <SceneHero />
     </div>
     
     <!-- bg-[#E3F2FD] -->
-    <div id="scene-printing" class="scene-full snap-start ">
+    <div id="scene-printing" class="scene-full  ">
       <ScenePrinting />
     </div>
-    <!-- <div id="scene-boxes" class="bg-[#FFF8E1] scene-full snap-start"> -->
+    <!-- <div id="scene-boxes" class="bg-[#FFF8E1] scene-full "> -->
       <!-- <SceneBoxes /> -->
     <!-- </div> -->
-    <!-- <div id="scene-nccc" class="bg-[#F3E5F5] scene-full snap-start">
+    <!-- <div id="scene-nccc" class="bg-[#F3E5F5] scene-full ">
       <SceneNccc />
     </div> -->
-    <!-- <div id="scene-promo" class="bg-[#FBE9E7] scene-full snap-start">
+    <!-- <div id="scene-promo" class="bg-[#FBE9E7] scene-full ">
       <ScenePromo />
     </div> -->
-    <div id="scene-slider" class="bg-[#E0F7FA] scene-full snap-start">
+    <div id="scene-slider" class="bg-[#E0F7FA] scene-full ">
       <SceneSlider />
     </div>
-    <div id="scene-final" class="bg-[#FFF3E0] scene-full snap-start">
+    <div id="scene-final" class="bg-[#FFF3E0] scene-full ">
       <SceneFinalMessage />
     </div>
-    <div id="scene-faq" class="bg-[#EDE7F6] scene-full snap-start">
+    <div id="scene-faq" class="bg-[#EDE7F6] scene-full ">
       <SceneFaq />
     </div>
 
