@@ -1,7 +1,7 @@
 <template>
   <!-- bg-[#FFEBEE] -->
    <div class="">
-    <div id="scene-hero" class=" scene-full">
+    <div id="scene-hero" class=" scene-full ">
       <SceneHero />
     </div>
     <div id="scene-printing" class="bg-[#E3F2FD] scene-full">
@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import SceneHero from '~/components/scenes/SceneHero.vue'
+
 import ScenePrinting from '~/components/scenes/ScenePrinting.vue'
 import SceneAccordionLayout from '~/components/scenes/SceneAccordionLayout.vue'
 // import SceneBoxes from '~/components/scenes/SceneBoxes.vue'

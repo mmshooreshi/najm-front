@@ -64,7 +64,7 @@ export default defineConfig({
     colors: {
       primary: '#0070f3',
       secondary: '#ff0000',
-      black: '#2F3136',
+      // black: '#2F3136',
     },
 
 

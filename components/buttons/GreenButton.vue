@@ -18,14 +18,14 @@ function handleClick(e: MouseEvent) {
 </script>
 
 <template>
-  <div v-motion :initial="{scale: 0,}" :visible="{scale: 1,}"   class="curwor-pointer  space-y-6 flex flex-col items-center">
+  <div v-motion :initial="{scale: 0,}" :visible="{scale: 1,}"   class="cursor-pointer  space-y-6 flex flex-col items-center">
     <!-- Animated Element -->
      
     <div
     
-      class="group  active:scale-100 hover:scale-110  transition-all bg-[#014439] text-white cursor-pointer inline-flex items-center justify-center h-12 px-6 mx-auto rounded-2xl  outline-none"
+      class="group  active:scale-100 hover:scale-110  hover:bg-black transition-all ease-in-out bg-[#014439] text-white cursor-pointer inline-flex items-center justify-center h-12 px-6 mx-auto rounded-2xl  outline-none"
     >
-    <div class="text-sm group-hover:scale-102 text-demibold text-d4 group-active:scale-100 transition-all">
+    <div class=" text-sm group-hover:scale-102 text-demibold text-d4 group-active:scale-100 transition-all ease-in-out">
     {{ label }}
     </div>
   </div>

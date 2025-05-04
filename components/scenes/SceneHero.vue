@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full  flex-grow py-8 md:py-16">
+  <div class=" py-16 md:pt-16  flex flex-col flex-grow">
     <HighlightedText />
 
     <div
@@ -8,12 +8,14 @@
       <ImagesFloating />
     </div>
 
+    <div class="fixed right-6 bottom-18 z-50">      <rotatory/>
+    </div>
 
-
-    <div class="bok gap-3 flex flex-col">
-      <div class="h-46 -translate-y-10 overflow-visible">
+    <div class="bok gap-3 flex flex-col flex-grow h-full translate-y-0">
+      <div class="h-46  overflow-visible">
         <LazyProjectReservation />
       </div>
+      <div class="flex-grow"></div>
       <GreenButton :fullWidth="false" label="شروع مشاوره و رزرو سفارش" @click="" />
 
       <div v-motion
@@ -34,6 +36,7 @@
 <script setup lang="ts">
 import HighlightedText from '@/components/new/HighlightedText.vue'
 import GreenButton from '@/components/buttons/GreenButton.vue'
+import rotatory from '~/components/rotatory.vue'
 
 import ImagesFloating from '@/components/ImagesFloating.vue'
 import LazyProjectReservation from '@/components/sections/LazyProjectReservation.vue'
