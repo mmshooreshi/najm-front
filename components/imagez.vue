@@ -62,7 +62,7 @@ onMounted(() => {
 
 
 
-  <div class="flex flex-wrap gap-0">
+  <div class="flex flex-wrap gap-0 px-8">
     <span class="absolute text-gray/50 text-xs top-0">  {{ randomClass }}</span>
 
 

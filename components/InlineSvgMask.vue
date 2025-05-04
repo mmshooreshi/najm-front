@@ -1,6 +1,7 @@
 <template>
   <!-- Container with explicit size -->
-  <div :style="{ position: 'relative', width: W + 'px', height: H + 'px' }">
+  <div 
+   :style="{ position: 'relative', width: W + 'px', height: H + 'px' }">
     <!-- SVG with dynamically traced polygon (overlaid) -->
     <svg
       :width="W"

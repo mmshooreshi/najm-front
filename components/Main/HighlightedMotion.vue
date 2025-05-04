@@ -1,7 +1,67 @@
+
+<template>
+  <div class="">
+    <!-- border-t-2 border-red-500 -->
+    <div class="fixed top-[65px] left-0 w-full  z-[9999] pointer-events-none">
+  <!-- <p class="text-red-500 text-xs ml-2">rootMargin top (-200px)</p> -->
+</div>
+
+    <div class="fixed bottom-4 right-4 bg-white/90 p-4 rounded-xl shadow-md text-xs text-black z-50">
+      <p><strong>Debug:</strong></p>
+      <p><code>initialDelay</code>: {{ initialDelay }}</p>
+      <p><code>Speed</code>: {{ speed }}</p>
+
+  <p><code>isVisible</code>: {{ isVisible }}</p>
+  <p><code>intersectionRatio</code>: {{ intersectionRatio.toFixed(2) }}</p>
+  <p><code>playedOnce</code>: {{ playedOnce }}</p>
+</div>
+    <section
+      ref="sectionRef"
+      class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
+      
+      >
+      <!--top classes can get these added tO: border border-4 border-black rounded-3xl -->
+      <template v-for="(h, i) in highlights" :key="i">
+        <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
+        <div v-else class="flex flex-row justify-start items-center text-nowrap">
+          <span
+            v-if="h.label !== '' && h.label !== 'end'"
+            :ref="el => (highlightRefs[i] = el as HTMLElement)"
+            class="inline-block rounded-xl px-2 py-1 text-2xl font-extrabold text-d4"
+            :style="{
+              backgroundColor: h.bgColor ?? '#6D28D9',
+              color:           h.textColor ?? 'white',
+              transform:       h.rotation ? `rotate(${h.rotation})` : undefined,
+              'margin-right':  h.indent ?? '0px',
+            }"
+          >{{ h.label }}</span>
+          <span v-else :style="{ 'margin-right': h.indent ?? '0px' }"></span>
+          <span
+            :ref="el => (typedRefs[i] = el as HTMLElement)"
+            class="inline-block mx-0 text-2xl font-extrabold text-d4 whitespace-pre rtl"
+          ></span>
+        </div>
+      </template>
+      <div class="basis-full h-0"></div>
+    </section>
+    <div class="rtl flex flex-col w-full mt-8 max-w-xl mx-auto">
+      <template v-for="(p, i) in paragraphes" :key="i">
+        <p
+          :ref="el => (paragraphRefs[i] = el as HTMLElement)"
+          :class="[i === 0 ? 'font-extrabold' : '']"
+          class="text-sm md:text-base text-center mb-4"
+        ></p>
+      </template>
+    </div>
+  </div>
+</template>
+
+
+
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-import gsap from 'gsap'
+import gsap, { Elastic } from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import SplitText from 'gsap/SplitText'
 import CustomEase from 'gsap/CustomEase'
@@ -12,6 +72,13 @@ gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase)
 CustomEase.create("easeHighlightIn", "0.22, 1, 0.36, 1")    // gentle S-curve
 CustomEase.create("easeHighlightOut", "0.5, 0, 0.75, 0")    // sharper fade-out curve
 CustomEase.create("easeLineIn", "0.33, 1, 0.68, 1")         // smoother line reveal
+
+
+// Replace or augment your custom eases:
+CustomEase.create("springIn",  "0.5, 1.5, 0.5, 1") // try tweaking these
+CustomEase.create("springOut", "0.5, 0.25, 0.75, 0.25")
+
+const springEase = Elastic.easeOut.config(1, 0.4)
 
 interface HighlightItem {
   label: string
@@ -28,6 +95,7 @@ interface ParagraphItem {
 }
 
 const props = withDefaults(defineProps<{
+  speed?: number
   highlights?: HighlightItem[]
   paragraphes?: ParagraphItem[]
   bounceScale?: number
@@ -35,19 +103,29 @@ const props = withDefaults(defineProps<{
   start?: string
   scrub?: boolean | number
   markers?: boolean
+  initialDelay?: number
 }>(), {
+  speed: 1,
   highlights: () => [],
   paragraphes: () => [],
   bounceScale: 1,
   bounceDuration: 0.5,
   start: 'top center',
   scrub: false,
-  markers: false
+  markers: true,
+  initialDelay: 0
 })
+
+gsap.globalTimeline.timeScale(props.speed)
+
 
 // Centralized animation settings
 const animationConfig = {
   eases: {
+
+    // highlight: { forward: "springIn", backward: "springOut" },
+    // lines:     { forward: springEase,    backward: "power1.in" }
+
     highlight: { forward: "easeHighlightIn", backward: "easeHighlightOut" },
     lines:     { forward: "easeLineIn", backward: "power1.in" }
   },
@@ -75,9 +153,19 @@ const highlightRefs = ref<HTMLElement[]>([])
 const typedRefs     = ref<HTMLElement[]>([])
 const paragraphRefs = ref<HTMLElement[]>([])
 
+// Debug state
+const isVisible = ref(false)
+const intersectionRatio = ref(0)
+let playedOnce = false
+
 onMounted(async () => {
   await nextTick()
   const splits: SplitText[] = [] // track for reverting
+  
+  if (sectionRef.value) {
+    gsap.set(sectionRef.value, { opacity: 0 })
+  }
+
 
   function splitAndAnimateLines(
     type: 'full' | 'vertical',
@@ -86,57 +174,87 @@ onMounted(async () => {
     { duration, stagger, at }: { duration?: number; stagger?: number; at?: string }
   ) {
     ;(el as any)._split?.revert()
-    const split = new SplitText(el, { type: 'lines', linesClass: 'split-line' })
+    const split = new SplitText(el, { type: 'words', wordsClass: 'split-word' })
     splits.push(split)
 
     const dur = duration ?? (type === 'full' ? animationConfig.durations.lineFull : animationConfig.durations.lineVertical)
     const stag = stagger ?? (type === 'full' ? animationConfig.staggers.lineFull : 0)
 
-    gsap.set(split.lines, {
-      clipPath: type === 'full' ? 'inset(30% 60% 30% 40%)' : 'inset(0% 0% 50% 0%)',
-      opacity:  0,
-      yPercent: type === 'full' ? 0 : 100,
-      xPercent: type === 'full' ? 40 : 0,
-    })
-    tl.to(
-      split.lines,
-      {
-        clipPath: 'inset(0% 0% 0% 0%)',
-        yPercent: 0,
-        xPercent: 0,
-        opacity:  1,
-        duration: dur,
-        ease:     animationConfig.eases.lines.forward,
-        easeBackwards: animationConfig.eases.lines.backward,
-        stagger:  stag,
-      },
-      at
-    )
+    gsap.set(split.words, {
+  clipPath: 'inset(0% 0% 100% 0%)',
+  opacity:  0,
+  yPercent: 100
+})
+tl.to(split.words, {
+  clipPath: 'inset(0% 0% 0% 0%)',
+  yPercent:  0,
+  opacity:   1,
+  stagger:   0.05,
+  duration:  animationConfig.durations.lineVertical,
+  ease:      animationConfig.eases.lines.forward
+}, at)
+
   }
+   const tlHighlights = gsap.timeline({
+   defaults: { ease: animationConfig.eases.highlight.forward },
+   paused: true,
+ })
+ // add a “blank” tween to wait for initialDelay seconds:
+ if (props.initialDelay > 0) {
+   tlHighlights.to({}, {
+     duration: props.initialDelay,
+     immediateRender: false    // ensure it doesn’t render immediately
+   })
+ }
 
-  const tlHighlights = gsap.timeline({
-    defaults: { ease: animationConfig.eases.highlight.forward },
-    scrollTrigger: {
-      trigger: sectionRef.value,
-      start,
-      scrub,
-      markers: props.markers,
-      toggleActions: 'play none none reverse',
-      onEnter(self) {
-        // bring back full opacity…
-        gsap.set(sectionRef.value, { opacity: 1 });
-        // …and rewind the timeline to its very start
-        self.animation.restart();
-    },
-    onLeaveBack(self) {
-        gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.out' });
-    },
 
-    //   onReverseComplete() {
-    //     splits.splice(0).forEach((s) => s.revert())
-    //   },
-    },
-  })
+
+
+  useIntersectionObserver(
+  sectionRef,
+  ([entry]) => {
+    if (!sectionRef.value) return
+
+    intersectionRatio.value = entry.intersectionRatio
+    isVisible.value = entry.isIntersecting
+
+    if (entry.isIntersecting) {
+      // If visible (excluding top 64px), fade in
+
+      if (sectionRef.value.style.opacity !== '1') {
+      gsap.to(sectionRef.value, {
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power1.out'
+        })
+
+      }
+
+
+        tlHighlights.restart()
+        tlHighlights.seek(0).play()
+      // Play once
+      if (!tlHighlights.isActive()) {
+        
+
+
+}
+    } else {
+      // When under sticky header — fade out
+      gsap.to(sectionRef.value, {
+        opacity: 0,
+        duration: 0.6,
+        ease: 'expo.out'
+      })
+
+
+    }
+  },
+  {
+    threshold: 0.99, // Trigger on slight visibility
+    rootMargin: "-65px 0px 0px 0px" // top offset simulating header height
+  }
+)
 
   // PASS 1: highlight bounce
   props.highlights.forEach((h, i) => {
@@ -180,6 +298,8 @@ onMounted(async () => {
       stagger: 0,
       at: h.label ? `${atLabel}+=0.1` : `${atLabel}-=0.2`
     })
+
+
   })
 
   // pause and paragraphs
@@ -202,50 +322,14 @@ onMounted(async () => {
 })
 </script>
 
-<template>
-  <div class="py-24 px-0 sm:px-2 lg:px-56 pt-88">
-    <section
-      ref="sectionRef"
-      class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
-      
-      >
-      <!--top classes can get these added tO: border border-4 border-black rounded-3xl -->
-      <template v-for="(h, i) in highlights" :key="i">
-        <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
-        <div v-else class="flex flex-row justify-start items-center text-nowrap">
-          <span
-            v-if="h.label !== ''"
-            :ref="el => (highlightRefs[i] = el as HTMLElement)"
-            class="inline-block rounded-xl px-2 py-1 text-2xl font-extrabold text-d4"
-            :style="{
-              backgroundColor: h.bgColor ?? '#6D28D9',
-              color:           h.textColor ?? 'white',
-              transform:       h.rotation ? `rotate(${h.rotation})` : undefined,
-              'margin-right':  h.indent ?? '0px',
-            }"
-          >{{ h.label }}</span>
-          <span v-else :style="{ 'margin-right': h.indent ?? '0px' }"></span>
-          <span
-            :ref="el => (typedRefs[i] = el as HTMLElement)"
-            class="inline-block mx-0 text-2xl font-extrabold text-d4 whitespace-pre rtl"
-          ></span>
-        </div>
-      </template>
-      <div class="basis-full h-0"></div>
-    </section>
-    <div class="rtl flex flex-col w-full mt-8 max-w-xl mx-auto">
-      <template v-for="(p, i) in paragraphes" :key="i">
-        <p
-          :ref="el => (paragraphRefs[i] = el as HTMLElement)"
-          :class="[i === 0 ? 'font-extrabold' : '']"
-          class="text-sm md:text-base text-center mb-4"
-        ></p>
-      </template>
-    </div>
-  </div>
-</template>
+
+
 
 <style scoped lang="scss">
 section { direction: rtl; }
 .split-line { display: block; overflow: hidden; }
+.split-wor{  display: inline-block;  /* or block if you need each word on its own line */
+  overflow: hidden;
+}
+
 </style>

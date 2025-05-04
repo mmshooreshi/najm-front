@@ -8,7 +8,7 @@
 
       <!-- Category Tabs -->
       <div class="relative h-10">
-        <div ref="tabsContainer" class="tabs-container noscroll flex gap-1 whitespace-nowrap overflow-auto scrollbar-hide absolute -left-4 -right-4 px-4"
+        <div ref="tabsContainer" class="tabs-container noscroll flex gap-1 whitespace-nowrap overflow-auto scrollbar-hide absolute -left-8 -right-8 px-4"
         >
             <button
             v-for="(cat, i) in categories"

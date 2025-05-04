@@ -56,53 +56,58 @@ onMounted(() => {
   console.log('Swiper initialized')
 })
 </script>
-
 <template>
-  <div class="relative h-[312px] ">
-    <ClientOnly>
-      <swiper-container ref="containerRef3" class="" :modules="[Autoplay, EffectFade, Pagination]"
-        :loop="true" :autoplay="{ delay: 3500, disableOnInteraction: false }" :effect="'fade'"
-        :fadeEffect="{ crossFade: true }" :pagination="{ el: `#pagination-${uniqueId}`, clickable: true }"
-        @slideChange="onSlideChange">
-        <swiper-slide v-for="(slide, index) in slides" :key="index" class="relative">
-          <div
-            class="cursor-pointer group relative flex flex-col items-center w-full h-full rounded-3xl overflow-hidden">
-            <div class="group-hover:scale-110 duration-1000 w-full transition-all">
+  <div class="h-full  w-full">
+    <swiper-container
+      ref="containerRef3"
+      :modules="[Autoplay, EffectFade, Pagination]"
+      :loop="true"
+      :autoplay="{ delay: 3500, disableOnInteraction: false }"
+      :effect="'fade'"
+      :fadeEffect="{ crossFade: true }"
+      :pagination="{ el: `#pagination-${uniqueId}`, clickable: true }"
+      @slideChange="onSlideChange"
+      class="h-full"
+    >
+      <swiper-slide
+        v-for="(slide, index) in slides"
+        :key="index"
+        class="relative h-full"
+      >
+        <div
+          class="cursor-pointer group relative flex flex-col items-center w-full h-full rounded-3xl overflow-hidden"
+        >
+          <div class="group-hover:scale-110 duration-1000 w-full transition-all h-full">
+            <img
+              :src="slide.image"
+              :alt="slide.alt"
+              class="w-full h-full object-cover rounded-3xl"
+            />
+          </div>
 
-              <img :src="slide.image" :alt="slide.alt" class="w-full h-[312px]  object-cover rounded-3xl" />
+          <div class="absolute inset-0 flex flex-col items-center justify-between p-6">
+            <div
+              class="group-hover:opacity-100 transition-all duration-1000 group-hover:-translate-x-[5px] opacity-50 bg-[#DFEED7]/100 text-d4 text-base font-extrabold px-4 py-2 rounded-3xl self-end"
+            >
+              {{ slide.text }}
             </div>
 
-
-            <div class="absolute inset-0 flex flex-col items-center justify-between p-6">
-              <!-- Caption -->
+            <div class="flex flex-row w-full justify-between items-center">
+              <div></div>
               <div
-                class="group-hover:opacity-100 transition-all duration-1000 group-hover:-translate-x-[5px] opacity-50  bg-[#DFEED7]/100  text-d4 text-base font-extrabold px-4 py-2 rounded-3xl transition-all self-end">
-                {{ slide.text }}
-              </div>
-
-
-
-              <div class="flex flex-row w-full  justify-between  items-center">
-                <div></div>
-
-                <div
-                  class="hover:scale-105 transition-all cursor-pointer bg-white w-12 h-12 flex items-center justify-center rounded-xl">
-                  <ArrowIconBtn />
-                </div>
-
+                class="hover:scale-105 transition-all cursor-pointer bg-white w-12 h-12 flex items-center justify-center rounded-xl"
+              >
+                <ArrowIconBtn />
               </div>
             </div>
           </div>
+        </div>
+      </swiper-slide>
 
-        </swiper-slide>
-        <!-- Swiper built-in pagination indicators -->
-        <div :id="`pagination-${uniqueId}`" class="!left-6 !bottom-6 swiper-pagination"></div>
-      </swiper-container>
-    </ClientOnly>
+      <div :id="`pagination-${uniqueId}`" class="!left-6 !bottom-6 swiper-pagination"></div>
+    </swiper-container>
   </div>
 </template>
-
-
 
 <style scoped>
 .swiper-pagination {

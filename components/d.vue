@@ -1,6 +1,6 @@
 <template>
     <!-- note the ref="wrapper" here -->
-    <div ref="wrapper" class="-mx-4 overflow-visible pt-8">
+    <div ref="wrapper" class="overflow-visible pt-8">
         <!-- Outer Swiper: one slide per package -->
         <!-- Toggle button -->
 

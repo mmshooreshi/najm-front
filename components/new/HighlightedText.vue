@@ -1,4 +1,41 @@
 <template>
+    <div class="h-[100px]">
+    <ClientOnly>
+      <HighlightedMotion
+        :initialDelay="0.5"  
+        :speed="2"
+        start="top top"
+        :markers=true
+        :highlights="[
+
+          { label:'', sentence: 'یه راهکار خلاقانه برای ' },
+          { label: 'چاپ', bgColor: '#F4FFD0', textColor: 'black', rotation: '-3.2deg' },
+          { label:'', sentence: ' و ' },
+          { label:'break'},
+          { label: 'بسته‌بندی', bgColor: '#B9ADFF', textColor: 'black', rotation: '3.36deg' },
+          { label:'', sentence: ' مورد نیاز شما' },
+          { label: 'end' } // invisible, only used for timeline alignment
+
+        ]"
+
+        :bounce-scale="1.1"
+        :bounce-duration="0.2"
+        :type-speed="20"
+        animation-type="split"
+        :scrub="false"
+      />
+    </ClientOnly>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import HighlightedMotion from '@/components/Main/HighlightedMotion.vue'
+</script>
+
+<style>
+</style>
+
+<!-- <template>
     <div class="text-container ">
       <p class="text">
         یه راهکار خلاقانه برای 
@@ -76,4 +113,4 @@
     cursor: pointer;
     /* box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); */
   }
-  </style>
+  </style> -->

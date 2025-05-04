@@ -4,7 +4,7 @@
       Settings
     </button>
  -->
-  <div ref="slider" class="slider-container relative w-screen h-[30vh] touch-none"
+  <div ref="slider" class="slider-container relative w-screen h-[30vh] "
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">
@@ -16,8 +16,9 @@
            class="image-item absolute"
            :style="getStyle(image, index)">
         <!-- Use InlineSvg, now with pixel–aware hover effects -->
-        <InlineSvgMask  v-motion-pop :height="image.height" :width="image.width" :delay="index*100" class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
-      </div>
+        <InlineSvgMask  :height="image.height" :width="image.width"  class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
+
+        </div>
     </div>
   </div>
 

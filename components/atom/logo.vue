@@ -4,7 +4,7 @@
       
       class="flex flex-row items-center gap-4 transition-all duration-500"
     >
-      <NuxtLink to="/" class="flex justify-center">
+      <NuxtLink to="/home" class="flex justify-center">
         <NajmLogo class="h-12 w-12" />
       </NuxtLink>
     </div>

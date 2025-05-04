@@ -54,7 +54,7 @@ function bgUtility (card: FeatureCard) {
 
 <template>
   <!-- RTL wrapper -------------------------------------------------- -->
-  <section dir="rtl" class="mx-auto max-w-screen-xl  py-4 my-8 pb-20">
+  <section  class="mx-auto max-w-screen-xl bg-blue px-8 py-8 my-auto">
     <!-- Stack on mobile → 3‑col grid ≥ md ------------------------- -->
     <div class="grid gap-2 md:grid-cols-3 md:gap-4">
       <article

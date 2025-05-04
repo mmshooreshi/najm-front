@@ -52,6 +52,7 @@
     "@nuxtjs/proxy": "^2.1.0",
     "@shikijs/transformers": "^3.2.2",
     "@studio-freight/lenis": "^1.0.42",
+    "@vueuse/components": "^13.1.0",
     "@vueuse/motion": "^3.0.3",
     "ag-grid-vue3": "^33.2.4",
     "defu": "^6.1.4",
