@@ -1,10 +1,10 @@
 <template>
-  <div class="h-full  flex-grow pt-16">
+  <div class="h-full  flex-grow py-8 md:py-16">
     <HighlightedText />
 
     <div
       class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px]"
-      style="top:68px; padding:0px 24px;">
+      style="top:48px; padding:0px 24px;">
       <ImagesFloating />
     </div>
 

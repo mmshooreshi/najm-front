@@ -15,12 +15,12 @@ const menuOpen = ref(false)
   <Header
     :menu-open="menuOpen"
     @update:menu-open="menuOpen = $event"
-    class="fixed top-0 left-0 w-full z-50"
+    class="fixed  top-0 left-0 w-full z-50"
   />
 
   <!-- Page Wrapper -->
   <div class="bg-[#e4eaeb] w-full overflow-hidden min-h-screen pt-16">
-    <main class="w-full max-w-screen-xl mx-auto">
+    <main class="w-full max-w-screen-xl  mx-auto">
       <slot />
     </main>
     <Footer2 />

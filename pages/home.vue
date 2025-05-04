@@ -1,5 +1,6 @@
 <template>
   <!-- bg-[#FFEBEE] -->
+   <div class="">
     <div id="scene-hero" class=" scene-full">
       <SceneHero />
     </div>
@@ -29,6 +30,7 @@
     <div id="imagez-wrapper">
       <Imagez />
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">

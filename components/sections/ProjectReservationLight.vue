@@ -1,5 +1,5 @@
 <template>
-    <div dir="rtl" class="relative h-[400px] mt-0 -mb-28 max-w-md mx-auto animate-pulse-alt">
+    <div dir="rtl" class="relative h-[400px]  max-w-md mx-auto animate-pulse-alt">
       <!-- Target Icon -->
       <div ref="targetRef" class="group relative cursor-pointer -mt-[50px]"      @click.prevent="isShown = !isShown">
         <svg
@@ -29,7 +29,7 @@
           class="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
           <div
-            class="w-10 h-10 mt-2 bg-[#EAFED3] group-hover:scale-150 group-active:bg-[#014439] rounded-full flex items-center justify-center transition-transform duration-300"
+            class="w-10 h-10 mt-0 bg-[#EAFED3] group-hover:scale-150 group-active:bg-[#014439] rounded-full flex items-center justify-center transition-transform duration-300"
           >
             <TargetIcon />
           </div>
