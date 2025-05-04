@@ -3,7 +3,8 @@
   <div
   dir="rtl"
     ref="itemRef"
-    class="py-4 md:py-0 accordion-item flex flex-col h-full cursor-pointer hover:bg-[#E5EDED]/100 text-d4 rounded-3xl bg-[#E5EDED]/50 transition-all duration-500 content-center"
+    :class="[isOpen?'bg-transparent':'']"
+    class="flex-grow py-4 md:py-0 accordion-item flex flex-col h-full cursor-pointer  text-d4 rounded-2xl bg-[#EBF0F3] transition-all duration-100 content-center"
     @click="$emit('toggle')"
   >
     <!-- Header: its margin-top will be animated to center or align to top -->

@@ -19,7 +19,7 @@ const menuOpen = ref(false)
   />
 
   <!-- Page Wrapper -->
-  <div class="bg-[#e4eaeb] w-full overflow-hidden min-h-screen pt-16">
+  <div class="bg-white bg-[#e4eaeb] w-full overflow-hidden min-h-screen pt-16">
     <main class="w-full max-w-screen-xl  mx-auto">
       <slot />
     </main>

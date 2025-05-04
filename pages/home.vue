@@ -1,29 +1,30 @@
 <template>
   <!-- bg-[#FFEBEE] -->
-   <div class="">
-    <div id="scene-hero" class=" scene-full ">
+   <div class="touch-pan-y snap-y snap-mandatory overflow-y-scroll h-screen">
+    <div id="scene-hero" class=" scene-full snap-start ">
       <SceneHero />
     </div>
-    <div id="scene-printing" class="bg-[#E3F2FD] scene-full">
+    
+    <!-- bg-[#E3F2FD] -->
+    <div id="scene-printing" class="scene-full snap-start ">
       <ScenePrinting />
-      <SceneAccordionLayout />
     </div>
-    <!-- <div id="scene-boxes" class="bg-[#FFF8E1] scene-full"> -->
+    <!-- <div id="scene-boxes" class="bg-[#FFF8E1] scene-full snap-start"> -->
       <!-- <SceneBoxes /> -->
     <!-- </div> -->
-    <!-- <div id="scene-nccc" class="bg-[#F3E5F5] scene-full">
+    <!-- <div id="scene-nccc" class="bg-[#F3E5F5] scene-full snap-start">
       <SceneNccc />
     </div> -->
-    <!-- <div id="scene-promo" class="bg-[#FBE9E7] scene-full">
+    <!-- <div id="scene-promo" class="bg-[#FBE9E7] scene-full snap-start">
       <ScenePromo />
     </div> -->
-    <div id="scene-slider" class="bg-[#E0F7FA] scene-full">
+    <div id="scene-slider" class="bg-[#E0F7FA] scene-full snap-start">
       <SceneSlider />
     </div>
-    <div id="scene-final" class="bg-[#FFF3E0] scene-full">
+    <div id="scene-final" class="bg-[#FFF3E0] scene-full snap-start">
       <SceneFinalMessage />
     </div>
-    <div id="scene-faq" class="bg-[#EDE7F6] scene-full">
+    <div id="scene-faq" class="bg-[#EDE7F6] scene-full snap-start">
       <SceneFaq />
     </div>
 
@@ -36,8 +37,8 @@
 <script setup lang="ts">
 import SceneHero from '~/components/scenes/SceneHero.vue'
 
+
 import ScenePrinting from '~/components/scenes/ScenePrinting.vue'
-import SceneAccordionLayout from '~/components/scenes/SceneAccordionLayout.vue'
 // import SceneBoxes from '~/components/scenes/SceneBoxes.vue'
 import SceneNccc from '~/components/scenes/SceneNccc.vue'
 import ScenePromo from '~/components/scenes/ScenePromo.vue'
@@ -48,7 +49,7 @@ import Imagez from '@/components/imagez.vue'
 </script>
 
 <style scoped>
-.scene-full {
+.scene-full  {
   display: flex;
   flex-direction: column;
   justify-content: center; /* vertically center */

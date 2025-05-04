@@ -1,19 +1,19 @@
 <template>
-    <div dir="rtl" class="relative max-w-2xl mx-auto text-center rounded-3xl">
-      <h2 class="text-2xl font-extrabold text-[#000000] text-d4">دقیق، کارآمد، بدون واسطه</h2>
-      <p class="text-xs text mt-2">
-        تمامی مراحل <span>چاپ</span> در مجموعه‌ی خود ما انجام میشه، بدون دخالت واسطه‌ها.
-        
-        ما فقط نمی‌فروشیم، ما <span>تولید</span> می‌کنیم و این یعنی:
-      </p>
+    <div dir="rtl" class="relative max-w-2xl mx-auto text-center rounded-3xl mt-6 md:mt-0">
+      <h2  v-motion-pop-visible  class="text-2xl font-extrabold text-[#000000] text-d4">بیشتر از یه چاپخونه، یه هم‌تیمی خوب</h2>
+      <p   v-motion-pop-visible  class="text-sm text-d4 mt-4">
+      
+        از طراحی تا اجرا، همه چیز در یک مجموعه.
+      <br>
+         با راهکارهای خلاقانه و انعطاف‌پذیر ما اینجا هستیم تا داستان شما را تبدیل به یک تجربه‌ی ماندگار کنیم.      </p>
 
 
 
-      <div class="mt-4 text-d4 flex flex-wrap flex-col justify-center items-center space-y-[7px] text-2xl font-black">
+      <!-- <div class="mt-4 text-d4 flex flex-wrap flex-col justify-center items-center space-y-[7px] text-2xl font-black">
         <span class="highlight highlight-yellow">کیفیت بالاتر</span>
         <span class="highlight highlight-blue">کنترل بهتر روی جزئیات</span>
         <span class="highlight highlight-purple">قیمت منصفانه‌تر</span>
-      </div>
+      </div> -->
 
     </div>
   </template>
