@@ -1,17 +1,17 @@
 <template>
   <div class=" py-16 md:pt-16  flex flex-col flex-grow">
+    <teleport to="body">
+      <rotatoryPane/>
+    </teleport>
+
     <HighlightedText />
 
     <div
       class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px]"
-      style="top:48px; padding:0px 24px;">
+      style="top:48px; padding:0px 0px;">
       <ImagesFloating />
     </div>
 
-    <div class="fixed  right-2 bottom-8 md:right-6 md:bottom-18 z-50">  
-         <!-- before:<rotatoryLg/>  -->
-          <rotatory/>
-    </div>
 
     <div class="bok gap-3 flex flex-col flex-grow h-full translate-y-0">
       <div class="h-46  overflow-visible">
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import HighlightedText from '@/components/new/HighlightedText.vue'
 import GreenButton from '@/components/buttons/GreenButton.vue'
-import rotatory from '~/components/rotatory.vue'
+import rotatoryPane from '~/components/fixed/rotatoryPane.vue'
 import rotatoryLg from '~/components/rotatoryLegacy.vue'
 
 import ImagesFloating from '@/components/ImagesFloating.vue'

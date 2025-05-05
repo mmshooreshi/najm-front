@@ -1,38 +1,50 @@
 <template>
-  <div class="overflow-y-scroll h-screen snap-y snap-mandatory scroll-smooth touch-pan-y">
+  <div
+    id="smooth-content"
+    class="overflow-y-scroll h-screen snap-y snap-mandatory scroll-smooth touch-pan-y border border-black"
+  >
     <!-- Hero Section -->
-    <section id="scene-hero" class="snap-start h-screen flex items-center justify-center ">
-      <!--  
-      bg-[#FFEBEE]-->
+    <section
+      id="scene-hero"
+      class="snap-start h-screen flex items-center justify-center border border-black"
+    >
       <SceneHero />
     </section>
 
     <!-- Printing Section -->
-    <section id="scene-printing" class="snap-start  h-screen flex items-center justify-center  lg:px-56">
-      <!-- bg-[#E3F2FD] -->
+    <section
+      id="scene-printing"
+      class="snap-start h-screen flex items-center justify-center lg:px-56 border border-black"
+    >
       <ScenePrinting />
     </section>
 
     <!-- Slider Section -->
-    <section id="scene-slider" class="snap-start h-screen flex items-center justify-center ">
-      <!-- bg-[#E0F7FA] -->
+    <section
+      id="scene-slider"
+      class="snap-start h-screen flex items-center justify-center border border-black"
+    >
       <SceneSlider />
     </section>
 
     <!-- Final Message Section -->
-    <section id="scene-final" class="snap-start h-screen flex items-center justify-center ">
-      <!-- bg-[#FFF3E0] -->
+    <section
+      id="scene-final"
+      class="snap-start h-screen flex items-center justify-center border border-black"
+    >
       <SceneFinalMessage />
     </section>
 
     <!-- FAQ Section -->
-    <section id="scene-faq" class="snap-start h-screen flex items-center justify-center  px-4">
-      <!-- bg-[#EDE7F6] -->
+    <section
+      id="scene-faq"
+      class="snap-start h-screen flex items-center justify-center px-4 border border-black"
+    >
       <SceneFaq />
     </section>
 
     <!-- Floating Image Component -->
-    <div id="imagez-wrapper" class="fixed inset-0 pointer-events-none">
+    <div id="imagez-wrapper" class="fixed inset-0 pointer-events-none" border border-black>
       <!-- <Imagez /> -->
     </div>
   </div>
@@ -46,7 +58,6 @@ import SceneFinalMessage from '~/components/scenes/SceneFinalMessage.vue'
 import SceneFaq from '~/components/scenes/SceneFaq.vue'
 import Imagez from '@/components/imagez.vue'
 
-
 definePageMeta({
   name: 'چاپ نجم - خانه',
   layout: 'home',
@@ -54,19 +65,14 @@ definePageMeta({
 </script>
 
 <style scoped>
-/* Fallback for browsers without Tailwind scroll-snap utilities */
+/* Fallbacks if Tailwind classes aren’t enough */
 .scroll-snap-y {
   scroll-snap-type: y mandatory;
-
 }
 .scroll-smooth {
   scroll-behavior: smooth;
 }
 section.snap-start {
   scroll-snap-align: start;
-  scroll-snap-align: end;
-
 }
-
-
 </style>

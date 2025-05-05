@@ -96,13 +96,13 @@ label,
     -webkit-tap-highlight-color: transparent;
 }
 
-
+/* 
 * {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
+} */
 
 /* body {
 	font-family: IRANSansX  !important;
