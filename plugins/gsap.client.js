@@ -15,6 +15,13 @@ export default defineNuxtPlugin((nuxtApp) => {
     
   }
 
+  // nuxtApp.provide('gsap', gsap)
+  // nuxtApp.provide('Draggable', Draggable)
+  // nuxtApp.provide('ScrollTrigger', ScrollTrigger)
+  // nuxtApp.provide('MotionPathPlugin', MotionPathPlugin)
+  // nuxtApp.provide('SplitText', SplitText)
+  // nuxtApp.provide('CustomEase', CustomEase)
+  // nuxtApp.provide('ScrollSmoother', ScrollSmoother)
   return {
     provide: {
       gsap,

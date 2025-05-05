@@ -9,7 +9,7 @@
     :class="['accordion-item', { open: isOpen }]"
     @click="$emit('toggle')"
   >
-    <div class="header py-3 px-6">
+    <div class="header pt-3 pb-3 px-6">
       <span>{{ title }}</span>
       <svg
         class="icon"

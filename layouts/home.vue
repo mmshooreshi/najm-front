@@ -7,81 +7,93 @@
       class="fixed top-0 left-0 w-full z-50"
     />
   
-    <div id="smooth-wrapper" class="min-h-screen pt-16 bg-[#e4eaeb] overflow-x-hidden">
+    <div id="smooth-wrapper" class="min-h-screen pt-16 bg-[#e4eaeb] overflow-hidden">
       <div id="smooth-content">
         <slot />
         <Footer2 />
       </div>
     </div>
   
-    <!-- your floating debug pane -->
-    <!-- <DebugPane :debugVars="debugVars" /> -->
+    <DebugPane :debugVars="debugVars" />
   </template>
   
-  <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
-  import { useNuxtApp } from '#app'
-  import Header from '~/components/Header.vue'
-  import BackgroundGradient from '~/components/BackgroundGradient.vue'
-  import Footer2 from '~/components/Footer2.vue'
-  import DebugPane from '@/components/debug/DebugPane.vue'
-  
-  const menuOpen = ref(false)
-  const debugVars = ref({
-    scrollPos: 0,
-    scrollProgress: 0,
-    currentSnap: 0,
-    // …add up to 15 keys here
+<script setup lang="ts">
+import { ref, onMounted, nextTick } from 'vue'
+import gsap from 'gsap'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+const debugVars = ref({
+  scrollPos: 0,
+  scrollProgress: 0,
+  currentSnap: 0,
+})
+
+onMounted(async () => {
+  await nextTick()
+
+  const smoother = ScrollSmoother.create({
+    wrapper: '#smooth-wrapper',
+    content: '#smooth-content',
+    smooth: 1.5,
+    effects: true,
+    smoothTouch: 0.1,
   })
-  
-  // get the injected gsap & plugins (optional; you can also import directly)
-  const { $gsap: gsap, $ScrollTrigger: ScrollTrigger, $ScrollSmoother: ScrollSmoother } = useNuxtApp()
-  
-  onMounted(() => {
-    // 1) Create the smoother
-    ScrollSmoother.create({
-      wrapper: '#smooth-wrapper',
-      content: '#smooth-content',
-      smooth: 1.5,
-      effects: true,
-      smoothTouch: 0.1,
-    })
-  
-    // 2) Tell every ScrollTrigger to use our smooth-content as the scroller
-    ScrollTrigger.defaults({ scroller: '#smooth-content' })
-  
-    // 3) Global scroll watcher → update debug vars
+
+  ScrollTrigger.defaults({ scroller: smoother.content() })
+
+  // ✅ Explicitly typed as HTMLElement[]
+  const sections = gsap.utils.toArray<HTMLElement>('.snap-section')
+
+  ScrollTrigger.create({
+    start: 0,
+    end: 'max',
+    onUpdate: self => {
+      debugVars.value.scrollPos = Math.round(self.scroll())
+      debugVars.value.scrollProgress = +self.progress.toFixed(3)
+    },
+  })
+
+  const snapPoints = sections.map(section => {
+    const st = ScrollTrigger.create({ trigger: section, start: 'top top' })
+    return st.start
+  })
+
+  ScrollTrigger.create({
+    snap: {
+      snapTo: snapPoints,
+      duration: { min: 0.2, max: 0.5 },
+      ease: 'power2.out',
+      delay: 0.05,
+    },
+    start: 0,
+    end: ScrollTrigger.maxScroll(smoother.content()),
+    scroller: smoother.content(),
+  })
+
+  sections.forEach((section: HTMLElement, i: number) => {
     ScrollTrigger.create({
-      start: 0,
-      end: 'max',
-      onUpdate: self => {
-        debugVars.value.scrollPos = self.scroll()
-        debugVars.value.scrollProgress = +self.progress.toFixed(3)
+      trigger: section,
+      start: 'top center',
+      end: 'bottom center',
+      onToggle({ isActive }) {
+        if (isActive) debugVars.value.currentSnap = i
       },
-    })
-  
-    // 4) Section snap setup
-    document.querySelectorAll('.snap-section').forEach((section, i) => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top top',
-        snap: 1,
-        duration: { min: 0.2, max: 1 },
-        onToggle({ isActive }) {
-          if (isActive) debugVars.value.currentSnap = i
-        },
-      })
+      markers: true,
     })
   })
-  </script>
-  
-  <style scoped>
-  #smooth-wrapper {
-    position: relative;
-    overflow: hidden;
-  }
-  #smooth-content {
-    /* no special styles needed */
-  }
-  </style>
-  
+})
+</script>
+
+
+<style scoped>
+#smooth-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+</style>
+
+
+
+
+

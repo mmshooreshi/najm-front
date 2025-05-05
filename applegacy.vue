@@ -1,3 +1,4 @@
+<!-- ./najm-front/app.vue -->
 <template>
   <div class="overflow-visible">
     <NuxtLayout >

@@ -1,5 +1,5 @@
 <template>
-      <div class="w-full   h-full p-0 md:py-2  accordion flex flex-col py-8  gap-1 md:gap-1">
+      <div class="w-full   h-max max-h-full p-0 md:py-2  accordion flex flex-col py-8  gap-1 md:gap-1">
         
       <AccordionItem
         v-for="(item, index) in items"
