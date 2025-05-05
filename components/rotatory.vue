@@ -45,7 +45,7 @@
         </svg>
         <!-- Copy icon -->
         <svg
-          class="copy absolute w-[14px] h-[16px] transform translate-x-[150%] translate-y-[150%] transition-transform duration-300 ease-in-out delay-100 group-hover:translate-x-0 group-hover:translate-y-0"
+          class="copy absolute w-[12px] h-[14px] md:w-[14px] md:h-[16px] transform translate-x-[150%] translate-y-[150%] transition-transform duration-300 ease-in-out delay-100 group-hover:translate-x-0 group-hover:translate-y-0 -scale-x-100"
           viewBox="0 0 14 15"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
