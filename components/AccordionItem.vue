@@ -1,12 +1,15 @@
 <template>
   <div
+  v-motion-pop-visible
+  :delay="delay"
+
     dir="rtl"
     ref="itemRef"
-    class="transition-all"
+    class="transition-all  py-0 "
     :class="['accordion-item', { open: isOpen }]"
     @click="$emit('toggle')"
   >
-    <div class="header">
+    <div class="header py-3 px-6">
       <span>{{ title }}</span>
       <svg
         class="icon"
@@ -36,7 +39,8 @@ import gsap from 'gsap'
 const props = defineProps({
   title: String,
   content: String,
-  isOpen: Boolean
+  isOpen: Boolean,
+  delay: Number
 })
 
 const contentEl = ref(null)
@@ -88,7 +92,6 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 1.5rem;
   font-weight: bold;
 }
 .icon {

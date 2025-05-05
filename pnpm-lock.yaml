@@ -41,6 +41,9 @@ importers:
       ag-grid-vue3:
         specifier: ^33.2.4
         version: 33.2.4(vue@3.5.13(typescript@5.7.3))
+      arabic-reshaper:
+        specifier: ^1.1.0
+        version: 1.1.0
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -1649,6 +1652,9 @@ packages:
   anymatch@3.1.3:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
+
+  arabic-reshaper@1.1.0:
+    resolution: {integrity: sha512-DfF1CxCCgLi0XsqHFdr2cdi/7qEoupT76+6Q2vPPWroS6dinvKbomKMZD9AYxKAb+SXK+UYFuS3iBD0/ZVOzyw==}
 
   archiver-utils@5.0.2:
     resolution: {integrity: sha512-wuLJMmIBQYCsGZgYLTy5FIB2pF6Lfb6cXMSF8Qywwk3t20zWnAi7zLcQFdKQmIB8wyZpY5ER38x08GbwtR2cLA==}
@@ -7186,6 +7192,8 @@ snapshots:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
+
+  arabic-reshaper@1.1.0: {}
 
   archiver-utils@5.0.2:
     dependencies:

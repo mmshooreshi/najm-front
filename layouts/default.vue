@@ -19,8 +19,8 @@ const menuOpen = ref(false)
   />
 
   <!-- Page Wrapper -->
-  <div class="bg-white bg-[#e4eaeb] w-full overflow-hidden min-h-screen pt-16">
-    <main class="w-full max-w-screen-xl  mx-auto">
+  <div class="bg-white bg-[#e4eaeb] w-full overflow-visible touch-pan-y  bg-blue min-h-screen pt-16">
+    <main class="w-full  overflow-visible  mx-auto">
       <slot />
     </main>
     <Footer2 />

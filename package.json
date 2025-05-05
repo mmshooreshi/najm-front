@@ -55,6 +55,7 @@
     "@vueuse/components": "^13.1.0",
     "@vueuse/motion": "^3.0.3",
     "ag-grid-vue3": "^33.2.4",
+    "arabic-reshaper": "^1.1.0",
     "defu": "^6.1.4",
     "gsap": "^3.13.0",
     "interactjs": "^1.10.27",

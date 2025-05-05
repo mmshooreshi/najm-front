@@ -1,10 +1,9 @@
 <template>
-      <div class=" w-full  p-0 md:py-0  accordion flex flex-col h-full gap-1 md:gap-1">
+      <div class="w-full   h-full p-0 md:py-2  accordion flex flex-col py-8  gap-1 md:gap-1">
         
       <AccordionItem
-      v-motion-pop-visible 
         v-for="(item, index) in items"
-        :delay="index*100"
+        :delay="index/10"
         :key="index"
         :title="item.title"
         :content="item.content"
@@ -18,6 +17,7 @@
   <script setup>
   import AccordionItem from "./AccordionItem.vue";
   import { ref } from "vue";
+  
   const openIndex = ref(null); // Track which item is open
 
   const items = ref([

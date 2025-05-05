@@ -11,8 +11,8 @@
           <circle  cx="100" cy="100" r="80" />
 
         </defs>
-        <text class="text-d4 circle-text" fill="currentColor"  stroke="currentColor" stroke-width="0" dominant-baseline="bottom" dy="15">
-          <textPath startOffset="25%" text-anchor="middle" href="#circlePath">
+        <text class="text-d4 circle-text" fill="currentColor"  stroke="currentColor" stroke-width="0" dominant-baseline="bottom" dy="15" >
+          <textPath method="align" startOffset="25%" text-anchor="middle" href="#circlePath">
             مشاوره‌‌ی  رایگان
           </textPath>
         </text>
@@ -77,7 +77,9 @@
     height: 100%;
     animation: rotate 8s linear infinite;
     transform-origin: center center;
-    
+    direction: rtl !important;
+  unicode-bidi: bidi-override !important;
+
   }
   
   .circle-text {
@@ -86,6 +88,8 @@
     letter-spacing: 5px;
     /* fill: currentColor; */
     /* text-shadow: 0.1px 0 currentColor, -0.1px 0 currentColor; */
+    direction: rtl !important;
+  unicode-bidi: bidi-override !important;
 
 
   }

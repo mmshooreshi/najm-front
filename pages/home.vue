@@ -1,47 +1,46 @@
 <template>
-  <!-- bg-[#FFEBEE] -->
-   <div class="touch-pan-y overflow-hidden w-full">
-    <div id="scene-hero" class=" scene-full  ">
+  <div class="overflow-y-scroll h-screen snap-y snap-mandatory scroll-smooth touch-pan-y">
+    <!-- Hero Section -->
+    <section id="scene-hero" class="snap-start h-screen flex items-center justify-center ">
+      <!--  
+      bg-[#FFEBEE]-->
       <SceneHero />
-    </div>
-    
-    <!-- bg-[#E3F2FD] -->
-    <div id="scene-printing" class="scene-full  ">
-      <ScenePrinting />
-    </div>
-    <!-- <div id="scene-boxes" class="bg-[#FFF8E1] scene-full "> -->
-      <!-- <SceneBoxes /> -->
-    <!-- </div> -->
-    <!-- <div id="scene-nccc" class="bg-[#F3E5F5] scene-full ">
-      <SceneNccc />
-    </div> -->
-    <!-- <div id="scene-promo" class="bg-[#FBE9E7] scene-full ">
-      <ScenePromo />
-    </div> -->
-    <div id="scene-slider" class="bg-[#E0F7FA] scene-full ">
-      <SceneSlider />
-    </div>
-    <div id="scene-final" class="bg-[#FFF3E0] scene-full ">
-      <SceneFinalMessage />
-    </div>
-    <div id="scene-faq" class="bg-[#EDE7F6] scene-full ">
-      <SceneFaq />
-    </div>
+    </section>
 
-    <div id="imagez-wrapper">
-      <Imagez />
+    <!-- Printing Section -->
+    <section id="scene-printing" class="snap-start  h-screen flex items-center justify-center  lg:px-56">
+      <!-- bg-[#E3F2FD] -->
+      <ScenePrinting />
+    </section>
+
+    <!-- Slider Section -->
+    <section id="scene-slider" class="snap-start h-screen flex items-center justify-center ">
+      <!-- bg-[#E0F7FA] -->
+      <SceneSlider />
+    </section>
+
+    <!-- Final Message Section -->
+    <section id="scene-final" class="snap-start h-screen flex items-center justify-center ">
+      <!-- bg-[#FFF3E0] -->
+      <SceneFinalMessage />
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="scene-faq" class="snap-start h-screen flex items-center justify-center  px-4">
+      <!-- bg-[#EDE7F6] -->
+      <SceneFaq />
+    </section>
+
+    <!-- Floating Image Component -->
+    <div id="imagez-wrapper" class="fixed inset-0 pointer-events-none">
+      <!-- <Imagez /> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import SceneHero from '~/components/scenes/SceneHero.vue'
-
-
 import ScenePrinting from '~/components/scenes/ScenePrinting.vue'
-// import SceneBoxes from '~/components/scenes/SceneBoxes.vue'
-import SceneNccc from '~/components/scenes/SceneNccc.vue'
-import ScenePromo from '~/components/scenes/ScenePromo.vue'
 import SceneSlider from '~/components/scenes/SceneSlider.vue'
 import SceneFinalMessage from '~/components/scenes/SceneFinalMessage.vue'
 import SceneFaq from '~/components/scenes/SceneFaq.vue'
@@ -49,11 +48,19 @@ import Imagez from '@/components/imagez.vue'
 </script>
 
 <style scoped>
-.scene-full  {
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* vertically center */
-  align-items: center;     /* horizontally center */
-  min-height: calc(100vh - 64px);
+/* Fallback for browsers without Tailwind scroll-snap utilities */
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+
 }
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+section.snap-start {
+  scroll-snap-align: start;
+  scroll-snap-align: end;
+
+}
+
+
 </style>
