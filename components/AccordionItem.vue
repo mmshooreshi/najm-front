@@ -1,15 +1,20 @@
+<!-- AccordionItem.vue -->
 <template>
   <div
-  v-motion-pop-visible
-  :delay="delay"
-
+    v-motion-pop-visible
+    :delay="delay"
     dir="rtl"
-    ref="itemRef"
-    class="transition-all  py-0 "
-    :class="['accordion-item', { open: isOpen }]"
+    class="border border-transparent hover:border-black/0 accordion-item rounded-xl overflow-hidden transition-colors duration-300"
+    :class="{ 'bg-transparent': isOpen, 'bg-[#EBF0F3]': !isOpen }"
     @click="$emit('toggle')"
   >
-    <div class="header pt-3 pb-3 px-6">
+  <!-- Header padding: open = py-3, any other open exists & this closed = py-0, otherwise default py-3 -->
+    <div
+      class="header  flex pb-3 pt-3 items-center justify-between px-6 font-extrabold text-lg transition-all duration-300"
+      :class="isOpen
+        ? ''
+        : (hasAnyOpen ? '!pt-2 md:!pt-1' : '')"
+    >
       <span>{{ title }}</span>
       <svg
         class="icon"
@@ -26,8 +31,10 @@
         />
       </svg>
     </div>
-    <div ref="contentEl" class="content">
-      <p>{{ content }}</p>
+    <div ref="contentEl" class="content overflow-hidden text-xs font-medium">
+      <div class="pb-12 pt-0 px-6 pl-16">
+        <p>{{ content }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -40,6 +47,7 @@ const props = defineProps({
   title: String,
   content: String,
   isOpen: Boolean,
+  hasAnyOpen: Boolean,
   delay: Number
 })
 
@@ -60,7 +68,7 @@ watch(
           opacity: 1,
           ease: 'power2.inOut',
           duration: 0.6,
-          onComplete: () => el.style.height = 'auto'
+          onComplete: () => (el.style.height = 'auto')
         }
       )
     } else {
@@ -79,37 +87,22 @@ watch(
 <style scoped>
 .accordion-item {
   cursor: pointer;
-  background: #EBF0F3;
-  border-radius: 1rem;
-  overflow: hidden;
-  /* transition: background 0.3s; */
 }
-.accordion-item.open {
-  background: transparent;
-  /* margin-top: 0.5rem; */
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-}
+
 .icon {
   width: 1.5rem;
   height: 1.5rem;
   transition: transform 0.3s ease;
 }
+
 .icon.open {
   transform: rotate(45deg);
 }
+
 .content {
   height: 0;
   opacity: 0;
   overflow: hidden;
-  padding: 0 1.5rem;
-  font-size: 0.875rem;
-}
-.content p {
-  margin: 0.75rem 0;
+  line-height: 18px;
 }
 </style>

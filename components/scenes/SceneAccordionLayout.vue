@@ -1,17 +1,29 @@
 <template>
-  <div class="flex max-h-md h-lg overflow-hidden  p-0  md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2">
-    <div class="md:col-span-2 overflow-hidden md:row-span-2 flex items-center justify-center h-full rounded-3xl bg-red  bg-[#A5E4EB] p-0  relative">
+  <div
+    class="flex flex-col gap-4 p-0
+           md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2 md:max-h-[370px] md:overflow-hidden">
+
+    <!-- IMAGE: full-width h-56 on mobile, grid-fill on md+ -->
+    <div
+      class="w-full h-[400px] flex-shrink-0
+             md:col-span-2 md:row-span-2 md:h-full
+             flex items-center justify-center
+             rounded-3xl relative overflow-hidden"> 
       <NuxtImg
-        v-motion-pop-visible
-        ref="imageRef"
         src="/images/aut/trade-box.gif"
         alt="Box Mapping"
-        class="absolute inset-0 w-full h-max object-contain "
-      />
+        class="w-full h-auto object-contain   md:object-cover  rounded-3xl
+                md:inset-0 md:h-full" />
     </div>
-    <div class="md:col-span-2 row-span-2 flex items-start  h-full">
+
+    <!-- ACCORDION: full-width under image on mobile, right 2 cols on md+ -->
+    <div
+      class="w-full flex-shrink-0
+             md:col-span-2 row-span-2
+             flex items-start h-auto md:h-full">
       <Accordion />
     </div>
+
   </div>
 </template>
 

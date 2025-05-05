@@ -1,10 +1,10 @@
 <template>
-  <!-- Each scene wrapped in a section-snap for ScrollTrigger snapping -->
+<!-- Each scene wrapped in a section-snap for ScrollTrigger snapping -->
   <div class="section-snap">
     <SceneHero />
   </div>
 
-  <div class="section-snap lg:px-56">
+  <div class="section-snap">
     <ScenePrinting />
   </div>
 
@@ -50,8 +50,31 @@ onMounted(async () => {
 <style scoped>
 
 
+/* in your Layout.vue or global styles */
 .section-snap {
+  border: 1px solid teal;;
+  position: relative;              /* make ::before sit on top */
+  
   min-height: calc(100vh - 64px);
-  border: 1px solid rgba(106, 196, 73, 0.752);
 }
+
+.section-snap.debug-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;            /* clicks pass through */
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0.25),          /* line color */
+    rgba(255, 0, 0, 0.25) 1px,
+    transparent 1px,
+    transparent calc(100%/12)
+  );
+  /* if you also want horizontal lines every row-height: */
+  /* background-image:
+       repeating-linear-gradient(to right, rgba(255,0,0,0.25) 1px, transparent 1px calc(100%/12)),
+       repeating-linear-gradient(to bottom, rgba(0,0,255,0.25) 1px, transparent 1px 4rem); */
+  z-index: 10;
+}
+
 </style>

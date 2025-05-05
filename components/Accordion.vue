@@ -1,13 +1,14 @@
 <template>
-      <div class="w-full   h-max max-h-full p-0 md:py-2  accordion flex flex-col py-8  gap-1 md:gap-1">
+      <div class="w-full   h-max max-h-full p-0 md:py-0 accordion flex flex-col   gap-1 md:gap-1">
         
       <AccordionItem
         v-for="(item, index) in items"
-        :delay="index/10"
+        :delay="index*100"
         :key="index"
         :title="item.title"
         :content="item.content"
         :isOpen="openIndex === index"
+        :hasAnyOpen="openIndex!=null"
         @toggle="() => openIndex = openIndex === index ? null : index"
 
       />
@@ -29,6 +30,10 @@
     { title: "نگهداری و ارسال", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
     { title: "پشتیبانی بعد از تحویل", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
   ]);
+
+  onMounted(() => {
+    openIndex.value=0
+  })
   </script>
   
   <style scoped>

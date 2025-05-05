@@ -1,9 +1,11 @@
 
  <!-- ScenePrinting2.vue  -->
  <template>
-  <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-0 md:gap-6  px-8 md:px-16 py-14">
+  <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  py-12">
+    <div class="flex flex-col gap-4">
     <SceneLabel v-motion-pop-visible label="خدمات و توانایی‌ها"/>
     <PrintingSection/>
+  </div>
     <SceneAccordionLayout  />
 
   </div>
