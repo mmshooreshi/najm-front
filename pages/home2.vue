@@ -5,8 +5,26 @@
   </div>
 
   <div class="section-snap">
-    <ScenePrinting />
+    <SceneServicesAndCapabilities />
   </div>
+  <div class="section-snap">
+    <SceneCardsIntro />
+  </div>
+
+
+  <div class="section-snap">
+    <SceneProjects />
+  </div>
+
+  <div class="section-snap">
+    <SceneFacilities />
+  </div>
+
+  <div class="section-snap">
+    <SceneApplicationsAndIndustries />
+  </div>
+
+
 
   <div class="section-snap">
     <SceneSlider />
@@ -26,7 +44,13 @@ import { onMounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SceneHero from '~/components/scenes/SceneHero.vue'
-import ScenePrinting from '~/components/scenes/ScenePrinting.vue'
+import SceneServicesAndCapabilities from '@/components/scenes/SceneServicesAndCapabilities.vue'
+import SceneFacilities from '@/components/scenes/SceneFacilities.vue'
+import SceneProjects from '@/components/scenes/SceneProjects.vue'
+import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
+import SceneApplicationsAndIndustries from '@/components/scenes/SceneApplicationsAndIndustries.vue'
+
+
 import SceneSlider from '~/components/scenes/SceneSlider.vue'
 import SceneFinalMessage from '~/components/scenes/SceneFinalMessage.vue'
 import SceneFaq from '~/components/scenes/SceneFaq.vue'
@@ -52,7 +76,7 @@ onMounted(async () => {
 
 /* in your Layout.vue or global styles */
 .section-snap {
-  border: 1px solid teal;;
+  border: 0px solid teal;;
   position: relative;              /* make ::before sit on top */
   
   min-height: calc(100vh - 64px);

@@ -23,7 +23,7 @@
       </div>
     </div>
   
-    <DebugPane :debugVars="debugVars" />
+    <!-- <DebugPane :debugVars="debugVars" /> -->
   </template>
   
   <script setup lang="ts">
@@ -89,7 +89,7 @@
         onToggle({ isActive }) {
           if (isActive) debugVars.value.currentSnap = i
         },
-        markers: true,
+        markers: false,
       })
     })
   })

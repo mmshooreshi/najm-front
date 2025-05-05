@@ -27,7 +27,7 @@
           <span
             v-if="h.label !== '' && h.label !== 'end'"
             :ref="el => (highlightRefs[i] = el as HTMLElement)"
-            class="inline-block rounded-xl px-2 py-1 text-2xl sm:text-3xl font-black text-d4"
+            class="inline-block rounded-xl px-2 py-1 text-2xl md:text-3xl font-black text-d4"
             :style="{
               backgroundColor: h.bgColor ?? '#6D28D9',
               color:           h.textColor ?? 'white',
@@ -38,7 +38,7 @@
           <span v-else :style="{ 'margin-right': h.indent ?? '0px' }"></span>
           <span
             :ref="el => (typedRefs[i] = el as HTMLElement)"
-            class="inline-block mx-0 text-2xl sm:text-3xl  font-black text-d4 whitespace-pre rtl"
+            class="inline-block mx-0 text-2xl md:text-3xl  font-black text-d4 whitespace-pre rtl"
           ></span>
         </div>
       </template>

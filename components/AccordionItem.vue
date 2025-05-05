@@ -13,7 +13,7 @@
       class="header  flex pb-3 pt-3 items-center justify-between px-6 font-extrabold text-lg transition-all duration-300"
       :class="isOpen
         ? ''
-        : (hasAnyOpen ? '!pt-2 md:!pt-1' : '')"
+        : (hasAnyOpen ? 'md:!pt-1' : '')"
     >
       <span>{{ title }}</span>
       <svg
@@ -32,7 +32,7 @@
       </svg>
     </div>
     <div ref="contentEl" class="content overflow-hidden text-xs font-medium">
-      <div class="pb-12 pt-0 px-6 pl-16">
+      <div class="pb-6 md:pb-12 pt-0 px-6 pl-8 md:pl-16">
         <p>{{ content }}</p>
       </div>
     </div>

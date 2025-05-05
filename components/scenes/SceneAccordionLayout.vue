@@ -1,11 +1,11 @@
 <template>
   <div
     class="flex flex-col gap-4 p-0
-           md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2 md:max-h-[370px] md:overflow-hidden">
+           md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2 md:max-h-[400px] md:overflow-hidden">
 
     <!-- IMAGE: full-width h-56 on mobile, grid-fill on md+ -->
     <div
-      class="w-full h-[400px] flex-shrink-0
+      class="w-full h-[300px] flex-shrink-0
              md:col-span-2 md:row-span-2 md:h-full
              flex items-center justify-center
              rounded-3xl relative overflow-hidden"> 

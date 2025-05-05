@@ -13,6 +13,8 @@
       <ScenePrinting />
     </section>
 
+    
+
     <!-- Slider Section -->
     <section id="scene-slider" class="snap-start h-screen flex items-center justify-center ">
       <!-- bg-[#E0F7FA] -->
@@ -40,7 +42,7 @@
 
 <script setup lang="ts">
 import SceneHero from '~/components/scenes/SceneHero.vue'
-import ScenePrinting from '~/components/scenes/ScenePrinting.vue'
+import ScenePrinting from '~/components/scenes/SceneServicesAndCapabilities.vue'
 import SceneSlider from '~/components/scenes/SceneSlider.vue'
 import SceneFinalMessage from '~/components/scenes/SceneFinalMessage.vue'
 import SceneFaq from '~/components/scenes/SceneFaq.vue'

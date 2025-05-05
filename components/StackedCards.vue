@@ -154,7 +154,7 @@ onMounted(() => {
 }
 
 h1 {
-  margin-bottom: 80vh;
+  margin-bottom: 0vh;
 }
 
 .container {

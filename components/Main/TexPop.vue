@@ -26,6 +26,8 @@ interface ParagraphItem {
   sentence?: string
   delay?: string
 }
+const isVisible = ref(false)
+const intersectionRatio = ref(0)
 
 const props = withDefaults(defineProps<{
   highlights?: HighlightItem[]
@@ -78,6 +80,33 @@ const paragraphRefs = ref<HTMLElement[]>([])
 onMounted(async () => {
   await nextTick()
   const splits: SplitText[] = [] // track for reverting
+  if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
+// watch visibility
+useIntersectionObserver(
+  sectionRef,
+  ([entry]) => {
+    intersectionRatio.value = entry.intersectionRatio
+    isVisible.value         = entry.isIntersecting
+
+    console.log('Visible?', isVisible.value, 'Ratio:', intersectionRatio.value)
+
+    if (entry.isIntersecting) {
+      // fade in container
+      gsap.to(sectionRef.value, { opacity: 1, duration: 0.5, ease: 'power1.out' })
+      // restart & play your timeline
+      tlHighlights.restart()
+    } else {
+      // fade out container
+      gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.in' })
+      // reverse in case mid-play
+      tlHighlights.reverse()
+    }
+  },
+  {
+    threshold: 0.6,
+    rootMargin: '-65px 0px 0px 0px',
+  }
+)
 
   function splitAndAnimateLines(
     type: 'full' | 'vertical',
@@ -116,27 +145,29 @@ onMounted(async () => {
 
   const tlHighlights = gsap.timeline({
     defaults: { ease: animationConfig.eases.highlight.forward },
-    scrollTrigger: {
-      trigger: sectionRef.value,
-      start,
-      scrub,
-      markers: props.markers,
-      toggleActions: 'play none none reverse',
-      onEnter(self) {
-        // bring back full opacity…
-        gsap.set(sectionRef.value, { opacity: 1 });
-        // …and rewind the timeline to its very start
-        self.animation.restart();
-    },
-    onLeaveBack(self) {
-        gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.out' });
-    },
+    // scrollTrigger: {
+    //   trigger: sectionRef.value,
+    //   start,
+    //   scrub,
+    //   markers: props.markers,
+    //   toggleActions: 'play none none reverse',
+    //   onEnter(self) {
+    //     // bring back full opacity…
+    //     gsap.set(sectionRef.value, { opacity: 1 });
+    //     // …and rewind the timeline to its very start
+    //     self.animation.restart();
+    // },
+    // onLeaveBack(self) {
+    //     gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.out' });
+    // },
 
     //   onReverseComplete() {
     //     splits.splice(0).forEach((s) => s.revert())
     //   },
-    },
+    // },
   })
+  tlHighlights.pause()
+
 
   // PASS 1: highlight bounce
   props.highlights.forEach((h, i) => {
@@ -203,7 +234,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="py-24 px-0 sm:px-2 lg:px-56 pt-88">
+  <!-- py-24 px-0 sm:px-2 lg:px-56 pt-88 -->
+  <div class="">
     <section
       ref="sectionRef"
       class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
