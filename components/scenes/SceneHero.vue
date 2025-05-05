@@ -8,7 +8,9 @@
       <ImagesFloating />
     </div>
 
-    <div class="fixed right-6 bottom-18 z-50">      <rotatory/>
+    <div class="fixed  right-2 bottom-8 md:right-6 md:bottom-18 z-50">  
+         <!-- before:<rotatoryLg/>  -->
+          <rotatory/>
     </div>
 
     <div class="bok gap-3 flex flex-col flex-grow h-full translate-y-0">
@@ -37,6 +39,7 @@
 import HighlightedText from '@/components/new/HighlightedText.vue'
 import GreenButton from '@/components/buttons/GreenButton.vue'
 import rotatory from '~/components/rotatory.vue'
+import rotatoryLg from '~/components/rotatoryLegacy.vue'
 
 import ImagesFloating from '@/components/ImagesFloating.vue'
 import LazyProjectReservation from '@/components/sections/LazyProjectReservation.vue'
