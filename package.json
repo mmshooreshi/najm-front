@@ -57,6 +57,8 @@
     "ag-grid-vue3": "^33.2.4",
     "arabic-reshaper": "^1.1.0",
     "defu": "^6.1.4",
+    "embla-carousel": "^8.6.0",
+    "embla-carousel-vue": "^8.6.0",
     "gsap": "^3.13.0",
     "interactjs": "^1.10.27",
     "leaflet": "^1.9.4",

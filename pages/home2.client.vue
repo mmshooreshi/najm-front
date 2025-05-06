@@ -16,13 +16,16 @@
     <SceneProjects />
   </div>
 
-  <div class="section-snap">
-    <SceneFacilities />
-  </div>
 
   <div class="section-snap">
     <SceneApplicationsAndIndustries />
   </div>
+
+  
+  <div class="section-snap">
+    <SceneFacilities />
+  </div>
+
 
 
 
