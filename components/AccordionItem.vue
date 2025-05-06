@@ -1,8 +1,7 @@
 <!-- AccordionItem.vue -->
 <template>
   <div
-    v-motion-pop-visible
-    :delay="delay"
+     v-memotion-pop-visible="{ delay: delay, duration: 0.3 }"
     dir="rtl"
     class="border border-transparent hover:border-black/0 accordion-item rounded-xl overflow-hidden transition-colors duration-300"
     :class="{ 'bg-transparent': isOpen, 'bg-[#EBF0F3]': !isOpen }"

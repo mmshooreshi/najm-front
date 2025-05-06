@@ -3,7 +3,7 @@
         
       <AccordionItem
         v-for="(item, index) in items"
-        :delay="index*100"
+        :delay="index*0.1"
         :key="index"
         :title="item.title"
         :content="item.content"

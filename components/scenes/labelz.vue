@@ -1,10 +1,10 @@
 <template>
-    <div class="w-full h-56 overflow-hidden relative flex flex-col items-center justify-center gap-2">
+    <div class="w-full h-29  overflow-visible relative flex flex-col items-center justify-center gap-2">
       <div
         v-for="(lbl, idx) in labels"
         :key="idx"
         ref="el => setLabelRef(el, idx)"
-        class="label absolute rounded-[12px] transition-all text-2xl duration-500 text-d4 px-2 py-0 font-extrabold" 
+        class="label absolute  rounded-[12px] transition-all text-2xl duration-500 text-d4 px-2 py-0 font-extrabold" 
         :class="{
           '!delay-0 scale-80 z-10 top-0   flash-blur': nextIndex   === idx,
           '!delay-0  z-30 opacity-100 top-8 py-1 rounded-2xl  ':     activeIndex === idx,

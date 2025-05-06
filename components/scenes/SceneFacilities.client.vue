@@ -3,10 +3,10 @@
     <SceneHeading :data="data"/>
 
     <!-- 1) Add h-[400px] and items-stretch here -->
-    <r3col class="h-[400px]  items-stretch">
+    <r3col class="md:h-[400px]  items-stretch">
 
       <template #left>
-        <div v-memotion-pop-visible="{ delay: 1, duration: 0.4 }"   class=" rounded-3xl w-full h-full">
+        <div v-memotion-pop-visible="{ delay: 1, duration: 0.4 }"   class="h-[300px] md:h-[400px] rounded-3xl w-full">
           <SliderSqr class="h-full w-full" :slides="facilitiesSlides" paginationPosition="bottom left" />
 
           <!-- 2) SliderSqr just needs to be full -->
@@ -14,8 +14,8 @@
       </template>
 
       <template #center>
-        <div v-memotion-pop-visible="{ delay: 0.8, duration: 0.4 }"  class=" rounded-3xl w-full h-full flex items-center justify-center">
-          <div class="relative w-full h-[400px] rounded-3xl overflow-hidden">
+        <div v-memotion-pop-visible="{ delay: 0.8, duration: 0.4 }"  class="h-[300px] md:h-[400px] rounded-3xl w-full  flex items-center justify-center">
+          <div class="h-[300px] md:h-[400px] relative w-full rounded-3xl overflow-hidden">
           <NuxtImg
             src="/images/sections/facilities/center.png"
             fill
@@ -25,7 +25,7 @@
 
         <div class="absolute  flex flex-col gap-2 h-full  w-full items-center">
 
-          <div class="relative w-full h-full top-36 overflow-hidden">
+          <div class="relative w-full h-full flex flex-row items-center  overflow-hidden">
             <labelz/>
           </div>
 
@@ -36,7 +36,7 @@
       </template>
 
       <template #right>
-        <div v-memotion-pop-visible="{ delay: 0.5, duration: 0.4 }"  class=" rounded-3xl w-full h-full">
+        <div v-memotion-pop-visible="{ delay: 0.5, duration: 0.4 }"  class="h-[300px] md:h-[400px] rounded-3xl w-full">
           <SliderSqr hideArrows class="h-full w-full" :slides="machinesSlides" paginationPosition="bottom left"/>
 
         </div>

@@ -16,7 +16,7 @@
            class="image-item absolute"
            :style="getStyle(image, index)">
         <!-- Use InlineSvg, now with pixel–aware hover effects -->
-        <InlineSvgMask  v-motion-pop-visible :delay="(index+5)%5*100"   :height="image.height" :width="image.width"  class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
+        <InlineSvgMask   v-memotion-pop-pop="{ delay: (index+5)%5*0.1, duration: 0.4 }"   :height="image.height" :width="image.width"  class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
 
         </div>
     </div>
