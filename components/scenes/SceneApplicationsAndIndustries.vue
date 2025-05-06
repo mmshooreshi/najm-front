@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import SceneHeading from '@/components/scenes/SceneHeading.vue'
+import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 
 const data = {
   label : "",

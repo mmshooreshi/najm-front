@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import SceneHeading from '@/components/scenes/SceneHeading.vue'
+import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 import SceneAccordionLayout from '~/components/scenes/SceneAccordionLayout.vue'
 
 const data = {

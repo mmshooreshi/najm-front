@@ -101,7 +101,7 @@ export default defineConfig({
   ],
 
   // Enable UnoCSS transformers
-  // transformers: [transformerDirectives()],
+  transformers: [transformerDirectives()],
 });
 
 

@@ -1,0 +1,138 @@
+<template>
+  <div class="snap-start flex flex-col w-full gap-12 pt-12">
+    <SceneHeading :data="data"/>
+
+    <!-- 1) Add h-[400px] and items-stretch here -->
+    <r3col class="h-[400px]  items-stretch">
+
+      <template #left>
+        <div v-memotion-pop-visible="{ delay: 1, duration: 0.4 }"   class=" rounded-3xl w-full h-full">
+          <SliderSqr class="h-full w-full" :slides="facilitiesSlides" paginationPosition="bottom left" />
+
+          <!-- 2) SliderSqr just needs to be full -->
+        </div>
+      </template>
+
+      <template #center>
+        <div v-memotion-pop-visible="{ delay: 0.8, duration: 0.4 }"  class=" rounded-3xl w-full h-full flex items-center justify-center">
+          <div class="relative w-full h-[400px] rounded-3xl overflow-hidden">
+          <NuxtImg
+            src="/images/sections/facilities/center.png"
+            fill
+            class="absolute inset-0 w-full h-full object-cover object-center"
+            alt="Facility Center"
+          />
+
+        <div class="absolute  flex flex-col gap-2 h-full  w-full items-center">
+
+          <div class="relative w-full h-full top-36 overflow-hidden">
+            <labelz/>
+          </div>
+
+        </div>
+
+        </div>
+        </div>
+      </template>
+
+      <template #right>
+        <div v-memotion-pop-visible="{ delay: 0.5, duration: 0.4 }"  class=" rounded-3xl w-full h-full">
+          <SliderSqr hideArrows class="h-full w-full" :slides="machinesSlides" paginationPosition="bottom left"/>
+
+        </div>
+      </template>
+
+    </r3col>
+  </div>
+</template>
+
+
+<script setup lang="ts">
+import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
+import r3col from '@/components/scenes/r3col.vue'
+import SliderSqr from '@/components/scenes/SliderSqr.vue'
+import labelz from '@/components/scenes/labelz.vue'
+
+const data = {
+  label : "امکانات و تجهیزات",
+  header:"کیفیت و دقتی که درباره اون صحبت می‌کنیم رو از نزدیک ببینید",
+  description1: "یه تیم یکپارچه به شما این امکان رو می‌ده که تمام مراحل تولید، از طراحی تا چاپ و بسته‌بندی رو با یک پارتنر پیش ببرید و به جای مدیریت چندین تأمین‌کننده جداگانه فقط بر کار خودتون متمرکز بشید.",
+  description2: ""
+}
+
+// ——————————————
+// Slides for the *left* (machines) slider
+const machinesSlides = [
+  {
+    image: '/images/sections/facilities/machines-1.gif',
+    alt:   'تجهیزات و دستگاه‌ها',
+    text:  'تجهیزات و دستگاه‌ها',
+    href: '/home2'
+  }
+]
+
+// ——————————————
+// Slides for the *right* (facilities) slider
+const facilitiesSlides = [
+  {
+    image: '/images/sections/facilities/facilities-1.gif',
+    alt:   'امکانات و بخش‌ها',
+    text:  'امکانات و بخش‌ها',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/facilities-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/machines-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/facilities-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/machines-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/facilities-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/machines-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/facilities-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  },
+  {
+    image: '/images/sections/facilities/machines-1.png',
+    alt:   'بخش‌ها و امکانات',
+    text:  'بخش‌ها و امکانات',
+    href: '/home2'
+  }
+
+]
+
+
+</script>
+
+
+
