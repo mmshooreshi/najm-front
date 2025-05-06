@@ -7,28 +7,34 @@
 
       <div class="flex">
 
-
         <div
           v-for="(pkg, idx) in packages"
+        
+          v-motion
+          :initial="{scale: 0}"
+          :enter="{scale: 1}"
+          :delay="idx*100"
+          :duration="300"
+
           :key="pkg.id"
-           v-floating="{ distance: 8, duration: 4 }"
-          
-          class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5 min-w-[400px] min-h-[400px] max-w-[400px] rounded-[1.5rem] overflow-visible rtl"
+          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[400px] h-[400px] min-h-[400px] min-w-[400px] ']"
+          class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem] overflow-visible rtl"
         >
+        <!-- {{selectedType!=pkg.type}} -->
         <!-- <div  class="takcon z-10"> -->
 
               <div
       class="takcon z-10"
       :style="{
         '--tc-base': pkg.color,
-        '--tc-shade1': adjustColor(pkg.color, -0.2),
-        '--tc-shade2': adjustColor(pkg.color, +0.2),
+        '--tc-shade1': adjustColor(pkg.color, -0.1,1),
+        '--tc-shade2': adjustColor(pkg.color, -0.2,1),
         backgroundColor: pkg.color
       }"
     >
 
 
-        <CardOverlayWrapper  :style="{ backgroundColor: pkg.color }" :name="pkg.name" :items="pkg.items">
+        <CardOverlayWrapper :toFade="selectedType!=pkg.type"  :currentPackage="selectedIndex" :style="{ backgroundColor: pkg.color }" :name="pkg.name" :items="pkg.items">
 
 
           <NuxtImg v-if="pkg.image"
@@ -100,6 +106,7 @@
 import EmblaCarousel from 'embla-carousel'
 // import DescriptionBubble if needed
 import CardOverlayWrapper from '@/components/CardOverlayWrapper.vue'
+import { defineExpose } from 'vue'
 
 const props = defineProps({
   packages: {
@@ -117,6 +124,11 @@ const props = defineProps({
     type: String,
     default: 'default',
     validator: v => ['default','reverse','center'].includes(v)
+  },
+  selectedType:{
+    type: String,
+    default: 'Applications',
+
   }
 
 })
@@ -141,6 +153,16 @@ const embla = ref(null)
 
 
 
+function scrollToIndex(index) {
+  embla.value && embla.value.scrollTo(index)
+}
+defineExpose({
+  scrollToIndex,
+  // optionally expose shortcuts:
+  scrollToStart: () => scrollToIndex(0),
+  scrollToEnd: () => scrollToIndex(props.packages.length - 1)
+})
+
 const selectedIndex = ref(0)
 const canScrollPrev = ref(false)
 const canScrollNext = ref(false)
@@ -162,17 +184,30 @@ const currentPackage = computed(() => props.packages[selectedIndex.value])
 const shade1 = computed(() => adjustColor(currentPackage.value.color, -0.2))
 const shade2 = computed(() => adjustColor(currentPackage.value.color, +0.2))
 
-function adjustColor(hex, amount) {
-  const c = hex.replace('#',''),
-        num = parseInt(c,16),
-        r = (num >> 16) & 0xFF,
-        g = (num >> 8) & 0xFF,
-        b = num & 0xFF
-  const clamp = v => Math.max(0, Math.min(255, Math.floor(v + amount*255)))
-  return `#${((1<<24)+(clamp(r)<<16)+(clamp(g)<<8)+clamp(b))
-    .toString(16).slice(1)}`
-}
+/**
+ * Adjusts a base hex color by lightening/darkening and adds opacity.
+ *
+ * @param {string} hex    Base color in `#RRGGBB` format
+ * @param {number} amount -1..1  Negative to darken, positive to lighten
+ * @param {number} [alpha=1]  Opacity 0..1
+ * @returns {string}      CSS `rgba(r, g, b, a)` string
+ */
+ function adjustColor(hex, amount, alpha = 1) {
+  // strip '#', parse
+  const c   = hex.replace(/^#/, '')
+  const num = parseInt(c, 16)
+  let   r   = (num >> 16) & 0xff
+  let   g   = (num >> 8)  & 0xff
+  let   b   = num         & 0xff
 
+  // shift each channel by amount * 255, clamped 0–255
+  const clamp = v => Math.max(0, Math.min(255, Math.floor(v + amount * 255)))
+  r = clamp(r)
+  g = clamp(g)
+  b = clamp(b)
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
 function downloadJson(pkg) {
   const dataStr = JSON.stringify(pkg, null, 2)
   const blob = new Blob([dataStr], { type: 'application/json' })
@@ -280,7 +315,7 @@ onMounted(() => {
   height: 80%;
   transform: translate(-50%);
   /* background: #e7ecff; */
-  background-color: var(--tc-shade1);
+  background-color: var(--tc-shade2);
   
   transform-origin: bottom;
   border-radius: inherit;
@@ -313,23 +348,24 @@ onMounted(() => {
 }
 
 .tak:hover {
-  transform: translate(-6px, -16px);
-  margin-inline: 10px;
+  transform: translate(-5px, -16px) ;
+
+  margin-inline: 32px;
 
 }
 
 .tak:hover .takcon::before {
   rotate: -8deg;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
 }
 
 .tak:hover .takcon::after {
   rotate: 8deg;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: 95%;
+  height: 95%;
 }
 
 </style>

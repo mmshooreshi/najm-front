@@ -106,13 +106,13 @@ label,
 	animation: floatY var(--float-duration) ease-in-out infinite;
   }
   
-/* 
+ 
 * {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-} */
+} 
 
 /* body {
 	font-family: IRANSansX  !important;
