@@ -1,7 +1,7 @@
 <template>
   <div class=" py-16 md:pt-16  flex flex-col flex-grow">
     <teleport to="body">
-      <rotatoryPane/>
+      <RotatoryPane/>
     </teleport>
 
     <HighlightedText />
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import HighlightedText from '@/components/new/HighlightedText.vue'
 import GreenButton from '@/components/buttons/GreenButton.vue'
-import rotatoryPane from '~/components/fixed/rotatoryPane.vue'
+import RotatoryPane from '@/components/fixed/RotatoryPane.vue'
 import rotatoryLg from '~/components/rotatoryLegacy.vue'
 
 import ImagesFloating from '@/components/ImagesFloating.vue'
