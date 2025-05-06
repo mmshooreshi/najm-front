@@ -13,10 +13,10 @@
           v-motion
           :initial="{scale: 0}"
           :enter="{scale: 1}"
-          :delay="idx*100"
-          :duration="300"
+          :delay="idx*50"
+          :duration="100"
 
-          :key="pkg.id"
+          :key="`${selectedType}${pkg.id}`"
           :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[400px] h-[400px] min-h-[400px] min-w-[400px] ']"
           class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem] overflow-visible rtl"
         >
@@ -238,9 +238,9 @@ onMounted(() => {
     containScroll: 'keepSnaps',
     draggable: true,
     speed: 100,
-    delay: 100,
+    delay: 3000,
     align: 'start',
-    dragFree: true,
+    dragFree: false,
     direction: 'rtl',
     loop: false
   })

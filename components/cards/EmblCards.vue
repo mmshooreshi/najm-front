@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" class="relative overflow-x-visible  pr-10  absolute py-6">
+  <div dir="rtl" class="relative overflow-x-visible    absolute py-6">
     <div class="overflow-visible w-full" ref="viewportRef">
       <div class="flex">
         <div
@@ -11,12 +11,18 @@
           <NuxtImg
             :src="card.image"
             :alt="card.text"
-            v-memotion-pop-visible="{ ystart:100, delay: idx*0.3, duration: 0.8 }"
+            v-motion
+            :initial="{scale: 0.8}"
+            :visible="{scale: 1}"
+            :duration="100"
             class="object-cover h-full w-full scale-100 rounded-[1.5rem]"
           />
           
-          <div v-memotion-pop-visible="{ ystart: -20, delay: idx*0.1, duration: 0.3, ease: 'power3.out' }" class="absolute bottom-6 right-6 bg-[#D6E6E3] px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px] max-w-[260px] text-sm font-medium text-d4">
-            {{ card.text }} {{ idx }}
+          <div   v-motion
+            :initial="{scale: 0.8}"
+            :visible="{scale: 1}"
+            :duration="100"  class="absolute bottom-6 right-6 bg-[#D6E6E3] px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
+            {{ card.text }}
           </div>
         </div>
       </div>
@@ -102,9 +108,9 @@ onMounted(() => {
     containScroll: 'keepSnaps',
     draggable: true,
     speed: 100,
-    delay: 100,
+    delay: 3000,
     align: 'start',
-    dragFree: true,
+    dragFree: false,
     direction: 'rtl',
     loop: false
   })
