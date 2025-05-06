@@ -39,7 +39,6 @@ function toggleType(type: string){
   } else {
     pkgsRef.value?.scrollToStart()
     PosRef.value="Start"
-
   }
     
   } else {

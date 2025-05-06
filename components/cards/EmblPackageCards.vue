@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" class="relative overflow-x-visible  pr-10  absolute py-0">
+  <div dir="rtl" class="relative overflow-x-visible absolute py-0">
     <div class="overflow-visible w-full" ref="viewportRef">
       <!-- <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
       <Icon name="mdi:download"/>
@@ -17,14 +17,14 @@
           :duration="100"
 
           :key="`${selectedType}${pkg.id}`"
-          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[400px] h-[400px] min-h-[400px] min-w-[400px] ']"
-          class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem] overflow-visible rtl"
+          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[300px] md:max-w-[400px] h-[400px] min-h-[400px] min-w-[300px] md:min-w-[400px] ']"
+          class="tak overflow-visible z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem]  rtl"
         >
         <!-- {{selectedType!=pkg.type}} -->
         <!-- <div  class="takcon z-10"> -->
 
               <div
-      class="takcon z-10"
+      class="takcon"
       :style="{
         '--tc-base': pkg.color,
         '--tc-shade1': adjustColor(pkg.color, -0.1,1),
@@ -268,8 +268,8 @@ onMounted(() => {
 }
 
 .takcon {
+  position: relative;
   
-
   width: -webkit-fill-available;
   height: -webkit-fill-available;
   display: flex;
@@ -279,13 +279,13 @@ onMounted(() => {
   /* padding: 36px; */
   border-radius: 22px;
   color: #ffffff;
-  overflow: hidden;
-  /* background: #0a3cff; */
+  overflow: visible;
+  background: #0a3cff;
   transition: all 0.88s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .takcon::before {
-  z-index: 0;
+  z-index: -10;
   position: absolute;
   content: "";
   /* top: -4%; */
@@ -305,7 +305,7 @@ onMounted(() => {
 }
 
 .takcon::after {
-  z-index: 0;
+  z-index: -10;
   position: absolute;
   content: "";
   /* top: -8%; */

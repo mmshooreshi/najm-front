@@ -1,7 +1,7 @@
 <template>
-  <div class="group relative w-full h-full z-10">
+  <div class="group relative w-full h-[500px] z-50 overflow-hidden rounded-3xl">
     <!-- Base slot content -->
-    <div class="w-full h-full absolute z-20">
+    <div class="w-full h-full absolute z-50">
 
       <slot />
 
@@ -9,8 +9,8 @@
         <div class="flex justify-between items-center">
           <button  class="text-nowrap text-black hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 text-d4 text-demibold text-sm">{{name}}</button>
           <div class="transform scale-50   opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 ease-out">
-    <HaArrow />
-  </div>
+           <HaArrow />
+        </div>
         </div>
         <div class="flex justify-between items-center">
           <!-- <HaArrow/><HaArrow/><HaArrow/> -->
