@@ -1,3 +1,4 @@
+<!-- SceneHero.vue -->
 <template>
   <div class=" py-16 md:pt-16  flex flex-col flex-grow">
     <teleport to="body">

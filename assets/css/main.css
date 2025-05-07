@@ -117,6 +117,8 @@ label,
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+[v-cloak] { visibility: hidden; }
+
 .tabs-container {
   /* for horizontal scrolling */
   scroll-padding-inline-start: 16px;

@@ -1,30 +1,30 @@
 <!-- Layout.vue -->
 <template>
-    <BackgroundGradient />
-  
-    <Header
-      :menu-open="menuOpen"
-      @update:menu-open="menuOpen = $event"
-      class="fixed top-0 left-0 w-full z-50"
-    />
-  
-    <div
-      id="smooth-wrapper"
-      class="relative overflow-hidden min-h-screen pt-16 bg-[#e4eaeb]"
-    >
+  <BackgroundGradient />
+
+  <Header
+    :menu-open="menuOpen"
+    @update:menu-open="menuOpen = $event"
+    class="fixed top-0 left-0 w-full z-50"
+  />
+
+
+
+  <ClientOnly fallback="">
+    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-[#e4eaeb]">
       <div id="smooth-content">
-        <!-- ===== Responsive containerCustom ===== -->
-        <div class="containerCustom flex flex-col gap-0 px-4 md:px-8 mx-auto">
-          <!-- ===== Page sections (slot) ===== -->
+        <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
+          
           <slot />
-  
-          <Footer2 />
         </div>
+
+        <Footer2 />
       </div>
     </div>
-  
-    <!-- <DebugPane :debugVars="debugVars" /> -->
-  </template>
+  </ClientOnly>
+</template>
+
+
   
   <script setup lang="ts">
   import { ref, onMounted, nextTick } from 'vue'

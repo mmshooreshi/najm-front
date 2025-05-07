@@ -15,7 +15,7 @@ const closeMap = () => (isFullScreen.value = false)
   <!-- ────────────────  Thumbnail  ──────────────── -->
   <div
     v-motion-pop-visible
-    class="relative mt-2  mx-auto px-10 max-w-sm md:max-w-md   md:my-4 h-[280px] md:h-[300px] rounded-3xl overflow-hidden bg-gray-200 dark:bg-gray-800
+    class="z-100  relative mt-2  mx-auto px-10 max-w-sm md:max-w-md   md:my-4 h-[280px] md:h-[300px] rounded-3xl overflow-hidden bg-gray-200 dark:bg-gray-800
            cursor-pointer transition-[transform,box-shadow] duration-300 hover:shadow-lg hover:scale-[1.01]"
     @click="openMap"
   >
@@ -32,9 +32,10 @@ const closeMap = () => (isFullScreen.value = false)
   <!-- ────────────────  Fullscreen modal  ──────────────── -->
   <Transition name="bounce-up">
     
+    <teleport to="body">
     <div
       v-if="isFullScreen"
-      class="fixed inset-0 z-50 flex flex-col bg-[#014439] dark:bg-black"
+      class="fixed inset-0 z-100 flex flex-col bg-[#014439] dark:bg-black  "
     >
       <!-- close btn -->
       <button
@@ -50,15 +51,16 @@ const closeMap = () => (isFullScreen.value = false)
       <!-- 100 vh map (loads lazily) -->
       <client-only>
         <Suspense>
-          <NeshanContainer class="flex-1" />
+          <NeshanContainer class="flex-1 w-full h-full mt-0 overflow-hidden" />
           <template #fallback>
             <div class="flex-1 grid place-items-center">
-              <span class="animate-pulse text-sm opacity-70">…در حال بارگیری نقشه</span>
+              <span class="animate-pulse text-sm opacity-70 rtl">…در حال بارگیری نقشه</span>
             </div>
           </template>
         </Suspense>
       </client-only>
     </div>
+  </teleport>
   </Transition>
 </template>
 

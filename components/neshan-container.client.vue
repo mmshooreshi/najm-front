@@ -199,6 +199,7 @@ function handleMap(map) {
       .setPopup(popup)
       .addTo(map);
 
+      
     /* click‑behaviour: popup when normal, Google Maps when compact */
     const iconEl = marker.getElement().querySelector('.marker-icon');
     iconEl.addEventListener('click', ev => {
@@ -208,7 +209,9 @@ function handleMap(map) {
         const [lng, lat] = def.coords;
         window.open(
           `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`,
-          '_blank'
+          '_blank',
+          "toolbar=no,menubar=no,scrollbars=yes,resizable=yes,width=1000,height=800"
+
         );
       } else {
         popup.addTo(map);

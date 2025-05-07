@@ -1,5 +1,5 @@
 <template>
-  <footer dir="rtl" class="bg-[#014439]/100 rounded-t-[15px] text-center items-center text-white/100 pt-16 pb-0">
+  <footer dir="rtl" class="bg-[#014439]/100 rounded-t-[15px] text-center items-center text-white/100 pt-16 pb-16">
     <div class=" grid-cols-2 grid w-full">
       <logoWhite class="col-span-2  mx-auto " />
     </div>
@@ -63,7 +63,9 @@
         </div>
 
         <!-- <MarkerIcon class="absolute top-[48%] left-[48%] z-10" /> -->
+        <ClientOnly>
         <Map/>
+      </ClientOnly>
 <!-- 
         <ClientOnly>
         <NeshanMap/>
