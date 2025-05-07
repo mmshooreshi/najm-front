@@ -1,10 +1,12 @@
+<!-- EmbleProductCards.vue -->
 <template>
     <div dir="rtl" class="relative overflow-x-visible py-0">
-      <div class="overflow-visible w-full" ref="viewportRef">
-        <div class="flex" :class="wrapperClass">
-          <div
+      <div  class="overflow-visible w-full" ref="viewportRef">
+        <transition name="fade-list" mode="out-in">    
+        <div  class="flex slides-wrapper"  :class="wrapperClass">
+                <div
             v-for="(product, idx) in products"
-            :key="`${selectedType}-${product.group}-${product.id}`"
+            :key="product.id"
             class="relative flex-none w-4/5 mr-2.5 max-h-[430px] max-w-[267px] rtl flex-shrink-0"
           >
             <NuxtImg
@@ -23,7 +25,9 @@
             </div>
           </div>
         </div>
-      </div>
+    </transition>
+
+      </div >
   
       <!-- controls -->
       <div class="flex items-center mt-4 px-2" :class="wrapperClass">
@@ -46,19 +50,21 @@
           </button>
         </div>
   
-        <div v-if="showDots" class="flex gap-2">
+        <div v-if="showDots" class="flex mx-auto">
           <button
-            v-for="(_, idx) in products"
-            :key="idx"
-            @click="scrollTo(idx)"
-            :class="[
-              'h-2.5 rounded-full transition-all',
-              selectedIndex === idx
-                ? 'bg-[#014439] w-8'
-                : 'bg-gray-300/70 w-2.5'
-            ]"
-            :aria-label="`Go to slide ${idx + 1}`"
-          />
+        v-for="(product, idx) in products"
+        :key="product.id"
+        @pointerin="scrollTo(idx)"
+        @mouseenter="scrollTo(idx)"
+        @touchstart.prevent="scrollTo(idx)"
+        :class="[
+          'w-8 h-8 rounded-2xl border-none cursor-pointer transition-all hover:w-14 m-1',
+          selectedIndex === idx ? 'bg-[#014439] w-14' : '!bg-gray-300/40'
+        ]"
+        :aria-label="`Go to slide ${idx + 1}`"
+      >
+      </button>
+
         </div>
       </div>
     </div>
@@ -93,12 +99,11 @@
     () => props.controls === 'all' || props.controls === 'dots'
   )
   const wrapperClass = computed(() => {
-    // ensure correct RTL ordering
-    if (props.position === 'center') return 'justify-center flex-row-reverse'
-    if (props.position === 'reverse') return 'justify-between flex-row'
-    // default: start at right, RTL
-    return 'justify-start flex-row-reverse'
-  })
+  if (props.position === 'center')      return 'justify-center flex-row'
+  if (props.position === 'reverse')     return 'justify-between flex-row-reverse'
+  /* default */                          return 'justify-between flex-row'
+})
+
   
   const viewportRef = ref<HTMLElement | null>(null)
   const embla = ref<ReturnType<typeof EmblaCarousel> | null>(null)
@@ -142,5 +147,19 @@ defineExpose({
     embla.value.on('init', onSelect)
     embla.value.on('select', onSelect)
   })
+
+
+
+  
+// NEW: re-init when products change
+watch(() => props.products, async () => {
+  await nextTick()
+  embla.value?.reInit()
+  onSelect()
+})
   </script>
+  
+
+
+
   

@@ -1,3 +1,4 @@
+<!-- SceneProducts.vue -->
 <template>
   <div class="rtl snap-start flex flex-col flex-grow w-full h-full gap-12 pt-12">
     <SceneHeading hideLabel :data="data" align="center" />
@@ -18,25 +19,24 @@
     </div>
 
      <!-- Tabs -->
-     <div class="relative h-10">
-      <div
-        ref="tabsContainer"
-        class="tabs-container noscroll absolute -left-8 -right-8 flex gap-2 whitespace-nowrap overflow-auto scrollbar-hide px-4 py-2"
-      >
-        <button
-          v-for="(group, i) in uniqueGroups"
-          :key="`${selectedType}-${group}-${i}`"
-          @click="selectTab(i, group)"
-          class="transition-all rounded-3xl border text-xs px-6 py-3  hover:bg-[#014439]/30 hover:scale-105"
-          :class="[activeTab === i
-            ? 'border-[#C2D3D1] !bg-[#014439] !text-white'
-            : 'border-[#C2D3D1] text-gray-700']"
-        >
-          {{ group }}
-          
-        </button>
-      </div>
-    </div>
+     <div class="relative h-8 lg:h-28">
+  <div
+    ref="tabsContainer"
+    class="tabs-container absolute left-1/2 -translate-x-1/2 max-w-[1200px] w-screen flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible px-4 py-2 justify-center"
+  >
+    <button
+      v-for="(group, i) in uniqueGroups"
+      :key="`${selectedType}-${group}-${i}`"
+      @click="selectTab(i, group)"
+      class="transition-all rounded-3xl border text-xs px-6 py-3 hover:bg-[#014439]/10 hover:scale-105"
+      :class="[activeTab === i
+        ? 'border-[#C2D3D1] !bg-[#014439] !text-white'
+        : 'border-[#C2D3D1] text-gray-700']"
+    >
+      {{ group }}
+    </button>
+  </div>
+</div>
     <!-- Product Carousel -->
     <ClientOnly>
       <EmbleProductCards
@@ -121,18 +121,10 @@ const uniqueGroups = computed<string[]>(() => {
 })
 
 // Final filtered products
-const filteredProducts = computed<Product[]>(() => {
-  // default to first group if none selected
-  if (activeGroup.value && uniqueGroups.value.length){
-    
-  } else {
-    // activeGroup.value = uniqueGroups.value[0]
-
-    return filteredByType.value
-  }
-
-  return filteredByType.value.filter(p => p.group === activeGroup.value)
-
+const filteredProducts = computed(() => {
+  return activeGroup.value
+    ? filteredByType.value.filter(p => p.group === activeGroup.value)
+    : filteredByType.value
 })
 
 // Tabs state
@@ -166,3 +158,25 @@ function selectTab(index: number, group: string) {
   })
 }
 </script>
+
+
+<style>
+.slides-wrapper {
+  /* force a fixed height so the page doesn’t “shrink” during the fade */
+  height: 430px; /* match your carousel’s max height */
+  position: relative; 
+}
+
+/* Out-in fade on the whole wrapper */
+.fade-list-enter-active,
+.fade-list-leave-active {
+  transition: opacity .3s ease;
+}
+
+.fade-list-enter-from,
+.fade-list-leave-to {
+  opacity: 0;
+}
+
+
+</style>

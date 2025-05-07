@@ -20,6 +20,7 @@
           :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[300px] md:max-w-[400px] h-[400px] min-h-[400px] min-w-[300px] md:min-w-[400px] ']"
           class="tak overflow-visible z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem]  rtl"
         >
+        
         <!-- {{selectedType!=pkg.type}} -->
         <!-- <div  class="takcon z-10"> -->
 
@@ -79,22 +80,22 @@
       </button>
     </div>
 
-    <div v-if="showDots" class="flex gap-2">
-  <button
-    v-for="(pkg, idx) in pkg"
-    :key="pkg.id"
-    @pointerin="scrollTo(idx)"
-    @mouseenter="scrollTo(idx)"
-    @touchstart.prevent="scrollTo(idx)"
-    :style="{ backgroundColor: pkg.color }"
-    :class="[
-      'w-8 h-8 rounded-2xl border-none cursor-pointer transition-all hover:w-14',
-      selectedIndex === idx ? ' w-14' : '!bg-gray-300/40'
-    ]"
-    :aria-label="`Go to slide ${idx + 1}`"
-  >
-  </button>
-</div>
+      <div v-if="showDots" class="flex gap-2">
+      <button
+        v-for="(pkg, idx) in pkg"
+        :key="pkg.id"
+        @pointerin="scrollTo(idx)"
+        @mouseenter="scrollTo(idx)"
+        @touchstart.prevent="scrollTo(idx)"
+        :style="{ backgroundColor: pkg.color }"
+        :class="[
+          'w-8 h-8 rounded-2xl border-none cursor-pointer transition-all hover:w-14',
+          selectedIndex === idx ? ' w-14' : '!bg-gray-300/40'
+        ]"
+        :aria-label="`Go to slide ${idx + 1}`"
+      >
+      </button>
+    </div>
 
   </div>
 
@@ -141,11 +142,12 @@ const showDots   = computed(() =>
   props.controls === 'all' || props.controls === 'dots'
 )
 const wrapperClass = computed(() => {
-  if (props.position === 'center')      return 'justify-center flex-row'
-  if (props.position === 'reverse')     return 'justify-between flex-row-reverse'
-  /* default */                          return 'justify-between flex-row'
-})
-
+    // ensure correct RTL ordering
+    if (props.position === 'center') return 'justify-center flex-row-reverse'
+    if (props.position === 'reverse') return 'justify-between flex-row'
+    // default: start at right, RTL
+    return 'justify-start flex-row-reverse'
+  })
 
 
 const viewportRef = ref(null)
