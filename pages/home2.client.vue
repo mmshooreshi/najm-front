@@ -30,16 +30,18 @@
     <SceneProducts />
   </div>
 
-
-
-
   <div class="section-snap">
-    <SceneSlider />
+    <ScenePromo />
   </div>
 
-  <div class="section-snap">
+
+  <!-- <div class="section-snap"> -->
+    <!-- <SceneSlider /> -->
+  <!-- </div> -->
+
+  <!-- <div class="section-snap"> -->
     <!-- <SceneFinalMessage /> -->
-  </div>
+  <!-- </div> -->
 
   <div class="section-snap">
     <SceneFaq />
@@ -57,6 +59,7 @@ import SceneProjects from '@/components/scenes/SceneProjects.vue'
 import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
 import SceneApplicationsAndIndustries from '@/components/scenes/SceneApplicationsAndIndustries.vue'
 import SceneProducts from '@/components/scenes/SceneProducts.vue'
+import ScenePromo from '@/components/scenes/ScenePromo.vue'
 
 
 import SceneSlider from '~/components/scenes/SceneSlider.vue'

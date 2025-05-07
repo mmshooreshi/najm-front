@@ -28,7 +28,7 @@
       </div >
   
       <!-- controls -->
-      <div class="flex items-center mt-4 px-2" :class="wrapperClass">
+      <div class="flex items-center mt-8 px-2" :class="wrapperClass">
         <div v-if="showArrows" class="flex gap-2">
           <button
             class="bg-white/60 active:scale-105 hover:bg-white rounded-xl p-3 disabled:opacity-30"
@@ -56,8 +56,8 @@
         @mouseenter="scrollTo(idx)"
         @touchstart.prevent="scrollTo(idx)"
         :class="[
-          'w-8 h-8 rounded-2xl border-none cursor-pointer transition-all hover:w-14 m-1',
-          selectedIndex === idx ? 'bg-[#014439] w-14' : '!bg-gray-300/40'
+          'w-2 h-2 rounded-2xl border-none cursor-pointer transition-all hover:w-4 m-1',
+          selectedIndex === idx ? 'bg-[#014439] w-4' : '!bg-gray-300/40'
         ]"
         :aria-label="`Go to slide ${idx + 1}`"
       >

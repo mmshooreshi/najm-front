@@ -14,7 +14,7 @@
     >
       <div id="smooth-content">
         <!-- ===== Responsive containerCustom ===== -->
-        <div class="containerCustom flex flex-col gap-16 px-4 md:px-8 mx-auto">
+        <div class="containerCustom flex flex-col gap-0 px-4 md:px-8 mx-auto">
           <!-- ===== Page sections (slot) ===== -->
           <slot />
   

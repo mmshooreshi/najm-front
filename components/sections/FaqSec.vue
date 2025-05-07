@@ -1,5 +1,5 @@
 <template>
-  <section class="rtl py-16">
+  <section class="rtl pt-16">
     <div class="max-w-4xl mx-auto flex flex-col gap-12 overflow-visible">
       <!-- Title -->
       <h2 class="text-lg md:text-xl font-bold text-center">
@@ -7,9 +7,11 @@
       </h2>
 
       <!-- Category Tabs -->
-      <div class="relative h-10">
-        <div ref="tabsContainer" class="tabs-container noscroll flex gap-1 whitespace-nowrap overflow-auto scrollbar-hide absolute -left-8 -right-8 px-4"
-        >
+     <div class="relative h-8 lg:h-28">
+  <div
+    ref="tabsContainer"
+    class="tabs-container absolute   sm:w-screen lg:max-w-[1000px]  flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start sm:px-4 w-max lg:justify-center -right-4 lg:-right-14"
+  >
             <button
             v-for="(cat, i) in categories"
             :key="cat.name"
@@ -27,7 +29,7 @@
       </div>
 
       <!-- FAQ List -->
-      <div class="divide-y  border-gray-300 -mt-6 px-6 h-[40vh] overflow-auto">
+      <div class="divide-y  border-gray-300 -mt-6 px-6 max-h-[50vh] overflow-auto">
  
         <!-- <div class="grid grid-cols-3 divide-x divide-gray-400">
   <div class="text-center">1</div>
@@ -517,14 +519,6 @@ function selectTab(i: number) {
 </script>
 
 <style scoped>
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-.tabs-container {
-  /* for horizontal scrolling */
-  scroll-padding-inline-start: 16px;
-  /* scroll-margin-inline-start: 10px;   */
-
-}
 
 </style>
