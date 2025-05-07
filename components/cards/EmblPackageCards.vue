@@ -142,12 +142,11 @@ const showDots   = computed(() =>
   props.controls === 'all' || props.controls === 'dots'
 )
 const wrapperClass = computed(() => {
-    // ensure correct RTL ordering
-    if (props.position === 'center') return 'justify-center flex-row-reverse'
-    if (props.position === 'reverse') return 'justify-between flex-row'
-    // default: start at right, RTL
-    return 'justify-start flex-row-reverse'
-  })
+  if (props.position === 'center')      return 'justify-center flex-row'
+  if (props.position === 'reverse')     return 'justify-between flex-row-reverse'
+  /* default */                          return 'justify-between flex-row'
+})
+
 
 
 const viewportRef = ref(null)

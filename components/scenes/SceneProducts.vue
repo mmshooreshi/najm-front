@@ -163,8 +163,6 @@ function selectTab(index: number, group: string) {
 <style>
 .slides-wrapper {
   /* force a fixed height so the page doesn’t “shrink” during the fade */
-  height: 430px; /* match your carousel’s max height */
-  position: relative; 
 }
 
 /* Out-in fade on the whole wrapper */

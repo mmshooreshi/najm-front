@@ -2,12 +2,11 @@
 <template>
     <div dir="rtl" class="relative overflow-x-visible py-0">
       <div  class="overflow-visible w-full" ref="viewportRef">
-        <transition name="fade-list" mode="out-in">    
-        <div  class="flex slides-wrapper"  :class="wrapperClass">
-                <div
+        <div  class="flex w-full"  >
+        <div
             v-for="(product, idx) in products"
             :key="product.id"
-            class="relative flex-none w-4/5 mr-2.5 max-h-[430px] max-w-[267px] rtl flex-shrink-0"
+            class="relative flex-none w-4/5 mr-2.5 max-h-[430px] max-w-[267px]  flex-shrink-0"
           >
             <NuxtImg
               :src="product.image"
@@ -25,7 +24,6 @@
             </div>
           </div>
         </div>
-    </transition>
 
       </div >
   
