@@ -30,10 +30,11 @@
       class="absolute pointer-events-auto cursor-pointer"
       :style="getStyle(item.specs)"
       >
-      <!-- @click="editItem(item)" -->
+      <!--  -->
       <NuxtImg
         :src="item.image"
         :alt="item.alt ?? item.name"
+        @click="editItem(item)"
         :class="editingItem?.id === item.id ? 'border border-teal rounded-3xl' : ''"
         class="w-full h-full object-contain"
       />
@@ -127,6 +128,7 @@ const imageNumber = ref(1)
 
 // Deep-copy defaults and normalize any unit’d inputs to plain numbers
 function editItem(item: Item) {
+  console.log(item)
   defaultSpecs.value = JSON.parse(JSON.stringify(item.specs))
   // Normalize to numbers
   for (const key of Object.keys(item.specs) as SpecKey[]) {
