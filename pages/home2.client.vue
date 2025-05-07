@@ -26,6 +26,10 @@
     <SceneFacilities />
   </div>
 
+  <div class="section-snap">
+    <SceneProducts />
+  </div>
+
 
 
 
@@ -52,6 +56,7 @@ import SceneFacilities from '~/components/scenes/SceneFacilities.client.vue'
 import SceneProjects from '@/components/scenes/SceneProjects.vue'
 import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
 import SceneApplicationsAndIndustries from '@/components/scenes/SceneApplicationsAndIndustries.vue'
+import SceneProducts from '@/components/scenes/SceneProducts.vue'
 
 
 import SceneSlider from '~/components/scenes/SceneSlider.vue'

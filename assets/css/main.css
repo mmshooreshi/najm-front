@@ -114,6 +114,16 @@ label,
     user-select: none;
 } 
 
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+.tabs-container {
+  /* for horizontal scrolling */
+  scroll-padding-inline-start: 16px;
+  /* scroll-margin-inline-start: 10px;   */
+
+}
+
 /* body {
 	font-family: IRANSansX  !important;
 	direction: rtl;

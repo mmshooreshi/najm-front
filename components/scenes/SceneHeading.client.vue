@@ -7,7 +7,7 @@
     <div 
     v-memotion-pop-visible="{ delay: 0, duration: 0.6, ease: 'smoothPop' }"
 
-    v-if="data.label!=''"
+    v-if="data.label!='' && !hideLabel"
       class="border border-black rounded-full py-2 px-4 text-xs text-d4 font-medium w-max"
     >
       {{ data.label }}
@@ -39,7 +39,8 @@ CustomEase.create('smoothPop', '0.25, 0.1, 0.25, 1')  // ease-in-out cubic-bezie
 
 const props = defineProps({
   data:    { type: Object, default: () => ({}) },
-  align:   { type: String, default: 'center' }
+  align:   { type: String, default: 'center' },
+  hideLabel: { type: Boolean, default: false}
 })
 
 const isSmall = useMediaQuery('(max-width: 400px)')
