@@ -12,7 +12,7 @@
           :title="item.name"
           :tabs="item.tabs"
           :panes="item.children"   
-          class="border rounded overflow-hidden"
+          class="border rounded overflow-hidden bg-[#F1F5F9]"
         >
 
 

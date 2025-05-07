@@ -15,7 +15,7 @@ const closeMap = () => (isFullScreen.value = false)
   <!-- ────────────────  Thumbnail  ──────────────── -->
   <div
     v-motion-pop-visible
-    class="z-100  relative mt-2  mx-auto px-10 max-w-sm md:max-w-md   md:my-4 h-[280px] md:h-[300px] rounded-3xl overflow-hidden bg-gray-200 dark:bg-gray-800
+    class=" relative mt-2  mx-auto px-10 max-w-sm md:max-w-md   md:my-4 h-[280px] md:h-[300px] rounded-3xl overflow-hidden bg-gray-200 dark:bg-gray-800
            cursor-pointer transition-[transform,box-shadow] duration-300 hover:shadow-lg hover:scale-[1.01]"
     @click="openMap"
   >
