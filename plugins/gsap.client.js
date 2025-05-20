@@ -5,7 +5,7 @@ import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import { SplitText } from 'gsap/SplitText'
 import {CustomEase} from 'gsap/CustomEase'
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
-
+import { Flip } from 'gsap/Flip'
 
 import { Draggable } from 'gsap/Draggable';
 
@@ -30,7 +30,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       MotionPathPlugin,
       SplitText,
       CustomEase,
-      ScrollSmoother
+      ScrollSmoother,
+      Flip
       
     },
   };

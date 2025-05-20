@@ -1,11 +1,12 @@
 
- <!-- ScenePrinting2.vue  -->
+ <!-- components/scenes/SceneProjects.vue  -->
  <template>
   <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  pt-12">
     <SceneHeading :data="data" align="right"/>
-    <ClientOnly>
+    <!-- <ClientOnly> -->
     <EmblCards :cards="cards"/>
-    </ClientOnly>
+    
+    <!-- </ClientOnly> -->
     
   </div>
 </template>

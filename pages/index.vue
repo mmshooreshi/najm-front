@@ -4,17 +4,23 @@
     <SceneHero />
   </div>
 
-  <div class="section-snap">
+   <div class="section-snap">
     <SceneServicesAndCapabilities />
   </div>
+<!--  
   <div class="section-snap">
     <SceneCardsIntro />
-  </div>
-
-
+  </div> 
   <div class="section-snap">
     <SceneProjects />
+  </div> -->
+
+  <div class="section-snap">
+    <ScrollWrapperW />  
   </div>
+
+
+
 
 
   <div class="section-snap">
@@ -62,6 +68,7 @@ import SceneApplicationsAndIndustries from '@/components/scenes/SceneApplication
 import SceneProducts from '@/components/scenes/SceneProducts.vue'
 import ScenePromo from '@/components/scenes/ScenePromo.vue'
 import SceneCustomers from '@/components/scenes/SceneCustomers.vue'
+import ScrollWrapperW from '@/components/ScrollWrapperW.vue'
 
 
 import SceneSlider from '~/components/scenes/SceneSlider.vue'
@@ -80,6 +87,8 @@ onMounted(async () => {
   await nextTick()
   // Refresh ScrollTrigger to pick up new sections
   ScrollTrigger.refresh()
+
+
 })
 </script>
 

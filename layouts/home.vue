@@ -92,6 +92,13 @@
         markers: false,
       })
     })
+
+    useHead({
+    bodyAttrs: {
+      class: 'debugg'
+    }
+  })
+
   })
   </script>
 

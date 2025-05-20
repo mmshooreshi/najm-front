@@ -1,9 +1,10 @@
 <template>
   <div dir="rtl" class="relative overflow-x-visible absolute py-0">
     <div class="overflow-visible w-full" ref="viewportRef">
-      <!-- <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
+        
+      <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
       <Icon name="mdi:download"/>
-    </button> -->
+    </button>
 
       <div class="flex">
 
@@ -18,9 +19,9 @@
 
           :key="`${selectedType}${pkg.id}`"
           :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[300px] md:max-w-[400px] h-[400px] min-h-[400px] min-w-[300px] md:min-w-[400px] ']"
-          class="tak overflow-visible z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem]  rtl"
+          class="tak overflow-hidden z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem]  rtl"
         >
-        
+
         <!-- {{selectedType!=pkg.type}} -->
         <!-- <div  class="takcon z-10"> -->
 

@@ -7,8 +7,17 @@ import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import Footer2 from '~/components/Footer2.vue'
 
 const menuOpen = ref(false)
+
+onMounted(async () => {
+    useHead({
+    bodyAttrs: {
+      class: 'debugg'
+    }
+  })
+})
 </script>
 <template>
+  
   <!-- Background -->
   <BackgroundGradient />
 
@@ -20,8 +29,8 @@ const menuOpen = ref(false)
   />
 
   <!-- Page Wrapper -->
-  <div class="bg-white bg-[#e4eaeb] w-full overflow-visible touch-pan-y  bg-blue min-h-screen pt-16">
-    <main class="w-full  overflow-visible  mx-auto">
+  <div class="bg-white bg-[#e4eaeb] w-full overflow-visible touch-pan-y  bg-blue min-h-screen pt-16 ">
+    <main class="w-full  overflow-visible  mx-auto ">
       <slot />
     </main>
     <Footer2 />

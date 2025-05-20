@@ -70,12 +70,12 @@ export default defineNuxtConfig({
   // gsap: {
   //   composables: true
   // },
-  vgsap: {
-    presets: [],
-    breakpoint: 768,
-    scroller: "",  // Now correctly targeting scroll container
-    composable: true
- }, 
+//   vgsap: {
+//     presets: [],
+//     breakpoint: 768,
+//     scroller: "",  // Now correctly targeting scroll container
+//     composable: true
+//  }, 
  router: {
   options: {
     scrollBehaviorType: 'smooth'

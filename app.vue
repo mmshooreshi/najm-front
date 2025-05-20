@@ -9,7 +9,7 @@
   import '@unocss/reset/tailwind-compat.css'
   import '@unocss/reset/normalize.css'
   import '@unocss/reset/tailwind.css'
-  
+
   const route = useRoute()
   </script>
   

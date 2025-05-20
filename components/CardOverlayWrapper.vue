@@ -1,23 +1,21 @@
 <template>
-  <div class="group relative w-full h-[500px] z-50 overflow-hidden rounded-3xl">
+  <div class="relative w-full h-full z-10">
     <!-- Base slot content -->
-    <div class="w-full h-full absolute z-50">
+    <div class="w-full h-full absolute z-10 ">
 
       <slot />
 
-      <div :class="[toFade ? 'scale-0' : '']" class="transition-all duration-200 easeflex flex-col h-full justify-between p-6 ">
+      <div class="flex flex-col h-full justify-between p-6 ">
         <div class="flex justify-between items-center">
-          <button  class="text-nowrap text-black hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 text-d4 text-demibold text-sm">{{name}}</button>
-          <div class="transform scale-50   opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 ease-out">
-           <HaArrow />
-        </div>
+          <button class="text-black hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 text-d4 text-demibold text-sm">{{name}}</button>
+          <HaArrow/>
         </div>
         <div class="flex justify-between items-center">
           <!-- <HaArrow/><HaArrow/><HaArrow/> -->
         </div>
         <div class="flex justify-between items-center">
           <!-- <HaArrow/><HaArrow/><HaArrow/> -->
-          <button class="transform scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100  transition-all duration-200 ease-out  text-black  hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 text-d4 font-medium text-xs">{{toPersianDigits(items.length)}} آیتم</button>
+          <button class="text-black  hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 text-d4 font-medium text-xs">{{toPersianDigits(items.length)}} آیتم</button>
 
         </div>
       </div>
@@ -27,14 +25,13 @@
     <div
       v-for="item in items"
       :key="item.id"
-      class="absolute pointer-events-auto cursor-pointer"
+      class="absolute pointer-events-auto  cursor-pointer"
       :style="getStyle(item.specs)"
-      >
-      <!--  -->
+      @click="editItem(item)"
+    >
       <NuxtImg
         :src="item.image"
         :alt="item.alt ?? item.name"
-        @click="editItem(item)"
         :class="editingItem?.id === item.id ? 'border border-teal rounded-3xl' : ''"
         class="w-full h-full object-contain"
       />
@@ -106,7 +103,7 @@ interface Item {
 
 type SpecKey = keyof Specs
 
-const props = defineProps<{ items: Item[], name: String , currentPackage: Object, toFade: Boolean}>()
+const props = defineProps<{ items: Item[], name: String }>()
 
 const editingItem = ref<Item | null>(null)
 const defaultSpecs = ref<Specs | null>(null)
@@ -128,7 +125,6 @@ const imageNumber = ref(1)
 
 // Deep-copy defaults and normalize any unit’d inputs to plain numbers
 function editItem(item: Item) {
-  console.log(item)
   defaultSpecs.value = JSON.parse(JSON.stringify(item.specs))
   // Normalize to numbers
   for (const key of Object.keys(item.specs) as SpecKey[]) {

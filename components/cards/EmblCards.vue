@@ -1,3 +1,4 @@
+<!-- components/cards/EmblCards.vue -->
 <template>
   <div dir="rtl" class="relative overflow-x-visible    absolute py-6">
     <div class="overflow-visible w-full" ref="viewportRef">
@@ -6,9 +7,9 @@
           v-for="(card, idx) in cards"
           :key="card.id"
           
-          class="relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible rtl"
+          class="border-black border h-[400px] embl-card relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible rtl"
         >
-          <NuxtImg
+          <!-- <NuxtImg
             :src="card.image"
             :alt="card.text"
             v-motion
@@ -16,14 +17,14 @@
             :visible="{scale: 1}"
             :duration="100"
             class="object-cover h-full w-full scale-100 rounded-[1.5rem]"
-          />
-          
+          /> -->
+<!--           
           <div   v-motion
             :initial="{scale: 0.8}"
             :visible="{scale: 1}"
             :duration="100"  class="absolute bottom-6 right-6 bg-[#D6E6E3] px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
             {{ card.text }}
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
