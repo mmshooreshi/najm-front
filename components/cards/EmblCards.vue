@@ -7,8 +7,9 @@
           v-for="(card, idx) in cards"
           :key="card.id"
           
-          class="border-black border h-[400px] embl-card relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible rtl"
+          class=" h-[400px] embl-card relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible rtl"
         >
+        <!-- border-black border -->
           <!-- <NuxtImg
             :src="card.image"
             :alt="card.text"
