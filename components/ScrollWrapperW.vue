@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="bg-blue " ref="stackSection">
+    <div class=" " ref="stackSection">
       <SceneCardsIntro />
-      <div class="flex w-full h-[500px] bg-red relative">
+      <div class="flex w-full h-[500px] relative">
 
         <div
         v-for="(card, i) in  cards"
