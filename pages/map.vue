@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref, defineAsyncComponent } from 'vue'
+import { useRouter } from '#imports'
+
+const router = useRouter()
 
 /* lazy‑load the client‑only map container the moment we need it */
 const NeshanContainer = defineAsyncComponent(() =>
@@ -8,7 +11,14 @@ const NeshanContainer = defineAsyncComponent(() =>
 
 const isFullScreen = ref(true)
 const openMap  = () => (isFullScreen.value = true)
-const closeMap = () => (isFullScreen.value = false)
+// const closeMap = () => (isFullScreen.value = false)
+const closeMap = () => { isFullScreen.value = false;  router.push('/');
+}
+
+definePageMeta({
+  name: 'چاپ نجم - مسیریابی',
+  layout: 'home',
+})
 </script>
 
 <template>
@@ -20,7 +30,8 @@ const closeMap = () => (isFullScreen.value = false)
     @click="openMap"
   >
     <!-- a tiny blurred preview image for faster paint; swap for your own -->
-    <img
+    <NuxtImg
+    v-if="isFullScreen"
       src="/images/map.avif"
       alt="map thumbnail"
       class="absolute inset-0 w-full h-full object-cover  "

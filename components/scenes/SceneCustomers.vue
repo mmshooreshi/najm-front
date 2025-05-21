@@ -9,17 +9,18 @@
     </p>
 
     <!-- Embla viewport -->
-    <div ref="viewportRef" class="mt-12 overflow-visible w-full max-w-[1000px]">
+    <div ref="viewportRef" class="mt-12 overflow-visible w-full max-w-[1000px] cursor-[url(/images/mdi--company-light.png),pointer]">
       <div class="flex">
         <div
           v-for="(logo, idx) in logos"
           :key="idx"
-          class="flex-none px-10"
+          class="flex-none px-10 "
         >
           <img
             :src="logo.src"
             :alt="logo.alt"
-            class="h-12 w-max object-contain mx-0"
+            class="h-12 w-max object-contain mx-0 transition-all brightness-[1.1]  hover:brightness-[0.9] hover:scale-110 cursor-[url(/images/mdi--company.png),pointer]"
+
           />
         </div>
         <div
@@ -30,7 +31,7 @@
           <img
             :src="logo.src"
             :alt="logo.alt"
-            class="h-12 w-max object-contain mx-0"
+            class="h-12 w-max object-contain mx-0 transition-all brightness-[1.1]    hover:brightness-[0.9] hover:scale-110 cursor-[url(/images/mdi--company.png),pointer]"
           />
         </div>
 
@@ -63,8 +64,8 @@ onMounted(() => {
   // set up continuous auto-scroll
   autoScrollApi = autoScroll(
     {
-      speed: 2,                 // 2px per frame
-      startDelay: 1000,         // wait 1s before starting (and after interactions)
+      speed: 0,                 // 2px per frame
+      startDelay: 0,         // wait 1s before starting (and after interactions)
       direction: 'forward',    // scroll leftwards for RTL
       playOnInit: true,         // start automatically
       stopOnInteraction: false, // keep going after drag
@@ -78,14 +79,23 @@ onMounted(() => {
     viewportRef.value,
     {
       loop: true,
-      dragFree: false,
+      dragFree: true,
       draggable: false,
       align: 'start',
-      containScroll: 'trimSnaps',
+      // containScroll: 'trimSnaps',
+      containScroll: 'keepSnaps',
       direction: 'rtl',
     },
     [autoScrollApi]
   )
+
+  // 🔁 Always resume auto-scroll after any stop
+  embla.on('autoScroll:stop', (e) => {
+    console.log(e, "stopped")
+    autoScrollApi.play()
+  })
+
+
 })
 
 onBeforeUnmount(() => {

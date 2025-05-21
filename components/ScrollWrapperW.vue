@@ -95,7 +95,7 @@ onMounted(async () => {
     // rotation: (i) => (i - (count-1)/2) * 4,
     ease: 'power3.out',
     stagger: {     // ← and here
-      each: 0.1,
+      each: 0.2,
       from: 'start'
     }
 

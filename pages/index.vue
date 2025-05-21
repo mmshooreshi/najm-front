@@ -39,7 +39,7 @@
   <div class="section-snap">
     <ScenePromo />
   </div>
-  <!-- <SceneCustomers /> -->
+  <SceneCustomers />
 
 
   <!-- <div class="section-snap"> -->

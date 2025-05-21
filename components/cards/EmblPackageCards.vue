@@ -1,5 +1,5 @@
 <template>
-  <div dir="rtl" class="relative overflow-x-visible  pr-10  absolute py-0">
+  <div dir="rtl" class="relative overflow-x-visible absolute py-0">
     <div class="overflow-visible w-full" ref="viewportRef">
       <!-- <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
       <Icon name="mdi:download"/>
@@ -17,7 +17,7 @@
           :duration="100"
 
           :key="`${selectedType}${pkg.id}`"
-          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[400px] h-[400px] min-h-[400px] min-w-[400px] ']"
+          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[400px] h-[400px] min-h-[400px] min-w-[300px] ']"
           class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem] overflow-visible rtl"
         >
         <!-- {{selectedType!=pkg.type}} -->
@@ -104,6 +104,8 @@
 <script setup>
 
 import EmblaCarousel from 'embla-carousel'
+import Autoplay from 'embla-carousel-autoplay'
+
 // import DescriptionBubble if needed
 import CardOverlayWrapper from '@/components/CardOverlayWrapper.vue'
 import { defineExpose } from 'vue'
@@ -234,6 +236,13 @@ function downloadAllJson() {
 
 
 onMounted(() => {
+
+  const autoplay = Autoplay(
+    { delay: 1000, stopOnInteraction: false },
+    embla // pass embla ref later to access it inside plugin
+  )
+
+
   embla.value = EmblaCarousel(viewportRef.value, {
     containScroll: 'keepSnaps',
     draggable: true,
@@ -242,10 +251,15 @@ onMounted(() => {
     align: 'start',
     dragFree: false,
     direction: 'rtl',
-    loop: false
-  })
+    loop: false // autoplay needs loop enabled
+  }, [autoplay])
   embla.value.on('init', onSelect)
   embla.value.on('select', onSelect)
+
+
+  viewportRef.value.addEventListener('mouseenter', autoplay.stop)
+  viewportRef.value.addEventListener('mouseleave', autoplay.play)
+
 })
 </script>
 
