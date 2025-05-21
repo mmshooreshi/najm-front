@@ -14,12 +14,17 @@ import '@neshan-maps-platform/mapbox-gl-vue/dist/style.css'
 import nmp_mapboxgl from '@neshan-maps-platform/mapbox-gl'
 
 /* ---------- constants ---------- */
-const OFFICE = [51.392610, 35.699967]                     // دفتر مرکزی
+// const OFFICE = [51.392610, 35.699967]                     // دفتر مرکزی
 const PRINT  = [51.30858329680908, 35.67359353958164]     // چاپخانه
-const ALL    = [(OFFICE[0]+PRINT[0])/2, (OFFICE[1]+PRINT[1])/2]  // میانهٔ دو نقطه
+
+// const ALL    = [(OFFICE[0]+PRINT[0])/2, (OFFICE[1]+PRINT[1])/2]  // میانهٔ دو نقطه
+const ALL    = PRINT  // میانهٔ دو نقطه
+
+
 
 const mapRef = ref(null)
 
+console.log('Available MapTypes:', MapTypes);
 /* ---------- map setup ---------- */
 const mapOptions = {
   mapKey: 'web.624bf8560ef44688b1b1d971027b361c',   // کلید نشن‌مپ
@@ -28,6 +33,8 @@ const mapOptions = {
   zoom: 12,                                         // نمای پیش‌فرض: هر دو نقطه
   poi: false,
   traffic: false,
+
+
 
   /* ✋🏻 قفل کردن تعاملات ـ فقط کلیک مجاز است */
 //   dragPan: false,
@@ -79,24 +86,24 @@ function handleMapOriginal(map) {
 
   const overview = { center: ALL, zoom: 12, speed: 1.2, curve: 1.4, essential: true };
 
-  const officePopup2 = new nmp_mapboxgl.Popup({ offset: 25 })
-  .setHTML(`
-        <strong>دفتر مرکزی</strong><br/>
-        میدان انقلاب، کارگر جنوبی، شهدای ژاندارمری، نرسیده به منیری جاوید، پلاک ۱۱۷ طبقه سوم،
-        تلفن: 09361415413
-      `);
-const officeMarker2 = new nmp_mapboxgl.Marker({
-    element: icon('https://api.iconify.design/mdi:domain.svg?color=white', 'دفتر مرکزی')
-  })
-  .setLngLat(OFFICE)
-  .setPopup(officePopup2)
-  .addTo(map);
+//   const officePopup2 = new nmp_mapboxgl.Popup({ offset: 25 })
+//   .setHTML(`
+//         <strong>دفتر مرکزی</strong><br/>
+//         میدان انقلاب، کارگر جنوبی، شهدای ژاندارمری، نرسیده به منیری جاوید، پلاک ۱۱۷ طبقه سوم،
+//         تلفن: 09361415413
+//       `);
+// const officeMarker2 = new nmp_mapboxgl.Marker({
+//     element: icon('https://api.iconify.design/mdi:domain.svg?color=white', 'دفتر مرکزی')
+//   })
+//   .setLngLat(OFFICE)
+//   .setPopup(officePopup2)
+//   .addTo(map);
 
-officeMarker2.getElement().addEventListener('click', () => {
-  map.flyTo({ center: OFFICE, zoom: 16, speed: 1.2, curve: 1.4, essential: true });
-//   officePopup2.addTo(map);
-});
-officePopup2.on('close', () => map.flyTo({ center: ALL, zoom: 12, speed: 1.2, curve: 1.4, essential: true }));
+// officeMarker2.getElement().addEventListener('click', () => {
+//   map.flyTo({ center: OFFICE, zoom: 16, speed: 1.2, curve: 1.4, essential: true });
+// //   officePopup2.addTo(map);
+// });
+// officePopup2.on('close', () => map.flyTo({ center: ALL, zoom: 12, speed: 1.2, curve: 1.4, essential: true }));
 
 // PRINT
 const printPopup2 = new nmp_mapboxgl.Popup({ offset: 25 })
@@ -120,7 +127,9 @@ printMarker2.getElement().addEventListener('click', () => {
 });
 printPopup2.on('close', () => map.flyTo({ center: ALL, zoom: 12, speed: 1.2, curve: 1.4, essential: true }));
 
-const allMarkers = [officeMarker2, printMarker2];
+// const allMarkers = [officeMarker2, printMarker2];
+const allMarkers = [printMarker2];
+
 map.on('zoom', () => {
   const z = map.getZoom();
   allMarkers.forEach(marker => {
@@ -140,7 +149,7 @@ map.on('zoom', () => {
   /* ↩️ Double‑click anywhere → overview (zoom 12) */
   map.on('dblclick', () => {
     map.flyTo({ center: ALL, zoom: 12, speed: 1.2, curve: 1.4, essential: true })
-    officeMarker2.getPopup()?.remove()
+    // officeMarker2.getPopup()?.remove()
     printMarker2.getPopup()?.remove()
   })
 }
@@ -159,17 +168,18 @@ function handleMap(map) {
   };
 
   /* ---------- marker definitions ---------- */
+  // {
+  //     coords: OFFICE,                     // [lng, lat]
+  //     label:  'دفتر مرکزی',
+  //     svg:    'mdi:domain',
+  //     popup: `
+  //       <strong>دفتر مرکزی</strong><br/>
+  //       میدان انقلاب، کارگر جنوبی، شهدای ژاندارمری، نرسیده به منیری جاوید، پلاک ۱۱۷ طبقه سوم
+  //       <br/>تلفن: 09361415413
+  //     `
+  //   },
+
   const defs = [
-    {
-      coords: OFFICE,                     // [lng, lat]
-      label:  'دفتر مرکزی',
-      svg:    'mdi:domain',
-      popup: `
-        <strong>دفتر مرکزی</strong><br/>
-        میدان انقلاب، کارگر جنوبی، شهدای ژاندارمری، نرسیده به منیری جاوید، پلاک ۱۱۷ طبقه سوم
-        <br/>تلفن: 09361415413
-      `
-    },
     {
       coords: PRINT,
       label:  'چاپخانه',
