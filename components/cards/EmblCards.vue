@@ -19,13 +19,13 @@
             :duration="100"
             class="object-cover h-full w-full scale-100 rounded-[1.5rem]"
           /> -->
-<!--           
+           
           <div   v-motion
             :initial="{scale: 0.8}"
             :visible="{scale: 1}"
             :duration="100"  class="absolute bottom-6 right-6 bg-[#D6E6E3] px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
             {{ card.text }}
-          </div> -->
+          </div> 
         </div>
       </div>
     </div>

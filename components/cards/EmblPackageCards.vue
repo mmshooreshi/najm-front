@@ -1,10 +1,9 @@
 <template>
-  <div dir="rtl" class="relative overflow-x-visible absolute py-0">
+  <div dir="rtl" class="relative overflow-x-visible  pr-10  absolute py-0">
     <div class="overflow-visible w-full" ref="viewportRef">
-        
-      <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
+      <!-- <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
       <Icon name="mdi:download"/>
-    </button>
+    </button> -->
 
       <div class="flex">
 
@@ -18,15 +17,14 @@
           :duration="100"
 
           :key="`${selectedType}${pkg.id}`"
-          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[300px] md:max-w-[400px] h-[400px] min-h-[400px] min-w-[300px] md:min-w-[400px] ']"
-          class="tak overflow-hidden z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem]  rtl"
+          :class="[selectedType!=pkg.type ? ' scale-0 opacity-0 max-w-0' : 'max-w-[400px] h-[400px] min-h-[400px] min-w-[400px] ']"
+          class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem] overflow-visible rtl"
         >
-
         <!-- {{selectedType!=pkg.type}} -->
         <!-- <div  class="takcon z-10"> -->
 
               <div
-      class="takcon"
+      class="takcon z-10"
       :style="{
         '--tc-base': pkg.color,
         '--tc-shade1': adjustColor(pkg.color, -0.1,1),
@@ -81,22 +79,22 @@
       </button>
     </div>
 
-      <div v-if="showDots" class="flex gap-2">
-      <button
-        v-for="(pkg, idx) in pkg"
-        :key="pkg.id"
-        @pointerin="scrollTo(idx)"
-        @mouseenter="scrollTo(idx)"
-        @touchstart.prevent="scrollTo(idx)"
-        :style="{ backgroundColor: pkg.color }"
-        :class="[
-          'w-8 h-8 rounded-2xl border-none cursor-pointer transition-all hover:w-14',
-          selectedIndex === idx ? ' w-14' : '!bg-gray-300/40'
-        ]"
-        :aria-label="`Go to slide ${idx + 1}`"
-      >
-      </button>
-    </div>
+    <div v-if="showDots" class="flex gap-2">
+  <button
+    v-for="(pkg, idx) in pkg"
+    :key="pkg.id"
+    @pointerin="scrollTo(idx)"
+    @mouseenter="scrollTo(idx)"
+    @touchstart.prevent="scrollTo(idx)"
+    :style="{ backgroundColor: pkg.color }"
+    :class="[
+      'w-8 h-8 rounded-2xl border-none cursor-pointer transition-all hover:w-14',
+      selectedIndex === idx ? ' w-14' : '!bg-gray-300/40'
+    ]"
+    :aria-label="`Go to slide ${idx + 1}`"
+  >
+  </button>
+</div>
 
   </div>
 
@@ -270,8 +268,8 @@ onMounted(() => {
 }
 
 .takcon {
-  position: relative;
   
+
   width: -webkit-fill-available;
   height: -webkit-fill-available;
   display: flex;
@@ -281,13 +279,13 @@ onMounted(() => {
   /* padding: 36px; */
   border-radius: 22px;
   color: #ffffff;
-  overflow: visible;
-  background: #0a3cff;
+  overflow: hidden;
+  /* background: #0a3cff; */
   transition: all 0.88s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .takcon::before {
-  z-index: -10;
+  z-index: 0;
   position: absolute;
   content: "";
   /* top: -4%; */
@@ -307,7 +305,7 @@ onMounted(() => {
 }
 
 .takcon::after {
-  z-index: -10;
+  z-index: 0;
   position: absolute;
   content: "";
   /* top: -8%; */

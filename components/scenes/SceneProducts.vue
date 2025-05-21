@@ -22,8 +22,8 @@
      <div class="relative h-8 lg:h-28">
   <div
     ref="tabsContainer"
-    class="tabs-container absolute left-1/2 -translate-x-1/2 max-w-[1200px] w-screen flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible px-4 py-2 justify-center"
-  >
+    class="tabs-container w-screen lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:w-screen flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible px-4 pl-2 pr-4 translate-x-4 py-2 justify-start lg:justify-center"
+    >
     <button
       v-for="(group, i) in uniqueGroups"
       :key="`${selectedType}-${group}-${i}`"
@@ -176,5 +176,15 @@ function selectTab(index: number, group: string) {
   opacity: 0;
 }
 
+
+
+.tabs-container::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari */
+}
+
+.tabs-container {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+}
 
 </style>

@@ -19,13 +19,13 @@
 
             class="object-cover h-full w-full scale-100 rounded-[1.5rem]"
           />
-          <div   v-motion
+          <!-- <div   v-motion
             :initial="{scale: 0}"
             :visible="{scale: 1}"
             :duration="100" :delay="1" class="absolute bottom-6 right-6 bg-[#D6E6E3] px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
             {{ card.text }}
           </div>
-
+ -->
       </div>
 
       </div>
@@ -61,7 +61,8 @@ onMounted(async () => {
   const stacks  = gsap.utils.toArray<HTMLElement>('.stack-card')
   const targets = gsap.utils.toArray<HTMLElement>('.embl-card')
   const cardWidth = targets[0]?.offsetWidth ?? 0
-
+  const cardHeight = targets[0]?.offsetHeight ?? 0
+   const scaleDownRate = 0.5
   const count = stacks.length
   // store each card’s original parent so we can move it back
   const originalParents = stacks.map(card => card.parentElement!)
@@ -70,7 +71,8 @@ onMounted(async () => {
   gsap.set(stacks, {
     x: '100vw',
     y: '50vh',
-    width: cardWidth*0.9,
+    width: cardWidth*scaleDownRate*1.5,
+    height: cardHeight*scaleDownRate*2,
     opacity: 1,
     rotation: 0,
   })
@@ -79,7 +81,7 @@ onMounted(async () => {
   const stackTl = gsap.timeline({
     scrollTrigger: {
       trigger: stackSection.value,
-      start: 'top-=40% top',
+      start: 'top-=10% top',
       end: '+=400',
       pin: false,
       toggleActions: 'play none none reverse',
@@ -87,8 +89,8 @@ onMounted(async () => {
       scrub: false,
     }
   }).to(stacks, {
-    x: (i) => 1 * (window.innerWidth/2) - (cardWidth/2) + i*5*z + 5,
-    y: (i) => 0,
+    x: (i) => 1 * (window.innerWidth/2) - (cardWidth*scaleDownRate*1.5/2) + i*5*z ,
+    y: (i) => 50,
     rotation: (i)=> i*2 -10,
     // rotation: (i) => (i - (count-1)/2) * 4,
     ease: 'power3.out',
@@ -102,8 +104,8 @@ onMounted(async () => {
   // 2) your FLIP trigger
 ScrollTrigger.create({
   trigger:   gridSection.value,
-  start:     'top 50%',
-  end:       '+=200',
+  start:     'top-=40% top',
+  end:       '+=500',
   scrub:     true,
   scroller:  '#smooth-wrapper',
   onEnter: () => {
@@ -123,10 +125,14 @@ ScrollTrigger.create({
     
 
     gsap.set(stacks, {
+        clearProps: 'all',
+      position: 'relative',
+
     x:       0,
     y:    0,
     rotation:0,
-     width: cardWidth
+     width: cardWidth,
+    height: cardHeight
   })
 
 
@@ -160,10 +166,12 @@ ScrollTrigger.create({
 
       // 3) re-apply the stacked transforms *exactly* as in stackTl’s end
       gsap.set(stacks, {
-        x: (i) => 1 * (window.innerWidth/2) - (cardWidth/2) + i*5*z + 5,
-    y: (i) => 0,
+        x: (i) => 1 * (window.innerWidth/2) - (cardWidth*scaleDownRate*1.5/2) + i*5*z + 5,
+    y: (i) => 50,
     rotation: (i)=> i*2 -10,
-    scale: 1,
+    width: cardWidth*scaleDownRate*1.5,
+    height: cardHeight*scaleDownRate*2,
+
       })
 
       // 4) Flip from grid → stack
@@ -206,7 +214,8 @@ const cards = [
 .stack-card {
   position: absolute;
   height: 400px;
-  transform-origin: bottom center;
+  transform-origin: center left;
+  z-index: -1;
   /* Default styles: blur, shadow, rounded, and center content */
   /* Color/border/bg are set via GSAP inline styles */
 }
