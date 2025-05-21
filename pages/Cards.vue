@@ -1,14 +1,15 @@
 <template>
   <div>
-    <CardAnimator3/>
+    <CardAnimator4/>
   </div>
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
   name: 'Cards',
-  layout: 'default',
+  layout: 'nofooter',
 })
+
 </script>
 
 <style>
