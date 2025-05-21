@@ -64,7 +64,7 @@ onMounted(() => {
   // set up continuous auto-scroll
   autoScrollApi = autoScroll(
     {
-      speed: 0,                 // 2px per frame
+      speed: 5,                 // 2px per frame
       startDelay: 0,         // wait 1s before starting (and after interactions)
       direction: 'forward',    // scroll leftwards for RTL
       playOnInit: true,         // start automatically
