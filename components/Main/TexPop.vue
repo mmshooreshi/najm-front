@@ -94,7 +94,8 @@ useIntersectionObserver(
       // fade in container
       gsap.to(sectionRef.value, { opacity: 1, duration: 0.5, ease: 'power1.out' })
       // restart & play your timeline
-      tlHighlights.restart()
+      tlHighlights.play()
+
     } else {
       // fade out container
       gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.in' })
@@ -103,8 +104,9 @@ useIntersectionObserver(
     }
   },
   {
-    threshold: 0.6,
-    rootMargin: '-65px 0px 0px 0px',
+    threshold: 0.01,
+    rootMargin: '650px 0px 1000px 0px',
+    
   }
 )
 
