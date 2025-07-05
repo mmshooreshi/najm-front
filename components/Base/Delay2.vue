@@ -1,3 +1,4 @@
+<!-- components/Base/Delay2.vue -->
 <script setup lang="ts">
 import { useMotions } from '@vueuse/motion'
 import { useToggle } from '@vueuse/core'

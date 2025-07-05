@@ -1,3 +1,4 @@
+// store/useButtonStore.ts
 import { defineStore } from "pinia";
 
 export const useButtonStore = defineStore("button", {

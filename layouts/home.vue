@@ -1,3 +1,4 @@
+<!-- layouts/home.vue -->
 <!-- Layout.vue -->
 <template>
   <BackgroundGradient />

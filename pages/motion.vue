@@ -1,3 +1,4 @@
+<!-- pages/motion.vue -->
 <script setup>
 import { spring } from 'motion-v'
 import { ref } from 'vue'

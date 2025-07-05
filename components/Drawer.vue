@@ -1,3 +1,4 @@
+<!-- components/Drawer.vue -->
 <!-- /components/Drawer.vue -->
 <template>
   <div class="drawer-container">

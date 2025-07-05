@@ -1,3 +1,4 @@
+// composables/ui/productUI.ts
 import { computed, Ref } from 'vue'
 import { useFetch } from '#app'
 

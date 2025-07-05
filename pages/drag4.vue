@@ -1,3 +1,4 @@
+<!-- pages/drag4.vue -->
 <template>
   <div>
     <AnimatedContainer/>

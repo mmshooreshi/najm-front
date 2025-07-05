@@ -1,4 +1,5 @@
 <!-- app.vue -->
+<!-- app.vue -->
 <template>
     <NuxtLayout>
       <NuxtPage :page-key="route.name" />
@@ -11,5 +12,7 @@
   import '@unocss/reset/tailwind.css'
 
   const route = useRoute()
+  provideHeadlessUseId(() => useId())
+
   </script>
   

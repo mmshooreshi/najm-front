@@ -1,3 +1,4 @@
+<!-- components/gsap/DemoParallax.vue -->
 <template>
   <section>
     <div v-gsap.parallax.faster />

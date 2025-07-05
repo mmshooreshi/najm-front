@@ -1,3 +1,4 @@
+<!-- components/ScrollWrapperW.vue -->
 <template>
   <div>
     <div class=" " ref="stackSection">

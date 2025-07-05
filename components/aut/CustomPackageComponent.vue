@@ -1,3 +1,4 @@
+<!-- components/aut/CustomPackageComponent.vue -->
 <template>
     <div class="flex flex-col w-full gap-4">
       <!-- Office Package Section -->

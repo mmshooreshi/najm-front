@@ -1,3 +1,4 @@
+<!-- components/gsap/DemoCard.vue -->
 <template>
   <article v-gsap.whenVisible.from="{ scale: 0.8, height: 0, padding: 0 }">
     <div v-gsap.whenVisible.from="{ y: 100 }" />

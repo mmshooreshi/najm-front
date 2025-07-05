@@ -1,3 +1,4 @@
+<!-- components/CardAnimator.vue -->
 <template>
   <div>
     <!-- 1) Intro blank screen -->

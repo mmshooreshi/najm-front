@@ -1,3 +1,4 @@
+<!-- components/InlineSvgMask.vue -->
 <template>
   <!-- Container with explicit size -->
   <div 

@@ -1,3 +1,4 @@
+// composables/useProducts.ts
 import { ref, computed, watch } from 'vue'
 import { useAsyncData, useRuntimeConfig } from '#app'
 import type { Product } from '~/schemas/productSchema'

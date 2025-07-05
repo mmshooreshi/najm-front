@@ -1,4 +1,5 @@
 <!-- components/sections/CustomPackageBetter.vue -->
+<!-- components/sections/CustomPackageBetter.vue -->
 <script setup lang="ts">
 import BasePackageSlider from '@/components/Base/BasePackageSlider.vue'
 import type { Package } from '~/types'

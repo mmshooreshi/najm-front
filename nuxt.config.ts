@@ -1,3 +1,4 @@
+// nuxt.config.ts
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
 import { fontPreloadLinks } from './utils/font-preload';
@@ -46,6 +47,7 @@ export default defineNuxtConfig({
 
   
   modules: [//  'unplugin-icons/nuxt',
+    'nuxt-headlessui',
   '@pinia/nuxt', '@unocss/nuxt', '@vueuse/nuxt', '@vueuse/motion/nuxt', // '@hypernym/nuxt-gsap',
   '@nuxt/icon', // 'nuxt-lodash',
   "v-gsap-nuxt", "nuxt-shiki", 'nuxt-swiper', '@nuxtjs/strapi', '@nuxt/image', 'nuxt-mapbox'],
@@ -86,6 +88,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/fontiran.css','~/assets/css/main.css', '~/assets/css/shiki.css'],
   runtimeConfig: {
     public: {
+      pbUrl: process.env.PB_URL,
       motion: {
         directives: {
           'pop-bottom': {
@@ -142,5 +145,9 @@ mapbox: {
   image: {
     // Options
   },
+      headlessui: {
+        prefix: 'Headless'
+    },
+
   compatibilityDate: '2025-02-18'
 })

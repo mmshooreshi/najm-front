@@ -1,3 +1,4 @@
+<!-- pages/cards_scale.client.vue -->
 <!-- src/components/EmblaCarouselScale.vue -->
 <template>
   <div class="embla" ref="emblaRef">

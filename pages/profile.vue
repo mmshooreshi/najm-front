@@ -1,3 +1,4 @@
+<!-- pages/profile.vue -->
 <script setup lang="ts">
 import { ref } from 'vue'
 import AuthHeader from '~/components/auth/AuthHeader.vue'

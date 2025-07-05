@@ -1,3 +1,4 @@
+<!-- components/atom/NavLinks.vue -->
 <!-- components/NavLinks.vue -->
 <template>
   <ul class="hidden md:flex flex-row ml-4 gap-6 text-sm text-black/70 font-medium">

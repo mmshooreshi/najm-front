@@ -1,3 +1,4 @@
+<!-- components/imagez.vue -->
 <script lang="ts" setup>
 import Imagez from '@/components/Base/BaseImage.vue'
 import BaseAnimatedImage from '@/components/Base/BaseAnimatedImage.vue'

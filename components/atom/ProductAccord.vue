@@ -1,3 +1,4 @@
+<!-- components/atom/ProductAccord.vue -->
 <template>
     <div class="relative ">
       <!-- Floating label -->

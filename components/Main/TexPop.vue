@@ -1,3 +1,4 @@
+<!-- components/Main/TexPop.vue -->
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
@@ -5,6 +6,12 @@ import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import SplitText from 'gsap/SplitText'
 import CustomEase from 'gsap/CustomEase'
+import { useLocale } from '@/composables/useLocale'
+
+const { language } = useLocale()
+// const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const isRTL = ref(language.value === 'FA' || language.value === 'AR')
+
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase)
 
@@ -47,6 +54,10 @@ const props = withDefaults(defineProps<{
   markers: false
 })
 
+
+const localHighlights = ref<HighlightItem[]>([])
+const localParagraphes = ref<ParagraphItem[]>([])
+
 // Centralized animation settings
 const animationConfig = {
   eases: {
@@ -77,12 +88,38 @@ const highlightRefs = ref<HTMLElement[]>([])
 const typedRefs     = ref<HTMLElement[]>([])
 const paragraphRefs = ref<HTMLElement[]>([])
 
-onMounted(async () => {
-  await nextTick()
-  const splits: SplitText[] = [] // track for reverting
-  if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
-// watch visibility
-useIntersectionObserver(
+  const tlHighlights = gsap.timeline({
+    defaults: { ease: animationConfig.eases.highlight.forward },
+    // scrollTrigger: {
+    //   trigger: sectionRef.value,
+    //   start,
+    //   scrub,
+    //   markers: props.markers,
+    //   toggleActions: 'play none none reverse',
+    //   onEnter(self) {
+    //     // bring back full opacity…
+    //     gsap.set(sectionRef.value, { opacity: 1 });
+    //     // …and rewind the timeline to its very start
+    //     self.animation.restart();
+    // },
+    // onLeaveBack(self) {
+    //     gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.out' });
+    // },
+
+    //   onReverseComplete() {
+    //     splits.splice(0).forEach((s) => s.revert())
+    //   },
+    // },
+  })
+
+
+  function runAnimation() {
+  const splits: SplitText[] = []
+
+  // (rebuild tlHighlights)
+  tlHighlights.pause().clear()
+
+  useIntersectionObserver(
   sectionRef,
   ([entry]) => {
     intersectionRatio.value = entry.intersectionRatio
@@ -145,29 +182,6 @@ useIntersectionObserver(
     )
   }
 
-  const tlHighlights = gsap.timeline({
-    defaults: { ease: animationConfig.eases.highlight.forward },
-    // scrollTrigger: {
-    //   trigger: sectionRef.value,
-    //   start,
-    //   scrub,
-    //   markers: props.markers,
-    //   toggleActions: 'play none none reverse',
-    //   onEnter(self) {
-    //     // bring back full opacity…
-    //     gsap.set(sectionRef.value, { opacity: 1 });
-    //     // …and rewind the timeline to its very start
-    //     self.animation.restart();
-    // },
-    // onLeaveBack(self) {
-    //     gsap.to(sectionRef.value, { opacity: 0, duration: 0.4, ease: 'power1.out' });
-    // },
-
-    //   onReverseComplete() {
-    //     splits.splice(0).forEach((s) => s.revert())
-    //   },
-    // },
-  })
   tlHighlights.pause()
 
 
@@ -232,19 +246,63 @@ useIntersectionObserver(
       })
     }
   })
+
+}
+
+onMounted(async () => {
+
+  localHighlights.value = props.highlights
+  localParagraphes.value = props.paragraphes
+  nextTick(() => {
+    if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
+    runAnimation()
+  })
+
+
+// watch visibility
 })
+
+
+
+watch(language, async () => {
+  if (!sectionRef.value) return
+
+  // 1. Fade out old content
+  await gsap.to(sectionRef.value, {
+    opacity: 0,
+    duration: 0.4,
+    ease: 'power1.in'
+  })
+
+    // 🔒 Prevent rotation while updating
+  // 2. Reset timeline and clear
+  tlHighlights.pause(0).clear()
+  typedRefs.value.forEach(el => el && (el.innerHTML = ''))
+  paragraphRefs.value.forEach(el => el && (el.innerHTML = ''))
+
+  // 3. NOW update content
+  localHighlights.value = props.highlights
+  localParagraphes.value = props.paragraphes
+  isRTL.value = language.value === 'FA' || language.value === 'AR'
+
+  // 4. Wait for DOM to update and rerun animation
+  await nextTick()
+
+  runAnimation()
+})
+
 </script>
 
 <template>
   <!-- py-24 px-0 sm:px-2 lg:px-56 pt-88 -->
-  <div class="">
+  <div class=""  :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl text-right' : 'ltr text-left']">
     <section
       ref="sectionRef"
-      class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
+      class=" max-w-xl mx-auto space-y-0 p-0 sm:p-2 leading-relaxed flex flex-wrap justify-center w-full "
       
       >
       <!--top classes can get these added tO: border border-4 border-black rounded-3xl -->
-      <template v-for="(h, i) in highlights" :key="i">
+      <template v-for="(h, i) in localHighlights" :key="i">
         <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
         <div v-else class="flex flex-row justify-start items-center text-nowrap">
           <span
@@ -254,21 +312,27 @@ useIntersectionObserver(
             :style="{
               backgroundColor: h.bgColor ?? '#6D28D9',
               color:           h.textColor ?? 'white',
-              transform:       h.rotation ? `rotate(${h.rotation})` : undefined,
-              'margin-right':  h.indent ?? '0px',
-            }"
-          >{{ h.label }}</span>
-          <span v-else :style="{ 'margin-right': h.indent ?? '0px' }"></span>
+              transform:  h.rotation ? `rotate(${h.rotation})` : undefined,
+              'margin-inline':  h.indent ?? '3px',
+            }" :class="[
+              'hover:transition-all',
+              '!hover:rotate-0',
+              '!hover:bg-black',
+              '!hover:text-white',
+              '!cursor-pointer'
+            ]"
+          >{{ h.label }} </span>
+          <span v-else :style="{ 'margin-inline': h.indent ?? '3px' }"></span>
           <span
             :ref="el => (typedRefs[i] = el as HTMLElement)"
-            class="inline-block mx-0 text-2xl font-extrabold text-d4 whitespace-pre rtl"
+            class="inline-block mx-0 text-2xl font-extrabold text-d4 whitespace-pre "
           ></span>
         </div>
       </template>
       <div class="basis-full h-0"></div>
     </section>
-    <div class="rtl flex flex-col w-full mt-8 max-w-xl mx-auto">
-      <template v-for="(p, i) in paragraphes" :key="i">
+    <div class=" flex flex-col w-full mt-8 max-w-xl mx-auto">
+      <template v-for="(p, i) in localParagraphes" :key="i">
         <p
           :ref="el => (paragraphRefs[i] = el as HTMLElement)"
           :class="[i === 0 ? 'font-extrabold' : '']"
@@ -280,6 +344,5 @@ useIntersectionObserver(
 </template>
 
 <style scoped lang="scss">
-section { direction: rtl; }
 .split-line { display: block; overflow: hidden; }
 </style>

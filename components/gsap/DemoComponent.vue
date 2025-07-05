@@ -1,3 +1,4 @@
+<!-- components/gsap/DemoComponent.vue -->
 <template>
   <button
     type="button"

@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneFinalMessage.vue -->
 
    <!-- SceneFinalMessage8.vue  -->
    <template>

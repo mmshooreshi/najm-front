@@ -1,3 +1,4 @@
+<!-- components/map.vue -->
 <script setup lang="ts">
 import { ref, defineAsyncComponent } from 'vue'
 

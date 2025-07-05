@@ -1,3 +1,4 @@
+<!-- components/JsonModal.vue -->
 <template>
   <div>
     <button @click="open = true" class="px-4 py-2 bg-green-600 text-white rounded">

@@ -1,3 +1,4 @@
+<!-- components/atom/LanguageSwitcher.vue -->
 <!-- components/LanguageSwitcher.vue -->
 <!-- <template>
   <div

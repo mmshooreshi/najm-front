@@ -1,3 +1,4 @@
+<!-- components/ScrollWrapper.vue -->
 <template>
   <div>
     <div class="bg-blue " ref="stackSection">

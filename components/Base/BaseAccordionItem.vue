@@ -1,3 +1,4 @@
+<!-- components/Base/BaseAccordionItem.vue -->
 <template>
   <div class="border rounded-lg overflow-hidden">
     <!-- Header with rotating arrow -->

@@ -1,3 +1,4 @@
+<!-- components/sections/ProjectReservationLight.vue -->
 <template>
     <div dir="rtl" class="relative h-[400px]  max-w-md mx-auto animate-pulse-alt">
       <!-- Target Icon -->

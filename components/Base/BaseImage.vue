@@ -1,3 +1,4 @@
+<!-- components/Base/BaseImage.vue -->
 <script setup>
 import { useImage } from '@vueuse/core'
 

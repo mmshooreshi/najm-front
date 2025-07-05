@@ -1,3 +1,4 @@
+<!-- pages/indexPREV.vue -->
 <template>
 <div>
     <!-- Your Main Content (positioned above the background) -->

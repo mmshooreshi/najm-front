@@ -1,3 +1,4 @@
+// unocss.config.ts
 // uno.config.ts
 import {  presetAttributify, presetUno, presetIcons, transformerDirectives } from 'unocss';
 // import { presetMagicss } from 'unocss-preset-magicss';

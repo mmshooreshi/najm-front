@@ -1,3 +1,4 @@
+<!-- pages/yex.vue -->
 <template>
   <div class="w-screen -mx-4">
     <ClientOnly>

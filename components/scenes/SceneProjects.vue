@@ -1,10 +1,11 @@
+<!-- components/scenes/SceneProjects.vue -->
 
  <!-- components/scenes/SceneProjects.vue  -->
  <template>
-  <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  pt-12">
-    <SceneHeading :data="data" align="right"/>
+  <div  class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  pt-12">
+    <SceneHeading :data="sceneProjects" :align="isRTL ? 'right' : 'left'"/>
     <!-- <ClientOnly> -->
-    <EmblCards :cards="cards"/>
+    <EmblCards :cards="sceneProjects.cards"/>
     
     <!-- </ClientOnly> -->
     
@@ -14,6 +15,11 @@
 <script setup lang="ts">
 import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 import EmblCards  from '@/components/cards/EmblCards.vue'
+import { useLocale } from '@/composables/useLocale'
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
 const data = {
   label : "پروژه‌ها",
   header: "توی نجم هر ایده‌ای رو می‌شه چاپ کرد!",
@@ -34,5 +40,9 @@ const cards = [
   { id: 9,  image: '/images/sections/cards/9.png',  text: 'دنبال یه جعبه‌ خاص‌ام که باز شدنش حس غافلگیری بده.' },
   { id: 10, image: '/images/sections/cards/1.png', text: 'بسته‌بندی من باید هم خوش‌دست باشه هم سریع باز شه، چون مشتری عجوله.' }
 ]
+
+const homeUI = inject<any>('homeUI') ?? {}
+const sceneProjects = computed(() => homeUI?.value?.sceneProjects ?? {})
+
 </script>
 

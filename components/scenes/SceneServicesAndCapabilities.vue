@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneServicesAndCapabilities.vue -->
 
  <!-- ScenePrinting2.vue  -->
  <template>
@@ -12,7 +13,10 @@
 import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 import SceneAccordionLayout from '~/components/scenes/SceneAccordionLayout.vue'
 
-const data = {
+const homeUI = inject<any>('homeUI') ?? {}
+const data = computed(() => homeUI?.value?.sceneServicesAndCapabilities ?? [])
+
+const dataPrev = {
   label : "خدمات و توانایی‌ها",
   header: "بیشتر از یه چاپخونه،<mobile> یه هم‌تیمی خوب",
   description1: "از طراحی تا اجرا، همه چیز در یک مجموعه.",

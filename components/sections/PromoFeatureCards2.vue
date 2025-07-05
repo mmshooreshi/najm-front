@@ -1,3 +1,4 @@
+<!-- components/sections/PromoFeatureCards2.vue -->
 <!-- components/PromoFeatureCards.vue -->
 <script setup lang="ts">
   import BaseArrow from '@/components/Base/BaseArrow.vue'

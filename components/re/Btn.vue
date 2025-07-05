@@ -1,3 +1,4 @@
+<!-- components/re/Btn.vue -->
 <template>
     <button class="btn" @click="handleClick" :disabled="loading">
       <span v-if="loading" class="spinner"></span>

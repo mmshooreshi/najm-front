@@ -1,3 +1,4 @@
+<!-- components/StackedCards.vue -->
 <template>
   <div class="page-container">
     <h1></h1>

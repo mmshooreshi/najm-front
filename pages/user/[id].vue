@@ -1,3 +1,4 @@
+<!-- pages/user/[id].vue -->
 <template>
     <div class=" mx-auto mt-8 py-8">
       <!-- User Profile Section -->

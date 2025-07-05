@@ -1,3 +1,4 @@
+<!-- components/Base/BaseSkeleton2.vue -->
 
 <template>
   <div

@@ -1,3 +1,4 @@
+<!-- components/debug/DebugPane.vue -->
 <!-- components/DebugPane.vue -->
 <template>
   <div v-if="show" class="fixed bottom-4 right-4 bg-black/70 text-white p-3 rounded-lg z-[9999] text-xs">

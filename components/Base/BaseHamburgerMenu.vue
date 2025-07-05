@@ -1,3 +1,4 @@
+<!-- components/Base/BaseHamburgerMenu.vue -->
 <template>
   <div :class="['relative inline-block', containerClass]">
     <button

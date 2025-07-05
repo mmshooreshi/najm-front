@@ -1,3 +1,4 @@
+<!-- components/sections/FaqSection.vue -->
 <template>
     <section class="rtl py-16">
       <div class="max-w-4xl mx-auto flex flex-col gap-12 overflow-visible">

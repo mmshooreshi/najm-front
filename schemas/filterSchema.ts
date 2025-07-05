@@ -1,3 +1,4 @@
+// schemas/filterSchema.ts
 export interface FilterOption {
     value: string
     label: string

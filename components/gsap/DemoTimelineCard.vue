@@ -1,3 +1,4 @@
+<!-- components/gsap/DemoTimelineCard.vue -->
 <template>
   <div v-gsap.timeline.whenVisible>
     <article v-gsap.add.from="{ scale: 0.8, height: 0, padding: 0 }">

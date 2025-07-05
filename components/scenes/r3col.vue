@@ -1,3 +1,4 @@
+<!-- components/scenes/r3col.vue -->
 <template>
   <div class="w-full mx-auto px-0">
     <!-- Ensure grid items stretch to full height -->

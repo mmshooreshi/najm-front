@@ -1,3 +1,4 @@
+<!-- components/sections/FollowupWheelOriginal.vue -->
 <template>
     <div
       dir="rtl"

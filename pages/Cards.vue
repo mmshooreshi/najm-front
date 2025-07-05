@@ -1,3 +1,4 @@
+<!-- pages/Cards.vue -->
 <template>
   <div>
     <CardAnimator4/>

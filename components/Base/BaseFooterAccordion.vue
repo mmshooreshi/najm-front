@@ -1,3 +1,4 @@
+<!-- components/Base/BaseFooterAccordion.vue -->
 <template>
     <div
       class="group  bg-[#115247]/100  border border-transparent rounded-xl overflow-hidden transition-colors  "

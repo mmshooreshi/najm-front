@@ -1,3 +1,4 @@
+<!-- pages/__.vue -->
 <!-- src/components/EmblaCarousel.vue -->
 <template>
   <div class="embla" ref="emblaRef">

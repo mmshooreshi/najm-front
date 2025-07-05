@@ -1,10 +1,12 @@
+<!-- components/Base/BaseFaqItem.vue -->
 <template>
     <div    :delay="index*100" class="py-1 text-sm text-d4 text-demibold">
       <!-- question row -->
       <!-- {{index}} -->
 
       <button
-        class="w-full flex bg-transparent justify-between items-center text-right py-3 focus:outline-none"
+      :class="[isRTL? 'text-right' : 'text-left']"
+        class="w-full flex bg-transparent justify-between items-center  py-3 focus:outline-none"
         @click="toggle"
       >
 
@@ -37,7 +39,8 @@
       >
         <div
           ref="contentRef"
-          class="mt-2 text-xs text-gray-600 text-right leading-relaxed mb-2"
+          :class="[isRTL? 'text-right' : 'text-left']"
+          class="mt-2 text-xs text-gray-600  leading-relaxed mb-2"
         >
           {{ answer }}
         </div>
@@ -46,7 +49,9 @@
   </template>
   
   <script setup lang="ts">
-  
+  const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
   const props = defineProps<{
     question: string
     answer: string

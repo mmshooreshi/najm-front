@@ -1,3 +1,4 @@
+<!-- components/filters/FilterCollapse.vue -->
 <template>
   <div class=" p-6 py-3 rounded-3xl space-y-4 flex flex-col">
 

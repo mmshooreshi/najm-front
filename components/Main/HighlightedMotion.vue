@@ -1,6 +1,7 @@
+<!-- components/Main/HighlightedMotion.vue -->
 
 <template>
-  <div >
+  <div>
     <!-- border-t-2 border-red-500 -->
     <!-- <div class="border-t-2 border-red-500 fixed top-[65px] left-0 w-full  z-[9999] pointer-events-none">
   <p class="text-red-500 text-xs ml-2">rootMargin top (-200px)</p>
@@ -15,42 +16,35 @@
       <p><code>intersectionRatio</code>: {{ intersectionRatio.toFixed(2) }}</p>
       <p><code>playedOnce</code>: {{ playedOnce }}</p>
     </div> -->
-    <section
-      ref="sectionRef"
-      class="rtl max-w-xl mx-auto space-y-0 p-0 sm:p-2 text-right leading-relaxed flex flex-wrap justify-center w-full "
-      
-      >
+    <section ref="sectionRef" :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl text-right' : 'ltr text-left']"
+      class="max-w-xl mx-auto space-y-0 p-0 sm:p-2 leading-relaxed flex flex-wrap justify-center w-full ">
       <!--top classes can get these added tO: border border-4 border-black rounded-3xl -->
       <template v-for="(h, i) in highlights" :key="i">
         <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
         <div v-else class="flex flex-row justify-start items-center text-nowrap">
-          <span
-            v-if="h.label !== '' && h.label !== 'end'"
-            :ref="el => (highlightRefs[i] = el as HTMLElement)"
-            class="inline-block rounded-xl px-2 py-1 text-2xl md:text-3xl font-black text-d4"
-            :style="{
+          <span v-if="h.label !== '' && h.label !== 'end'" :ref="el => (highlightRefs[i] = el as HTMLElement)"
+            class="inline-block rounded-xl px-2 py-1 text-2xl md:text-3xl font-black text-d4 transition-all" :style="{
               backgroundColor: h.bgColor ?? '#6D28D9',
-              color:           h.textColor ?? 'white',
-              transform:       h.rotation ? `rotate(${h.rotation})` : undefined,
-              'margin-right':  h.indent ?? '0px',
-            }"
-          >{{ h.label }}</span>
+              color: h.textColor ?? 'white',
+              transform: h.rotation ? `rotate(${h.rotation})` : undefined,
+              'margin-right': h.indent ?? '0px',
+            }" :class="[
+              '!hover:rotate-0',
+              '!hover:bg-black',
+              '!hover:text-white',
+              '!cursor-pointer'
+            ]">{{ h.label }}</span>
           <span v-else :style="{ 'margin-right': h.indent ?? '0px' }"></span>
-          <span
-            :ref="el => (typedRefs[i] = el as HTMLElement)"
-            class="inline-block mx-0 text-2xl md:text-3xl  font-black text-d4 whitespace-pre rtl"
-          ></span>
+          <span :ref="el => (typedRefs[i] = el as HTMLElement)"
+            class="inline-block mx-0 text-2xl md:text-3xl  font-black text-d4 whitespace-pre "></span>
         </div>
       </template>
       <div class="basis-full h-0"></div>
     </section>
-    <div class="rtl flex flex-col w-full mt-8 max-w-xl mx-auto">
+    <div class=" flex flex-col w-full mt-8 max-w-xl mx-auto">
       <template v-for="(p, i) in paragraphes" :key="i">
-        <p
-          :ref="el => (paragraphRefs[i] = el as HTMLElement)"
-          :class="[i === 0 ? 'font-extrabold' : '']"
-          class="text-sm md:text-base text-center mb-4"
-        ></p>
+        <p :ref="el => (paragraphRefs[i] = el as HTMLElement)" :class="[i === 0 ? 'font-extrabold' : '']"
+          class="text-sm md:text-base text-center mb-4"></p>
       </template>
     </div>
   </div>
@@ -65,6 +59,7 @@ import gsap, { Elastic } from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import SplitText from 'gsap/SplitText'
 import CustomEase from 'gsap/CustomEase'
+import { useLocale } from '@/composables/useLocale'
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase)
 
@@ -75,7 +70,7 @@ CustomEase.create("easeLineIn", "0.33, 1, 0.68, 1")         // smoother line rev
 
 
 // Replace or augment your custom eases:
-CustomEase.create("springIn",  "0.5, 1.5, 0.5, 1") // try tweaking these
+CustomEase.create("springIn", "0.5, 1.5, 0.5, 1") // try tweaking these
 CustomEase.create("springOut", "0.5, 0.25, 0.75, 0.25")
 
 const springEase = Elastic.easeOut.config(1, 0.4)
@@ -127,30 +122,30 @@ const animationConfig = {
     // lines:     { forward: springEase,    backward: "power1.in" }
 
     highlight: { forward: "easeHighlightIn", backward: "easeHighlightOut" },
-    lines:     { forward: "easeLineIn", backward: "power1.in" }
+    lines: { forward: "easeLineIn", backward: "power1.in" }
   },
   durations: {
-    bounce:                 props.bounceDuration ?? 0.7,
-    highlightScaleDown:     0.6,
-    lineFull:               0.4,
-    lineVertical:           0.4,
-    lineVerticalLabel:      0.3,
-    paragraphLine:          0.4,
-    pause:                  0.4
+    bounce: props.bounceDuration ?? 0.7,
+    highlightScaleDown: 0.6,
+    lineFull: 0.4,
+    lineVertical: 0.4,
+    lineVerticalLabel: 0.3,
+    paragraphLine: 0.4,
+    pause: 0.4
   },
   staggers: {
-    lineFull:  0.04,
+    lineFull: 0.04,
     paragraph: 0.1
   }
 }
 
-const bounceScale   = props.bounceScale ?? 1.25
-const start         = props.start       ?? 'top 45%'
-const scrub         = props.scrub       ?? false
+const bounceScale = props.bounceScale ?? 1.25
+const start = props.start ?? 'top 45%'
+const scrub = props.scrub ?? false
 
-const sectionRef    = ref<HTMLElement>()
+const sectionRef = ref<HTMLElement>()
 const highlightRefs = ref<HTMLElement[]>([])
-const typedRefs     = ref<HTMLElement[]>([])
+const typedRefs = ref<HTMLElement[]>([])
 const paragraphRefs = ref<HTMLElement[]>([])
 
 // Debug state
@@ -158,10 +153,29 @@ const isVisible = ref(false)
 const intersectionRatio = ref(0)
 let playedOnce = false
 
-onMounted(async () => {
-  await nextTick()
+
+onMounted(() => {
+  nextTick(() => {
+    runHighlightAnimation()
+  })
+})
+
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
+const tlHighlights = gsap.timeline({
+  defaults: { ease: animationConfig.eases.highlight.forward },
+  paused: true,
+})
+
+function runHighlightAnimation() {
+  // All the stuff you have in onMounted(), move it here (setup timeline, splitText, etc)
+
+
+  // await nextTick()
   const splits: SplitText[] = [] // track for reverting
-  
+
   if (sectionRef.value) {
     gsap.set(sectionRef.value, { opacity: 0 })
   }
@@ -173,7 +187,7 @@ onMounted(async () => {
     el: HTMLElement,
     { duration, stagger, at }: { duration?: number; stagger?: number; at?: string }
   ) {
-    ;(el as any)._split?.revert()
+    ; (el as any)._split?.revert()
     const split = new SplitText(el, { type: 'words', wordsClass: 'split-word' })
     splits.push(split)
 
@@ -181,36 +195,32 @@ onMounted(async () => {
     const stag = stagger ?? (type === 'full' ? animationConfig.staggers.lineFull : 0)
 
     gsap.set(split.words, {
-  clipPath: 'inset(0% 0% 100% 0%)',
-  opacity:  0,
-  yPercent: 100
-})
-tl.to(split.words, {
-  clipPath: 'inset(0% 0% 0% 0%)',
-  yPercent:  0,
-  opacity:   1,
-  stagger:   0.05,
-  duration:  animationConfig.durations.lineVertical,
-  ease:      animationConfig.eases.lines.forward
-}, at)
+      clipPath: 'inset(0% 0% 100% 0%)',
+      opacity: 0,
+      yPercent: 100
+    })
+    tl.to(split.words, {
+      clipPath: 'inset(0% 0% 0% 0%)',
+      yPercent: 0,
+      opacity: 1,
+      stagger: 0.05,
+      duration: animationConfig.durations.lineVertical,
+      ease: animationConfig.eases.lines.forward
+    }, at)
 
   }
-   const tlHighlights = gsap.timeline({
-   defaults: { ease: animationConfig.eases.highlight.forward },
-   paused: true,
- })
- // add a “blank” tween to wait for initialDelay seconds:
- if (props.initialDelay > 0) {
-   tlHighlights.to({}, {
-     duration: props.initialDelay,
-     immediateRender: false    // ensure it doesn’t render immediately
-   })
- }
+  // add a “blank” tween to wait for initialDelay seconds:
+  if (props.initialDelay > 0) {
+    tlHighlights.to({}, {
+      duration: props.initialDelay,
+      immediateRender: false    // ensure it doesn’t render immediately
+    })
+  }
 
 
 
 
-  useIntersectionObserver(
+useIntersectionObserver(
   sectionRef,
   ([entry]) => {
     if (!sectionRef.value) return
@@ -219,42 +229,34 @@ tl.to(split.words, {
     isVisible.value = entry.isIntersecting
 
     if (entry.isIntersecting) {
-      // If visible (excluding top 64px), fade in
-
-      if (sectionRef.value.style.opacity !== '1') {
+      // 🔁 Fade in section always
       gsap.to(sectionRef.value, {
-          opacity: 1,
-          duration: 0.5,
-          ease: 'power1.out'
-        })
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power1.out'
+      })
 
-      }
-
-
+      // ✅ Only play animation once
+      if (!playedOnce) {
         tlHighlights.restart()
         tlHighlights.seek(0).play()
-      // Play once
-      if (!tlHighlights.isActive()) {
-        
-
-
-}
+        playedOnce = true
+      }
     } else {
-      // When under sticky header — fade out
+      // ✅ Always fade out when leaving view
       gsap.to(sectionRef.value, {
         opacity: 0,
         duration: 0.6,
         ease: 'expo.out'
       })
-
-
     }
   },
   {
-    threshold: 0.6, // Trigger on slight visibility
-    rootMargin: "-65px 0px 0px 0px" // top offset simulating header height
+    threshold: 0.6,
+    rootMargin: "-65px 0px 0px 0px"
   }
 )
+
 
   // PASS 1: highlight bounce
   props.highlights.forEach((h, i) => {
@@ -265,7 +267,8 @@ tl.to(split.words, {
         .fromTo(
           highlightRefs.value[i]!,
           { scale: 0, opacity: 0 },
-          { scale: bounceScale, opacity: 1, duration: animationConfig.durations.bounce,
+          {
+            scale: bounceScale, opacity: 1, duration: animationConfig.durations.bounce,
             ease: animationConfig.eases.highlight.forward,
             easeBackwards: animationConfig.eases.highlight.backward
           }
@@ -319,17 +322,40 @@ tl.to(split.words, {
       })
     }
   })
+}
+
+
+watch(language, () => {
+  if (sectionRef.value) {
+    // Reset
+    gsap.set(sectionRef.value, { opacity: 0 })
+    tlHighlights.pause(0).clear()
+    playedOnce = false
+    // Trigger rerun on next tick
+    nextTick(() => {
+      runHighlightAnimation()
+    })
+  }
 })
+
 </script>
 
 
 
 
 <style scoped lang="scss">
-section { direction: rtl; }
-.split-line { display: block; overflow: hidden; }
-.split-wor{  display: inline-block;  /* or block if you need each word on its own line */
+section {
+  direction: rtl;
+}
+
+.split-line {
+  display: block;
   overflow: hidden;
 }
 
+.split-wor {
+  display: inline-block;
+  /* or block if you need each word on its own line */
+  overflow: hidden;
+}
 </style>

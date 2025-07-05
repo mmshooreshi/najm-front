@@ -1,3 +1,4 @@
+<!-- pages/select.vue -->
 <template>
     <div class="p-6">
       <SelectBox v-model="selectedValue" :options="options">

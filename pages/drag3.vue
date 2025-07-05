@@ -1,3 +1,4 @@
+<!-- pages/drag3.vue -->
 <template>
     <div class="space-y-6 flex flex-col items-center p-6">
       <!-- Animated Element -->

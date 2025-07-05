@@ -1,3 +1,4 @@
+<!-- components/map-original.vue -->
 <template>
     <div>
       <!-- Map Thumbnail -->

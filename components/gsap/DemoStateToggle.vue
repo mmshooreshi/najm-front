@@ -1,3 +1,4 @@
+<!-- components/gsap/DemoStateToggle.vue -->
 <template>
   <div
     v-gsap.onState-visible.from="{ scale: 0, rotate: -25, duration: 0.3 }"

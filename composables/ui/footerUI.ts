@@ -1,3 +1,4 @@
+// composables/ui/footerUI.ts
 import { computed } from 'vue'
 import { useFetch } from '#app'
 import defaultfooterUIData from '@/schemas/footer-ui.json'

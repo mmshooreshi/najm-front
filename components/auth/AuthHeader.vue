@@ -1,3 +1,4 @@
+<!-- components/auth/AuthHeader.vue -->
 <!-- components/AuthHeader.vue -->
 <template>
     <div class="flex flex-col items-start rtl gap-9 text-center">

@@ -1,3 +1,4 @@
+<!-- components/testing.vue -->
 <template>
     <div class="container" tabindex="0" @keyup.esc="stop()">
       <div ref="box" class="box" @click="animate">Click me</div>

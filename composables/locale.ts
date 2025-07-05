@@ -1,3 +1,4 @@
+// composables/locale.ts
 // import type { Ref } from 'vue'
 
 // export const useLocale = () => useState<string>('locale', () => useDefaultLocale().value)

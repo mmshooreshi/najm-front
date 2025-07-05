@@ -1,3 +1,4 @@
+<!-- components/popDiv.vue -->
 <template>
     <div style="position: relative; padding: 2rem;">
       <!-- Button/Icon that toggles the popup -->

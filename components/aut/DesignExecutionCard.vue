@@ -1,3 +1,4 @@
+<!-- components/aut/DesignExecutionCard.vue -->
 <template>
   <div class="flex flex-col w-full md:max-w-xs h-auto gap-6 p-6  bg-[#daebd0]/100  rounded-[25px] ">
     <!-- Top Section -->

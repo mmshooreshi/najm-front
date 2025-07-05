@@ -1,3 +1,4 @@
+<!-- components/new/HighlightedText.vue -->
 <template>
     <div class="h-[100px]">
     <ClientOnly>
@@ -6,18 +7,7 @@
         :speed="2"
         start="top top"
         :markers=true
-        :highlights="[
-
-          { label:'', sentence: 'یه راهکار خلاقانه برای ' },
-          { label: 'چاپ', bgColor: '#F4FFD0', textColor: 'black', rotation: '-3.2deg' },
-          { label:'', sentence: ' و ' },
-          { label:'break'},
-          { label: 'بسته‌بندی', bgColor: '#B9ADFF', textColor: 'black', rotation: '3.36deg' },
-          { label:'', sentence: ' مورد نیاز شما' },
-          { label: 'end' } // invisible, only used for timeline alignment
-
-        ]"
-
+        :highlights="highlights"
         :bounce-scale="1.1"
         :bounce-duration="0.2"
         :type-speed="20"
@@ -30,6 +20,24 @@
 
 <script lang="ts" setup>
 import HighlightedMotion from '@/components/Main/HighlightedMotion.vue'
+
+const homeUI = inject<any>('homeUI') ?? {}
+const highlights = computed(() => homeUI?.value?.highlightedText ?? [])
+
+
+        // :highlights="[
+
+        //   { label:'', sentence: 'یه راهکار خلاقانه برای ' },
+        //   { label: 'چاپ', bgColor: '#F4FFD0', textColor: 'black', rotation: '-3.2deg' },
+        //   { label:'', sentence: ' و ' },
+        //   { label:'break'},
+        //   { label: 'بسته‌بندی', bgColor: '#B9ADFF', textColor: 'black', rotation: '3.36deg' },
+        //   { label:'', sentence: ' مورد نیاز شما' },
+        //   { label: 'end' } // invisible, only used for timeline alignment
+
+        // ]"
+
+
 </script>
 
 <style>

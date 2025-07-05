@@ -1,19 +1,20 @@
+<!-- components/sections/FaqSec.vue -->
 <template>
-  <section class="rtl pt-16">
+  <section :dir="isRTL ? 'rtl' : 'ltr'" class="pt-16">
     <div class="max-w-4xl mx-auto flex flex-col gap-12 overflow-visible">
       <!-- Title -->
       <h2 class="text-lg md:text-xl font-bold text-center">
-        مهم نیست کار چقدر پیچیده باشه، هرجای این مسیر، ما با شما هستیم.
+        {{data.heading}}
       </h2>
 
       <!-- Category Tabs -->
      <div class="relative h-8 lg:h-28">
   <div
     ref="tabsContainer"
-    class="tabs-container absolute   sm:w-screen lg:max-w-[1000px]  flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start sm:px-4 w-max lg:justify-center -right-4 lg:-right-14"
+    class="tabs-container absolute   sm:w-screen lg:max-w-[1000px]  flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start sm:px-4 w-max lg:justify-center "
   >
             <button
-            v-for="(cat, i) in categories"
+            v-for="(cat, i) in data.categories"
             :key="cat.name"
             @click="selectTab(i)"
             :class="[
@@ -38,8 +39,10 @@
 </div> -->
 
         <ClientOnly>
+          <div :key="renderKey">
+
     <FaqItem
-       v-for="(item, idx) in categories[activeTab].items"
+       v-for="(item, idx) in data.categories[activeTab].items"
        :key="item.key"
        :index="idx"
        :question="item.question"
@@ -47,6 +50,7 @@
        :open="activeItem === idx"
        @toggle="activeItem = activeItem === idx ? null : idx"
      />
+     </div>
 </ClientOnly>
       </div>
     </div>
@@ -57,6 +61,8 @@
 import { ref } from 'vue'
 import FaqItem from '@/components/Base/BaseFaqItem.vue'
 
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 interface Category {
   name: string
@@ -193,7 +199,7 @@ interface Category {
 //   ])
     
 
-const categories = ref<Category[]>([
+const categoriesPrev = ref<Category[]>([
   {
     name: 'خدمات چاپ و بسته‌بندی',
     items: [
@@ -480,13 +486,31 @@ const categories = ref<Category[]>([
 
 
 
-
-
-
-
+const homeUI = inject<any>('homeUI') ?? {}
+const data = ref<{ heading: string; categories: Category[] }>({
+  heading: '',
+  categories: []
+})
 const activeTab = ref(0)
 const activeItem = ref<number|null>(null)
-watch(activeTab, () => { activeItem.value = null })
+
+watch(
+  language,
+  () => {
+    const newData = homeUI?.value?.sceneFaq ?? {}
+    data.value = {
+      heading: newData.heading,
+      categories: newData.categories || []
+    }
+    activeTab.value = 0
+    activeItem.value = null
+  },
+  { immediate: true }
+)
+
+
+
+
 
 watch(activeTab, () => {
   activeItem.value = null
@@ -515,6 +539,9 @@ function selectTab(i: number) {
 })
 
 }
+
+
+const renderKey = computed(() => `${language.value}-${activeTab.value}`)
 
 </script>
 

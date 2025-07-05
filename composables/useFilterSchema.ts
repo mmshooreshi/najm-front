@@ -1,3 +1,4 @@
+// composables/useFilterSchema.ts
 import { useRuntimeConfig, useAsyncData } from '#app'
 import { defaultFilterSchema, type FilterGroup } from '~/schemas/filterSchema'
 import { computed } from 'vue'

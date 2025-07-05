@@ -1,3 +1,4 @@
+<!-- pages/n.vue -->
 <template>
 
 <div dir="rtl" class="my-8 md:mx-8 flex flex-col md:flex-row justify-between gap-4 md:gap-0">

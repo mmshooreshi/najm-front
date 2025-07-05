@@ -1,3 +1,4 @@
+<!-- pages/d.vue -->
 <template>
     <!-- note the ref="wrapper" here -->
     <div ref="wrapper" class="-mx-4 overflow-visible">

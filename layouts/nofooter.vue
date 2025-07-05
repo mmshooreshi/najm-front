@@ -1,3 +1,4 @@
+<!-- layouts/nofooter.vue -->
 <!-- ./najm-front/layouts/default.vue -->
 <script setup lang="ts">
 import { ref } from 'vue'

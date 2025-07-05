@@ -1,3 +1,4 @@
+<!-- components/scenes/SliderSqr.vue -->
 <!-- SliderSqr.vue: -->
 <template>
     <div class="h-full w-full  relative">

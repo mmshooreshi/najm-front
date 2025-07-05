@@ -1,3 +1,4 @@
+<!-- components/gsap/DemoPinned.vue -->
 <template>
   <BoxComponent
     class="w-full relative"

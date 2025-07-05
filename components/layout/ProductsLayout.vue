@@ -1,3 +1,4 @@
+<!-- components/layout/ProductsLayout.vue -->
 <template>
   <div class="grid grid-cols-12 gap-6 rtl">
     <!-- Filters -->

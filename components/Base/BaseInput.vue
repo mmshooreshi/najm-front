@@ -1,3 +1,4 @@
+<!-- components/Base/BaseInput.vue -->
 <template>
     <div class="relative">
       <input

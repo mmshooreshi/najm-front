@@ -1,3 +1,4 @@
+<!-- pages/jump.vue -->
 <template>
     <div>
       <h1>Motion Path Discrete Jumps</h1>

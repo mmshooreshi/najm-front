@@ -1,3 +1,4 @@
+<!-- components/Base/BaseAnimatedImage.vue -->
 <template>
 
 

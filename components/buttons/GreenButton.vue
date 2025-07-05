@@ -1,3 +1,4 @@
+<!-- components/buttons/GreenButton.vue -->
 <script setup lang="ts">
 
 const props = defineProps({

@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneFacilities.client.vue -->
 <template>
   <div class="snap-start flex flex-col w-full gap-12 pt-12">
     <SceneHeading :data="data"/>
@@ -7,7 +8,7 @@
 
       <template #left>
         <div v-memotion-pop-visible="{ delay: 1, duration: 0.4 }"   class="h-[300px] md:h-[400px] rounded-3xl w-full">
-          <SliderSqr class="h-full w-full" :slides="facilitiesSlides" paginationPosition="bottom left" />
+          <SliderSqr class="h-full w-full" :slides="data.facilitiesSlides" paginationPosition="bottom left" />
 
           <!-- 2) SliderSqr just needs to be full -->
         </div>
@@ -26,7 +27,7 @@
         <div class="absolute  flex flex-col gap-2 h-full  w-full items-center">
 
           <div class="relative w-full h-full flex flex-row items-center  overflow-hidden">
-            <labelz/>
+            <labelz :labels="data.labels" />
           </div>
 
         </div>
@@ -37,7 +38,7 @@
 
       <template #right>
         <div v-memotion-pop-visible="{ delay: 0.5, duration: 0.4 }"  class="h-[300px] md:h-[400px] rounded-3xl w-full">
-          <SliderSqr hideArrows class="h-full w-full" :slides="machinesSlides" paginationPosition="bottom left"/>
+          <SliderSqr hideArrows class="h-full w-full" :slides="data.machinesSlides" paginationPosition="bottom left"/>
 
         </div>
       </template>
@@ -53,7 +54,7 @@ import r3col from '@/components/scenes/r3col.vue'
 import SliderSqr from '@/components/scenes/SliderSqr.vue'
 import labelz from '@/components/scenes/labelz.vue'
 
-const data = {
+const dataPrev = {
   label : "امکانات و تجهیزات",
   header:"کیفیت و دقتی که درباره اون صحبت می‌کنیم رو از نزدیک ببینید",
   description1: "یه تیم یکپارچه به شما این امکان رو می‌ده که تمام مراحل تولید، از طراحی تا چاپ و بسته‌بندی رو با یک پارتنر پیش ببرید و به جای مدیریت چندین تأمین‌کننده جداگانه فقط بر کار خودتون متمرکز بشید.",
@@ -62,7 +63,7 @@ const data = {
 
 // ——————————————
 // Slides for the *left* (machines) slider
-const machinesSlides = [
+const machinesSlidesPrev = [
   {
     image: '/images/sections/facilities/machines-1.gif',
     alt:   'تجهیزات و دستگاه‌ها',
@@ -73,7 +74,7 @@ const machinesSlides = [
 
 // ——————————————
 // Slides for the *right* (facilities) slider
-const facilitiesSlides = [
+const facilitiesSlidesPrev = [
   {
     image: '/images/sections/facilities/facilities-1.gif',
     alt:   'امکانات و بخش‌ها',
@@ -130,6 +131,10 @@ const facilitiesSlides = [
   }
 
 ]
+
+
+const homeUI = inject<any>('homeUI') ?? {}
+const data = computed(() => homeUI?.value?.sceneFacilities ?? {})
 
 
 </script>

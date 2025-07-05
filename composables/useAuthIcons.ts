@@ -1,3 +1,4 @@
+// composables/useAuthIcons.ts
 const svgModules = import.meta.glob('@/assets/icons/Auth/*.svg', { as: 'url', eager: true })
 
 const iconMap: Record<string, string> = {}

@@ -1,3 +1,4 @@
+<!-- components/atom/logo.vue -->
 <template>
     <!-- Mobile-only logo group with dynamic width -->
     <div

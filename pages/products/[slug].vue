@@ -1,3 +1,4 @@
+<!-- pages/products/[slug].vue -->
 <template>
   <div class="mt-28 px-4 rtl lg:px-20">
     <section v-if="pending" class="text-center py-8">

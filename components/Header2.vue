@@ -1,3 +1,4 @@
+<!-- components/Header2.vue -->
 <template>
   <header
     dir="rtl"

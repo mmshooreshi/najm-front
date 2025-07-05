@@ -1,3 +1,4 @@
+<!-- components/Footer2.vue -->
 <template>
   <footer dir="rtl" class="bg-[#014439]/100 rounded-t-[15px] text-center items-center text-white/100 pt-16 pb-16">
     <div class=" grid-cols-2 grid w-full">

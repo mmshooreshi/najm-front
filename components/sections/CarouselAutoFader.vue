@@ -1,3 +1,4 @@
+<!-- components/sections/CarouselAutoFader.vue -->
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import 'swiper/swiper-bundle.css'

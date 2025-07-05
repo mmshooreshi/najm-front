@@ -1,3 +1,4 @@
+<!-- components/fixed/RotatoryPane.vue -->
 <!-- components/RotatoryPane.vue -->
 <template>
   <!-- <div  class="fixed w-28 h-28 z-50 bottom-28 right-4 bg-black/70 text-white p-3 rounded-lg z-[9999] text-xs bg-red"> -->

@@ -1,3 +1,4 @@
+<!-- components/Accordion2.vue -->
 <template>
     <div class="border rounded-xl overflow-hidden bg-[#F1F5F9]">
       <button

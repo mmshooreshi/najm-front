@@ -1,3 +1,4 @@
+<!-- components/FollowupItem.vue -->
 <template>
     <div
       class="cursor-pointer flex flex-col items-center gap-2"

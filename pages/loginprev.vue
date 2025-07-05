@@ -1,3 +1,4 @@
+<!-- pages/loginprev.vue -->
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import AuthSegmentedTabs from '~/components/auth/AuthSegmentedTabs.vue'

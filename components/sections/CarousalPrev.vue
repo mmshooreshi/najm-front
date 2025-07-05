@@ -1,3 +1,4 @@
+<!-- components/sections/CarousalPrev.vue -->
 <template>
     <div class="h-48 md:h-96 mt-6 py-6 relative flex flex-col items-center justify-center">
     <img src="/images/sections/printing/printing-section-1.png" alt="Printing Machine" class="w-min absolute -z-1 w-full h-48 md:h-96 object-cover rounded-3xl " />

@@ -1,3 +1,4 @@
+<!-- components/sections/jadid.vue -->
 <template>
     <div class="flex flex-col w-full h-auto gap-[236px] p-6 bg-[url('https://dashboard.codeparrot.ai/api/image/Z8MAvVj1kitRpYP1/frame-33.png')] bg-cover rounded-[25px]">
       <!-- Header section -->

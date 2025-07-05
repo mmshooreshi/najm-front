@@ -1,3 +1,4 @@
+<!-- components/Base/BaseProductItem.vue -->
 <script setup lang="ts">
 // Define the product prop
 defineProps<{ product: import('@/types').Product }>()

@@ -1,3 +1,4 @@
+<!-- pages/loginAr.vue -->
 <!-- pages/login.vue -->
 <script setup lang="ts">
 import AuthHeader from '~/components/auth/AuthHeader.vue'

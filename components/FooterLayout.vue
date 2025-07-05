@@ -1,3 +1,4 @@
+<!-- components/FooterLayout.vue -->
 <template>
     <div dir="rtl" class="flex flex-col  bg-[#e4edf0]/100  rounded-[25px] p-9 w-full items-start">
       <!-- <div class="flex flex-row gap-12 items-start" > -->

@@ -1,3 +1,4 @@
+<!-- components/scenes/labelz.vue -->
 <template>
     <div class="w-full h-29  overflow-visible relative flex flex-col items-center justify-center gap-2">
       <div
@@ -22,26 +23,16 @@
   <script setup lang="ts">
   import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
   
-  const labels = [
-    // { text: 'یکپارچگی در فرایند تولید',  bg: '#F4FFD0' },
-    // { text: 'تجربه و تخصص',              bg: '#B9ADFF' },
-    // { text: 'تعادل بین کیفیت و هزینه',   bg: '#ADFAFF' },
-    // { text: 'دقت و سرعت',               bg: '#FFEBB7' },
-    // { text: 'انعطاف‌پذیری در اجرا', bg: '#FFD0F4' },  // ← new fifth item
+const props = defineProps<{
+  labels: { text: string, bg: string }[]
+}>()
 
-    { text: 'تجربه و تخصص',              bg: '#B9ADFF' },
-    { text: 'دقت و سرعت',               bg: '#FFEBB7' },
-    { text: 'یکپارچگی در فرایند',  bg: '#F4FFD0' },
-    { text: 'تعادل بین کیفیت و هزینه',   bg: '#ADFAFF' },
-    { text: 'انعطاف‌پذیری در اجرا', bg: '#FFD0F4' },  // ← new fifth item
-
-  ]
   
   const activeIndex = ref(0)
-  const prevIndex   = computed(() => (activeIndex.value - 1 + labels.length) % labels.length)
-  const nextIndex   = computed(() => (activeIndex.value + 1) % labels.length)
-  const next2Index  = computed(() => (activeIndex.value + 2) % labels.length)
-  const next3Index  = computed(() => (activeIndex.value + 3) % labels.length)  // ← three ahead
+  const prevIndex   = computed(() => (activeIndex.value - 1 + props.labels.length) % props.labels.length)
+  const nextIndex   = computed(() => (activeIndex.value + 1) % props.labels.length)
+  const next2Index  = computed(() => (activeIndex.value + 2) % props.labels.length)
+  const next3Index  = computed(() => (activeIndex.value + 3) % props.labels.length)  // ← three ahead
   
   let intervalId: number
   onMounted(() => {

@@ -1,3 +1,4 @@
+<!-- components/sections/FollowupWheel.vue -->
 <template>
     <!-- Container is always in the DOM, but initially hidden with opacity-0 -->
     <div

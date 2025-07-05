@@ -1,3 +1,4 @@
+<!-- components/rotatoryLegacy.vue -->
 <template>
     <button class="button">
       <!-- Rotating text along a circular path -->

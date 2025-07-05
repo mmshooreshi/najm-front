@@ -1,3 +1,4 @@
+<!-- components/cards/EmblPackageCards.vue -->
 <template>
   <div dir="rtl" class="relative overflow-x-visible absolute py-0">
     <div class="overflow-visible w-full" ref="viewportRef">
@@ -81,7 +82,7 @@
 
     <div v-if="showDots" class="flex gap-2">
   <button
-    v-for="(pkg, idx) in pkg"
+    v-for="(pkg, idx) in packages"
     :key="pkg.id"
     @pointerin="scrollTo(idx)"
     @mouseenter="scrollTo(idx)"

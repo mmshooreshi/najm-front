@@ -1,4 +1,5 @@
 <!-- components/atom/SearchModal.vue -->
+<!-- components/atom/SearchModal.vue -->
 <template>
     <transition name="slide-down">
       <div

@@ -1,3 +1,4 @@
+<!-- assets/svg/DecorBlob.vue -->
 <!-- components/DecorBlobSvg.vue -->
 <template>
   <svg

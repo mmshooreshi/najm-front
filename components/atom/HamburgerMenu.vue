@@ -1,3 +1,4 @@
+<!-- components/atom/HamburgerMenu.vue -->
 
 <!-- components/HamburgerMenu.vue -->
 <template>

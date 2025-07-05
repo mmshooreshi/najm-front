@@ -1,3 +1,4 @@
+<!-- components/auth/SocialLoginButtons.vue -->
 <!-- components/SocialLoginButtons.vue -->
 <template>
     <div class="flex flex-row-reverse items-center justify-between gap-2">

@@ -1,3 +1,4 @@
+<!-- components/drag/Gable.vue -->
 <script setup lang="ts">
 import { useDraggable } from '@vueuse/core'
 import { useTemplateRef } from 'vue'

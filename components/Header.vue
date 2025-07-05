@@ -1,3 +1,4 @@
+<!-- components/Header.vue -->
 <template>
   <!-- backdrop-blur -->
   <div dir="rtl" class="fixed top-0 z-50 w-full  bg-white bg-opacity-100  flex  p-2 w-full">

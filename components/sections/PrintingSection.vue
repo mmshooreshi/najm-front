@@ -1,3 +1,4 @@
+<!-- components/sections/PrintingSection.vue -->
 <template>
     <div dir="rtl" class="relative max-w-2xl mx-auto text-center rounded-3xl mt-6 md:mt-0">
       <h2  v-motion-pop-visible  class="text-2xl font-extrabold text-[#000000] text-d4">بیشتر از یه چاپخونه، یه هم‌تیمی خوب</h2>

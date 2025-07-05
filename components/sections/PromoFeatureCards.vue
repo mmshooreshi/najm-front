@@ -1,6 +1,9 @@
+<!-- components/sections/PromoFeatureCards.vue -->
 <!-- components/PromoFeatureCards.vue -->
 <script setup lang="ts">
   import BaseArrow from '@/components/Base/BaseArrow.vue'
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 // ------------------------------------------------------------------
 //  Type & sample data ------------------------------------------------
@@ -15,7 +18,12 @@ interface FeatureCard {
   minHeight: string         // e.g. h-[280px]
 }
 
-const cards: FeatureCard[] = [
+
+const props = defineProps<{
+  cards: FeatureCard[]
+}>()
+
+const cardsPrev: FeatureCard[] = [
   {
     id: 1,
     title: 'طراحی ما، محصول تو!',
@@ -54,7 +62,7 @@ function bgUtility (card: FeatureCard) {
 
 <template>
   <!-- RTL wrapper -------------------------------------------------- -->
-  <section  class="mx-auto max-w-screen-xl  px-0 py-0 my-auto">
+  <section       :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl text-right' : 'ltr text-left']"  class="mx-auto max-w-screen-xl  px-0 py-0 my-auto">
     <!-- Stack on mobile → 3‑col grid ≥ md ------------------------- -->
     <div class="grid gap-2 md:grid-cols-3 md:gap-4">
       <article
@@ -81,9 +89,12 @@ function bgUtility (card: FeatureCard) {
         <!-- 🔹 foreground (fills full card height) ------------------ -->
         <header class="relative z-10 flex  flex-col justify-between gap-3 h-full">
           <!-- title + optional description wrapped so they stick together -->
-            <h2 class="text-xl font-extrabold leading-[30px] text-[#014439] max-w-[110px]">
-              {{ card.title }}
-            </h2>
+        <h2 class="text-xl font-extrabold leading-[30px] text-[#014439] max-w-[150px]">
+          <span v-for="(line, i) in card.title" :key="i" class="block">
+            {{ line }}
+          </span>
+        </h2>
+
 
             <p v-if="card.description" class=" text-sm leading-[21px] font-medium">
               {{ card.description }}

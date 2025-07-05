@@ -1,3 +1,4 @@
+// store/useCarouselStore.ts
 // stores/useCarouselStore.ts
 import { defineStore } from "pinia";
 import { ref } from "vue";

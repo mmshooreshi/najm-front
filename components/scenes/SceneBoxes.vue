@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneBoxes.vue -->
 
    <!-- SceneBoxes4.vue  -->
    <template>

@@ -1,3 +1,4 @@
+<!-- components/auth/OtpInput.vue -->
 <template>
     <div class="flex items-center gap-2 w-full" dir="ltr">
       <input

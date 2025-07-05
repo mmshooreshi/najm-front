@@ -1,3 +1,4 @@
+<!-- components/Base/BaseButton.vue -->
 <!-- components/BaseButton.vue -->
 <template>
     <button

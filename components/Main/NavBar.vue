@@ -1,3 +1,4 @@
+<!-- components/Main/NavBar.vue -->
 <template>
     <nav
       dir="ltr"

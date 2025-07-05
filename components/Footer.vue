@@ -1,3 +1,4 @@
+<!-- components/Footer.vue -->
 <template>
     <footer
       class="bg-white border-t border-gray-200 py-8 px-4 md:px-8 2xl:px-28 mt-8 text-gray-800"

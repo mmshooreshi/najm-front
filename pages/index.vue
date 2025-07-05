@@ -1,6 +1,7 @@
+<!-- pages/index.vue -->
 <template>
 <!-- Each scene wrapped in a section-snap for ScrollTrigger snapping -->
-  <div class="section-snap">
+<div class="section-snap">
     <SceneHero />
   </div>
 
@@ -69,6 +70,11 @@ import SceneProducts from '@/components/scenes/SceneProducts.vue'
 import ScenePromo from '@/components/scenes/ScenePromo.vue'
 import SceneCustomers from '@/components/scenes/SceneCustomers.vue'
 import ScrollWrapperW from '@/components/ScrollWrapperW.vue'
+
+import { usePageUI } from '@/composables/ui/usePageUI'
+
+const { ui } = usePageUI('home')   // ← file name without extension
+provide('homeUI', ui)                 // now all children can inject
 
 
 import SceneSlider from '~/components/scenes/SceneSlider.vue'

@@ -1,3 +1,4 @@
+<!-- components/aut/OfficePackageComponent.vue -->
 <template>
 
     <div class="flex flex-col h-full w-full gap-4 max-h-full ">

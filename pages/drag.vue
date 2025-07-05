@@ -1,3 +1,4 @@
+<!-- pages/drag.vue -->
 <template>
     <div class=" -mx-4 overflow-visible">
         <Swiper slides-per-view="1" space-between="20" :autoplay="{

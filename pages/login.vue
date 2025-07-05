@@ -1,4 +1,5 @@
 <!-- pages/login.vue -->
+<!-- pages/login.vue -->
 <script setup lang="ts">
 import AuthHeader from '~/components/auth/AuthHeader.vue'
 import BaseInput from '~/components/Base/BaseInput.vue'

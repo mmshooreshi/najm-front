@@ -1,3 +1,4 @@
+<!-- components/HeaderPrev.vue -->
 <template>
       <header dir="rtl" class="sticky top-0 z-50 flex items-center justify-between p-2 bg-white/80  backdrop-blur-sm  w-full">
       <!-- Right: Logo + Hamburger -->

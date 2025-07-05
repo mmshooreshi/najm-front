@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneProducts.vue -->
 <!-- SceneProducts.vue -->
 <template>
   <div class="rtl snap-start flex flex-col flex-grow w-full h-full gap-12 pt-12">
@@ -14,7 +15,7 @@
           ? 'bg-[#014439] text-white'
           : 'bg-transparent text-black hover:bg-gray-300/40']"
       >
-        {{ type=='packaging' ? 'بسته‌بندی' : 'چاپ' }}
+        {{ data.types[type]}}
       </button>
     </div>
 
@@ -73,13 +74,17 @@ interface Product {
   image: string
 }
 
-const data = {
+const dataPrev = {
   label: 'محصولات',
   header: 'بهترینِ خودت باش!<mobile> توی هر صنعتی، هر برندی، هر مناسبتی',
   description1:
     'چاپ و بسته‌بندی در هر پروژه‌ا‌ی و هر برندی، در هر صنعتی و برای هر مصرفی، نیازهای خاص خودش رو داره و ما این را به خوبی درک می‌کنیم. به جای محدودیت، ما به دنبال یافتن بهترین راه‌حل برای اجرای ایده‌های شما هستیم.',
   description2: '',
 }
+
+const homeUI = inject<any>('homeUI') ?? {}
+const data = computed(() => homeUI?.value?.sceneProducts ?? {})
+
 
 const types = ['printing','packaging']
 const selectedType = ref<string>(types[0])

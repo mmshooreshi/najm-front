@@ -1,3 +1,4 @@
+<!-- components/d.vue -->
 <template>
     <!-- note the ref="wrapper" here -->
     <div ref="wrapper" class="overflow-visible pt-8">

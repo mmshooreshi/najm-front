@@ -1,3 +1,4 @@
+<!-- components/Base/Delay.vue -->
 
 <script setup lang="ts">
 import { computed } from 'vue'

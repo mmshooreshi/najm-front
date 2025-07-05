@@ -1,10 +1,12 @@
+<!-- components/AccordionItem.vue -->
 <!-- AccordionItem.vue -->
 <template>
   <div
      v-memotion-pop-visible="{ delay: delay, duration: 0.3 }"
     dir="rtl"
+    :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl text-right' : 'ltr text-left', { 'bg-transparent': isOpen, 'bg-[#EBF0F3]': !isOpen }]"
     class="border border-transparent hover:border-black/0 accordion-item rounded-xl overflow-hidden transition-colors duration-300"
-    :class="{ 'bg-transparent': isOpen, 'bg-[#EBF0F3]': !isOpen }"
+    
     @click="$emit('toggle')"
   >
   <!-- Header padding: open = py-3, any other open exists & this closed = py-0, otherwise default py-3 -->
@@ -31,7 +33,7 @@
       </svg>
     </div>
     <div ref="contentEl" class="content overflow-hidden text-xs font-medium">
-      <div class="pb-6 md:pb-12 pt-0 px-6 pl-8 md:pl-16">
+      <div class="pb-6 md:pb-12 pt-0 px-6"  :class="[isRTL ? 'pl-8 md:pl-16' : 'pr-8 md:pr-16']">
         <p>{{ content }}</p>
       </div>
     </div>
@@ -41,6 +43,8 @@
 <script setup>
 import { ref, watch, nextTick } from 'vue'
 import gsap from 'gsap'
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const props = defineProps({
   title: String,

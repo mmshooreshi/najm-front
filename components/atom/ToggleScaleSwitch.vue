@@ -1,3 +1,4 @@
+<!-- components/atom/ToggleScaleSwitch.vue -->
 <template>
   <div class="p-4">
     <button

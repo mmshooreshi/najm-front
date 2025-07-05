@@ -1,3 +1,4 @@
+<!-- pages/products/index.vue -->
 <template>
   <div class="space-y-6 pt-12">
         <div class="flex flex-col md:flex-row gap-8 lg:gap-[352px] rtl">

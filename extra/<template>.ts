@@ -1,3 +1,4 @@
+// extra/<template>.ts
 <template>
   <div class="page-container">
     <h1>Spring Animation Showcase</h1>

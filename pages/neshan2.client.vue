@@ -1,3 +1,4 @@
+<!-- pages/neshan2.client.vue -->
 <template>
   <div class="w-screen h-screen">
     <MapComponent

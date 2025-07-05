@@ -1,3 +1,4 @@
+// plugins/memotion-pop-visible.client.ts
 // ~/plugins/motion-pop-visible.client.ts
 import type { Directive, DirectiveBinding } from 'vue'
 import { gsap } from 'gsap'

@@ -1,3 +1,4 @@
+// schemas/productSchema.ts
 export interface Product {
     id: number
     title: string

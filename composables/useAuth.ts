@@ -1,3 +1,4 @@
+// composables/useAuth.ts
 import { defineStore } from 'pinia'
 import { computed } from 'vue'
 import nuxtStorage from 'nuxt-storage' // Import Nuxt Storage

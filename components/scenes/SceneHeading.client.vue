@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneHeading.client.vue -->
 <template>
   
   <div 
@@ -14,9 +15,8 @@
     </div>
 
     <div 
-      dir="rtl" 
+      :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl' : 'ltr', textClass]"
       class="relative max-w-2xl rounded-3xl mt-12 md:mt-0" 
-      :class="textClass"
     >
       <h2     v-memotion-pop-visible="{ delay: 0.3, duration: 0.6, ease: 'smoothPop' }"      class="text-2xl font-extrabold text-d4">
         
@@ -34,6 +34,10 @@
 import { computed } from 'vue'
 import { useMediaQuery } from '@vueuse/core'
 import CustomEase from 'gsap/CustomEase'
+import { useLocale } from '@/composables/useLocale'
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
 CustomEase.create('smoothPop', '0.25, 0.1, 0.25, 1')  // ease-in-out cubic-bezier
 
 

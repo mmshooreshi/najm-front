@@ -1,3 +1,4 @@
+<!-- components/gsap/BoxComponent.vue -->
 <template>
   <div
     class="relative bg-black/5 border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg flex flex-col items-center justify-center gap-3 w-full aspect-[3/2]"

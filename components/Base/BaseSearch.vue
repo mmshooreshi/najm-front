@@ -1,3 +1,4 @@
+<!-- components/Base/BaseSearch.vue -->
 <template>
   <div :class="['flex items-center', containerClass]">
     <button

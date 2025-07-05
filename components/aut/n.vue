@@ -1,3 +1,4 @@
+<!-- components/aut/n.vue -->
 
 <!-- asli -->
 <template>

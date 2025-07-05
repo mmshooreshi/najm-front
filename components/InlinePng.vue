@@ -1,3 +1,4 @@
+<!-- components/InlinePng.vue -->
 <template>
   <!-- Render the PNG inline -->
   <img ref="imgEl" :src="src" alt="Loaded PNG" />

@@ -1,4 +1,5 @@
 <!-- pages/verify.vue -->
+<!-- pages/verify.vue -->
 <template>
     <div class="space-y-9  px-4 py-0 w-full">
         <AuthHeader icon="verify-page-icon" :title="authUIData.verify.heading">

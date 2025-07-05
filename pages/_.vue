@@ -1,3 +1,4 @@
+<!-- pages/_.vue -->
 <template>
   <div class="carousel">
     <div

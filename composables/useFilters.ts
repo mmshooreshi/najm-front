@@ -1,3 +1,4 @@
+// composables/useFilters.ts
 import { reactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { FilterGroup } from '~/schemas/filterSchema'

@@ -1,3 +1,4 @@
+<!-- components/scenes/ScenePromo.vue -->
 
    <!-- ScenePromo6.vue  -->
    <template>
@@ -5,7 +6,8 @@
 
           <SceneHeading :data="data" align="center" />
 
-      <PromoFeatureCards />
+      <PromoFeatureCards :cards="data.cards"/>
+      
    </div>
 
   </template>
@@ -15,12 +17,15 @@
   import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 
 
-  const data = {
+  const dataPrev = {
   label: 'خدمات طراحی',
   header: 'رنگ و هویتی که برندتو متمایز می‌کنه، فرم و ساختاری که عملکرد محصولتو تضمین می‌کنه',
   description1: 'تمامی مراحل چاپ در مجموعه‌ی خود ما انجام میشه، بدون دخالت واسطه‌ها. ما فقط نمی‌فروشیم، ما تولید می‌کنیم و این یعنی؟',
   description2: '',
 }
+
+const homeUI = inject<any>('homeUI') ?? {}
+const data = computed(() => homeUI?.value?.scenePromo ?? {})
 
   </script>
   

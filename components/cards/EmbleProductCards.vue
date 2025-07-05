@@ -1,3 +1,4 @@
+<!-- components/cards/EmbleProductCards.vue -->
 <!-- EmbleProductCards.vue -->
 <template>
     <div dir="rtl" class="relative overflow-x-visible py-0">

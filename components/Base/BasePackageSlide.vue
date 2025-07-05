@@ -1,3 +1,4 @@
+<!-- components/Base/BasePackageSlide.vue -->
 <template>
   <!-- CLICK ANYWHERE TO TOGGLE -->
   <div ref="container" class="package-slide" @click="toggleExpand">

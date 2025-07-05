@@ -1,3 +1,4 @@
+<!-- components/atom/ProfileButton.vue -->
 <!-- components/ProfileButton.vue -->
 <template>
   <div     :class="{ 'max-w-[500px]': !isDesktop && !menuOpen }"

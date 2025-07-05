@@ -1,3 +1,4 @@
+<!-- pages/seeit.vue -->
 <template>
     <div
       dir="rtl"

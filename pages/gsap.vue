@@ -1,3 +1,4 @@
+<!-- pages/gsap.vue -->
 <template>
   <div class="container">
     <h1>Playground</h1>

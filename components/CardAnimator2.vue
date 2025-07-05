@@ -1,3 +1,4 @@
+<!-- components/CardAnimator2.vue -->
 <template>
   <client-only>
     <div>

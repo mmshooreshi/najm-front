@@ -1,3 +1,4 @@
+<!-- components/rotatory.vue -->
 <template>
     <button
       class="group relative flex items-center justify-center overflow-hidden rounded-full bg-[#014439] text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 w-18 h-18 md:w-24 md:h-24"

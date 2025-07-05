@@ -1,3 +1,4 @@
+<!-- pages/p.vue -->
 <!-- components/ProductList.vue -->
 <template>
     <section class="products px-4 py-6 mt-28 rtl">

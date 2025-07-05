@@ -1,3 +1,4 @@
+<!-- components/Base/BaseAccordionGroup.vue -->
 <template>
   <div class="space-y-4">
     <BaseAccordinItem

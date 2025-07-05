@@ -1,3 +1,4 @@
+<!-- components/aut/ProductDesignCard.vue -->
 <template>
   <div ref="containerRef" class="relative flex flex-col p-6 bg-white rounded-[25px] h-[492px] overflow-hidden">
     <!-- Background Image -->

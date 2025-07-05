@@ -1,3 +1,4 @@
+<!-- components/new/SearchBox2.vue -->
 <template>
   <!-- 1) Your small header input -->
   <div class="relative w-full md:w-auto">

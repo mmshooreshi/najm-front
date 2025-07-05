@@ -1,3 +1,4 @@
+<!-- components/sections/CarousalDet.vue -->
 <template>
     <figure class="cursor-pointer group relative flex flex-col items-center w-full h-full rounded-3xl overflow-hidden">
       <!-- Image (Fills the width completely) -->

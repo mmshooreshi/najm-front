@@ -1,3 +1,4 @@
+// plugins/floating.client.ts
 import type { Directive, DirectiveBinding } from 'vue'
 
 const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 }

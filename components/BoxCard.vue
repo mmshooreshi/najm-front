@@ -1,3 +1,4 @@
+<!-- components/BoxCard.vue -->
 <template>
   <div class="relative p-0 md:p-6 py-0 w-screen max-w-screen scrollbar-hide overflow-visible px-0 mt-28 -mr-6 md:mr-0">
     <ClientOnly>

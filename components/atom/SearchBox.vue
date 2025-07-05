@@ -1,3 +1,4 @@
+<!-- components/atom/SearchBox.vue -->
 <!-- components/atom/SearchBox.vue: -->
 <template>
     <div

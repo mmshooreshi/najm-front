@@ -1,3 +1,4 @@
+<!-- components/new/SearchBox.vue -->
 <template>
     <div class="relative w-full">
       <!-- Search Input Field -->

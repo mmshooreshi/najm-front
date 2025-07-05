@@ -1,3 +1,4 @@
+<!-- pages/g.vue -->
 <!-- in any parent component / page -->
 <template>
   <section>

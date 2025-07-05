@@ -1,3 +1,4 @@
+<!-- components/cards/EmblPackageCard.vue -->
 <template>
     <CardOverlayWrapper :items="card.items">
       <!-- Your card markup here -->

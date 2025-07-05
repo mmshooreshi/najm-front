@@ -1,3 +1,4 @@
+<!-- pages/swiperr.vue -->
 <script setup lang="ts">
 import { useSwiper } from '#imports';
 

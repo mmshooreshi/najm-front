@@ -1,3 +1,4 @@
+<!-- components/StackedCardPart.vue -->
 <!-- components/PersianChatBubble.vue -->
 <template>
   <!-- Full‑width wrapper to keep the bubble centered on the page -->

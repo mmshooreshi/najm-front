@@ -1,3 +1,4 @@
+<!-- components/StackCard.vue -->
 
 <template>
   <div

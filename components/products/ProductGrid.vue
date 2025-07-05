@@ -1,3 +1,4 @@
+<!-- components/products/ProductGrid.vue -->
 <!-- /components/products/ProductGrid.vue
 <template>
     <div class="grid grid-cols-3 gap-6">

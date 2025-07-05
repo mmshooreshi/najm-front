@@ -1,3 +1,4 @@
+<!-- components/Menu.vue -->
 
 <!-- components/menu.vue -->
 <template>

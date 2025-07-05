@@ -1,3 +1,4 @@
+<!-- pages/tex.vue -->
 <template>
   <div>
     <ClientOnly>

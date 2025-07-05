@@ -1,3 +1,4 @@
+<!-- components/ImagesFloating.vue -->
 <template>
 <!-- <button @click="showSettings = !showSettings"
             class="absolute top-4 right-4 z-[1000] bg-blue-500 text-white/100 px-3 py-1 rounded focus:bg-red">

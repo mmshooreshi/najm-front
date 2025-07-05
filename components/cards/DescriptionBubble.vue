@@ -1,3 +1,4 @@
+<!-- components/cards/DescriptionBubble.vue -->
 <template>
   <div
     class="absolute px-4 py-3 pt-2 bg-[#D6E6E3] rounded-[25px] rounded-br-[5px] bottom-6 right-6 text-sm font-medium text-d4"

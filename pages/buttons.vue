@@ -1,3 +1,4 @@
+<!-- pages/buttons.vue -->
 <template>
     <div class="container">
       <h1>Enhanced Buttons</h1>

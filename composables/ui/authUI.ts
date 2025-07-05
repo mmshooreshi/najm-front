@@ -1,3 +1,4 @@
+// composables/ui/authUI.ts
 import { computed } from 'vue'
 import { useFetch } from '#app'
 

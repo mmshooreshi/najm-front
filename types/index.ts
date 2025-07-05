@@ -1,3 +1,4 @@
+// types/index.ts
 // /types/index.ts
 
 /**

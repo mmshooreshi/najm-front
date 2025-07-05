@@ -1,3 +1,4 @@
+<!-- pages/map2.vue -->
 <template>
 <MapboxMap
   map-id="<MAP_ID>"

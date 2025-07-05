@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneSlider.vue -->
 
    <!-- SceneSlider7.vue  -->
    <template>

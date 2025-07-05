@@ -1,3 +1,4 @@
+<!-- components/gsap/Snippet.vue -->
 <!-- <template>
   <pre
     class="Snippet"

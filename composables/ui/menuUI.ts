@@ -1,3 +1,4 @@
+// composables/ui/menuUI.ts
 import { computed } from 'vue'
 import { useFetch } from '#app'
 import defaultMenuUIData from '@/schemas/menu-ui.json'

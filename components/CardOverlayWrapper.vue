@@ -1,3 +1,4 @@
+<!-- components/CardOverlayWrapper.vue -->
 <template>
   <div class="group relative w-full h-[500px] z-50 overflow-hidden rounded-3xl">
     <!-- Base slot content -->
@@ -105,7 +106,7 @@ interface Item {
 
 type SpecKey = keyof Specs
 
-const props = defineProps<{ items: Item[], name: String , currentPackage: Object, toFade: Boolean}>()
+const props = defineProps<{ items: Item[], name: String , currentPackage: Number, toFade: Boolean}>()
 
 const editingItem = ref<Item | null>(null)
 const defaultSpecs = ref<Specs | null>(null)

@@ -1,3 +1,4 @@
+<!-- pages/locale.vue -->
 <!-- <script setup lang="ts">
 // see ./composables/locale.ts for the implementation
 import {useLocales, useLocale, useLocaleDate} from '@/composables/locale'

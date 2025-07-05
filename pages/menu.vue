@@ -1,4 +1,5 @@
 <!-- pages/menu.vue -->
+<!-- pages/menu.vue -->
 <template>
     <div class="max-w-xl mx-auto p-6 mt-8 rtl">
       <div v-for="section in sections || []" :key="section?.id" class="mb-6">

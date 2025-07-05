@@ -1,3 +1,4 @@
+<!-- components/auth/AuthSocialButtons.vue -->
 <!-- // File: components/auth/AuthSocialButtons.vue -->
 <script setup lang="ts">
 interface Icon {

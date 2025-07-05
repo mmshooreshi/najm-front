@@ -1,3 +1,4 @@
+<!-- pages/home.vue -->
 <template>
   <div class="overflow-y-scroll h-screen snap-y snap-mandatory scroll-smooth touch-pan-y">
     <!-- Hero Section -->

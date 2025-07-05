@@ -1,3 +1,4 @@
+<!-- components/Base/BaseInputPrev.vue -->
 <template>
     <div class="relative">
         <!-- 1) Keep all your original classes, just add `peer` and clear the real placeholder -->

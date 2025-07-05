@@ -1,3 +1,4 @@
+<!-- pages/dragIn.vue -->
 <template>
     <div class="-mx-4 overflow-visible">
       <!-- outer Swiper -->

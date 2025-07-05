@@ -1,3 +1,4 @@
+<!-- pages/promp.vue -->
 <template>
   <div>
     <PromoFeatureCards/>

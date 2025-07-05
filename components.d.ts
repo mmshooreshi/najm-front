@@ -1,3 +1,4 @@
+// components.d.ts
 /* eslint-disable */
 /* prettier-ignore */
 // @ts-nocheck

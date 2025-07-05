@@ -1,3 +1,4 @@
+<!-- components/sections/CustomPackage.vue -->
 <template>
     <div dir="rtl" class="transition-all text-d4 flex flex-col items-start w-full h-full max-w-3xl  bg-[#DFEED7]/100  rounded-3xl p-6 ">
       <!-- Header Icon -->

@@ -1,3 +1,4 @@
+<!-- pages/text.vue -->
 <template>
   <div class="wrapper mt-64">
     <div class="quote text-d4" ref="quote">

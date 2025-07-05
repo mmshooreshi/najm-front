@@ -1,3 +1,4 @@
+<!-- pages/map.vue -->
 <script setup lang="ts">
 import { ref, defineAsyncComponent } from 'vue'
 import { useRouter } from '#imports'

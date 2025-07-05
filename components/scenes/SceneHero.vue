@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneHero.vue -->
 <!-- SceneHero.vue -->
 <template>
   <div class=" py-16 md:pt-16  flex flex-col flex-grow">
@@ -19,15 +20,14 @@
         <LazyProjectReservation />
       </div>
       <div class="flex-grow"></div>
-      <GreenButton :fullWidth="false" label="شروع مشاوره و رزرو سفارش" @click="" />
-
+      <GreenButton :fullWidth="false" :label="ui.cta"  @click="" />
       <div v-motion
       :initial="{ scale: 0, }" :visible="{ scale: 1, }">
         <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
-          شروع سفارش‌دهی از
+          {{ ui.countdownLabelStart }}
           <span
-            class=" text-[#014439] underline decoration-0.5 decoration-offset-3 decoration-[#014439] px-0.5">۵</span>
-          روز دیگر
+            class=" text-[#014439] underline decoration-0.5 decoration-offset-3 decoration-[#014439] px-0.5">{{ toLocalizedDigits(ui.countdownDays) }}</span>
+          {{ ui.countdownLabelEnd }}
         </p>
       </div>
     </div>
@@ -41,7 +41,12 @@ import HighlightedText from '@/components/new/HighlightedText.vue'
 import GreenButton from '@/components/buttons/GreenButton.vue'
 import RotatoryPane from '@/components/fixed/RotatoryPane.vue'
 import rotatoryLg from '~/components/rotatoryLegacy.vue'
+import { toLocalizedDigits } from '~/utils/digits'
 
 import ImagesFloating from '@/components/ImagesFloating.vue'
 import LazyProjectReservation from '@/components/sections/LazyProjectReservation.vue'
+const homeUI = inject<any>('homeUI') ?? {}
+const ui = computed(() => homeUI.value.sceneHero ?? {})
+
+
 </script>

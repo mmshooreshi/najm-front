@@ -1,3 +1,4 @@
+<!-- components/scenes/SceneNccc.vue -->
 
    <!-- SceneNccc5.vue  -->
    <template>

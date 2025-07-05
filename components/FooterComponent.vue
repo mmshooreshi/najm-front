@@ -1,3 +1,4 @@
+<!-- components/FooterComponent.vue -->
 <template>
   <div class="w-full sm:w-auto">
   <div class="text-d4 flex flex-col items-start">

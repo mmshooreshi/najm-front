@@ -1,3 +1,4 @@
+<!-- components/parallax/ParallaxCircle.client.vue -->
 <template>
   <div>
     <!-- SVG Overlay -->

@@ -1,3 +1,4 @@
+<!-- components/Base/BaseFloatingInput.vue -->
 <template>
     <div class="relative">
       <!-- 1. The input is now a peer, with its placeholder hidden -->

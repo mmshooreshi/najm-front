@@ -1,3 +1,4 @@
+<!-- components/aut/CalendarTypesComponent.vue -->
 <template>
   <div 
     :style="{ backgroundImage: `url('https://dashboard.codeparrot.ai/api/image/Z8MAvVj1kitRpYP1/frame-33.png')` }" 

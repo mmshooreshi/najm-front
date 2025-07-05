@@ -1,3 +1,4 @@
+<!-- components/Base/HaArrow.vue -->
 <script lang="ts" setup>
 import ArrowIconBtn from '~/assets/icons/arrow-icon-btn.svg'
 </script>

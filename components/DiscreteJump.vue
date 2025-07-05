@@ -1,3 +1,4 @@
+<!-- components/DiscreteJump.vue -->
 <template>
     <section class="demo-wrapper">
       <!-- Inline the SVG at build time; #circlePath is in the DOM from the start -->

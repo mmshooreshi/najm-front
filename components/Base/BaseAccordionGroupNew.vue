@@ -1,3 +1,4 @@
+<!-- components/Base/BaseAccordionGroupNew.vue -->
 <template>
     <div class="group transition-colors transition-border duration-1000bg-[#F1F5F9]/100 hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-[#014439]': activeFiltersCount>0}">
       <!-- Header -->

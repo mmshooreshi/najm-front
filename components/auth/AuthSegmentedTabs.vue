@@ -1,3 +1,4 @@
+<!-- components/auth/AuthSegmentedTabs.vue -->
 <script setup lang="ts">
 interface Props {
   loginLabel: string

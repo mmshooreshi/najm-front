@@ -1,3 +1,4 @@
+<!-- components/NuxtDemo.vue -->
 <template>
   <div class="text-secondary-darker dark:text-white/100 bg-white dark:bg-black">
     <div

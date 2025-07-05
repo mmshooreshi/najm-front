@@ -1,3 +1,4 @@
+<!-- components/products/ProductCard.vue -->
 <template>
     <div class="mx-4 md:mx-0 hover:scale-103 transition-all duration-100 cursor-pointer rounded-2xl  p-0 flex flex-col items-center space-y-4">
       <!-- Image container with overlay button -->

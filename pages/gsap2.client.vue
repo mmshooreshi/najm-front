@@ -1,3 +1,4 @@
+<!-- pages/gsap2.client.vue -->
 <template>
   <div dir="rtl" class="max-w-screen text-d4 p-6 flex flex-col items-center  bg-[#CBCBFB]/100  rounded-3xl gap-6 pb-0 overflow-visible">
     <h2 class="text-[20px] font-extrabold text-center">سفارش آسون، پیگیریِ آسون‌تر!</h2>
