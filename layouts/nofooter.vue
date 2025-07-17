@@ -30,8 +30,8 @@ onMounted(async () => {
   />
 
   <!-- Page Wrapper -->
-  <div class="bg-white bg-[#e4eaeb] w-full overflow-visible touch-pan-y  bg-blue min-h-screen pt-16 ">
-    <main class="w-full  overflow-visible  mx-auto ">
+  <div class=" w-full bg-blue overflow-visible touch-pan-y  bg-blue min-h-screen pt-16 ">
+    <main class="w-full h-fill bg-red overflow-visible  mx-auto ">
       <slot />
     </main>
   </div>

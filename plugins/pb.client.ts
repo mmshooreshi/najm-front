@@ -1,16 +1,28 @@
-// plugins/pb.client.ts
+// plugins/pocketbase.client.ts
 import PocketBase from 'pocketbase'
-export default defineNuxtPlugin((nuxtApp) => {
-  const runtime = useRuntimeConfig()
-  const pb = new PocketBase(runtime.public.pbUrl)
+import { defineNuxtPlugin, useCookie } from '#app'
 
-  // On the client we can restore the admin cookie
+export default defineNuxtPlugin(async (nuxtApp) => {
+  const pb = new PocketBase(useRuntimeConfig().public.pbUrl)
+
   if (process.client) {
-    const adminCookie = useCookie('pb_admin').value
-    if (adminCookie) pb.authStore.save(adminCookie, null) // token, model
+    const token = useCookie<string>('pb_admin')
+    if (token.value) {
+      pb.authStore.save(token.value, null)
+
+      try {
+        // await pb.collection('_superusers').authRefresh()
+      } catch (err) {
+        console.warn('authRefresh failed', err)
+        pb.authStore.clear()
+        token.value = ''
+      }
+    }
   }
 
   nuxtApp.provide('pb', pb)
 })
 
 
+export const usePocketBase = () =>
+  useNuxtApp().$pb as PocketBase

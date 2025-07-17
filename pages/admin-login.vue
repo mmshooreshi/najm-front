@@ -3,6 +3,8 @@
 import FloatingInput from '~/components/Base/FloatingInputNew.vue'
 import BaseButton from '~/components/Base/BaseButton.vue'
 
+const route = useRoute()
+
 const email = ref('')
 const password = ref('')
 const errorMsg = ref<string | null>(null)
@@ -23,10 +25,18 @@ async function onSubmit() {
   try {
     await $fetch('/api/admin/login', {
       method: 'POST',
+      credentials: 'include',      // ← add this
       body: { email: email.value, password: password.value }
     })
     // Full reload so the (server‑side) middleware can read the httpOnly cookie
-    window.location.href = '/admin'
+    
+    // OLD WAY [DEPRECATED]:
+    // window.location.href = '/admin'
+    
+    // * >> New way to have redirect feature built-in:
+    const redirectTo = (route.query.redirect as string) || '/admin'
+    window.location.href = redirectTo
+
   } catch (err: any) {
     // Nuxt sets err.data for non‑2xx responses
     const msg = err?.data?.message || err?.message || 'خطای ناشناخته'

@@ -1,7 +1,9 @@
 <!-- pages/admin/users.vue -->
 <!-- pages/admin/users.vue -->
 <script setup lang="ts">
-const pb = inject('pb') as any
+import { usePocketBase } from '~/plugins/pb.client'
+const pb = usePocketBase()
+
 const users = await pb.collection('najmusers').getFullList({ sort: '-created' })
 definePageMeta({ layout: 'admin' })
 </script>

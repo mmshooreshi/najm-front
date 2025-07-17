@@ -5,8 +5,7 @@
  * Uses the same server proxy so the admin JWT stays safe.
  */
 definePageMeta({
-  layout: 'admin',
-  middleware: 'admin'
+  layout: 'admin'
 })
 const { data: collections } = await useAsyncData('pb-stats', () =>
   $fetch<{ name: string; count: number }[]>('/api/admin/pb/stats')

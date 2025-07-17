@@ -10,6 +10,7 @@ import { defineConfig, presetWind } from 'unocss'
 export default defineConfig({
   // Define utility shortcuts for reusability
   shortcuts: {
+    'title-panbe': 'tracking-[5px] group-hover:tracking-[0px] group-hover:text-black/60 font-mono scale-90 group-hover:scale-100 transition-all group-hover:mx-4 text-black/30 cursor-pointer',
     'd':'bg-red',
     'bok':'w-full px-8 mx-auto',
     'flex-center': 'flex justify-center items-center',
