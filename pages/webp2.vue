@@ -33,10 +33,10 @@ onMounted(async () => {
     const files = await res.json()  // e.g. ["19.webp","20.webp",…]
     
     videoList.value = files.map((f, i) => {
-      const num = String(i + 1).padStart(2, '0')
+      const num = f.replace('.webp','.avif')
       return {
         src:    `/videos/${f}`,               // animated WebP
-        poster: `/videos/posters/${num}.avif` // static AVIF
+        poster: `/videos/posters/${num}` // static AVIF
       }
     })
 
