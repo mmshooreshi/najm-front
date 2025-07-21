@@ -5,7 +5,7 @@
       <div
         v-for="(item, idx) in videoList"
         :key="idx"
-        class="rounded overflow-hidden shadow-lg"
+        :class="['rounded overflow-hidden shadow-lg p-2', bgClasses[idx % bgClasses.length]]"
       >
         <img
           :src="hoverStates[idx] ? item.src : item.poster"
@@ -26,24 +26,33 @@ import { ref, onMounted } from 'vue'
 const videoList   = ref([])
 const hoverStates = ref([])
 
+// define a palette of pastel bg classes
+const bgClasses = [
+  'bg-pink-100',
+  'bg-blue-100',
+  'bg-green-100',
+  'bg-yellow-100',
+  'bg-purple-100',
+  'bg-indigo-100',
+  'bg-teal-100',
+]
+
 onMounted(async () => {
   try {
     const res   = await fetch('/videos/manifest.json')
     if (!res.ok) throw new Error(`Failed to load manifest: ${res.status}`)
-    const files = await res.json()  // e.g. ["19.webp","20.webp",…]
-    
+    const files = await res.json()
+
     videoList.value = files.map((f, i) => {
       const num = f.replace('.webp','.avif')
       return {
-        src:    `/videos/${f}`,               // animated WebP
-        poster: `/videos/posters/${num}` // static AVIF
+        src:    `/videos/${f}`,               
+        poster: `/videos/posters/${num}`      
       }
     })
 
-    // initialize hover flags
     hoverStates.value = videoList.value.map(() => false)
 
-    // **Preload every WebP** at high priority
     videoList.value.forEach(item => {
       const link = document.createElement('link')
       link.rel       = 'preload'
@@ -52,7 +61,6 @@ onMounted(async () => {
       link.fetchpriority = 'high'
       document.head.appendChild(link)
     })
-
   } catch (e) {
     console.error(e)
   }
@@ -63,6 +71,6 @@ onMounted(async () => {
 img {
   display: block;
   object-fit: cover;
-  background-color: transparent; /* preserve alpha */
+  background-color: transparent;
 }
 </style>

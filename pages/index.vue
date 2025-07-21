@@ -17,7 +17,8 @@
   </div> -->
 
   <div class="section-snap">
-    <ScrollWrapperW />  
+    <!-- <ScrollWrapperW />   -->
+    <ScrollWrapperWebp />  
   </div>
 
 
@@ -70,6 +71,7 @@ import SceneProducts from '@/components/scenes/SceneProducts.vue'
 import ScenePromo from '@/components/scenes/ScenePromo.vue'
 import SceneCustomers from '@/components/scenes/SceneCustomers.vue'
 import ScrollWrapperW from '@/components/ScrollWrapperW.vue'
+import ScrollWrapperWebp from '@/components/ScrollWrapperW-webp.vue'
 
 import { usePageUI } from '@/composables/ui/usePageUI'
 
