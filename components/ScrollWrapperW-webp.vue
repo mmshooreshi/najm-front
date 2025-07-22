@@ -1,192 +1,305 @@
+<!-- components/ScrollWrapperW.vue -->
 <template>
   <div>
     <div ref="stackSection">
       <SceneCardsIntro />
-      <div class="flex w-full h-[500px] relative">
-        <div
-          v-for="(card, i) in cards"
-          :key="card.id"
-          :class="[
-            'stack-card relative flex-none w-full max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible rtl p-6',
-            bgClasses[i % bgClasses.length]
-          ]"
-        >
-        <!-- {{active}} -->
-          <!-- fill card with poster or animated WebP -->
-          <img
-            :src="active[i] ? card.src : card.poster "
-            :alt="card.text"
-            class="object-cover w-full h-full rounded-[1.5rem] absolute inset-0"
-            loading="eager"
-            fetchpriority="high"
-          />
+<!-- {{ stackIds }} -->
 
-          <div
-            v-motion
-            :initial="{ scale: 0.8 }"
-            :visible="{ scale: 1 }"
-            :duration="100"
-            class="absolute bottom-6 right-6 bg-white bg-opacity-70 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px] max-w-[260px] text-xs md:text-sm font-medium text-gray-800"
-          >
-            {{ card.text }}
-          </div>
+      <div class="flex w-full h-[500px]  relative">
+        <div
+          v-for="(card, i) in cardStates"
+          :key="card.id"
+          :data-id="card.id" 
+          class="stack-card  w-min shadow-sm  backdrop-blur-sm relative flex-none max-h-[400px] rounded-[1.5rem] overflow-visible rtl"
+        >
+        <!-- {{ card.id }} -->
+
+          <!-- just one NuxtImg: poster while stacked, animated WEBP/GIF when in grid -->
+          <img
+           
+            :src="card.play ? card.loop : card.poster"
+            :alt="card.text"
+            v-motion="{ initial: { scale: 0.8 }, visible: { scale: 1 }, duration: 100 }"
+            class="object-cover h-[full] w-min rounded-[1.5rem] -mt-24" 
+            placeholder="false"
+          />
         </div>
       </div>
     </div>
 
     <div ref="gridSection">
-      <SceneProjects />
+      <SceneProjects :stackIds="stackIds"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, onBeforeUnmount } from 'vue'
+/* ───────────────── imports ────────────────────────────────────────── */
+import {
+  ref, reactive, computed, watch, nextTick,
+  onMounted, onBeforeUnmount, inject
+} from 'vue'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Flip } from 'gsap/Flip'
-
-import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
-import SceneProjects  from '@/components/scenes/SceneProjects.vue'
-// import { NuxtImg }    from '#components'
-
 gsap.registerPlugin(ScrollTrigger, Flip)
 
-const stackSection = ref<HTMLElement | null>(null)
-const gridSection  = ref<HTMLElement | null>(null)
+import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
+import SceneProjects   from '@/components/scenes/SceneProjects.vue'
 
-// pastel background classes
-const bgClasses = [
-  'bg-pink-100',
-  'bg-blue-100',
-  'bg-green-100',
-  'bg-yellow-100',
-  'bg-purple-100',
-  'bg-indigo-100',
-  'bg-teal-100'
-]
+/* ───────────────── types ──────────────────────────────────────────── */
+interface Card { id:number; poster:string; loop:string; bgColor?:string; text:string }
+interface CardState extends Card { play:boolean }
 
-// cards: id, animated WebP src, AVIF poster, and text
-const cards = [
-  { id: 1, src: '/videos/19.webp', poster: '/videos/posters/19.avif', text: 'یه جعبه می‌خوام که از محصولم محافظت کنه تا توی انبار و هنگام ارسال آسیبی نبینه.' },
-  { id: 2, src: '/videos/20.webp', poster: '/videos/posters/20.avif', text: 'برام مهمه که لیبل‌ها دقیق باشن، چون باید بره انبارداری مرکزی.' },
-  { id: 3, src: '/videos/21.webp', poster: '/videos/posters/21.avif', text: 'بسته‌بندی باید در حدی تمیز و مرتب باشه که حس پرمیوم بده، بدون نیاز به بازنگری.' },
-  { id: 4, src: '/videos/22.webp', poster: '/videos/posters/22.avif', text: 'جعبه‌ها باید مستقیم برن تو قفسه، زمان بازچینی ندارم.' },
-  { id: 5, src: '/videos/23.webp', poster: '/videos/posters/23.avif', text: 'چاپ متن‌ها و نمودارهای آموزشی باید با دقت کامل باشه، چون مخاطب جزئی‌نگره.' },
-  { id: 6, src: '/videos/24.webp', poster: '/videos/posters/24.avif', text: 'باید مطمئن باشم استانداردهای چاپ و بسته‌بندی بین‌المللی رعایت می‌شه.' },
-  { id: 7, src: '/videos/25.webp', poster: '/videos/posters/25.avif', text: 'تجربه بدی داشتم، رنگ نهایی هیچ‌وقت مثل طراحی من نشده.' },
-  { id: 8, src: '/videos/26.webp', poster: '/videos/posters/26.avif', text: 'باید با ظاهر بسته‌بندیم مخاطب جذب شه، نمی‌خوام مثل بقیه باشم.' },
-  // { id: 10, src: '/videos/28.webp', poster: '/videos/posters/28.avif', text: 'بسته‌بندی من باید هم خوش‌دست باشه هم سریع باز شه، چون مشتری عجوله.' }
-  { id: 9, src: '/videos/27.webp', poster: '/videos/posters/27.avif', text: 'دنبال یه جعبه‌ خاص‌ام که باز شدنش حس غافلگیری بده.' },
-]
+/* ───────────────── refs to template sections ──────────────────────── */
+const stackSection = ref<HTMLElement|null>(null)
+const gridSection  = ref<HTMLElement|null>(null)
 
-// track which card is currently “active” (showing animation)
-const active = ref<boolean[]>(cards.map(() => false))
+/* ───────────────── data from parent ───────────────────────────────── */
+const homeUI   = inject<any>('homeUI') ?? {}
+const rawCards = computed<Card[]>(() => homeUI.value?.sceneProjects?.cards ?? [])
 
+/* ───────────────── constants ──────────────────────────────────────── */
+const FIRST_IDS = [1,2,3,4,5]          // the five shown first
+const FIRST_SET = new Set(FIRST_IDS)
+const stackIds = ref<number[]>([])
+const stackSize = ref(5) // Change this value anywhere and the stack will respond
+const cardOpacity = ""
+/* ───────────────── reactive state ─────────────────────────────────── */
+const showAll    = ref(false)          // flips when grid enters view
+const cardStates = reactive<CardState[]>([])
+
+/* keep cardStates in sync with rawCards + showAll */
+// watch([rawCards, showAll], async () => {
+//   const source = showAll.value
+//     ? [...rawCards.value].sort((a,b)=>a.id-b.id)    // all cards ascending
+//     : rawCards.value.filter(c => FIRST_SET.has(c.id))
+
+//   const mapped = source.map(c => ({ ...c, play: showAll.value }))
+//   cardStates.splice(0, cardStates.length, ...mapped)
+//   await nextTick()                                   // DOM is ready for GSAP
+// }, { immediate:true })
+watch([rawCards, showAll], async () => {
+  const sorted = [...rawCards.value].sort((a, b) => a.id - b.id)
+
+  let source: Card[] = []
+
+  if (showAll.value) {
+    source = sorted
+  } else {
+    // const maxStartIndex = Math.max(0, sorted.length - 5)
+    // const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
+    // source = sorted.slice(randomStart, randomStart + 5)
+    // stackIds.value = source.map(c => c.id)
+
+    const maxStartIndex = Math.max(0, sorted.length - stackSize.value)
+    const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
+    source = sorted.slice(randomStart, randomStart + stackSize.value)
+    stackIds.value = source.map(c => c.id)
+
+  }
+
+  const mapped = source.map(c => ({ ...c, play: showAll.value }))
+  cardStates.splice(0, cardStates.length, ...mapped)
+
+  await nextTick()
+}, { immediate: true })
+
+/* ───────────────── helper: always return stacks / targets in id order */
+function orderedStacks (): HTMLElement[] {
+  return gsap.utils.toArray<HTMLElement>('.stack-card')
+           .sort((a,b)=>Number(a.dataset.id)-Number(b.dataset.id))
+}
+function orderedTargets (): HTMLElement[] {
+  return gsap.utils.toArray<HTMLElement>('.embl-card')
+           .sort((a,b)=>Number(a.dataset.id)-Number(b.dataset.id))
+}
+
+/* ───────────────── GSAP / ScrollTrigger setup ─────────────────────── */
 onMounted(async () => {
   await nextTick()
 
-  // preload each AVIF & WebP exactly once
-  cards.forEach(c => {
-    const p1 = document.createElement('link')
-    p1.rel = 'preload'; p1.as = 'image'; p1.href = c.poster
-    document.head.appendChild(p1)
+  /* initial live lists + sizes */
+  const stacks0   = orderedStacks()
+  const targets0  = orderedTargets()
+  const parents   = stacks0.map(el => el.parentElement!)
+  const cardW     = targets0[0]?.offsetWidth  ?? 0
+  const cardH     = targets0[0]?.offsetHeight ?? 0
+  const stackWrap = stackSection.value!.querySelector('.flex')!
 
-    const p2 = document.createElement('link')
-    p2.rel = 'preload'; p2.as = 'image'; p2.href = c.src
-    p2.fetchPriority = 'high'
-    document.head.appendChild(p2)
+  /* initial off‑screen position for first cards */
+  gsap.set(stacks0, { x:'100vw', y:'50vh', width:cardW, height:cardH })
+  stacks0.forEach((el,i)=>{
+    gsap.set(el,{ backgroundColor:cardStates[i].bgColor ? cardStates[i].bgColor+cardOpacity : 'transparent' })
   })
 
-  // GSAP stack + Flip setup (unchanged)
-  const stacks  = gsap.utils.toArray<HTMLElement>('.stack-card')
-  const targets = gsap.utils.toArray<HTMLElement>('.embl-card')
-  const cardWidth  = targets[0]?.offsetWidth  ?? 0
-  const cardHeight = targets[0]?.offsetHeight ?? 0
-  const originalParents = stacks.map(el => el.parentElement!)
-
-  gsap.set(stacks, {
-    x: '100vw', y: '50vh',
-    width:  cardWidth, height: cardHeight,
-    opacity: 1, rotation: 0
-  })
-
+  /* stack entrance timeline */
   gsap.timeline({
-    scrollTrigger: {
+    scrollTrigger:{
       trigger: stackSection.value,
       start:   'top-=40% top',
       end:     '+=400',
-      toggleActions: 'play none none reverse',
-      scroller: '#smooth-wrapper'
+      //toggleActions:'play none none reverse',
+      toggleActions: 'play none none none',
+      once: true,
+      scroller:'#smooth-wrapper'
     }
-  }).to(stacks, {
-    x: () => window.innerWidth/2 - cardWidth*1.1/2 ,
-    y: 0, rotation: i => i*1 -10,
-    ease: 'power3.out',
-    stagger: { each: 0.2, from: 'start' }
+  }).to(stacks0,{
+    x: () => innerWidth/2 - cardW*1.1/2,
+    y: (i:number)=> (i*-10) + 60,
+    rotation:(i:number)=> i*5 - 20,
+    ease:'power3.out',
+    stagger:{ each:.2, from:'start' }
   })
 
+  /* FLIP between stack <-> grid */
   ScrollTrigger.create({
-    trigger:  gridSection.value,
-    start:    'top 50%', end: '+=200',
-    scrub:    true,
-    scroller: '#smooth-wrapper',
-    onEnter: () => {
-      const state = Flip.getState(stacks)
-      stacks.forEach((c,i) => targets[i].appendChild(c))
-      gsap.set(stacks, { x:0, y:0, rotation:0, width:cardWidth, height:cardHeight })
-      Flip.from(state, {
-        absolute: false,
-        ease:     'power3.inOut',
-        duration: 1,
-        stagger:  { each:0.1, from:'start' },
-        clearProps: 'transform'
+    trigger: gridSection.value,
+    start:   'top 50%',
+    end:     '+=200',
+    scrub:   true,
+    scroller:'#smooth-wrapper',
+
+    /* ── enter grid (show all) ─────────────────────────────────────── */
+async onEnter() {
+  showAll.value = true
+  await nextTick()
+
+  const stacks  = orderedStacks()
+  const targets = orderedTargets()
+  const cardW   = targets[0]?.offsetWidth  ?? 0
+  const cardH   = targets[0]?.offsetHeight ?? 0
+
+  // 1) Snap cards 6–32 into place instantly
+  // const snapCards = stacks.slice(5)
+
+  
+  
+  function getTargetById(id: number): HTMLElement | undefined {
+    return gsap.utils.toArray<HTMLElement>('.embl-card')
+      .find(el => Number(el.dataset.id) === id)
+  }
+  const animCards = stacks.filter(el =>
+    stackIds.value.includes(Number(el.dataset.id))
+  )
+  const snapCards = stacks.filter(el =>
+    !stackIds.value.includes(Number(el.dataset.id))
+  )
+
+
+  snapCards.forEach((el, idx) => {
+    // const tgt = targets[5 + idx]
+    const tgt = targets[stackSize.value + idx]
+
+    // tgt.appendChild(el)
+
+    gsap.set(el, {
+      backgroundColor:cardStates[idx].bgColor ? cardStates[idx].bgColor+cardOpacity : 'transparent',
+      x:        0,
+      y:        0,
+      rotation: 0,
+      width:    cardW,
+      height:   cardH
+    })
+  })// Snap non-animated cards into place
+snapCards.forEach((el) => {
+  const cardId = Number(el.dataset.id)
+  const tgt = getTargetById(cardId)
+  if (!tgt) return
+  tgt.appendChild(el)
+  gsap.set(el, {
+    backgroundColor: cardStates.find(c => c.id === cardId)?.bgColor ? cardStates.find(c => c.id === cardId)?.bgColor+cardOpacity : 'transparent',
+    x: 0,
+    y: 0,
+    rotation: 0,
+    width: cardW,
+    height: cardH
+  })
+})
+
+// Animate only stack cards
+const state = Flip.getState(animCards)
+
+animCards.forEach((el) => {
+  const cardId = Number(el.dataset.id)
+  const tgt = getTargetById(cardId)
+  if (!tgt) return
+  tgt.appendChild(el)
+  gsap.to(el, {
+    backgroundColor: cardStates.find(c => c.id === cardId)?.bgColor  ? cardStates.find(c => c.id === cardId)?.bgColor+cardOpacity : 'transparent',
+    duration: 0.4
+  })
+})
+
+gsap.set(animCards, {
+  x: 0,
+  y: 0,
+  rotation: 0,
+  width: cardW,
+  height: cardH
+})
+
+Flip.from(state, {
+  absolute: false,
+  duration: 1,
+  ease: 'power3.inOut',
+  stagger: { each: 0.1, from: 'start' },
+  clearProps: 'transform'
+})
+
+// gsap.fromTo(animCards, 
+//   { opacity: 0 },
+//   { opacity: 1, duration: 0.6, ease: 'power2.out', stagger: 0.05 }
+// )
+
+
+},
+
+
+    /* ── leave grid (back to stack) ────────────────────────────────── */
+    async onLeaveBack () {
+      showAll.value = false
+      await nextTick()
+
+      const stacks = orderedStacks()
+      const state  = Flip.getState(stacks)
+
+      stacks.forEach((el,i)=>{
+        parents[i].appendChild(el)                    // original order
+        el.style.position = 'absolute'
+        gsap.set(el,{ backgroundColor:cardStates[i].bgColor ? cardStates[i].bgColor+cardOpacity: 'transparent' })
       })
-    },
-    onLeaveBack: () => {
-      const state = Flip.getState(stacks)
-      stacks.forEach((c,i) => {
-        originalParents[i].appendChild(c)
-        c.style.position = 'absolute'
+
+      gsap.set(stacks,{
+        x: () => innerWidth/2 - cardW*1.1/2,
+y: (i:number)=> (i*-10) + 60,
+    rotation:(i:number)=> i*5 - 20,      })
+      Flip.from(state,{
+        absolute:true, duration:.8, ease:'power3.out',
+        stagger:{ each:.1, from:'start' }
       })
-      gsap.set(stacks, {
-        x: () => window.innerWidth/2 - cardWidth*1.1/2,
-        y: 0, rotation: i => i*1 -10
-      })
-      Flip.from(state, {
-        absolute:  true,
-        duration:  0.8,
-        ease:      'power3.out',
-        stagger:   { each:0.1, from:'start' }
-      })
+
+      gsap.fromTo(stacks, 
+  { opacity: 0 },
+  { opacity: 1, duration: 0.6, ease: 'power2.out', stagger: 0.05 }
+)
+
     }
   })
-
-  // ScrollTrigger per card to toggle active[i]
-  stacks.forEach((el, i) => {
-    ScrollTrigger.create({
-      trigger:     el,
-      start:       'top 80%',
-      end:         'bottom 20%',
-      onEnter:     () => (active.value[i] = true),
-      onLeave:     () => (active.value[i] = false),
-      onEnterBack: () => (active.value[i] = true),
-      onLeaveBack: () => (active.value[i] = false),
-      scroller:    '#smooth-wrapper'
-    })
-  })
 })
 
-onBeforeUnmount(() => {
-  ScrollTrigger.getAll().forEach(t => t.kill())
-})
+onBeforeUnmount(()=>ScrollTrigger.getAll().forEach(t=>t.kill()))
+
+defineExpose({ stackSize }) // if accessing from parent
+
 </script>
 
+
 <style scoped>
-.stack-card {
-  position: absolute;
-  height: 400px;
-  transform-origin: center right;
-  z-index: -1;
+.stack-card{
+  position:absolute;
+  /* height:400px; */
+  transform-origin:center right;
+  z-index:-1;
 }
 </style>

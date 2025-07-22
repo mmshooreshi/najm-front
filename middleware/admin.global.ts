@@ -1,4 +1,4 @@
-// middleware/admin.ts
+// middleware/admin.global.ts
 export default defineNuxtRouteMiddleware((to) => {
   if (process.client) return
 

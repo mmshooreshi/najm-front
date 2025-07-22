@@ -1,4 +1,4 @@
-// ~/composables/usePBAuthStore.ts
+// composables/usePBAuthStore.ts
 import { reactive, onMounted, onBeforeUnmount } from 'vue'
 import { usePocketBase } from '~/plugins/pb.client'
 

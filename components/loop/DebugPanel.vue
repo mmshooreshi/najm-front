@@ -1,3 +1,4 @@
+<!-- components/loop/DebugPanel.vue -->
 <template>
   <div class="absolute top-0 left-0 z-10 m-4 w-max rounded-xl bg-black/70 text-green-200 text-xs p-3 select-none" role="status" aria-label="Debug statistics and controls">
     <!-- Stats -->

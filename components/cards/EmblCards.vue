@@ -1,14 +1,18 @@
 <!-- components/cards/EmblCards.vue -->
 <template>
-  <div :dir="isRTL ? 'rtl' : 'ltr'" class="relative overflow-x-visible    absolute py-6">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" ref="emblContainer" class="relative overflow-x-visible    absolute py-6">
     <div class="overflow-visible w-full" ref="viewportRef">
       <div class="flex">
         <div
           v-for="(card, idx) in cards"
           :key="card.id"
+          :data-id="card.id"
           :class="[isRTL ? 'rtl' : 'ltr']"
-          class=" h-[400px] embl-card relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible"
+          class="h-[400px] embl-card  relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible"
         >
+
+        
+        <!-- {{ props.stackIds }} -->
         <!-- border-black border -->
           <!-- <NuxtImg
             :src="card.image"
@@ -24,7 +28,7 @@
             :initial="{scale: 0.8}"
             :visible="{scale: 1}"
             :class="[isRTL ? 'right-6' : 'left-6']"
-            :duration="100"  class="absolute bottom-6  bg-[#D6E6E3] px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
+            :duration="100"  class="absolute bottom-6  bg-[#D6E6E3]/40 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
             {{ card.text }}
           </div> 
         </div>
@@ -78,8 +82,13 @@
 
 <script setup>
 import EmblaCarousel from 'embla-carousel'
+import Autoplay         from 'embla-carousel-autoplay'
+
+
 // import DescriptionBubble if needed
 import { useLocale } from '@/composables/useLocale'
+
+const emblContainer = ref(null)
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
@@ -89,7 +98,12 @@ const props = defineProps({
     type: Array,
     required: true,
     // expects something like { text: '...' }
+  },
+  stackIds: {
+    type: Array,
+    default: () => []
   }
+
 })
 const viewportRef = ref(null)
 const embla = ref(null)
@@ -112,27 +126,59 @@ const onSelect = () => {
 
 
 
+let autoplayPlugin // 👈 store plugin instance
+
 const initializeEmbla = () => {
   if (embla.value) {
     embla.value.destroy()
     embla.value = null
   }
 
+  autoplayPlugin = Autoplay({
+    delay: 2000,
+    stopOnInteraction: false
+  })
+
   embla.value = EmblaCarousel(viewportRef.value, {
     containScroll: 'keepSnaps',
     draggable: true,
     speed: 100,
-    align: 'start',
+    align: 'center', // ✅ must be center for scrolling to card
     dragFree: false,
     direction: isRTL.value ? 'rtl' : 'ltr',
     loop: false
-  })
+  }, [autoplayPlugin])
 
   embla.value.on('init', onSelect)
   embla.value.on('select', onSelect)
 }
+
+
 onMounted(() => {
   initializeEmbla()
+
+  watch(() => props.stackIds, async (ids) => {
+  if (!embla.value || !ids?.length) return
+
+  const targetId = ids[2]
+  const index = props.cards.findIndex(c => c.id === targetId)
+  if (index === -1) return
+
+  // 👇 Stop autoplay temporarily
+  autoplayPlugin && autoplayPlugin.stop()
+
+  await nextTick()
+
+  // Scroll to the correct card with animation
+  embla.value.scrollTo(index, false)
+
+  // 👇 Optionally delay before restarting autoplay
+  setTimeout(() => {
+    autoplayPlugin && autoplayPlugin.play()
+  }, 3000) // adjust delay if needed
+}, { immediate: true })
+
+
 })
 
 </script>

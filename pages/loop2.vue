@@ -1,3 +1,4 @@
+<!-- pages/loop2.vue -->
 <template>
   <div class="border shadow-xl rounded-3xl max-w-[70%] space-x-8">
     <!-- 1. Default usage -->

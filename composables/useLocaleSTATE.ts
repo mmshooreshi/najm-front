@@ -1,4 +1,4 @@
-// composables/useLocale.ts
+// composables/useLocaleSTATE.ts
 // ~/composables/useLocale.ts
 import { useState } from '#app'
 

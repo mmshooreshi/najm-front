@@ -1,3 +1,4 @@
+// utils/generateLqip.ts
 export default async function generateLqip(file: File): Promise<string> {
   const bmp = await createImageBitmap(file, { resizeWidth: 64, resizeHeight: 64 })
   const canvas = new OffscreenCanvas(bmp.width, bmp.height)

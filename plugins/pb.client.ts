@@ -1,4 +1,4 @@
-// plugins/pocketbase.client.ts
+// plugins/pb.client.ts
 import PocketBase from 'pocketbase'
 import { defineNuxtPlugin, useCookie } from '#app'
 

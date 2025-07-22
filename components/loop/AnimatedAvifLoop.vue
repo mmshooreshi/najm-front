@@ -1,3 +1,4 @@
+<!-- components/loop/AnimatedAvifLoop.vue -->
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'

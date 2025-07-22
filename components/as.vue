@@ -1,3 +1,4 @@
+<!-- components/as.vue -->
 <template>
   <div class="p-0">
     <!-- Header / Toggle -->

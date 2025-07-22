@@ -125,53 +125,259 @@
       "cards": [
         {
           "id": 1,
-          "image": "/images/sections/cards/1.png",
-          "text": "یه جعبه می‌خوام که از محصولم محافظت کنه تا توی انبار و هنگام ارسال آسیبی نبینه."
+          "image": "/images/sections/cards/01.png",
+          "poster": "/videos/posters/01.avif",
+          "loop": "/videos/01.webp",
+          "bgColor": "#D6E6E3",
+          "text": "یه جعبه می‌خوام که از محصولم موقع انبار و ارسال محافظت کنه."
         },
         {
           "id": 2,
-          "image": "/images/sections/cards/2.png",
-          "text": "برام مهمه که لیبل‌ها دقیق باشن، چون باید بره انبارداری مرکزی."
+          "image": "/images/sections/cards/02.png",
+          "poster": "/videos/posters/02.avif",
+          "loop": "/videos/02.webp",
+          "bgColor": "#FFE7D0",
+          "text": "لیبل باید دقیق باشه — باید بره انبار مرکزی."
         },
         {
           "id": 3,
-          "image": "/images/sections/cards/3.png",
-          "text": "بسته‌بندی باید در حدی تمیز و مرتب باشه که حس پرمیوم بده، بدون نیاز به بازنگری."
+          "image": "/images/sections/cards/03.png",
+          "poster": "/videos/posters/03.avif",
+          "loop": "/videos/03.webp",
+          "bgColor": "#F1F0FF",
+          "text": "بسته‌بندی باید تمیز و شیک باشه — بدون نیاز به بازنگری."
         },
         {
           "id": 4,
-          "image": "/images/sections/cards/4.png",
-          "text": "جعبه‌ها باید مستقیم برن تو قفسه، زمان بازچینی ندارم."
+          "image": "/images/sections/cards/04.png",
+          "poster": "/videos/posters/04.avif",
+          "loop": "/videos/04.webp",
+          "bgColor": "#E7F8FF",
+          "text": "جعبه‌ها باید مستقیم برن روی قفسه — زمان بازچینی ندارم."
         },
         {
           "id": 5,
-          "image": "/images/sections/cards/5.png",
-          "text": "چاپ متن‌ها و نمودارهای آموزشی باید با دقت کامل باشه، چون مخاطب جزئی‌نگره."
+          "image": "/images/sections/cards/05.png",
+          "poster": "/videos/posters/05.avif",
+          "loop": "/videos/05.webp",
+          "bgColor": "#FFF5F0",
+          "text": "نقشه‌ها و متن‌های آموزشی باید دقیق چاپ شن — مشتری‌هام جزئی‌نگرن."
         },
         {
           "id": 6,
-          "image": "/images/sections/cards/6.png",
-          "text": "باید مطمئن باشم استانداردهای چاپ و بسته‌بندی بین‌المللی رعایت می‌شه."
+          "image": "/images/sections/cards/06.png",
+          "poster": "/videos/posters/06.avif",
+          "loop": "/videos/06.webp",
+          "bgColor": "#D0FFF5",
+          "text": "می‌خوام مطمئن باشم استانداردهای بین‌المللی رعایت می‌شن."
         },
         {
           "id": 7,
-          "image": "/images/sections/cards/7.png",
-          "text": "تجربه بدی داشتم، رنگ نهایی هیچ‌وقت مثل طراحی من نشده."
+          "image": "/images/sections/cards/07.png",
+          "poster": "/videos/posters/07.avif",
+          "loop": "/videos/07.webp",
+          "bgColor": "#FFE2E2",
+          "text": "تجربه بدی داشتم — رنگ نهایی هیچ‌وقت مثل طرحم درنیومده."
         },
         {
           "id": 8,
-          "image": "/images/sections/cards/8.png",
-          "text": "باید با ظاهر بسته‌بندیم مخاطب جذب شه، نمی‌خوام مثل بقیه باشم."
+          "image": "/images/sections/cards/08.png",
+          "poster": "/videos/posters/08.avif",
+          "loop": "/videos/08.webp",
+          "bgColor": "#FFF0D6",
+          "text": "بسته‌بندیم باید متفاوت باشه — نمی‌خوام مثل بقیه باشم."
         },
         {
           "id": 9,
-          "image": "/images/sections/cards/9.png",
-          "text": "دنبال یه جعبه‌ خاص‌ام که باز شدنش حس غافلگیری بده."
+          "image": "/images/sections/cards/09.png",
+          "poster": "/videos/posters/09.avif",
+          "loop": "/videos/09.webp",
+          "bgColor": "#F0FFE8",
+          "text": "دنبال جعبه‌ای‌ام که موقع باز شدن حس شگفتی بده."
         },
         {
           "id": 10,
-          "image": "/images/sections/cards/1.png",
-          "text": "بسته‌بندی من باید هم خوش‌دست باشه هم سریع باز شه، چون مشتری عجوله."
+          "image": "/images/sections/cards/10.png",
+          "poster": "/videos/posters/10.avif",
+          "loop": "/videos/10.webp",
+          "bgColor": "#F4FFD0",
+          "text": "جعبه باید خوش‌دست باشه و سریع باز شه — مشتری‌هام عجولن."
+        },
+        {
+          "id": 11,
+          "image": "/images/sections/cards/11.png",
+          "poster": "/videos/posters/11.avif",
+          "loop": "/videos/11.webp",
+          "bgColor": "#E0E0FF",
+          "text": "دوست دارم جعبه قابل استفاده مجدد باشه — حس خاصی داره."
+        },
+        {
+          "id": 12,
+          "image": "/images/sections/cards/12.png",
+          "poster": "/videos/posters/12.avif",
+          "loop": "/videos/12.webp",
+          "bgColor": "#D8F8D8",
+          "text": "می‌خوام طلاکوب یا برجسته‌سازی داشته باشه — نشون‌دهنده کیفیت برندمه."
+        },
+        {
+          "id": 13,
+          "image": "/images/sections/cards/13.png",
+          "poster": "/videos/posters/13.avif",
+          "loop": "/videos/13.webp",
+          "bgColor": "#FBE4FF",
+          "text": "نیازه جعبه‌ها تخت تحویل داده شن تا جای کمتری بگیرن."
+        },
+        {
+          "id": 14,
+          "image": "/images/sections/cards/14.png",
+          "poster": "/videos/posters/14.avif",
+          "loop": "/videos/14.webp",
+          "bgColor": "#FFF8DC",
+          "text": "ما مدام طرح عوض می‌کنیم — تیراژ کم و سرعت بالا مهمه."
+        },
+        {
+          "id": 15,
+          "image": "/images/sections/cards/15.png",
+          "poster": "/videos/posters/15.avif",
+          "loop": "/videos/15.webp",
+          "bgColor": "#E2F6FF",
+          "text": "محصولم به دما حساسه — بسته‌بندی باید کمک کنه عایق باشه."
+        },
+        {
+          "id": 16,
+          "image": "/images/sections/cards/16.png",
+          "poster": "/videos/posters/16.avif",
+          "loop": "/videos/16.webp",
+          "bgColor": "#FFE4EC",
+          "text": "می‌خوام QR کد روی جعبه باشه برای تعامل بعد خرید."
+        },
+        {
+          "id": 17,
+          "image": "/images/sections/cards/17.png",
+          "poster": "/videos/posters/17.avif",
+          "loop": "/videos/17.webp",
+          "bgColor": "#E8EAFD",
+          "text": "طراحی باید هم سنتی باشه هم مدرن — ترکیب جذابی می‌خوام."
+        },
+        {
+          "id": 18,
+          "image": "/images/sections/cards/18.png",
+          "poster": "/videos/posters/18.avif",
+          "loop": "/videos/18.webp",
+          "bgColor": "#FDF7E3",
+          "text": "بسته‌بندی باید راحت بازیافت شه و نشونه‌گذاری واضحی داشته باشه."
+        },
+        {
+          "id": 19,
+          "image": "/images/sections/cards/19.png",
+          "poster": "/videos/posters/19.avif",
+          "loop": "/videos/19.webp",
+          "bgColor": "#DCF6E7",
+          "text": "تجربه آنباکس خیلی مهمه — همه جزئیات مهمن."
+        },
+        {
+          "id": 20,
+          "image": "/images/sections/cards/20.png",
+          "poster": "/videos/posters/20.avif",
+          "loop": "/videos/20.webp",
+          "bgColor": "#FFE6F7",
+          "text": "بسته باید پلمپ داشته باشه — نشون‌دهنده امنیت محصوله."
+        },
+        {
+          "id": 21,
+          "image": "/images/sections/cards/21.png",
+          "poster": "/videos/posters/21.avif",
+          "loop": "/videos/21.webp",
+          "bgColor": "#E6FFF5",
+          "text": "می‌خوام از جوهرهای سبز و مواد قابل تجزیه استفاده شه."
+        },
+        {
+          "id": 22,
+          "image": "/images/sections/cards/22.png",
+          "poster": "/videos/posters/22.avif",
+          "loop": "/videos/22.webp",
+          "bgColor": "#FFEAD6",
+          "text": "ثبات رنگ بین چاپ‌ها برام خیلی مهمه."
+        },
+        {
+          "id": 23,
+          "image": "/images/sections/cards/23.png",
+          "poster": "/videos/posters/23.avif",
+          "loop": "/videos/23.webp",
+          "bgColor": "#E5F6FE",
+          "text": "بسته‌بندی باید سبک ولی مقاوم باشه."
+        },
+        {
+          "id": 24,
+          "image": "/images/sections/cards/24.png",
+          "poster": "/videos/posters/24.avif",
+          "loop": "/videos/24.webp",
+          "bgColor": "#F2F2F2",
+          "text": "مشتری‌هام انتظار بسته‌بندی شیک دارن — هیچ راه میان‌بری نیست."
+        },
+        {
+          "id": 25,
+          "image": "/images/sections/cards/25.png",
+          "poster": "/videos/posters/25.avif",
+          "loop": "/videos/25.webp",
+          "bgColor": "#F7FDEB",
+          "text": "هر جزئیاتی باید پایبندی‌مون به پایداری رو نشون بده."
+        },
+        {
+          "id": 26,
+          "image": "/images/sections/cards/26.png",
+          "poster": "/videos/posters/26.avif",
+          "loop": "/videos/26.webp",
+          "bgColor": "#FEEBF3",
+          "text": "دوست دارم با دیدن جعبه‌مون فوراً یاد برندمون بیفتن."
+        },
+        {
+          "id": 27,
+          "image": "/images/sections/cards/27.png",
+          "poster": "/videos/posters/27.avif",
+          "loop": "/videos/27.webp",
+          "bgColor": "#EDF2FC",
+          "text": "برای بسته‌های خاص می‌خوایم قفل آهنربایی بذاریم."
+        },
+        {
+          "id": 28,
+          "image": "/images/sections/cards/28.png",
+          "poster": "/videos/posters/28.avif",
+          "loop": "/videos/28.webp",
+          "bgColor": "#E6FCE9",
+          "text": "داخل جعبه باید به اندازه ظاهرش زیبا باشه."
+        },
+        {
+          "id": 29,
+          "image": "/images/sections/cards/29.png",
+          "poster": "/videos/posters/29.avif",
+          "loop": "/videos/29.webp",
+          "bgColor": "#FFF2E0",
+          "text": "می‌خوام بسته‌بندی با حداقل چسب و سریع انجام شه."
+        },
+        {
+          "id": 30,
+          "image": "/images/sections/cards/30.png",
+          "poster": "/videos/posters/30.avif",
+          "loop": "/videos/30.webp",
+          "bgColor": "#F6F2FD",
+          "text": "بسته‌بندی باید قابل توسعه باشه — خط تولیدمون در حال رشده."
+        },
+        {
+          "id": 31,
+          "image": "/images/sections/cards/31.png",
+          "poster": "/videos/posters/31.avif",
+          "loop": "/videos/31.webp",
+          "bgColor": "#EDF8F1",
+          "text": "بسته باید حتی در عکس اول تأثیر بذاره."
+        },
+        {
+          "id": 32,
+          "image": "/images/sections/cards/32.png",
+          "poster": "/videos/posters/32.avif",
+          "loop": "/videos/32.webp",
+          "bgColor": "#FFF4F0",
+          "text": "بسته‌بندی باید داستان برندم رو تعریف کنه — نه فقط محافظ باشه."
         }
       ]
     },
@@ -697,53 +903,259 @@
       "cards": [
         {
           "id": 1,
-          "image": "/images/sections/cards/1.png",
-          "text": "أحتاج إلى علبة تحمي المنتج أثناء التخزين والشحن."
+          "image": "/images/sections/cards/01.png",
+          "poster": "/videos/posters/01.avif",
+          "loop": "/videos/01.webp",
+          "bgColor": "#D6E6E3",
+          "text": "أحتاج إلى صندوق يحمي المنتج أثناء التخزين والشحن."
         },
         {
           "id": 2,
-          "image": "/images/sections/cards/2.png",
-          "text": "مهم جدًا أن تكون الملصقات دقيقة، لأنها تذهب إلى المستودع المركزي."
+          "image": "/images/sections/cards/02.png",
+          "poster": "/videos/posters/02.avif",
+          "loop": "/videos/02.webp",
+          "bgColor": "#FFE7D0",
+          "text": "الدقة في الملصقات ضرورية — يجب أن تذهب إلى المخزن المركزي."
         },
         {
           "id": 3,
-          "image": "/images/sections/cards/3.png",
-          "text": "يجب أن تكون العبوة نظيفة ومنظمة لتعطي انطباعًا بريميوم بدون مراجعة إضافية."
+          "image": "/images/sections/cards/03.png",
+          "poster": "/videos/posters/03.avif",
+          "loop": "/videos/03.webp",
+          "bgColor": "#F1F0FF",
+          "text": "يجب أن تبدو العبوة نظيفة وفاخرة — دون الحاجة إلى تعديلات."
         },
         {
           "id": 4,
-          "image": "/images/sections/cards/4.png",
-          "text": "يجب أن تذهب العلب مباشرة إلى الرف، لا يوجد وقت لإعادة الترتيب."
+          "image": "/images/sections/cards/04.png",
+          "poster": "/videos/posters/04.avif",
+          "loop": "/videos/04.webp",
+          "bgColor": "#E7F8FF",
+          "text": "الصناديق يجب أن توضع مباشرة على الرف — لا وقت لدي لإعادة الترتيب."
         },
         {
           "id": 5,
-          "image": "/images/sections/cards/5.png",
-          "text": "يجب طباعة النصوص والمخططات التعليمية بدقة لأن جمهوري يهتم بالتفاصيل."
+          "image": "/images/sections/cards/05.png",
+          "poster": "/videos/posters/05.avif",
+          "loop": "/videos/05.webp",
+          "bgColor": "#FFF5F0",
+          "text": "يجب طباعة الرسوم التوضيحية والنصوص بدقة — جمهوري يهتم بالتفاصيل."
         },
         {
           "id": 6,
-          "image": "/images/sections/cards/6.png",
-          "text": "أريد التأكد من أن معايير الطباعة والتغليف العالمية مُطبقة."
+          "image": "/images/sections/cards/06.png",
+          "poster": "/videos/posters/06.avif",
+          "loop": "/videos/06.webp",
+          "bgColor": "#D0FFF5",
+          "text": "أريد التأكد من أن المعايير الدولية للطباعة والتغليف مُتبعة."
         },
         {
           "id": 7,
-          "image": "/images/sections/cards/7.png",
-          "text": "لدي تجربة سيئة؛ الألوان النهائية لم تكن مطابقة لتصميمي."
+          "image": "/images/sections/cards/07.png",
+          "poster": "/videos/posters/07.avif",
+          "loop": "/videos/07.webp",
+          "bgColor": "#FFE2E2",
+          "text": "كانت لدي تجارب سيئة — الألوان النهائية لم تطابق التصميم أبداً."
         },
         {
           "id": 8,
-          "image": "/images/sections/cards/8.png",
-          "text": "أريد أن تجذب العبوة الانتباه، لا أريد أن أكون مثل الآخرين."
+          "image": "/images/sections/cards/08.png",
+          "poster": "/videos/posters/08.avif",
+          "loop": "/videos/08.webp",
+          "bgColor": "#FFF0D6",
+          "text": "أريد أن تكون العبوة ملفتة — لا أريد أن أبدو مثل الآخرين."
         },
         {
           "id": 9,
-          "image": "/images/sections/cards/9.png",
-          "text": "أبحث عن علبة مميزة تعطي إحساسًا بالمفاجأة عند فتحها."
+          "image": "/images/sections/cards/09.png",
+          "poster": "/videos/posters/09.avif",
+          "loop": "/videos/09.webp",
+          "bgColor": "#F0FFE8",
+          "text": "أبحث عن صندوق يُفاجئ العميل عند فتحه."
         },
         {
           "id": 10,
-          "image": "/images/sections/cards/1.png",
-          "text": "يجب أن تكون العبوة مريحة وسهلة الفتح، لأن العميل مستعجل."
+          "image": "/images/sections/cards/10.png",
+          "poster": "/videos/posters/10.avif",
+          "loop": "/videos/10.webp",
+          "bgColor": "#F4FFD0",
+          "text": "العبوة يجب أن تكون مريحة وسهلة الفتح — زبائني مستعجلون."
+        },
+        {
+          "id": 11,
+          "image": "/images/sections/cards/11.png",
+          "poster": "/videos/posters/11.avif",
+          "loop": "/videos/11.webp",
+          "bgColor": "#E0E0FF",
+          "text": "الصندوق يجب أن يكون قابلاً لإعادة الاستخدام — اللمسة المستدامة تهمني."
+        },
+        {
+          "id": 12,
+          "image": "/images/sections/cards/12.png",
+          "poster": "/videos/posters/12.avif",
+          "loop": "/videos/12.webp",
+          "bgColor": "#D8F8D8",
+          "text": "أرغب بإضافة طباعة بارزة أو لمعة لتعكس جودة العلامة."
+        },
+        {
+          "id": 13,
+          "image": "/images/sections/cards/13.png",
+          "poster": "/videos/posters/13.avif",
+          "loop": "/videos/13.webp",
+          "bgColor": "#FBE4FF",
+          "text": "أحتاج أن تكون الصناديق قابلة للطي لتوفير المساحة أثناء الشحن."
+        },
+        {
+          "id": 14,
+          "image": "/images/sections/cards/14.png",
+          "poster": "/videos/posters/14.avif",
+          "loop": "/videos/14.webp",
+          "bgColor": "#FFF8DC",
+          "text": "نغيّر التصاميم كثيراً — نحتاج كميات قليلة وسرعة بالتنفيذ."
+        },
+        {
+          "id": 15,
+          "image": "/images/sections/cards/15.png",
+          "poster": "/videos/posters/15.avif",
+          "loop": "/videos/15.webp",
+          "bgColor": "#E2F6FF",
+          "text": "منتجاتي تتأثر بالحرارة — أحتاج عزل جيد بالتغليف."
+        },
+        {
+          "id": 16,
+          "image": "/images/sections/cards/16.png",
+          "poster": "/videos/posters/16.avif",
+          "loop": "/videos/16.webp",
+          "bgColor": "#FFE4EC",
+          "text": "أود طباعة رموز QR على الصندوق للتفاعل بعد الشراء."
+        },
+        {
+          "id": 17,
+          "image": "/images/sections/cards/17.png",
+          "poster": "/videos/posters/17.avif",
+          "loop": "/videos/17.webp",
+          "bgColor": "#E8EAFD",
+          "text": "تصميم الصندوق يجب أن يجمع بين الحداثة والتقاليد."
+        },
+        {
+          "id": 18,
+          "image": "/images/sections/cards/18.png",
+          "poster": "/videos/posters/18.avif",
+          "loop": "/videos/18.webp",
+          "bgColor": "#FDF7E3",
+          "text": "أحتاج تغليفاً سهلاً لإعادة التدوير مع تعليمات واضحة."
+        },
+        {
+          "id": 19,
+          "image": "/images/sections/cards/19.png",
+          "poster": "/videos/posters/19.avif",
+          "loop": "/videos/19.webp",
+          "bgColor": "#DCF6E7",
+          "text": "تجربة فتح الصندوق تعني الكثير لعملائنا — التفاصيل مهمة."
+        },
+        {
+          "id": 20,
+          "image": "/images/sections/cards/20.png",
+          "poster": "/videos/posters/20.avif",
+          "loop": "/videos/20.webp",
+          "bgColor": "#FFE6F7",
+          "text": "نحتاج إلى شريط أمان مدمج ضمن التصميم."
+        },
+        {
+          "id": 21,
+          "image": "/images/sections/cards/21.png",
+          "poster": "/videos/posters/21.avif",
+          "loop": "/videos/21.webp",
+          "bgColor": "#E6FFF5",
+          "text": "أريد استخدام أحبار صديقة للبيئة ومواد قابلة للتحلل."
+        },
+        {
+          "id": 22,
+          "image": "/images/sections/cards/22.png",
+          "poster": "/videos/posters/22.avif",
+          "loop": "/videos/22.webp",
+          "bgColor": "#FFEAD6",
+          "text": "ثبات اللون بين الدُفعات أمر مهم جداً لنا."
+        },
+        {
+          "id": 23,
+          "image": "/images/sections/cards/23.png",
+          "poster": "/videos/posters/23.avif",
+          "loop": "/videos/23.webp",
+          "bgColor": "#E5F6FE",
+          "text": "نحتاج تغليفاً خفيف الوزن لكنه متين."
+        },
+        {
+          "id": 24,
+          "image": "/images/sections/cards/24.png",
+          "poster": "/videos/posters/24.avif",
+          "loop": "/videos/24.webp",
+          "bgColor": "#F2F2F2",
+          "text": "عملاؤنا يتوقعون مظهراً فاخراً — لا مجال للتنازل."
+        },
+        {
+          "id": 25,
+          "image": "/images/sections/cards/25.png",
+          "poster": "/videos/posters/25.avif",
+          "loop": "/videos/25.webp",
+          "bgColor": "#F7FDEB",
+          "text": "كل تفصيل يجب أن يعكس التزامنا بالاستدامة."
+        },
+        {
+          "id": 26,
+          "image": "/images/sections/cards/26.png",
+          "poster": "/videos/posters/26.avif",
+          "loop": "/videos/26.webp",
+          "bgColor": "#FEEBF3",
+          "text": "أريد أن يكون من السهل التعرف على علامتنا من العبوة."
+        },
+        {
+          "id": 27,
+          "image": "/images/sections/cards/27.png",
+          "poster": "/videos/posters/27.avif",
+          "loop": "/videos/27.webp",
+          "bgColor": "#EDF2FC",
+          "text": "نريد استخدام إغلاق مغناطيسي لصناديقنا الفاخرة."
+        },
+        {
+          "id": 28,
+          "image": "/images/sections/cards/28.png",
+          "poster": "/videos/posters/28.avif",
+          "loop": "/videos/28.webp",
+          "bgColor": "#E6FCE9",
+          "text": "الجزء الداخلي من الصندوق يجب أن يكون جميلاً مثل الخارجي."
+        },
+        {
+          "id": 29,
+          "image": "/images/sections/cards/29.png",
+          "poster": "/videos/posters/29.avif",
+          "loop": "/videos/29.webp",
+          "bgColor": "#FFF2E0",
+          "text": "نريد تقليل استخدام الشريط وجعل التغليف أسرع."
+        },
+        {
+          "id": 30,
+          "image": "/images/sections/cards/30.png",
+          "poster": "/videos/posters/30.avif",
+          "loop": "/videos/30.webp",
+          "bgColor": "#F6F2FD",
+          "text": "نحتاج تغليفاً يمكن تطويره مع توسع منتجاتنا."
+        },
+        {
+          "id": 31,
+          "image": "/images/sections/cards/31.png",
+          "poster": "/videos/posters/31.avif",
+          "loop": "/videos/31.webp",
+          "bgColor": "#EDF8F1",
+          "text": "الانطباع الأول مهم — حتى عند الشراء عبر الإنترنت."
+        },
+        {
+          "id": 32,
+          "image": "/images/sections/cards/32.png",
+          "poster": "/videos/posters/32.avif",
+          "loop": "/videos/32.webp",
+          "bgColor": "#FFF4F0",
+          "text": "الصندوق يجب أن يحكي قصة، لا أن يكون مجرد غلاف."
         }
       ]
     },
@@ -1269,53 +1681,259 @@
       "cards": [
         {
           "id": 1,
-          "image": "/images/sections/cards/1.png",
+          "image": "/images/sections/cards/01.png",
+          "poster": "/videos/posters/01.avif",
+          "loop": "/videos/01.webp",
+          "bgColor": "#D6E6E3",
           "text": "I need a box that protects my product during storage and shipping."
         },
         {
           "id": 2,
-          "image": "/images/sections/cards/2.png",
+          "image": "/images/sections/cards/02.png",
+          "poster": "/videos/posters/02.avif",
+          "loop": "/videos/02.webp",
+          "bgColor": "#FFE7D0",
           "text": "Label accuracy is key — they need to go to the central warehouse."
         },
         {
           "id": 3,
-          "image": "/images/sections/cards/3.png",
+          "image": "/images/sections/cards/03.png",
+          "poster": "/videos/posters/03.avif",
+          "loop": "/videos/03.webp",
+          "bgColor": "#F1F0FF",
           "text": "Packaging should be clean and premium-looking — no revisions needed."
         },
         {
           "id": 4,
-          "image": "/images/sections/cards/4.png",
+          "image": "/images/sections/cards/04.png",
+          "poster": "/videos/posters/04.avif",
+          "loop": "/videos/04.webp",
+          "bgColor": "#E7F8FF",
           "text": "The boxes must go straight to the shelf — I don’t have time to rearrange."
         },
         {
           "id": 5,
-          "image": "/images/sections/cards/5.png",
+          "image": "/images/sections/cards/05.png",
+          "poster": "/videos/posters/05.avif",
+          "loop": "/videos/05.webp",
+          "bgColor": "#FFF5F0",
           "text": "Instructional charts and text must be printed perfectly — my audience is detail-oriented."
         },
         {
           "id": 6,
-          "image": "/images/sections/cards/6.png",
+          "image": "/images/sections/cards/06.png",
+          "poster": "/videos/posters/06.avif",
+          "loop": "/videos/06.webp",
+          "bgColor": "#D0FFF5",
           "text": "I want to be sure international printing and packaging standards are followed."
         },
         {
           "id": 7,
-          "image": "/images/sections/cards/7.png",
+          "image": "/images/sections/cards/07.png",
+          "poster": "/videos/posters/07.avif",
+          "loop": "/videos/07.webp",
+          "bgColor": "#FFE2E2",
           "text": "I’ve had bad experiences — the final colors never matched my designs."
         },
         {
           "id": 8,
-          "image": "/images/sections/cards/8.png",
+          "image": "/images/sections/cards/08.png",
+          "poster": "/videos/posters/08.avif",
+          "loop": "/videos/08.webp",
+          "bgColor": "#FFF0D6",
           "text": "My packaging should attract attention — I don’t want to look like everyone else."
         },
         {
           "id": 9,
-          "image": "/images/sections/cards/9.png",
+          "image": "/images/sections/cards/09.png",
+          "poster": "/videos/posters/09.avif",
+          "loop": "/videos/09.webp",
+          "bgColor": "#F0FFE8",
           "text": "I’m looking for a box that surprises the customer when opened."
         },
         {
           "id": 10,
-          "image": "/images/sections/cards/1.png",
+          "image": "/images/sections/cards/10.png",
+          "poster": "/videos/posters/10.avif",
+          "loop": "/videos/10.webp",
+          "bgColor": "#F4FFD0",
           "text": "My packaging needs to be ergonomic and fast to open — my customers are in a rush."
+        },
+        {
+          "id": 11,
+          "image": "/images/sections/cards/11.png",
+          "poster": "/videos/posters/11.avif",
+          "loop": "/videos/11.webp",
+          "bgColor": "#E0E0FF",
+          "text": "The box should be reusable — a sustainable, premium touch matters."
+        },
+        {
+          "id": 12,
+          "image": "/images/sections/cards/12.png",
+          "poster": "/videos/posters/12.avif",
+          "loop": "/videos/12.webp",
+          "bgColor": "#D8F8D8",
+          "text": "I want embossing or foil — the box should reflect my brand’s quality."
+        },
+        {
+          "id": 13,
+          "image": "/images/sections/cards/13.png",
+          "poster": "/videos/posters/13.avif",
+          "loop": "/videos/13.webp",
+          "bgColor": "#FBE4FF",
+          "text": "I need the boxes flat-packed to save space during transit."
+        },
+        {
+          "id": 14,
+          "image": "/images/sections/cards/14.png",
+          "poster": "/videos/posters/14.avif",
+          "loop": "/videos/14.webp",
+          "bgColor": "#FFF8DC",
+          "text": "We often change designs — I need low MOQs and quick turnarounds."
+        },
+        {
+          "id": 15,
+          "image": "/images/sections/cards/15.png",
+          "poster": "/videos/posters/15.avif",
+          "loop": "/videos/15.webp",
+          "bgColor": "#E2F6FF",
+          "text": "My products are temperature-sensitive — packaging should help insulate."
+        },
+        {
+          "id": 16,
+          "image": "/images/sections/cards/16.png",
+          "poster": "/videos/posters/16.avif",
+          "loop": "/videos/16.webp",
+          "bgColor": "#FFE4EC",
+          "text": "I want QR codes printed on the box for post-purchase engagement."
+        },
+        {
+          "id": 17,
+          "image": "/images/sections/cards/17.png",
+          "poster": "/videos/posters/17.avif",
+          "loop": "/videos/17.webp",
+          "bgColor": "#E8EAFD",
+          "text": "My box design needs to reflect both tradition and innovation."
+        },
+        {
+          "id": 18,
+          "image": "/images/sections/cards/18.png",
+          "poster": "/videos/posters/18.avif",
+          "loop": "/videos/18.webp",
+          "bgColor": "#FDF7E3",
+          "text": "I need packaging that's easy to recycle and clearly marked."
+        },
+        {
+          "id": 19,
+          "image": "/images/sections/cards/19.png",
+          "poster": "/videos/posters/19.avif",
+          "loop": "/videos/19.webp",
+          "bgColor": "#DCF6E7",
+          "text": "Luxury unboxing is a big deal for our audience — every detail matters."
+        },
+        {
+          "id": 20,
+          "image": "/images/sections/cards/20.png",
+          "poster": "/videos/posters/20.avif",
+          "loop": "/videos/20.webp",
+          "bgColor": "#FFE6F7",
+          "text": "We need tamper-evident seals integrated into the design."
+        },
+        {
+          "id": 21,
+          "image": "/images/sections/cards/21.png",
+          "poster": "/videos/posters/21.avif",
+          "loop": "/videos/21.webp",
+          "bgColor": "#E6FFF5",
+          "text": "I want eco-friendly inks and compostable materials used."
+        },
+        {
+          "id": 22,
+          "image": "/images/sections/cards/22.png",
+          "poster": "/videos/posters/22.avif",
+          "loop": "/videos/22.webp",
+          "bgColor": "#FFEAD6",
+          "text": "Color consistency between batches is extremely important to us."
+        },
+        {
+          "id": 23,
+          "image": "/images/sections/cards/23.png",
+          "poster": "/videos/posters/23.avif",
+          "loop": "/videos/23.webp",
+          "bgColor": "#E5F6FE",
+          "text": "We need packaging that’s both strong and lightweight."
+        },
+        {
+          "id": 24,
+          "image": "/images/sections/cards/24.png",
+          "poster": "/videos/posters/24.avif",
+          "loop": "/videos/24.webp",
+          "bgColor": "#F2F2F2",
+          "text": "Our clients expect a premium look and feel — no shortcuts."
+        },
+        {
+          "id": 25,
+          "image": "/images/sections/cards/25.png",
+          "poster": "/videos/posters/25.avif",
+          "loop": "/videos/25.webp",
+          "bgColor": "#F7FDEB",
+          "text": "Every detail on the packaging must reflect our sustainability values."
+        },
+        {
+          "id": 26,
+          "image": "/images/sections/cards/26.png",
+          "poster": "/videos/posters/26.avif",
+          "loop": "/videos/26.webp",
+          "bgColor": "#FEEBF3",
+          "text": "I want customers to instantly recognize our brand when they see the box."
+        },
+        {
+          "id": 27,
+          "image": "/images/sections/cards/27.png",
+          "poster": "/videos/posters/27.avif",
+          "loop": "/videos/27.webp",
+          "bgColor": "#EDF2FC",
+          "text": "We want to include magnetic closures in our high-end boxes."
+        },
+        {
+          "id": 28,
+          "image": "/images/sections/cards/28.png",
+          "poster": "/videos/posters/28.avif",
+          "loop": "/videos/28.webp",
+          "bgColor": "#E6FCE9",
+          "text": "The interior of the box should be just as beautiful as the outside."
+        },
+        {
+          "id": 29,
+          "image": "/images/sections/cards/29.png",
+          "poster": "/videos/posters/29.avif",
+          "loop": "/videos/29.webp",
+          "bgColor": "#FFF2E0",
+          "text": "We want to minimize tape and simplify the packing process."
+        },
+        {
+          "id": 30,
+          "image": "/images/sections/cards/30.png",
+          "poster": "/videos/posters/30.avif",
+          "loop": "/videos/30.webp",
+          "bgColor": "#F6F2FD",
+          "text": "We need scalable packaging as our product line expands."
+        },
+        {
+          "id": 31,
+          "image": "/images/sections/cards/31.png",
+          "poster": "/videos/posters/31.avif",
+          "loop": "/videos/31.webp",
+          "bgColor": "#EDF8F1",
+          "text": "It’s important our packaging makes a great first impression online."
+        },
+        {
+          "id": 32,
+          "image": "/images/sections/cards/32.png",
+          "poster": "/videos/posters/32.avif",
+          "loop": "/videos/32.webp",
+          "bgColor": "#FFF4F0",
+          "text": "The box should tell a story — not just carry the product."
         }
       ]
     },

@@ -1,3 +1,4 @@
+<!-- pages/loop.vue -->
 <template>
   <main class="flex justify-center py-10 w-full ">
             <!-- <AnimatedImageStrip :fps="6" debug :ramp="0.7" /> -->

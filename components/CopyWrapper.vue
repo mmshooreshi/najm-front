@@ -1,3 +1,4 @@
+<!-- components/CopyWrapper.vue -->
 <template>
   <div
     :class="[

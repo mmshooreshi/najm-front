@@ -1,4 +1,4 @@
-<!-- pages/admin/users.vue -->
+<!-- pages/admin/superusers.vue -->
 <!-- pages/admin/users.vue -->
 <script setup lang="ts">
 import { usePocketBase } from '~/plugins/pb.client'

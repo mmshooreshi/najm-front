@@ -1,3 +1,4 @@
+<!-- pages/admin/video-editor.vue -->
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

@@ -1,4 +1,4 @@
-// ~/composables/useLocale.ts
+// composables/useLocale.ts
 import { useCookie } from '#app'     // Nuxt helper, SSR-friendly
 
 export const useLocale = () => {

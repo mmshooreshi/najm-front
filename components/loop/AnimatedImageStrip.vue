@@ -1,3 +1,4 @@
+<!-- components/loop/AnimatedImageStrip.vue -->
 <template>
   <!-- Wrapper -->
   <div

@@ -1,3 +1,4 @@
+<!-- pages/loopnew.vue -->
 <template>
   <div class="avif-video-creator">
     <h2>AVIF Video Creator</h2>

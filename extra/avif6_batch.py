@@ -48,7 +48,10 @@ def make_transparent_webp(
         blur = Image.blend(curr, nxt, motion_blur_alpha)
         noise = Image.effect_noise(blur.size, noise_level).convert("L")
         noise_rgba = Image.merge("RGBA", (noise, noise, noise, noise))
-        frame = Image.blend(blur, noise_rgba, noise_alpha)
+        
+        # frame = Image.blend(blur, noise_rgba, noise_alpha)
+        frame = Image.merge("RGBA", (*Image.blend(blur, noise_rgba, noise_alpha).split()[:3], curr.split()[3]))
+        
         final.append(frame)
 
     # 5) build per-frame durations: [long] + fast*(n-2) + [long] + fast*(n-2) + [long]

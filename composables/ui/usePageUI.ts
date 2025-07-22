@@ -1,3 +1,4 @@
+// composables/ui/usePageUI.ts
 import { useFetch } from '#app'
 import { computed } from 'vue'
 import { useLocale } from '@/composables/useLocale'
