@@ -6,7 +6,8 @@
     <SceneHeading :data="sceneProjects" :align="isRTL ? 'right' : 'left'"/>
     <!-- <ClientOnly> -->
     <!-- <EmblCards :cards="sceneProjects.cards"/> -->
-    <EmblCards :cards="sceneProjects.cards" :stackIds="stackIds" />
+    <!-- <EmblCards :cards="sceneProjects.cards" :stackIds="stackIds" /> -->
+    <EmblCards :cards="sceneProjects.cards" :stackIds="stackIds" @visibleStackChanged="$emit('visibleStackChanged', $event)" />
 
     <!-- </ClientOnly> -->
     

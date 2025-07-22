@@ -122,6 +122,10 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useWindowSize, useThrottleFn } from '@vueuse/core'
 import InlineSvgMask from '~/components/InlineSvgMask.vue'
+import { useElementVisibility } from '@vueuse/core'
+
+const slider = ref(null)
+const isVisible = useElementVisibility(slider)
 
 let images = [
     { name: "Open Paper Box", src: "main/4.png", width: 145, height: 152, left: -52, top: 91, rotate: -20, zIndex: 1 },
@@ -231,7 +235,6 @@ const nonHoveredOpacity = ref(0.6)
 const parallaxMultiplier = ref(1)
 
 const showSettings = ref(false)
-const slider = ref(null)
 const { width } = useWindowSize()
 const isHovered = ref(false)
 const isSwiping = ref(false)
@@ -315,6 +318,12 @@ const animate = () => {
   const dt = now - lastFrameTime
   const dtSec = dt / 1000
   lastFrameTime = now
+
+    // ✅ Skip animation if not visible
+  if (!isVisible.value) {
+    animationFrameId = requestAnimationFrame(animate)
+    return
+  }
 
   globalTime.value += dtSec
 

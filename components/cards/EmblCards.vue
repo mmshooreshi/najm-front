@@ -8,7 +8,7 @@
           :key="card.id"
           :data-id="card.id"
           :class="[isRTL ? 'rtl' : 'ltr']"
-          class="h-[400px] embl-card  relative flex-none w-4/5 mr-2.5 max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible"
+          class="h-[300px] md:h-[400px] embl-card  relative flex-none w-4/5 mr-2.5 max-h-[300px] md:max-h-[400px] max-w-[500px] rounded-[1.5rem] overflow-visible"
         >
 
         
@@ -68,10 +68,10 @@
       </div>
       <div class="flex gap-2">
         <button
-          v-for="(card, idx) in cards"
+          v-for="(card, idx) in everyThirdCard" 
           :key="card.id"
-          @click="scrollTo(idx)"
-          :class="['w-2.5 h-2.5 rounded-full border-none cursor-pointer transition-all', selectedIndex === idx ? 'bg-[#014439] w-8' : 'bg-gray-300/70']"
+          @click="scrollTo(card.id)"
+          :class="['w-2.5 h-2.5 rounded-full border-none cursor-pointer transition-all', selectedIndex === card.id ? 'bg-[#014439] w-8' : 'bg-gray-300/70']"
           :aria-label="`Go to slide ${idx + 1}`"
         />
       </div>
@@ -87,6 +87,8 @@ import Autoplay         from 'embla-carousel-autoplay'
 
 // import DescriptionBubble if needed
 import { useLocale } from '@/composables/useLocale'
+
+const emit = defineEmits(['visibleStackChanged'])
 
 const emblContainer = ref(null)
 
@@ -105,6 +107,11 @@ const props = defineProps({
   }
 
 })
+
+const everyThirdCard = computed(() =>
+  props.cards.filter((_, idx) => idx % 3 === 0)
+)
+
 const viewportRef = ref(null)
 const embla = ref(null)
 
@@ -118,12 +125,25 @@ const scrollPrev = () => embla.value && embla.value.scrollPrev()
 const scrollNext = () => embla.value && embla.value.scrollNext()
 const scrollTo = (index) => embla.value && embla.value.scrollTo(index)
 
+// const onSelect = () => {
+//   selectedIndex.value = embla.value.selectedScrollSnap()
+//   canScrollPrev.value = embla.value.canScrollPrev()
+//   canScrollNext.value = embla.value.canScrollNext()
+// }
+
+
 const onSelect = () => {
   selectedIndex.value = embla.value.selectedScrollSnap()
   canScrollPrev.value = embla.value.canScrollPrev()
   canScrollNext.value = embla.value.canScrollNext()
+  
+  
+  // // get 5 centered cards
+  const start = Math.max(0, selectedIndex.value - 2)
+  const end = Math.min(props.cards.length, start + 5)
+  const visible = props.cards.slice(start, end).map(c => c.id)
+  emit('visibleStackChanged', visible)
 }
-
 
 
 let autoplayPlugin // 👈 store plugin instance
@@ -136,6 +156,7 @@ const initializeEmbla = () => {
 
   autoplayPlugin = Autoplay({
     delay: 2000,
+    
     stopOnInteraction: false
   })
 
@@ -157,26 +178,26 @@ const initializeEmbla = () => {
 onMounted(() => {
   initializeEmbla()
 
-  watch(() => props.stackIds, async (ids) => {
-  if (!embla.value || !ids?.length) return
+//   watch(() => props.stackIds, async (ids) => {
+//   if (!embla.value || !ids?.length) return
 
-  const targetId = ids[2]
-  const index = props.cards.findIndex(c => c.id === targetId)
-  if (index === -1) return
+//   const targetId = ids[0]
+//   const index = props.cards.findIndex(c => c.id === targetId)
+//   if (index === -1) return
 
-  // 👇 Stop autoplay temporarily
-  autoplayPlugin && autoplayPlugin.stop()
+//   // 👇 Stop autoplay temporarily
+//   autoplayPlugin && autoplayPlugin.stop()
 
-  await nextTick()
+//   await nextTick()
 
-  // Scroll to the correct card with animation
-  embla.value.scrollTo(index, false)
+//   // Scroll to the correct card with animation
+//   embla.value.scrollTo(index, false)
 
-  // 👇 Optionally delay before restarting autoplay
-  setTimeout(() => {
-    autoplayPlugin && autoplayPlugin.play()
-  }, 3000) // adjust delay if needed
-}, { immediate: true })
+//   // 👇 Optionally delay before restarting autoplay
+//   setTimeout(() => {
+//     autoplayPlugin && autoplayPlugin.play()
+//   }, 3000) // adjust delay if needed
+// }, { immediate: true })
 
 
 })

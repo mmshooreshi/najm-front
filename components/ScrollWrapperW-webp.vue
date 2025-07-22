@@ -5,22 +5,24 @@
       <SceneCardsIntro />
 <!-- {{ stackIds }} -->
 
-      <div class="flex w-full h-[500px]  relative">
+      <div  @click="cycleStack"
+      class="flex w-full h-[350px] -mt-4 md:h-[500px]  relative">
         <div
           v-for="(card, i) in cardStates"
           :key="card.id"
           :data-id="card.id" 
-          class="stack-card  w-min shadow-sm  backdrop-blur-sm relative flex-none max-h-[400px] rounded-[1.5rem] overflow-visible rtl"
+          :style="{ zIndex:  cardStates.length-i }"
+          class="stack-card  w-min shadow-sm  backdrop-blur-sm relative flex-none max-h-[300px] md:max-h-[400px] rounded-[1.5rem] overflow-visible rtl"
         >
         <!-- {{ card.id }} -->
 
           <!-- just one NuxtImg: poster while stacked, animated WEBP/GIF when in grid -->
           <img
            
-            :src="card.play ? card.loop : card.poster"
+            :src="card.play ? card.poster : card.loop"
             :alt="card.text"
             v-motion="{ initial: { scale: 0.8 }, visible: { scale: 1 }, duration: 100 }"
-            class="object-cover h-[full] w-min rounded-[1.5rem] -mt-24" 
+            class="object-cover h-[full] w-min rounded-[1.5rem] md:-mt-24" 
             placeholder="false"
           />
         </div>
@@ -28,7 +30,9 @@
     </div>
 
     <div ref="gridSection">
-      <SceneProjects :stackIds="stackIds"/>
+      <!-- <SceneProjects :stackIds="stackIds"/> -->
+      <SceneProjects :stackIds="stackIds" @visibleStackChanged="updateStackIds" />
+
     </div>
   </div>
 </template>
@@ -47,9 +51,80 @@ gsap.registerPlugin(ScrollTrigger, Flip)
 import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
 import SceneProjects   from '@/components/scenes/SceneProjects.vue'
 
+
+function updateCardPositions() {
+  const stacks = orderedStacks()
+  const cardW = stacks[0]?.offsetWidth ?? 0
+
+  stacks.forEach((el, i) => {
+    gsap.to(el, {
+      x: innerWidth / 2 - cardW * 1.1 / 2,
+      y: (i * -10) + 60,
+      rotation: i * 5 - 20,
+      duration: 0.5,
+      ease: 'power3.out'
+    })
+  })
+}
+
+async function cycleStack() {
+  if (showAll.value) return
+
+  // grab all cards in v-for order
+  const before = gsap.utils.toArray<HTMLElement>('.stack-card')
+  if (!before.length) return
+  const topEl = before[0]
+
+  const fadeDur  = 0.3
+  const shiftDur = 0.3
+
+  // 1) fade out the top card
+  await gsap.to(topEl, {
+    opacity: 0,
+    duration: fadeDur,
+    ease: 'power1.out'
+  }).then()
+
+  // 2) rotate the data array
+  const moved = cardStates.shift()
+  if (moved) cardStates.push(moved)
+
+  // 3) wait for DOM to reflect new order
+  await nextTick()
+
+  // 4) animate EVERY card into its new x/y/rotation
+  const after = gsap.utils.toArray<HTMLElement>('.stack-card')
+  if (!after.length) return
+  const w = after[0].offsetWidth
+  gsap.to(after, {
+    x: () => innerWidth/2 - (w * 1.1)/2,
+    y: (i) => i * -10 + 60,
+    rotation: (i) => i * 5 - 20,
+    duration: shiftDur,
+    ease: 'power3.inOut',
+    stagger: 0.03
+  })
+
+  // 5) fade the moved card back in (it’s now the last element)
+  const bottomEl = after[after.length - 1]
+  gsap.set(bottomEl, { opacity: 0 })
+  gsap.to(bottomEl, {
+    opacity: 1,
+    duration: fadeDur,
+    delay: shiftDur,
+    ease: 'power1.in'
+  })
+}
+
+
 /* ───────────────── types ──────────────────────────────────────────── */
 interface Card { id:number; poster:string; loop:string; bgColor?:string; text:string }
 interface CardState extends Card { play:boolean }
+
+function updateStackIds(newIds: number[]) {
+  stackIds.value = newIds
+}
+
 
 /* ───────────────── refs to template sections ──────────────────────── */
 const stackSection = ref<HTMLElement|null>(null)
@@ -92,10 +167,19 @@ watch([rawCards, showAll], async () => {
     // source = sorted.slice(randomStart, randomStart + 5)
     // stackIds.value = source.map(c => c.id)
 
+    if (stackIds.value.length==0){
     const maxStartIndex = Math.max(0, sorted.length - stackSize.value)
     const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
     source = sorted.slice(randomStart, randomStart + stackSize.value)
-    stackIds.value = source.map(c => c.id)
+
+    } else {
+      source = sorted.filter(c => stackIds.value.includes(c.id))
+      stackIds.value = source.map(c => c.id)
+
+    }
+
+
+    
 
   }
 
@@ -106,10 +190,15 @@ watch([rawCards, showAll], async () => {
 }, { immediate: true })
 
 /* ───────────────── helper: always return stacks / targets in id order */
-function orderedStacks (): HTMLElement[] {
+function orderedStacksPREV (): HTMLElement[] {
   return gsap.utils.toArray<HTMLElement>('.stack-card')
            .sort((a,b)=>Number(a.dataset.id)-Number(b.dataset.id))
 }
+
+function orderedStacks(): HTMLElement[] {
+  return gsap.utils.toArray<HTMLElement>('.stack-card')
+}
+
 function orderedTargets (): HTMLElement[] {
   return gsap.utils.toArray<HTMLElement>('.embl-card')
            .sort((a,b)=>Number(a.dataset.id)-Number(b.dataset.id))
@@ -138,13 +227,13 @@ onMounted(async () => {
     scrollTrigger:{
       trigger: stackSection.value,
       start:   'top-=40% top',
-      end:     '+=400',
+      end:     '+=300',
       //toggleActions:'play none none reverse',
       toggleActions: 'play none none none',
       once: true,
       scroller:'#smooth-wrapper'
     }
-  }).to(stacks0,{
+  }).add(() => updateCardPositions()).to(stacks0,{
     x: () => innerWidth/2 - cardW*1.1/2,
     y: (i:number)=> (i*-10) + 60,
     rotation:(i:number)=> i*5 - 20,
