@@ -19,7 +19,7 @@
           <!-- just one NuxtImg: poster while stacked, animated WEBP/GIF when in grid -->
           <img
            
-            :src="card.play ? card.poster : card.loop"
+            :src="card.play ? card.loop : card.loop"
             :alt="card.text"
             v-motion="{ initial: { scale: 0.8 }, visible: { scale: 1 }, duration: 100 }"
             class="object-cover h-[full] w-min rounded-[1.5rem] md:-mt-24" 
