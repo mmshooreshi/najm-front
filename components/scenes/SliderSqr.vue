@@ -22,12 +22,16 @@
           class="relative flex flex-col items-center w-full h-full rounded-3xl overflow-hidden cursor-pointer"
         >
           <div class="transition-all duration-1000 group-hover:scale-110 w-full h-full">
+            
             <NuxtImg
+              v-if="!slide.image.endsWith('mp4')"
               :src="slide.image"
               :alt="slide.alt"
               class="w-full h-full object-cover rounded-3xl"
             />
+            <video v-else  muted loop preload="auto" autoPlay playsInline :src="slide.image" :alt="slide.alt" class="w-full h-full object-cover rounded-3xl"></video>
           </div>
+
   
           <div class="absolute inset-0 flex flex-col justify-between p-6">
             <div v-if="!hideArrows" class="flex justify-between items-center w-full gap-1">

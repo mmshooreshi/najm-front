@@ -420,7 +420,7 @@
       ],
       "machinesSlides": [
         {
-          "image": "/images/sections/facilities/machines-1.gif",
+          "image": "/images/sections/facilities/machines-1.mp4",
           "alt": "تجهیزات و دستگاه‌ها",
           "text": "تجهیزات و دستگاه‌ها",
           "href": "/home2"
@@ -428,19 +428,19 @@
       ],
       "facilitiesSlides": [
         {
-          "image": "/images/sections/facilities/facilities-1.gif",
+          "image": "/images/sections/facilities/facilities-1.mp4",
           "alt": "امکانات و بخش‌ها",
           "text": "امکانات و بخش‌ها",
           "href": "/home2"
         },
         {
-          "image": "/images/sections/facilities/facilities-1.png",
+          "image": "/images/sections/facilities/facilities-1.avif",
           "alt": "بخش‌ها و امکانات",
           "text": "بخش‌ها و امکانات",
           "href": "/home2"
         },
         {
-          "image": "/images/sections/facilities/machines-1.png",
+          "image": "/images/sections/facilities/machines-1.avif",
           "alt": "بخش‌ها و امکانات",
           "text": "بخش‌ها و امکانات",
           "href": "/home2"
@@ -1198,7 +1198,7 @@
       ],
       "machinesSlides": [
         {
-          "image": "/images/sections/facilities/machines-1.gif",
+          "image": "/images/sections/facilities/machines-1.mp4",
           "alt": "الأجهزة والمعدات",
           "text": "الأجهزة والمعدات",
           "href": "/home2"
@@ -1206,19 +1206,19 @@
       ],
       "facilitiesSlides": [
         {
-          "image": "/images/sections/facilities/facilities-1.gif",
+          "image": "/images/sections/facilities/facilities-1.mp4",
           "alt": "المرافق والأقسام",
           "text": "المرافق والأقسام",
           "href": "/home2"
         },
         {
-          "image": "/images/sections/facilities/facilities-1.png",
+          "image": "/images/sections/facilities/facilities-1.avif",
           "alt": "الأقسام والمرافق",
           "text": "الأقسام والمرافق",
           "href": "/home2"
         },
         {
-          "image": "/images/sections/facilities/machines-1.png",
+          "image": "/images/sections/facilities/machines-1.avif",
           "alt": "الأقسام والمرافق",
           "text": "الأقسام والمرافق",
           "href": "/home2"
@@ -1976,7 +1976,7 @@
       ],
       "machinesSlides": [
         {
-          "image": "/images/sections/facilities/machines-1.gif",
+          "image": "/images/sections/facilities/machines-1.mp4",
           "alt": "Machines & Equipment",
           "text": "Machines & Equipment",
           "href": "/home2"
@@ -1984,19 +1984,19 @@
       ],
       "facilitiesSlides": [
         {
-          "image": "/images/sections/facilities/facilities-1.gif",
+          "image": "/images/sections/facilities/facilities-1.mp4",
           "alt": "Facilities & Departments",
           "text": "Facilities & Departments",
           "href": "/home2"
         },
         {
-          "image": "/images/sections/facilities/facilities-1.png",
+          "image": "/images/sections/facilities/facilities-1.avif",
           "alt": "Departments & Facilities",
           "text": "Departments & Facilities",
           "href": "/home2"
         },
         {
-          "image": "/images/sections/facilities/machines-1.png",
+          "image": "/images/sections/facilities/machines-1.avif",
           "alt": "Departments & Facilities",
           "text": "Departments & Facilities",
           "href": "/home2"

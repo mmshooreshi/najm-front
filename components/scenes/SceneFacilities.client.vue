@@ -18,7 +18,7 @@
         <div v-memotion-pop-visible="{ delay: 0.8, duration: 0.4 }"  class="h-[300px] md:h-[400px] rounded-3xl w-full  flex items-center justify-center">
           <div class="h-[300px] md:h-[400px] relative w-full rounded-3xl overflow-hidden">
           <NuxtImg
-            src="/images/sections/facilities/center.png"
+            src="/images/sections/facilities/center.avif"
             fill
             class="absolute inset-0 w-full h-full object-cover object-center"
             alt="Facility Center"
@@ -65,7 +65,7 @@ const dataPrev = {
 // Slides for the *left* (machines) slider
 const machinesSlidesPrev = [
   {
-    image: '/images/sections/facilities/machines-1.gif',
+    image: '/images/sections/facilities/machines-1.mp4',
     alt:   'تجهیزات و دستگاه‌ها',
     text:  'تجهیزات و دستگاه‌ها',
     href: '/home2'
@@ -76,55 +76,55 @@ const machinesSlidesPrev = [
 // Slides for the *right* (facilities) slider
 const facilitiesSlidesPrev = [
   {
-    image: '/images/sections/facilities/facilities-1.gif',
+    image: '/images/sections/facilities/facilities-1.mp4',
     alt:   'امکانات و بخش‌ها',
     text:  'امکانات و بخش‌ها',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/facilities-1.png',
+    image: '/images/sections/facilities/facilities-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/machines-1.png',
+    image: '/images/sections/facilities/machines-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/facilities-1.png',
+    image: '/images/sections/facilities/facilities-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/machines-1.png',
+    image: '/images/sections/facilities/machines-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/facilities-1.png',
+    image: '/images/sections/facilities/facilities-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/machines-1.png',
+    image: '/images/sections/facilities/machines-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/facilities-1.png',
+    image: '/images/sections/facilities/facilities-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
   },
   {
-    image: '/images/sections/facilities/machines-1.png',
+    image: '/images/sections/facilities/machines-1.avif',
     alt:   'بخش‌ها و امکانات',
     text:  'بخش‌ها و امکانات',
     href: '/home2'
