@@ -1,6 +1,7 @@
 <!-- components/Footer2.vue -->
 <template>
   <footer dir="rtl" class="bg-[#014439]/100 rounded-t-[15px] text-center items-center text-white/100 pt-16 pb-16">
+
     <div class=" grid-cols-2 grid w-full">
       <logoWhite class="col-span-2  mx-auto " />
     </div>
@@ -103,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import logoWhite from '~/assets/icons/logo-white.svg'
+import logoWhite from '~/assets/icons/najm-logo-white.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import { usefooterUIData } from '@/composables/ui/footerUI'
 import MarkerIcon from '~/assets/icons/marker-icon.svg'

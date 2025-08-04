@@ -8,17 +8,69 @@ import { fontPreloadLinks } from './utils/font-preload';
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-
   app: {
-    // pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       title: 'Najm Printing',
-      link: [
-        { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
-        ...fontPreloadLinks
-      ]
+      htmlAttrs: {
+        lang: 'en'
+      },
+      meta: [
+        // keep any existing ones you had (you didn't list meta before), then add:
+        { name: 'description', content: 'High quality printing solutions. Najm Printing delivers impeccable prints with speed and excellence.' },
+        { name: 'viewport', content: 'width=device-width,initial-scale=1' },
+        { name: 'theme-color', content: '#ffffff' },
 
-    }
+        // Open Graph (can be overridden per page with useHead)
+        { property: 'og:site_name', content: 'Najm Printing' },
+        { property: 'og:title', content: 'Najm Printing' },
+        { property: 'og:description', content: 'High quality printing solutions. Najm Printing delivers impeccable prints with speed and excellence.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:url', content: 'https://yourdomain.com' }, // replace with your canonical URL
+
+        // Twitter
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: 'Najm Printing' },
+        { name: 'twitter:description', content: 'High quality printing solutions. Najm Printing delivers impeccable prints with speed and excellence.' },
+
+        // you can add og:image / twitter:image later per page or globally
+      ],
+      link: [
+        // keep your existing favicon.svg entry
+        { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
+
+        // add the standard icons (ensure these files live in /public)
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+        { rel: 'shortcut icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/android-chrome-192x192.png' },
+        { rel: 'icon', type: 'image/png', sizes: '512x512', href: '/android-chrome-512x512.png' },
+
+        // preconnect hints (optional but good)
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+
+        // keep your font preload links
+        ...fontPreloadLinks,
+      ],
+      script: [
+        // structured data JSON-LD (organization) without removing anything else
+        {
+          type: 'application/ld+json',
+          children: `
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Najm Printing",
+            "url": "https://yourdomain.com",
+            "logo": "https://yourdomain.com/logo.png",
+            "sameAs": []
+          }
+          `,
+        },
+      ],
+    },
   },
   build: {
     transpile: ['gsap'],
