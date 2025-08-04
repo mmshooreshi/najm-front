@@ -7,25 +7,22 @@
 
       <div  @click="cycleStack"
       class="flex w-full h-[350px] -mt-4 md:h-[500px]  relative">
-        <div
-          v-for="(card, i) in cardStates"
-          :key="card.id"
-          :data-id="card.id" 
-          :style="{ zIndex:  cardStates.length-i }"
-          class="stack-card  w-min shadow-sm  backdrop-blur-sm relative flex-none max-h-[300px] md:max-h-[400px] rounded-[1.5rem] overflow-visible rtl"
-        >
-        <!-- {{ card.id }} -->
+<div
+  v-for="(card, i) in cardStates"
+  :key="card.id"
+  :data-id="card.id"
+  :style="{ zIndex: cardStates.length - i, backgroundColor: card.bgColor }"
+  class="stack-card w-min shadow-sm backdrop-blur-sm relative flex-none max-h-[300px] md:max-h-[400px] rounded-[1.5rem] overflow-visible rtl"
+>
+  <img
+    :src="card.play ? card.loop : card.loop"
+    :alt="card.text"
+    v-motion="{ initial: { scale: 0.8 }, visible: { scale: 1 }, duration: 100 }"
+    class="object-cover h-[full] w-min rounded-[1.5rem] md:-mt-24"
+    placeholder="false"
+  />
+</div>
 
-          <!-- just one NuxtImg: poster while stacked, animated WEBP/GIF when in grid -->
-          <img
-           
-            :src="card.play ? card.loop : card.loop"
-            :alt="card.text"
-            v-motion="{ initial: { scale: 0.8 }, visible: { scale: 1 }, duration: 100 }"
-            class="object-cover h-[full] w-min rounded-[1.5rem] md:-mt-24" 
-            placeholder="false"
-          />
-        </div>
       </div>
     </div>
 
@@ -154,40 +151,84 @@ const cardStates = reactive<CardState[]>([])
 //   cardStates.splice(0, cardStates.length, ...mapped)
 //   await nextTick()                                   // DOM is ready for GSAP
 // }, { immediate:true })
-watch([rawCards, showAll], async () => {
-  const sorted = [...rawCards.value].sort((a, b) => a.id - b.id)
 
-  let source: Card[] = []
+// Example color palette extracted from your image
+const colorPalette = [
+  "#8FBC8F", // Greenish
+  "#E7A7A7", // Pinkish
+  "#A4A4D3", // Lavender
+  "#C3C3B4", // Beige
+  "#D6D6D6", // Light Gray
+  "#D6D9D1", // Light Yellowish
+  "#C5C6F1", // Light Blue
+  "#88A8B6", // Tealish
+];
 
-  if (showAll.value) {
-    source = sorted
-  } else {
-    // const maxStartIndex = Math.max(0, sorted.length - 5)
-    // const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
-    // source = sorted.slice(randomStart, randomStart + 5)
-    // stackIds.value = source.map(c => c.id)
+// these are now commented but working (come back later):
+// watch([rawCards, showAll], async () => {
+//   const sorted = [...rawCards.value].sort((a, b) => a.id - b.id)
 
-    if (stackIds.value.length==0){
-    const maxStartIndex = Math.max(0, sorted.length - stackSize.value)
-    const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
-    source = sorted.slice(randomStart, randomStart + stackSize.value)
+//   let source: Card[] = []
 
-    } else {
-      source = sorted.filter(c => stackIds.value.includes(c.id))
-      stackIds.value = source.map(c => c.id)
+//   if (showAll.value) {
+//     source = sorted
+//   } else {
+//     // const maxStartIndex = Math.max(0, sorted.length - 5)
+//     // const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
+//     // source = sorted.slice(randomStart, randomStart + 5)
+//     // stackIds.value = source.map(c => c.id)
 
-    }
+//     if (stackIds.value.length==0){
+//     const maxStartIndex = Math.max(0, sorted.length - stackSize.value)
+//     const randomStart = Math.floor(Math.random() * (maxStartIndex + 1))
+//     source = sorted.slice(randomStart, randomStart + stackSize.value)
+
+//     } else {
+//       source = sorted.filter(c => stackIds.value.includes(c.id))
+//       stackIds.value = source.map(c => c.id)
+
+//     }
 
 
     
 
+//   }
+
+//   const mapped = source.map(c => ({ ...c, play: showAll.value }))
+//   cardStates.splice(0, cardStates.length, ...mapped)
+
+//   await nextTick()
+// }, { immediate: true })
+
+watch([rawCards, showAll], async () => {
+  const sorted = [...rawCards.value].sort((a, b) => a.id - b.id);
+
+  let source: Card[] = [];
+
+  if (showAll.value) {
+    source = sorted;
+  } else {
+    if (stackIds.value.length == 0) {
+      const maxStartIndex = Math.max(0, sorted.length - stackSize.value);
+      const randomStart = Math.floor(Math.random() * (maxStartIndex + 1));
+      source = sorted.slice(randomStart, randomStart + stackSize.value);
+    } else {
+      source = sorted.filter((c) => stackIds.value.includes(c.id));
+      stackIds.value = source.map((c) => c.id);
+    }
   }
 
-  const mapped = source.map(c => ({ ...c, play: showAll.value }))
-  cardStates.splice(0, cardStates.length, ...mapped)
+  const mapped = source.map((c, index) => {
+    // Assign a background color from the colorPalette array
+    const bgColor = colorPalette[index % colorPalette.length]; // Ensure we don't exceed the palette
 
-  await nextTick()
-}, { immediate: true })
+    return { ...c, play: showAll.value, bgColor };
+  });
+
+  cardStates.splice(0, cardStates.length, ...mapped);
+
+  await nextTick();
+}, { immediate: true });
 
 /* ───────────────── helper: always return stacks / targets in id order */
 function orderedStacksPREV (): HTMLElement[] {
@@ -203,6 +244,7 @@ function orderedTargets (): HTMLElement[] {
   return gsap.utils.toArray<HTMLElement>('.embl-card')
            .sort((a,b)=>Number(a.dataset.id)-Number(b.dataset.id))
 }
+
 
 /* ───────────────── GSAP / ScrollTrigger setup ─────────────────────── */
 onMounted(async () => {
