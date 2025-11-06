@@ -167,7 +167,7 @@ const initializeEmbla = () => {
     align: 'center', // ✅ must be center for scrolling to card
     dragFree: false,
     direction: isRTL.value ? 'rtl' : 'ltr',
-    loop: false
+    loop: true
   }, [autoplayPlugin])
 
   embla.value.on('init', onSelect)
