@@ -1,0 +1,287 @@
+import { defineNuxtPlugin } from '#app'
+import { reactive, watch, watchEffect } from 'vue'
+
+type Path = string
+type LangKey = string
+type FieldType = 'string'|'number'|'boolean'|'color'|'image'|'object'|'array'|'unknown'
+type FieldStatus = 'idle'|'edited'|'saved'|'published'|'error'
+
+interface FieldState {
+  path: Path
+  type: FieldType
+  beforeLive: any
+  draft: any
+  status: FieldStatus
+  linkedSelector?: string
+}
+
+interface VersionsMeta {
+  id: string
+  kind: 'draft'|'publish'
+  summary: string
+  createdAt: string
+  author?: string
+}
+
+interface EditorState {
+  canEdit: boolean
+  editMode: boolean
+  slug: string
+  langRaw: string
+  langKey: LangKey
+  fields: Record<Path, FieldState>
+  changedPaths: Path[]
+  savedPaths: Path[]
+  versions: VersionsMeta[]
+  inspecting: boolean
+  overlayTarget: HTMLElement | null
+  overlayPath: Path | null
+  debugOn: boolean
+}
+
+const norm = (s: any) =>
+  typeof s === 'string' ? s.replace(/\s+/g, ' ').trim() : s
+
+const normLang = (raw: string) => (raw || '').split(/[-_]/)[0].toLowerCase()
+
+const toPath = (stack: (string|number)[]) =>
+  stack.map(x => typeof x === 'number' ? `[${x}]` : x).join('.')
+
+function inferType(v: any): FieldType {
+  if (typeof v === 'string') {
+    if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) return 'color'
+    return 'string'
+  }
+  if (typeof v === 'number') return 'number'
+  if (typeof v === 'boolean') return 'boolean'
+  if (Array.isArray(v)) return 'array'
+  if (v && typeof v === 'object') {
+    if (v?.url && typeof v.url === 'string') return 'image'
+    return 'object'
+  }
+  return 'unknown'
+}
+
+function indexUI(root: any, out: Record<Path, FieldState> = {}, stack: (string|number)[] = []) {
+  if (root == null) return out
+  const t = inferType(root)
+  if (['string', 'number', 'boolean', 'color', 'image'].includes(t)) {
+    const p = toPath(stack)
+    out[p] = { path: p, type: t as FieldType, beforeLive: root, draft: root, status: 'idle' }
+    return out
+  }
+  if (Array.isArray(root)) {
+    root.forEach((item, idx) => indexUI(item, out, [...stack, idx]))
+    return out
+  }
+  if (typeof root === 'object') {
+    Object.keys(root).forEach(k => indexUI(root[k], out, [...stack, k]))
+  }
+  return out
+}
+
+function computeChanged(fields: Record<Path, FieldState>) {
+  const changed: Path[] = []
+  const saved: Path[] = []
+  for (const p in fields) {
+    const f = fields[p]
+    const a = JSON.stringify(norm(f.draft))
+    const b = JSON.stringify(norm(f.beforeLive))
+    if (a !== b) {
+      if (f.status === 'saved') saved.push(p)
+      else changed.push(p)
+    }
+  }
+  return { changed, saved }
+}
+
+function getUniqueSelector(el: HTMLElement): string {
+  if (el.id) return `#${CSS.escape(el.id)}`
+  const parts: string[] = []
+  let node: HTMLElement | null = el
+  while (node && parts.length < 5) {
+    let part = node.tagName.toLowerCase()
+    if (node.classList.length) {
+      part += '.' + [...node.classList].slice(0, 3).map(c => CSS.escape(c)).join('.')
+    }
+    const parent = node.parentElement
+    if (parent) {
+      const siblings = [...parent.children].filter(c => (c as HTMLElement).tagName === node!.tagName)
+      if (siblings.length > 1) {
+        part += `:nth-of-type(${siblings.indexOf(node) + 1})`
+      }
+    }
+    parts.unshift(part)
+    if (node.id) break
+    node = parent
+  }
+  return parts.join('>')
+}
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const state = reactive<EditorState>({
+    canEdit: false,
+    editMode: false,
+    slug: '',
+    langRaw: 'fa',
+    langKey: 'fa',
+    fields: {},
+    changedPaths: [],
+    savedPaths: [],
+    versions: [],
+    inspecting: false,
+    overlayTarget: null,
+    overlayPath: null,
+    debugOn: false
+  })
+
+  if (process.client) {
+    try {
+      state.canEdit = document.cookie.includes('pb_admin=')
+    } catch {}
+  }
+
+  const api = {
+    state,
+
+    registerHomeUIRef(uiRef: any, slug: string, langRaw: string) {
+      state.slug = slug || 'home'
+      state.langRaw = langRaw
+      state.langKey = normLang(langRaw)
+      watch(() => uiRef?.value, (val) => {
+        if (!val) return
+        const next: Record<Path, FieldState> = {}
+        indexUI(val, next)
+        for (const p in next) {
+          const old = state.fields[p]
+          if (old) {
+            next[p].status = old.status
+            next[p].draft = old.draft
+            next[p].beforeLive = old.beforeLive
+            next[p].linkedSelector = old.linkedSelector
+          }
+        }
+        state.fields = next
+        Object.assign(state, computeChanged(state.fields))
+      }, { immediate: true, deep: true })
+    },
+
+    setInspecting(on: boolean) {
+      state.inspecting = on
+      if (process.client) {
+        document.body.classList.toggle('ui-inspecting', on)
+      }
+    },
+
+    linkPathToElement(path: Path, el: HTMLElement) {
+      state.fields[path].linkedSelector = getUniqueSelector(el)
+    },
+
+    setDraft(path: Path, value: any) {
+      const f = state.fields[path]
+      if (!f) return
+      f.draft = value
+      f.status = 'edited'
+      Object.assign(state, computeChanged(state.fields))
+    },
+
+    async discardAll() {
+      await this.refreshLive()
+      for (const p in state.fields) {
+        const f = state.fields[p]
+        f.draft = f.beforeLive
+        f.status = 'idle'
+      }
+      Object.assign(state, computeChanged(state.fields))
+    },
+
+    async saveDraft(note?: string) {
+      if (!state.changedPaths.length) return
+      const payload = state.changedPaths.map(p => ({ path: p, value: state.fields[p].draft }))
+      await $fetch('/api/admin/ui/save-draft', {
+        method: 'POST',
+        body: { slug: state.slug, language: state.langKey, changes: payload, note }
+      })
+      state.changedPaths.forEach(p => state.fields[p].status = 'saved')
+      Object.assign(state, computeChanged(state.fields))
+      await this.fetchVersions()
+    },
+
+    async publish(note?: string) {
+      await $fetch('/api/admin/ui/publish', {
+        method: 'POST',
+        body: { slug: state.slug, language: state.langKey, note }
+      })
+      await this.refreshLive()
+      for (const p in state.fields) {
+        const f = state.fields[p]
+        f.status = 'idle'
+      }
+      Object.assign(state, computeChanged(state.fields))
+      await this.fetchVersions()
+    },
+
+    async refreshLive() {
+      const data = await $fetch<{ data: any }>('/api/admin/ui/live', {
+        method: 'POST',
+        body: { slug: state.slug, language: state.langKey }
+      })
+      const live = data?.data ?? {}
+      const next: Record<Path, FieldState> = {}
+      indexUI(live, next)
+      for (const p in state.fields) {
+        if (p in next) state.fields[p].beforeLive = next[p].beforeLive
+      }
+      Object.assign(state, computeChanged(state.fields))
+    },
+
+    async fetchVersions() {
+      const res = await $fetch<{ items: VersionsMeta[] }>('/api/admin/ui/versions', {
+        method: 'GET',
+        query: { slug: state.slug, language: state.langKey }
+      })
+      state.versions = res.items || []
+    }
+  }
+
+  nuxtApp.provide('editor', api)
+
+  if (process.client) {
+    const outlineLayer = document.createElement('div')
+    outlineLayer.id = 'ui-outline-layer'
+    outlineLayer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:2147483646;'
+    document.body.appendChild(outlineLayer)
+
+    function drawOutlines() {
+      outlineLayer.innerHTML = ''
+      if (!state.editMode || !state.canEdit) return
+      for (const p in state.fields) {
+        const f = state.fields[p]
+        if (!f.linkedSelector) continue
+        const el = document.querySelector(f.linkedSelector) as HTMLElement | null
+        if (!el) continue
+        const rect = el.getBoundingClientRect()
+        const box = document.createElement('div')
+        box.style.cssText = `
+          position:absolute;
+          left:${rect.left}px;top:${rect.top}px;
+          width:${rect.width}px;height:${rect.height}px;
+          border-radius:${getComputedStyle(el).borderRadius};
+          pointer-events:none;
+        `
+        let border = '1px dashed rgba(75,85,99,0.6)'
+        let bg = 'transparent'
+        if (f.status === 'edited') { border = '2px solid rgba(245,158,11,1)'; bg = 'rgba(251,191,36,0.1)' }
+        if (f.status === 'saved') { border = '2px solid rgba(14,165,233,1)'; bg = 'rgba(125,211,252,0.08)' }
+        if (f.status === 'published') { border = '2px solid rgba(34,197,94,1)'; bg = 'rgba(134,239,172,0.10)' }
+        if (f.status === 'error') { border = '2px solid rgba(244,63,94,1)'; bg = 'rgba(251,113,133,0.10)' }
+        box.style.border = border
+        box.style.background = bg
+        outlineLayer.appendChild(box)
+      }
+    }
+    window.addEventListener('scroll', drawOutlines, { passive: true })
+    window.addEventListener('resize', drawOutlines, { passive: true })
+    watchEffect(drawOutlines)
+  }
+})

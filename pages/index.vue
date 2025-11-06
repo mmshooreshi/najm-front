@@ -17,8 +17,7 @@
   </div> -->
 
   <div class="section-snap">
-    <!-- <ScrollWrapperW />   -->
-    <ScrollWrapperWebp />  
+    <ScrollWrapperWebpKiller />   
   </div>
 
 
@@ -72,11 +71,17 @@ import ScenePromo from '@/components/scenes/ScenePromo.vue'
 import SceneCustomers from '@/components/scenes/SceneCustomers.vue'
 import ScrollWrapperW from '@/components/ScrollWrapperW.vue'
 import ScrollWrapperWebp from '@/components/ScrollWrapperW-webp.vue'
+import ScrollWrapperWebpKiller from '@/components/ScrollWrapperW-webp-killer.vue'
 
 import { usePageUI } from '@/composables/ui/usePageUI'
+import { useAdminEditable } from '@/composables/useAdminEditable'
+// import { invalidatePageUI } from '~/composables/ui/pageUiCache.ts'
 
-const { ui } = usePageUI('home')   // ← file name without extension
+const { ui, allUi } = usePageUI('home')
+
 provide('homeUI', ui)                 // now all children can inject
+/* NEW: register slug/language for the edit system */
+const { state } = useAdminEditable('home')
 
 
 import SceneSlider from '~/components/scenes/SceneSlider.vue'
@@ -90,14 +95,15 @@ definePageMeta({
   layout: 'home',
 })
 
+
+
+
 onMounted(async () => {
-  // Wait for smoother initialization in layout
+  // await refresh()   // 👈 این باعث میشه remote همون اول لود بشه
   await nextTick()
-  // Refresh ScrollTrigger to pick up new sections
   ScrollTrigger.refresh()
-
-
 })
+
 </script>
 
 

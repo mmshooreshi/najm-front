@@ -1,0 +1,43 @@
+// composables/ui/usePageUI.ts
+import { useFetch } from '#app'
+import { computed, type ComputedRef } from 'vue'
+import { useLocale } from '@/composables/useLocale'
+
+/**
+ * Returns CURRENT language UI for the slug.
+ * First resolution triggers baseline via useAdminEditable's watcher.
+ */
+export function usePageUI(slug: string): { ui: ComputedRef<Record<string, any>> } {
+  const { language } = useLocale()
+
+  // Local fallback schema
+  const localData = import.meta.glob<{ default: any }>(
+    '@/schemas/*-ui.json',
+    { eager: true }
+  )
+  const local = localData[`/schemas/${slug}-ui.json`]?.default ?? {}
+
+  // Remote source
+  const url = `https://aisland.co/najm/api/collections/pages/records?filter=slug="${slug}"`
+  const { data } = useFetch<{ items: { uiData: Record<string, Record<string, any>> }[] }>(
+    url,
+    { key: `${slug}-ui`, default: () => ({ items: [] }) }
+  )
+
+  const ui = computed<Record<string, any>>(() => {
+    const lang = language.value
+    const remoteUI = data.value?.items?.[0]?.uiData?.[lang]
+    const chosen =
+      (remoteUI && Object.keys(remoteUI).length > 0)
+        ? remoteUI
+        : (local?.[lang] ?? {})
+
+    if (process.dev) {
+      const keys = Object.keys(chosen).length
+      console.log(`[AdminEdit] usePageUI("${slug}") → ${lang} (${keys} keys)`)
+    }
+    return chosen
+  })
+
+  return { ui }
+}

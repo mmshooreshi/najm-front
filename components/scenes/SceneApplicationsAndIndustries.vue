@@ -3,7 +3,7 @@
  <!-- ScenePrinting2.vue  -->
  <template>
   <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  pt-12">
-    <SceneHeading  :data="sceneApplicationsAndIndustries"/>
+    <SceneHeading  :data="sceneApplicationsAndIndustries" path="sceneServicesAndCapabilities"/>
 
     <div class="w-max mx-auto cursor-pointer">
     <button @click.prevent="toggleType('Applications')" class="mx-1 transition-all rounded-[35px]  px-6 py-[15px] text-d4 text-sm" :class="[selectedType == 'Applications' ? 'bg-[#014439] text-white' : 'hover:bg-gray-300/40 bg-transparent text-black']">{{sceneApplicationsAndIndustries.buttons.applications}}</button>
@@ -61,6 +61,7 @@ const dataPrev = {
 
 const homeUI = inject<any>('homeUI') ?? {}
 const sceneApplicationsAndIndustries = computed(() => homeUI?.value?.sceneApplicationsAndIndustries ?? {})
+
 
 
 </script>

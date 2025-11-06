@@ -28,14 +28,14 @@
             :initial="{scale: 0.8}"
             :visible="{scale: 1}"
             :class="[isRTL ? 'right-6' : 'left-6']"
-            :duration="100"  class="absolute bottom-6  bg-[#D6E6E3]/40 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
+            :duration="100"  class="projects-intro absolute z-10 bottom-6  bg-[#D6E6E3]/40 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px]  max-w-[210px]  md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
             {{ card.text }}
           </div> 
         </div>
       </div>
     </div>
 
-    <div class="flex justify-between items-center mt-4">
+    <div class="flex justify-between items-center mt-4 projects-intro">
   
       <div class="flex gap-2">
         <button

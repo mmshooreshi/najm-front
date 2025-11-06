@@ -411,3 +411,207 @@ blockquote {
 .animate-fade-in {
   animation: fade-in 0.2s ease-in-out;
 }
+
+
+
+.v-editable {
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+  outline: none;
+  min-height: 1rem;
+  border-radius: .5rem;
+}
+
+/* grey hint mode when editable but unchanged */
+.v-editable--active.v-editable--hint {
+  background: rgba(128, 128, 128, 0.15);
+}
+
+/* yellow background for entire changed element */
+.v-editable--changed {
+	  background: rgba(128, 128, 128, 0.15);
+
+  /* background: rgba(255, 217, 0, 0.1) !important; */
+  /* box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.65) inset; */
+}
+/* yellow background for entire changed element */
+[v-editable][contenteditable="true"]:focus::after,
+.v-editable--changed:focus::after {
+  inset: -4px; /* outline distance */
+  border-radius: 12px;
+  border: 3px dashed  rgba(244, 185, 11, 0.591) !important;
+}
+
+/* focus state */
+[v-editable][contenteditable="true"]:focus,
+.v-editable--active:focus {
+  position: relative;
+  outline: none;
+  z-index: 1;
+}
+
+[v-editable][contenteditable="true"]:focus::after,
+.v-editable--active:focus::after {
+  content: "";
+  position: absolute;
+  inset: -4px; /* outline distance */
+  border-radius: 12px;
+  border: 3px dashed rgba(0, 0, 0, 0.228);
+
+  /* glowing shimmer */
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,255,255,0.6) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  mix-blend-mode: overlay; /* makes it look like light */
+  /* filter: blur(2px); */
+
+  /* animation: shine 2s linear infinite; */
+  pointer-events: none;
+}
+
+@keyframes shine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.sr-only {
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+.ui-inspecting * {
+  cursor: crosshair !important;
+}
+
+
+.v-changed-block--leaving::before {
+  background: rgba(255, 217, 0, 0.15);
+  transform-origin: right center;
+  animation: highlightOut 0.4s ease forwards;
+}
+
+@keyframes fadeInChar {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.v-changed-char {
+  background: rgba(255, 255, 0, 0.623);
+  border-radius: 5px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  line-height: 100%;
+  display: inline-block; /* needed for transform */
+  animation: fadeInChar 0.3s ease forwards;
+}
+.v-changed-block {
+  position: relative;
+  border-radius: 4px; 
+  padding: 0 0px;
+  margin: 0 0px;
+  color: inherit;
+  background: none;
+  display: inline-block;
+
+  /* pulsing effect */
+  /* animation: pulseBlock 2s ease-in-out infinite; */
+  /* animation: shineBlock 2s linear infinite;  */
+}
+
+.v-changed-block::before {
+  content: "";
+  position: absolute;
+  inset: 2px 0; /* highlight area */
+  background: rgba(250, 250, 21, 0.695);
+
+  will-change: transform, opacity;
+
+  border-radius: 4px;
+  z-index: -1;
+
+  /* highlight animates in on mount */
+  animation: highlightIn 0.5s ease forwards;
+}
+
+
+
+.v-changed-blocsk::after {
+  content: "";
+  position: absolute;
+  inset: -4px; /* outline distance */
+  border-radius: 12px;
+
+  /* glowing shimmer */
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,255,255,0.6) 70%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  mix-blend-mode: overlay; /* makes it look like light */
+  /* filter: blur(2px); */
+
+  /* animation: shine 2s linear infinite; */
+  pointer-events: none;
+}
+
+
+
+
+/* swipe-in and swipe-out */
+@keyframes highlightIn {
+  0%   { transform: scaleX(0); transform-origin: left center; }
+  100% { transform: scaleX(1); transform-origin: left center; }
+}
+
+ @keyframes highlightOut {
+  0%   { transform: scaleX(1); transform-origin: right center; }
+  100% { transform: scaleX(0); transform-origin: right center; }
+  0%   { transform: scaleX(1); opacity: 1; transform-origin: right center; }
+  100% { transform: scaleX(0); opacity: 0; transform-origin: right center; }
+ }
+ 
+ 
+@keyframes pulseGreen {
+  0%   { transform: scaleY(1);   opacity: 1; }
+  50%  { transform: scaleY(1.03);opacity: 1; }
+  100% { transform: scaleY(1);  opacity: 1; }
+}
+
+
+
+
+
+
+
+
+/* Prevent yellow from re-entering after a save on the same nodes */
+.v-changed-block.v-saved-fade::before {
+  animation: none !important;
+}
+
+/* During save: turn green and slide OUT only */
+.v-just-saved .v-changed-block.v-saved-fade::before {
+  background: rgba(16, 185, 129, 0.65);
+  animation: highlightOut 0.5s ease forwards !important; /* scaleX(1) -> scaleX(0) */
+  animation: pulseGreen 1s ease-in-out 0s 1, highlightOut 0.5s cubic-bezier(.22,.61,.36,1) 1s 1 forwards !important;
+
+}
+
+
+
+
+

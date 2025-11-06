@@ -1,4 +1,4 @@
-<!-- components/ScrollWrapperW.vue -->
+<!-- components/ScrollWrapperW-webp.vue -->
 <template>
   <div>
     <div ref="stackSection">
@@ -141,7 +141,7 @@ const cardOpacity = ""
 const showAll    = ref(false)          // flips when grid enters view
 const cardStates = reactive<CardState[]>([])
 
-/* keep cardStates in sync with rawCards + showAll */
+/* keep cardStates in sync with rawCards + showAll */ 
 // watch([rawCards, showAll], async () => {
 //   const source = showAll.value
 //     ? [...rawCards.value].sort((a,b)=>a.id-b.id)    // all cards ascending

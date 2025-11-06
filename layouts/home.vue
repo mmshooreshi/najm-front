@@ -11,6 +11,7 @@
 
 
 
+  
   <ClientOnly fallback="">
     <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-[#e4eaeb]">
       <div id="smooth-content">
@@ -22,6 +23,16 @@
         <Footer2 />
       </div>
     </div>
+    <AdminEditBar />
+  <HistoryModal :open="state.editMode ?? false" />
+<!-- 
+<ClientOnly>
+  <pre class="fixed bottom-2 right-2 z-[2000] bg-black/70 text-white text-xs p-2 rounded">
+    canEdit: {{ state?.canEdit }} | editMode: {{ state?.editMode }} | slug: {{ state?.slug }} | lang: {{ state?.language }}
+  </pre>
+</ClientOnly> -->
+
+
   </ClientOnly>
 </template>
 
@@ -32,7 +43,18 @@
   import gsap from 'gsap'
   import { ScrollSmoother } from 'gsap/ScrollSmoother'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  
+  import AdminEditBar from '~/components/admin/AdminEditBar.client.vue'
+  import HistoryModal from '~/components/admin/HistoryModal.client.vue'
+
+// const { $adminEditState } = useNuxtApp()
+// const state = $adminEditState as {
+//   canEdit: boolean; editMode: boolean; slug: string; language: string;
+//   changes: Record<string, { original: string; value: string }>
+// }
+
+import { adminEditState as state } from '@/store/adminEditStore'
+
+
   const menuOpen = ref(false)
   const debugVars = ref({
     scrollPos: 0,

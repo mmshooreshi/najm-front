@@ -1,0 +1,24 @@
+// server/api/admin/ui/publish.post.ts
+import { defineEventHandler, readBody, getCookie, setResponseStatus } from 'h3'
+import PocketBase from 'pocketbase'
+
+export default defineEventHandler(async (event) => {
+  const cookie = getCookie(event, 'pb_admin')
+  if (!cookie) { setResponseStatus(event, 401); return { ok: false, error: 'Unauthorized' } }
+
+  const { slug } = await readBody<{ slug: string }>(event) || {}
+  if (!slug) { setResponseStatus(event, 400); return { ok: false, error: 'Missing slug' } }
+
+  const pb = new PocketBase(process.env.PB_URL as string)
+  pb.authStore.save(process.env.PB_ADMIN_TOKEN as string, null)
+
+  const list = await pb.collection('pages').getList(1, 1, { filter: `slug="${slug}"` })
+  if (!list.items.length) { setResponseStatus(event, 404); return { ok: false, error: 'Page not found' } }
+  const rec: any = list.items[0]
+  if (!rec.uiDataDraft) return { ok: false, error: 'No draft present' }
+
+  const updated = await pb.collection('pages').update(rec.id, {
+    uiData: rec.uiDataDraft
+  })
+  return { ok: true, id: updated.id }
+})

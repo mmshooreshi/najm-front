@@ -1,11 +1,14 @@
 <!-- components/buttons/GreenButton.vue -->
 <script setup lang="ts">
+import { useAttrs } from 'vue'
+
+const attrs = useAttrs()
 
 const props = defineProps({
-  label:     { type: String,  default: 'Click me' },
+  label:     { type: String,  default: 'Click me' },   // fallback if no slot
   fullWidth: { type: Boolean, default: false },
-  bgColor:   { type: String,  default: 'transparent' },
-  textColor: { type: String,  default: 'black' }
+  bgColor:   { type: String,  default: '#014439' },    // default was hardcoded
+  textColor: { type: String,  default: '#ffffff' },
 })
 
 const emit = defineEmits<{
@@ -15,26 +18,33 @@ const emit = defineEmits<{
 function handleClick(e: MouseEvent) {
   emit('click', e)
 }
-
 </script>
 
 <template>
-  <div v-motion :initial="{scale: 0,}" :visible="{scale: 1,}"   class="cursor-pointer  space-y-6 flex flex-col items-center">
-    <!-- Animated Element -->
-     
-    <div
-    
-      class="group  active:scale-100 hover:scale-110  hover:bg-black transition-all ease-in-out bg-[#014439] text-white cursor-pointer inline-flex items-center justify-center h-12 px-6 mx-auto rounded-2xl  outline-none"
+  <div
+    v-motion
+    :initial="{ scale: 0 }"
+    :visible="{ scale: 1 }"
+    class="cursor-pointer space-y-6 flex flex-col items-center"
+  >
+    <!-- Use a <button> for accessibility; forward $attrs -->
+    <button
+      type="button"
+      class="group active:scale-100 hover:scale-110 transition-all ease-in-out
+             inline-flex items-center justify-center h-12 px-6 mx-auto rounded-2xl outline-none
+             border-0"
+      :class="[{ 'w-full': fullWidth }]"
+      :style="{ backgroundColor: bgColor, color: textColor }"
+      @click="handleClick"
+      v-bind="attrs"
     >
-    <div class=" text-sm group-hover:scale-102 text-demibold text-d4 group-active:scale-100 transition-all ease-in-out">
-    {{ label }}
-    </div>
-  </div>
-    <!-- rounded-3xl border-8 border-indigo-400 bg-indigo-500 shadow-xl cursor-pointer -->
-
+      <div class="text-sm font-semibold group-hover:scale-102 group-active:scale-100 transition-all ease-in-out">
+        <!-- If a slot is provided, use it; otherwise show the label prop -->
+        <slot>{{ label }}</slot>
+      </div>
+    </button>
   </div>
 </template>
-
 
 
 <!-- 

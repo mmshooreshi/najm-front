@@ -1,0 +1,36 @@
+import { defineEventHandler, readBody, getCookie, setResponseStatus } from 'h3'
+import PocketBase from 'pocketbase'
+
+type Change = { path: string; value: string }
+
+export default defineEventHandler(async (event) => {
+  const cookie = getCookie(event, 'pb_admin')
+  if (!cookie) { setResponseStatus(event, 401); return { ok: false, error: 'Unauthorized' } }
+
+  const body = await readBody<{ slug: string; language: string; changes: Change[] }>(event)
+  const { slug, language, changes } = body || {}
+  if (!slug || !language) { setResponseStatus(event, 400); return { ok: false, error: 'Missing slug/language' } }
+
+  const pb = new PocketBase(process.env.PB_URL as string)
+  pb.authStore.save(process.env.PB_ADMIN_TOKEN as string, null)
+
+  const list = await pb.collection('pages').getList(1, 1, { filter: `slug="${slug}"` })
+  if (!list.items.length) { setResponseStatus(event, 404); return { ok: false, error: 'Page not found' } }
+  const rec: any = list.items[0]
+
+  const draft: Record<string, any> = structuredClone(rec.uiDataDraft ?? rec.uiData ?? {})
+
+  for (const { path, value } of (changes ?? [])) {
+    const segs = path.split('.')
+    let obj = draft[language] ?? (draft[language] = {})
+    for (let i = 0; i < segs.length - 1; i++) {
+      const k = segs[i]
+      obj[k] ??= {}
+      obj = obj[k]
+    }
+    obj[segs[segs.length - 1]] = value
+  }
+
+  const updated = await pb.collection('pages').update(rec.id, { uiDataDraft: draft })
+  return { ok: true, id: updated.id }
+})

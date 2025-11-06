@@ -1,0 +1,220 @@
+<script setup lang="ts">
+import { computed, reactive } from 'vue'
+import DiffPreview from './DiffPreview.vue'
+
+const { $editor } = useNuxtApp()
+
+const state = reactive({
+  open: false,
+  note: '',
+  inspecting: false,
+  log: true
+})
+
+/**
+ * Safely proxy edit mode to the checkbox with v-model.
+ * If $editor or $editor.state isn't ready yet, we read false and no-op on write.
+ */
+const editModeModel = computed<boolean>({
+  get: () => Boolean($editor?.state?.editMode),
+  set: (val: boolean) => {
+    if ($editor?.state) $editor.state.editMode = val
+  }
+})
+
+const counts = computed(() => ({
+  changed: $editor?.state?.changedPaths?.length ?? 0,
+  saved:   $editor?.state?.savedPaths?.length ?? 0,
+}))
+
+function onJsonInput(path: string, val: string) {
+  try {
+    const parsed = JSON.parse(val)
+    $editor.setDraft(path, parsed)
+  } catch {
+    // ignore invalid JSON until valid
+  }
+}
+
+
+function togglePanel() {
+  state.open = !state.open
+}
+
+function toggleInspect() {
+  if (!$editor) return
+  const next = !state.inspecting
+  $editor.setInspecting?.(next)
+  state.inspecting = next
+}
+
+function onSave() {
+  $editor?.saveDraft?.(state.note || undefined)
+}
+
+function onPublish() {
+  $editor?.publish?.(state.note || undefined)
+}
+
+function onDiscard() {
+  $editor?.discardAll?.()
+}
+</script>
+
+<template>
+  <ClientOnly>
+    <div
+      v-if="$editor"
+      class="fixed z-[1000] mt-14 left-1/2 -translate-x-1/2 bottom-4 sm:top-4 sm:bottom-auto w-[92%] sm:w-auto"
+    >
+      <!-- Top bar -->
+      <div
+        class="backdrop-blur-md bg-white/30 dark:bg-black/40 rounded-2xl shadow-lg border border-white/30 dark:border-white/10 px-3 py-2 sm:px-4 sm:py-2 flex items-center gap-3"
+      >
+        <label class="flex items-center gap-2 select-none cursor-pointer">
+          <!-- use safe v-model instead of direct state mutation -->
+          <input
+            v-model="editModeModel"
+            type="checkbox"
+            class="h-5 w-5"
+          >
+          <span class="text-sm font-medium">Edit</span>
+        </label>
+
+        <span class="text-xs opacity-70">
+          /{{ $editor.state?.slug }} · {{ $editor.state?.langKey }}
+        </span>
+
+        <div class="h-4 w-px bg-black/20 mx-2"></div>
+
+        <button
+          class="px-3 py-1.5 rounded-xl text-sm border"
+          :disabled="counts.changed === 0"
+          @click="onSave"
+        >
+          Save {{ counts.changed ? `(${counts.changed})` : '' }}
+        </button>
+
+        <button
+          class="px-3 py-1.5 rounded-xl text-sm border"
+          :disabled="!$editor?.state?.savedPaths?.length"
+          @click="onPublish"
+        >
+          Publish {{ $editor?.state?.savedPaths?.length ? `(${$editor.state.savedPaths.length})` : '' }}
+        </button>
+
+        <button
+          class="px-3 py-1.5 rounded-xl text-sm border"
+          @click="onDiscard"
+        >
+          Discard
+        </button>
+
+        <div class="h-4 w-px bg-black/20 mx-2"></div>
+
+        <button
+          class="px-3 py-1.5 rounded-xl text-sm border"
+          :class="{ 'bg-black text-white': state.inspecting }"
+          @click="toggleInspect"
+        >
+          Inspect
+        </button>
+
+        <button
+          class="px-3 py-1.5 rounded-xl text-sm border"
+          @click="togglePanel"
+        >
+          {{ state.open ? 'Close' : 'Open' }}
+        </button>
+      </div>
+
+      <!-- Side panel -->
+      <transition name="fade">
+<!-- Editable Side Panel -->
+<div
+  v-if="state.open"
+  class="fixed inset-x-2 bottom-20 sm:top-20 sm:bottom-auto sm:right-4 sm:left-auto sm:w-[380px] bg-white/95 dark:bg-black/80 border rounded-2xl shadow-2xl p-3 max-h-[70vh] overflow-auto"
+>
+  <!-- Note input -->
+  <div class="flex items-center gap-2 mb-4">
+    <input
+      v-model="state.note"
+      class="flex-1 rounded border px-2 py-1 text-sm"
+      placeholder="Optional note for version..."
+    >
+    <span class="text-xs opacity-70">
+      changed: {{ $editor?.state?.changedPaths?.length || 0 }} ·
+      saved: {{ $editor?.state?.savedPaths?.length || 0 }}
+    </span>
+  </div>
+
+  <!-- All editable fields -->
+  <div class="space-y-3">
+    <div
+      v-for="(field, path) in $editor.state.fields"
+      :key="path"
+      class="rounded-lg border p-2 bg-white/50 dark:bg-black/30"
+    >
+      <div class="text-[11px] font-mono opacity-70 mb-1">{{ path }}</div>
+
+      <!-- String / Color / Number -->
+      <template v-if="field.type === 'string'">
+        <input
+          type="text"
+          class="w-full rounded border px-2 py-1 text-sm"
+          :value="field.draft"
+          @input="$editor.setDraft(path, $event.target.value)"
+        >
+      </template>
+
+      <template v-else-if="field.type === 'color'">
+        <input
+          type="color"
+          class="w-full h-8 rounded border"
+          :value="field.draft"
+          @input="$editor.setDraft(path, $event.target.value)"
+        >
+      </template>
+
+      <template v-else-if="field.type === 'number'">
+        <input
+          type="number"
+          class="w-full rounded border px-2 py-1 text-sm"
+          :value="field.draft"
+          @input="$editor.setDraft(path, parseFloat($event.target.value))"
+        >
+      </template>
+
+      <!-- Boolean -->
+      <template v-else-if="field.type === 'boolean'">
+        <input
+          type="checkbox"
+          :checked="field.draft"
+          @change="$editor.setDraft(path, $event.target.checked)"
+        >
+      </template>
+
+      <!-- Fallback for objects/arrays -->
+      <template v-else>
+        <textarea
+          class="w-full rounded border px-2 py-1 text-sm font-mono"
+          rows="3"
+          :value="JSON.stringify(field.draft, null, 2)"
+          @input="onJsonInput(path, $event.target.value)"
+        ></textarea>
+      </template>
+    </div>
+  </div>
+</div>
+
+      </transition>
+    </div>
+  </ClientOnly>
+</template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active { transition: opacity .15s }
+.fade-enter-from,
+.fade-leave-to { opacity: 0 }
+</style>

@@ -3,7 +3,8 @@
  <!-- ScenePrinting2.vue  -->
  <template>
   <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  pt-12">
-    <SceneHeading :data="data"/>
+  
+        <SceneHeading :data="data" path="sceneServicesAndCapabilities" />
     <SceneAccordionLayout  />
 
   </div>
