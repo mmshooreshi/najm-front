@@ -61,6 +61,7 @@
     "chart.js": "^4.5.0",
     "chartjs-plugin-annotation": "^3.1.0",
     "defu": "^6.1.4",
+    "diff-match-patch": "^1.0.5",
     "embla-carousel": "^8.6.0",
     "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
