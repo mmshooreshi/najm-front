@@ -10,7 +10,7 @@
   />
 
   <ClientOnly fallback="">
-    <div  :dir="isRTL ? 'rtl' : 'ltr'"  class="relative min-h-screen pt-16 pb-24 bg-[#e4eaeb]">
+    <div  :dir="isRTL ? 'rtl' : 'ltr'"  class="relative min-h-screen pt-16 pb-24 bg-najmback">
       <!-- Top label from backend (localized)
       <div class="w-full">
         <div class="w-full px-4 md:px-8 mt-4">

@@ -1,6 +1,7 @@
 <!-- pages/index.vue -->
 <template>
 <!-- Each scene wrapped in a section-snap for ScrollTrigger snapping -->
+ <div>
 <div class="section-snap">
     <SceneHero />
   </div>
@@ -53,6 +54,7 @@
 
   <div class="section-snap">
     <SceneFaq />
+  </div>
   </div>
 </template>
 

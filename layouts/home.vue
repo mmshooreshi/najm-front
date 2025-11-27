@@ -1,7 +1,6 @@
 <!-- layouts/home.vue -->
 <!-- Layout.vue -->
 <template>
-  <BackgroundGradient />
 
   <Header
     :menu-open="menuOpen"
@@ -13,7 +12,7 @@
 
   
   <ClientOnly fallback="">
-    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-[#e4eaeb]">
+    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback bg-red">
       <div id="smooth-content">
         <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
           

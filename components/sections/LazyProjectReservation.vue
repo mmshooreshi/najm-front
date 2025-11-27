@@ -1,6 +1,6 @@
 <!-- components/sections/LazyProjectReservation.vue -->
 <template>
-  <div ref="lazyTriggerRef" class="min-h-[400px]">
+  <div ref="lazyTriggerRef" class="h-[20%]">
     <ProjectReservationLight v-if="shouldRender" />
   </div>
 </template>

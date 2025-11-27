@@ -40,7 +40,10 @@
 <!-- components/scenes/SceneHero.vue -->
 <!-- components/scenes/SceneHero.vue -->
 <template>
-  <div class=" py-16 md:pt-16  flex flex-col flex-grow">
+
+  <BackgroundGradient />
+  <div class="h-full section-snap pb-2  md:pb-6 flex flex-col pt-16  ">
+
     <teleport to="body">
       <RotatoryPane/>
     </teleport>
@@ -53,11 +56,11 @@
       <ImagesFloating />
     </div>
 
-    <div class="bok gap-3 flex flex-col flex-grow h-full translate-y-0">
-      <div class="h-46  overflow-visible">
-        <LazyProjectReservation />
-      </div>
+    <div class="bok gap-3 flex flex-col grow h-full invisible md:visible">
       <div class="flex-grow"></div>
+      <!-- <div class="h-46 translate-y-16 overflow-visible">
+        <LazyProjectReservation />
+      </div> -->
 
       <!-- EDITABLE BUTTON TEXT -->
       <GreenButton :fullWidth="false" >
@@ -100,3 +103,15 @@ const ui = computed(() => homeUI.value.sceneHero ?? {})
 
 
 </script>
+
+
+<style scoped>
+/* in your Layout.vue or global styles */
+.section-snap {
+  border: 0px solid teal;;
+  position: relative;              /* make ::before sit on top */
+  
+  min-height: calc(100vh - 64px);
+}
+
+</style>

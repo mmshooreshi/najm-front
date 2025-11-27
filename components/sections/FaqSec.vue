@@ -4,55 +4,44 @@
     <div class="max-w-4xl mx-auto flex flex-col gap-12 overflow-visible">
       <!-- Title -->
       <h2 class="text-lg md:text-xl font-bold text-center">
-        {{data.heading}}
+        {{ data.heading }}
       </h2>
 
       <!-- Category Tabs -->
-     <div class="relative h-8 lg:h-28">
-  <div
-    ref="tabsContainer"
-    class="tabs-container absolute   sm:w-screen lg:max-w-[1000px]  flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start sm:px-4 w-max lg:justify-center "
-  >
-            <button
-            v-for="(cat, i) in data.categories"
-            :key="cat.name"
-            @click="selectTab(i)"
-            :class="[
-              'rounded-3xl border text-demibold text-xs px-6 py-3 transition-colors',
-              activeTab === i
-                ? 'border-[#C2D3D1] bg-[#014439]/20 text-[#014439]'
-                : 'border-[#C2D3D1] text-gray-700 bg-transparent hover:bg-gray-200'
-            ]"
-          >
+      <div class="relative h-8 lg:h-28">
+        <div ref="tabsContainer"
+          class="tabs-container absolute   sm:w-screen lg:max-w-full  flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start sm:px-4 w-max lg:justify-center ">
+          <button v-for="(cat, i) in data.categories" :key="cat.name" @click="selectTab(i)" :class="[
+            'rounded-3xl border text-demibold text-xs px-6 py-3 transition-colors',
+            activeTab === i
+              ? 'border-[#C2D3D1] bg-[#014439]/20 text-[#014439]'
+              : 'border-[#C2D3D1] text-gray-700 bg-transparent hover:bg-gray-200'
+          ]">
             {{ cat.name }}
           </button>
         </div>
       </div>
 
-      <!-- FAQ List -->
-      <div class="divide-y  border-gray-300 -mt-6 px-6 max-h-[50vh] overflow-auto">
- 
-        <!-- <div class="grid grid-cols-3 divide-x divide-gray-400">
+
+      <ClientOnly>
+        <div :key="renderKey">
+
+          <!-- FAQ List -->
+          <div class="divide-y-0.5  divide-najmborder    -mt-6 px-6 max-h-[50vh] overflow-auto">
+
+            <!-- <div class="grid grid-cols-3 divide-x divide-gray-400">
   <div class="text-center">1</div>
   <div class="text-center">2</div>
   <div class="text-center">3</div>
 </div> -->
+            <div v-for="(item, idx) in data.categories[activeTab].items" :key="item.key" :class="{ 'py-0': idx !== 0 }">
+              <FaqItem :index="idx" :question="item.question" :answer="item.answer" :open="activeItem === idx"
+                @toggle="activeItem = activeItem === idx ? null : idx" />
+            </div>
 
-        <ClientOnly>
-          <div :key="renderKey">
-
-    <FaqItem
-       v-for="(item, idx) in data.categories[activeTab].items"
-       :key="item.key"
-       :index="idx"
-       :question="item.question"
-       :answer="item.answer"
-       :open="activeItem === idx"
-       @toggle="activeItem = activeItem === idx ? null : idx"
-     />
-     </div>
-</ClientOnly>
-      </div>
+          </div>
+        </div>
+      </ClientOnly>
     </div>
   </section>
 </template>
@@ -197,7 +186,7 @@ interface Category {
 //       ]
 //     }
 //   ])
-    
+
 
 const categoriesPrev = ref<Category[]>([
   {
@@ -492,7 +481,7 @@ const data = ref<{ heading: string; categories: Category[] }>({
   categories: []
 })
 const activeTab = ref(0)
-const activeItem = ref<number|null>(null)
+const activeItem = ref<number | null>(null)
 
 watch(
   language,
@@ -518,25 +507,25 @@ watch(activeTab, () => {
 
 
 
-const tabsContainer = ref<HTMLElement|null>(null)
+const tabsContainer = ref<HTMLElement | null>(null)
 
 function selectTab(i: number) {
   activeTab.value = i
   // wait for Vue to render the new “active”
   nextTick(() => {
-  const container = tabsContainer.value
-  if (!container) return
+    const container = tabsContainer.value
+    if (!container) return
 
-  const btns = container.querySelectorAll('button')
-  const btn  = btns[i] as HTMLElement | undefined
-  if (!btn) return
+    const btns = container.querySelectorAll('button')
+    const btn = btns[i] as HTMLElement | undefined
+    if (!btn) return
 
-  btn.scrollIntoView({
-    behavior: 'smooth',
-    block:    'nearest',  // vertical stay-put
-    inline:   'start',    // scroll to left edge + our CSS margin
+    btn.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',  // vertical stay-put
+      inline: 'start',    // scroll to left edge + our CSS margin
+    })
   })
-})
 
 }
 
@@ -545,7 +534,4 @@ const renderKey = computed(() => `${language.value}-${activeTab.value}`)
 
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

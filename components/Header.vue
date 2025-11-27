@@ -52,7 +52,7 @@
       </transition>
     </div>
     <!-- Top label from backend (localized) -->
-    <div   :dir="isRTL ? 'rtl' : 'ltr'"  class="bg-white/50 backdrop-blur w-full mx-auto  text-najmgreen text-start p-2 py-1 text-sm text-d4 text-demibold ">
+    <div  v-if="topLabel"  :dir="isRTL ? 'rtl' : 'ltr'"  class="bg-white/50 backdrop-blur w-full mx-auto  text-najmgreen text-start p-2 py-1 text-sm text-d4 text-demibold ">
       {{ topLabel }}
     </div>
 

@@ -68,6 +68,9 @@ export default defineConfig({
       secondary: '#ff0000',
       najmgreen: '#014439',
       najmgrey: '#EBF0F3',
+      najmborder: '#C2D3D1',
+      najmbacktop: '#E7F0F2',
+      najmback: '#F8FAFC',
       // black: '#2F3136',
     },
 

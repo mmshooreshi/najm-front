@@ -1,8 +1,8 @@
 <!-- components/sections/ProjectReservationLight.vue -->
 <template>
-    <div dir="rtl" class="relative h-[400px]  max-w-md mx-auto animate-pulse-alt">
-      <!-- Target Icon -->
-      <div ref="targetRef" class="group relative cursor-pointer -mt-[50px]"      @click.prevent="isShown = !isShown">
+    <div dir="rtl" class="relative  max-w-md mx-auto animate-pulse-alt">
+      <!-- Target Icon  -mt-[50px] -->
+      <div ref="targetRef" class="group relative cursor-pointer"       @click.prevent="isShown = !isShown">
         <svg
         class="contours-svg w-full mx-auto"
         viewBox="0 0 248 248"

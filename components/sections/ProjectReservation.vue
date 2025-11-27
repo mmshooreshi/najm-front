@@ -1,8 +1,8 @@
 <!-- components/sections/ProjectReservation.vue -->
 <template>
   <div class="h-[400px] mt-0 -mb-28 max-w-md mx-auto animate-pulse-alt" dir="rtl">
-    <!-- Target Icon -->
-    <div ref="targetRef" class="group relative cursor-pointer  -mt-[50px] fixed -z-10" @click="togglePopup" >
+    <!-- Target Icon -mt-[50px] -->
+    <div ref="targetRef" class="group relative cursor-pointer   fixed -z-10" @click="togglePopup" >
       <div class="w-full mx-auto" dir="rtl">
         <svg
           width="100%"

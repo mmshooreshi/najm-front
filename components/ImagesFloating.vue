@@ -5,7 +5,7 @@
       Settings
     </button>
  -->
-  <div ref="slider" class="slider-container relative w-screen h-[20vh] "
+  <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">
@@ -465,7 +465,7 @@ const handleElementHover = (image) => {
   // If not already hovered, change hover state.
   if (!image.hovered) {
     image.hovered = true
-    image.scale = 1.5
+    image.scale = 1.4
     image.hoverRotate = image.rotate + 10
     // Optionally, you can delay the z-index change if needed.
     // setTimeout(() => {
