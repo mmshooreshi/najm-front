@@ -1,0 +1,350 @@
+{
+  "FA": {
+    "layout": {
+      "topLabel": "خدمات",
+      "bottomButtons": {
+        "primary": "تماس",
+        "secondary": "آپلود فایل طراحی"
+      }
+    },
+    "fallbackTitle": "لیتوگرافی و زینک",
+    "hero": {
+      "eyebrow": "مشاوره و برنامه‌ریزی رایگان",
+      "title": "خدمات لیتوگرافی حرفه‌ای | آماده‌سازی دقیق فایل چاپ برای بهترین نتیجه",
+      "subtitle": "ایده‌ی تو، اجرای ما!",
+      "description": "لیتوگرافی، مرحله‌ای حیاتی پیش از چاپ افست است؛ جایی که فایل‌های شما برای چاپ آماده‌سازی می‌شوند، تفکیک رنگ انجام می‌شود و خروجی پلیت‌های چاپ تهیه می‌شود. ما این مرحله را با دقت، تخصص و تجهیزات روز انجام می‌دهیم تا خیالت از کیفیت نهایی چاپ راحت باشد.",
+      "highlights": [
+        "بررسی کامل فایل طراحی",
+        "تفکیک رنگ حرفه‌ای",
+        "خروجی مستقیم CTP با دقت بالا"
+      ],
+      "primaryCta": "تماس",
+      "secondaryCta": "مشاوره آنلاین برای لیتوگرافی"
+    },
+    "serviceIncludes": {
+      "title": "خدمات لیتوگرافی ما شامل چه چیزهایی می‌شود؟",
+      "description": "از بررسی اولیه فایل طراحی تا تهیه نهایی پلیت چاپ، تمام مراحل با استانداردهای حرفه‌ای انجام می‌گیرد.",
+      "groups": [
+        {
+          "title": "بررسی فایل طراحی",
+          "description": "اطمینان از اینکه فایل شما برای چاپ آماده است.",
+          "items": [
+            "چک کردن سایز، حاشیه امن و خطوط برش",
+            "اصلاح فایل‌های RGB به CMYK",
+            "بررسی کیفیت تصاویر، فونت‌ها و رزولوشن"
+          ]
+        },
+        {
+          "title": "تفکیک رنگ",
+          "description": "آماده‌سازی دقیق رنگ برای چاپ افست.",
+          "items": [
+            "تفکیک حرفه‌ای چهار رنگ (C، M، Y، K)",
+            "آماده‌سازی خروجی رنگ دقیق و کنترل میزان مرکب"
+          ]
+        },
+        {
+          "title": "تهیه پلیت چاپ (CTP)",
+          "description": "خروجی دیجیتال مستقیم روی پلیت بدون نیاز به فیلم.",
+          "items": [
+            "خروجی دیجیتال مستقیم به پلیت (بدون فیلم)",
+            "استفاده از دستگاه‌های CTP مدرن با دقت بالا",
+            "مقاوم در برابر افت کیفیت در تیراژ بالا"
+          ]
+        },
+        {
+          "title": "مشاوره فنی پیش از چاپ",
+          "description": "برای بهینه‌سازی هزینه و کیفیت نهایی چاپ.",
+          "items": [
+            "مشاوره درباره نوع کاغذ، فرم‌بندی و صرفه‌جویی در هزینه",
+            "بررسی سازگاری طراحی با ماشین چاپ نهایی"
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "title": "پکیج‌های پیشنهادی چاپ و لیتوگرافی",
+      "description": "",
+      "items": [
+        "پکیج لیتوگرافی فرم‌های عمومی",
+        "پکیج لیتوگرافی بسته‌بندی",
+        "پکیج لیتوگرافی فرم‌های تبلیغاتی",
+        "پکیج اختصاصی برای قراردادهای بلندمدت"
+      ]
+    },
+    "industries": {
+      "title": "مناسب برای این حوزه‌ها",
+      "description": "",
+      "items": [
+        "چاپخانه‌های افست و بسته‌بندی",
+        "برندهایی با تیراژ بالای چاپ",
+        "مجلات، کتاب‌ها و کاتالوگ‌های حجیم",
+        "تولیدکنندگان بسته‌بندی صنعتی و تجاری"
+      ]
+    },
+    "midCta": {
+      "label": "ایده‌ی تو، اجرای ما!",
+      "title": "طرحت را داری و می‌خواهی برای چاپ آماده‌اش کنی؟",
+      "description": "کافی است آن را برای طراح‌های ما آپلود کنی تا بعد از ثبت سفارش، راحت و سریع برای چاپ آماده شود.",
+      "primaryCta": "آپلود فایل طراحی",
+      "secondaryCta": "مشاوره آنلاین برای لیتوگرافی"
+    },
+    "faq": {
+      "title": "سوالات متداول درباره‌ خدمات لیتوگرافی",
+      "description": "",
+      "items": [
+        {
+          "question": "فایل باید چه فرمتی باشد؟",
+          "answer": "بهترین فرمت برای چاپ، PDF استاندارد با فونت‌های امبد شده و رزولوشن حداقل 300dpi است. در صورت نیاز، تیم ما می‌تواند فرمت‌های دیگر را هم بررسی و اصلاح کند."
+        },
+        {
+          "question": "می‌توانم خودم پلیت تهیه کنم؟",
+          "answer": "بله، می‌توانید فقط از خدمات فایل‌چک و تفکیک رنگ استفاده کنید و فایل خروجی نهایی را برای تهیه پلیت در جای دیگر تحویل بگیرید."
+        },
+        {
+          "question": "قیمت لیتوگرافی چگونه محاسبه می‌شود؟",
+          "answer": "هزینه بر اساس سایز فرم، تعداد رنگ، نوع پلیت و میزان خدمات تکمیلی محاسبه می‌شود. بعد از بررسی فایل، قیمت دقیق اعلام می‌کنیم."
+        },
+        {
+          "question": "لیتوگرافی برای چاپ دیجیتال هم لازم است؟",
+          "answer": "معمولاً چاپ دیجیتال نیازی به پلیت ندارد، اما همچنان بررسی و اصلاح فایل برای داشتن خروجی با کیفیت ضروری است."
+        },
+        {
+          "question": "فرآیند لیتوگرافی چقدر طول می‌کشد؟",
+          "answer": "بسته به حجم کار و تعداد فرم‌ها، معمولاً بین 1 تا 3 روز کاری زمان لازم است. در موارد فوری، امکان تسریع مراحل با هماهنگی قبلی وجود دارد."
+        }
+      ]
+    }
+  },
+  "AR": {
+    "layout": {
+      "topLabel": "الخدمات",
+      "bottomButtons": {
+        "primary": "اتصال",
+        "secondary": "رفع ملف التصميم"
+      }
+    },
+    "fallbackTitle": "الليثوغرافيا وألواح الطباعة",
+    "hero": {
+      "eyebrow": "استشارة وتخطيط مجاني",
+      "title": "خدمات ليثوغرافيا احترافية لإعداد ملفات الطباعة بأعلى دقة",
+      "subtitle": "فكرتك، وتنفيذنا!",
+      "description": "الليثوغرافيا هي المرحلة الحساسة قبل الطباعة بالأوفست، حيث يتم تجهيز ملفاتك للطباعة، وفصل الألوان، وإنتاج ألواح الطباعة. نقوم بهذه المرحلة بدقة عالية وبمعدات حديثة حتى تكون مطمئناً من جودة النتيجة النهائية.",
+      "highlights": [
+        "مراجعة ملف التصميم بالكامل",
+        "فصل ألوان احترافي",
+        "إخراج ألواح CTP بدقة عالية"
+      ],
+      "primaryCta": "اتصال",
+      "secondaryCta": "استشارة أونلاين لليثوغرافيا"
+    },
+    "serviceIncludes": {
+      "title": "ماذا تتضمن خدمات الليثوغرافيا لدينا؟",
+      "description": "من مراجعة ملف التصميم إلى إعداد ألواح الطباعة، نغطي لك كل ما تحتاجه قبل مرحلة الطباعة.",
+      "groups": [
+        {
+          "title": "مراجعة ملف التصميم",
+          "description": "للتأكد من جاهزية الملف للطباعة.",
+          "items": [
+            "فحص المقاس وهوامش الأمان وعلامات القص",
+            "تحويل ملفات RGB إلى CMYK عند الحاجة",
+            "مراجعة دقة الصور والخطوط والوضوح العام"
+          ]
+        },
+        {
+          "title": "فصل الألوان",
+          "description": "إعداد ألوان دقيقة للطباعة بالأوفست.",
+          "items": [
+            "فصل احترافي لأربعة ألوان (C، M، Y، K)",
+            "إعداد مخرجات ألوان مضبوطة مع التحكم في كمية الحبر"
+          ]
+        },
+        {
+          "title": "إعداد ألواح الطباعة (CTP)",
+          "description": "إخراج رقمي مباشر على اللوح بدون أفلام وسطية.",
+          "items": [
+            "إخراج مباشر إلى اللوح بدون فيلم",
+            "استخدام أجهزة CTP حديثة وعالية الدقة",
+            "تحمل ممتاز في الطباعة بكميات كبيرة"
+          ]
+        },
+        {
+          "title": "استشارة فنية قبل الطباعة",
+          "description": "لموازنة الجودة والتكلفة في مشروعك.",
+          "items": [
+            "استشارة حول نوع الورق وتخطيط الفورم وتخفيض التكاليف",
+            "مراجعة توافق التصميم مع ماكينة الطباعة النهائية"
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "title": "باقات الليثوغرافيا والطباعة",
+      "description": "",
+      "items": [
+        "باقة فورمات عامة للطباعة",
+        "باقة ليثوغرافيا للتغليف والعبوات",
+        "باقة ليثوغرافيا للمطبوعات الإعلانية",
+        "باقات خاصة للعقود طويلة الأمد"
+      ]
+    },
+    "industries": {
+      "title": "مناسبة لهذه القطاعات",
+      "description": "",
+      "items": [
+        "مطابع الأوفست والتغليف",
+        "العلامات ذات كميات الطباعة الكبيرة",
+        "المجلات والكتب والكتيبات",
+        "مصانع التغليف الصناعي والتجاري"
+      ]
+    },
+    "midCta": {
+      "label": "فكرتك، وتنفيذنا!",
+      "title": "عندك تصميم وتريد تحضيره للطباعة؟",
+      "description": "يكفي أن ترفع ملف التصميم، وفريقنا يجهزه للطباعة بسرعة وسهولة بعد تأكيد الطلب.",
+      "primaryCta": "رفع ملف التصميم",
+      "secondaryCta": "استشارة أونلاين لليثوغرافيا"
+    },
+    "faq": {
+      "title": "الأسئلة الشائعة حول خدمات الليثوغرافيا",
+      "description": "",
+      "items": [
+        {
+          "question": "ما هو أفضل نوع ملف لإرساله؟",
+          "answer": "يفضل إرسال ملف PDF جاهز للطباعة مع تضمين الخطوط ودقة لا تقل عن 300dpi، ويمكن لفريقنا مراجعة صيغ أخرى وتصحيحها إذا لزم الأمر."
+        },
+        {
+          "question": "هل يمكنني تجهيز الألواح بنفسي؟",
+          "answer": "نعم، يمكنك الاكتفاء بخدمات مراجعة الملف وفصل الألوان، وسنزودك بالمخرجات النهائية لتجهيز الألواح في مكان آخر إذا رغبت."
+        },
+        {
+          "question": "كيف يتم احتساب تكلفة الليثوغرافيا؟",
+          "answer": "التكلفة تعتمد على مقاس الفورم، وعدد الألوان، ونوع اللوح، وحجم الخدمات الإضافية المطلوبة. بعد مراجعة الملف نعطيك سعراً دقيقاً."
+        },
+        {
+          "question": "هل أحتاج لليثوغرافيا في الطباعة الرقمية؟",
+          "answer": "الطباعة الرقمية لا تستخدم ألواحاً عادة، لكن يبقى فحص الملف وتصحيح الألوان والدقة خطوة مهمة للحصول على نتيجة جيدة."
+        },
+        {
+          "question": "كم يستغرق تنفيذ عملية الليثوغرافيا؟",
+          "answer": "عادة ما تستغرق بين يوم إلى ثلاثة أيام عمل بحسب عدد الفورمات وحجم المشروع، مع إمكانية التسريع للحالات العاجلة بعد التنسيق."
+        }
+      ]
+    }
+  },
+  "EN": {
+    "layout": {
+      "topLabel": "Services",
+      "bottomButtons": {
+        "primary": "Contact",
+        "secondary": "Upload design file"
+      }
+    },
+    "fallbackTitle": "Lithography & Plate Making",
+    "hero": {
+      "eyebrow": "Free consultation & planning",
+      "title": "Professional lithography services for precise print-ready files",
+      "subtitle": "Your idea, our execution.",
+      "description": "Lithography is a critical pre-press step before offset printing. This is where your files are prepared for press, colors are separated and high-precision plates are produced. We handle this stage with care, expertise and modern equipment so you can trust the final print quality.",
+      "highlights": [
+        "Thorough file preflight",
+        "Professional color separation",
+        "High-precision CTP plate output"
+      ],
+      "primaryCta": "Contact us",
+      "secondaryCta": "Online lithography consultation"
+    },
+    "serviceIncludes": {
+      "title": "What does our lithography service include?",
+      "description": "From preflight to final CTP output, we cover every critical step before printing.",
+      "groups": [
+        {
+          "title": "Design file review",
+          "description": "We make sure your file is truly print-ready.",
+          "items": [
+            "Checking size, safe margins and trim marks",
+            "Converting RGB assets to CMYK where needed",
+            "Verifying image quality, fonts and resolution"
+          ]
+        },
+        {
+          "title": "Color separation",
+          "description": "Accurate, consistent color for offset printing.",
+          "items": [
+            "Professional four-color separation (C, M, Y, K)",
+            "Preparing precise color outputs and ink coverage control"
+          ]
+        },
+        {
+          "title": "CTP plate making",
+          "description": "Direct-to-plate output without film.",
+          "items": [
+            "Digital direct-to-plate output",
+            "Modern, high-precision CTP devices",
+            "Stable quality for long print runs"
+          ]
+        },
+        {
+          "title": "Pre-press technical consultation",
+          "description": "Balancing cost and quality for your project.",
+          "items": [
+            "Advising on paper type, imposition and savings",
+            "Checking compatibility with the final printing press"
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "title": "Suggested lithography & print bundles",
+      "description": "",
+      "items": [
+        "General commercial form bundle",
+        "Packaging and box plate-making bundle",
+        "Advertising and marketing print bundle",
+        "Custom bundle for long-term contracts"
+      ]
+    },
+    "industries": {
+      "title": "Ideal for these industries",
+      "description": "",
+      "items": [
+        "Offset and packaging printers",
+        "Brands with high-volume printing",
+        "Magazines, books and catalogs",
+        "Industrial and commercial packaging producers"
+      ]
+    },
+    "midCta": {
+      "label": "Your idea, our execution.",
+      "title": "Already have a design and need it print-ready?",
+      "description": "Simply upload your file and our team will prepare it for press quickly after your order is confirmed.",
+      "primaryCta": "Upload design file",
+      "secondaryCta": "Book a pre-press consultation"
+    },
+    "faq": {
+      "title": "FAQ about lithography services",
+      "description": "",
+      "items": [
+        {
+          "question": "What file format should I send?",
+          "answer": "A print-ready PDF with embedded fonts and at least 300 dpi is preferred. Our team can also review and fix other formats if needed."
+        },
+        {
+          "question": "Can I handle plate making myself?",
+          "answer": "Yes. You can use only our file review and color separation services and receive final outputs for plate making at your preferred supplier."
+        },
+        {
+          "question": "How is lithography pricing calculated?",
+          "answer": "Pricing depends on form size, number of colors, plate type and any additional pre-press work. You will receive a clear quote after file review."
+        },
+        {
+          "question": "Is lithography required for digital printing?",
+          "answer": "Digital printing usually does not use plates, but proper preflight and color correction are still important for a good result."
+        },
+        {
+          "question": "How long does the lithography process take?",
+          "answer": "Typically 1–3 business days depending on volume and number of forms. Rush handling is possible upon request."
+        }
+      ]
+    }
+  }
+}

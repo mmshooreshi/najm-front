@@ -66,6 +66,8 @@ export default defineConfig({
     colors: {
       primary: '#0070f3',
       secondary: '#ff0000',
+      najmgreen: '#014439',
+      najmgrey: '#EBF0F3',
       // black: '#2F3136',
     },
 

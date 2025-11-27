@@ -1,0 +1,500 @@
+{
+  "EN": {
+    "layout": {
+      "topLabel": "Services",
+      "bottomButtons": {
+        "primary": {
+          "label": "Start design consultation",
+          "href": "/contact?topic=design-and-layout"
+        },
+        "secondary": {
+          "label": "Upload design file",
+          "href": "/orders/upload-file?service=design-and-layout"
+        }
+      }
+    },
+    "hero": {
+      "serviceName": "Design & Layout",
+      "title": "Professional design and layout for print-ready files",
+      "subtitle": "From first idea to perfectly prepared print file, our design team makes sure your brand looks sharp, consistent, and ready for production.",
+      "topImage": "/images/services/hero-square.gif",
+      "primaryCta": {
+        "label": "Start a free planning call",
+        "href": "/contact?topic=design-and-layout"
+      },
+      "secondaryCta": {
+        "label": "Upload design file",
+        "href": "/orders/upload-file?service=design-and-layout"
+      },
+      "secondaryImage": "/images/services/hero-square.gif"
+    },
+    "serviceIncludes": {
+      "title": "What is included in our design & layout services?",
+      "description": "We handle every technical and creative detail so your files are not only beautiful, but also fully compatible with the final printing machine.",
+      "groups": [
+        {
+          "key": "file-check",
+          "title": "Design file review",
+          "description": "Before anything goes to press, we deeply check your file to avoid costly reprints and surprises.",
+          "items": [
+            "Checking size, bleed, and safe margins",
+            "Verifying trim lines, folds, and die-cuts",
+            "Converting RGB files to CMYK correctly",
+            "Checking image resolution, fonts, and links"
+          ]
+        },
+        {
+          "key": "color-separation",
+          "title": "Color preparation & separation",
+          "description": "We prepare accurate color output that matches your brand guidelines and printing standards.",
+          "items": [
+            "Professional CMYK separation for offset printing",
+            "Preparing spot colors (Pantone) where required",
+            "Ink coverage and total ink limit control",
+            "Test outputs for critical colors and gradients"
+          ]
+        },
+        {
+          "key": "plate-prep",
+          "title": "Print-ready output (for plates or digital)",
+          "description": "Whether you print with us or elsewhere, we deliver files and outputs that are technically correct and ready to run.",
+          "items": [
+            "Preparing imposition and forms for efficient printing",
+            "Exporting compatible PDF/X standards for print",
+            "Optional CTP plate output for offset jobs",
+            "Pre-flight reports before final approval"
+          ]
+        },
+        {
+          "key": "prepress-consulting",
+          "title": "Pre-press technical consulting",
+          "description": "We help you choose the right materials, formats, and methods so your final piece performs as expected.",
+          "items": [
+            "Consulting on paper type, thickness, and finish",
+            "Optimizing layout to reduce waste and cost",
+            "Checking compatibility with target press and finishing",
+            "Advising on special effects such as foil, embossing, or UV"
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "title": "Popular design & layout packages",
+      "items": [
+        {
+          "key": "corporate",
+          "label": "Corporate & office package"
+        },
+        {
+          "key": "luxury-gift",
+          "label": "Luxury & gift package"
+        },
+        {
+          "key": "event-seasonal",
+          "label": "Occasional & seasonal package"
+        },
+        {
+          "key": "industrial",
+          "label": "Industrial & technical package"
+        }
+      ]
+    },
+    "industries": {
+      "title": "Industries we work with",
+      "items": [
+        {
+          "key": "fashion",
+          "label": "Fashion, apparel & accessories"
+        },
+        {
+          "key": "gifting",
+          "label": "Gift & occasion"
+        },
+        {
+          "key": "beauty",
+          "label": "Cosmetics & personal care"
+        },
+        {
+          "key": "electronics",
+          "label": "Technology & electronics"
+        },
+        {
+          "key": "jewelry",
+          "label": "Jewelry & accessories"
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "Your idea, our execution",
+      "title": "Already have a design in mind?",
+      "description": "Upload your file and our designers will make it technically ready for print, adjust details if needed, and send it back for your approval.",
+      "primaryCta": {
+        "label": "Upload design file",
+        "href": "/orders/upload-file?service=design-and-layout"
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions about design & layout services",
+      "description": "If you have a question that is not covered here, our team is ready to help you with more detailed information.",
+      "items": [
+        {
+          "key": 1,
+          "question": "What file formats do you accept?",
+          "answer": "We accept PDF, AI, PSD, INDD, and high-resolution JPG or PNG files. For the best results, we recommend open source files with all fonts and images included or outlined."
+        },
+        {
+          "key": 2,
+          "question": "Can you fix or complete my existing design?",
+          "answer": "Yes. Our designers can review your current design, correct technical issues, and, if needed, refine the layout, typography, and hierarchy while respecting your original concept."
+        },
+        {
+          "key": 3,
+          "question": "How is the price for design and layout calculated?",
+          "answer": "Pricing depends on the type of product, number of pages, design complexity, and the amount of revision required. After seeing your brief and files, we provide a clear estimate before starting."
+        },
+        {
+          "key": 4,
+          "question": "How long does the design and layout process take?",
+          "answer": "For standard items like business cards or flyers, the process usually takes 1–3 business days. For catalogs, packaging systems, or multi-page documents, timing is agreed based on scope and urgency."
+        },
+        {
+          "key": 5,
+          "question": "Can I use the final files with another printer?",
+          "answer": "Absolutely. Once the project is complete and approved, we can deliver print-ready files that you may use with any trusted printing partner."
+        }
+      ]
+    }
+  },
+  "FA": {
+    "layout": {
+      "topLabel": "خدمات",
+      "bottomButtons": {
+        "primary": {
+          "label": "شروع مشاوره طراحی",
+          "href": "/contact?topic=design-and-layout"
+        },
+        "secondary": {
+          "label": "آپلود فایل طراحی",
+          "href": "/orders/upload-file?service=design-and-layout"
+        }
+      }
+    },
+    "hero": {
+      "serviceName": "طراحی و فرم‌بندی",
+      "title": "خدمات حرفه‌ای طراحی و فرم‌بندی برای چاپ بی‌دردسر",
+      "subtitle": "از اولین ایده تا تحویل فایل نهایی آماده چاپ، تیم طراحی ما کنار شماست تا خروجی هم از نظر بصری و هم از نظر فنی، دقیق و استاندارد باشد.",
+      "topImage": "/images/services/hero-square.gif",
+      "primaryCta": {
+        "label": "شروع مشاوره و برنامه‌ریزی رایگان",
+        "href": "/contact?topic=design-and-layout"
+      },
+      "secondaryCta": {
+        "label": "آپلود فایل طراحی",
+        "href": "/orders/upload-file?service=design-and-layout"
+      },
+      "secondaryImage": "/images/services/hero-square.gif"
+    },
+    "serviceIncludes": {
+      "title": "خدمات طراحی و فرم‌بندی ما شامل چه چیزهایی می‌شود؟",
+      "description": "ما جزئیات خلاقانه و فنی را به‌طور کامل بررسی و اصلاح می‌کنیم تا خروجی، هم زیبا باشد و هم بدون مشکل روی ماشین چاپ نهایی اجرا شود.",
+      "groups": [
+        {
+          "key": "file-check",
+          "title": "بررسی و آماده‌سازی فایل طراحی",
+          "description": "قبل از رفتن به مرحله چاپ، فایل شما به‌صورت دقیق بررسی می‌شود تا از دوباره‌کاری و چاپ مجدد جلوگیری شود.",
+          "items": [
+            "چک کردن سایز، حاشیه اطمینان (Safe Area) و بلید",
+            "بررسی خطوط برش، خط تا و قالب دایکات (در صورت وجود)",
+            "تبدیل اصولی رنگ‌های RGB به CMYK",
+            "بررسی کیفیت تصاویر، فونت‌ها و لینک‌ها"
+          ]
+        },
+        {
+          "key": "color-separation",
+          "title": "آماده‌سازی و تفکیک رنگ",
+          "description": "رنگ‌ها بر اساس استانداردهای چاپ و هویت بصری برند شما تنظیم و آماده می‌شوند.",
+          "items": [
+            "تفکیک حرفه‌ای چهاررنگ (CMYK) برای چاپ افست",
+            "آماده‌سازی رنگ‌های اختصاصی (Pantone) در صورت نیاز",
+            "کنترل میزان مرکب و مجموع درصد پوشش رنگ",
+            "خروجی تستی برای رنگ‌های حساس و گرادیانت‌ها"
+          ]
+        },
+        {
+          "key": "plate-prep",
+          "title": "خروجی آماده چاپ (برای پلیت یا چاپ دیجیتال)",
+          "description": "چه با ما چاپ کنید چه با همکار دیگر، خروجی ما از نظر فنی آماده و قابل اعتماد برای چاپ است.",
+          "items": [
+            "فرم‌بندی و ایمپوزیشن برای استفاده بهینه از شیت چاپ",
+            "خروجی استاندارد PDF/X مناسب چاپ حرفه‌ای",
+            "امکان خروجی CTP برای چاپ افست",
+            "گزارش نهایی Pre-flight قبل از تأیید نهایی"
+          ]
+        },
+        {
+          "key": "prepress-consulting",
+          "title": "مشاوره فنی پیش از چاپ",
+          "description": "برای انتخاب جنس، ابعاد، نوع چاپ و نحوه اجرا کنارتان هستیم تا نتیجه نهایی دقیقاً مطابق نیاز شما باشد.",
+          "items": [
+            "مشاوره درباره نوع کاغذ، گرم، روکش و جنس بسته‌بندی",
+            "بهینه‌سازی فرم‌بندی برای کاهش دورریز و هزینه",
+            "بررسی سازگاری طرح با ماشین چاپ و خدمات پس از چاپ",
+            "راهنمایی برای اجرای افکت‌های ویژه مثل طلاکوب، برجسته‌سازی یا UV"
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "title": "پکیج‌های محبوب طراحی و فرم‌بندی",
+      "items": [
+        {
+          "key": "corporate",
+          "label": "پکیج سازمانی و اداری"
+        },
+        {
+          "key": "luxury-gift",
+          "label": "پکیج لوکس و هدیه"
+        },
+        {
+          "key": "event-seasonal",
+          "label": "پکیج مناسبتی و سفارشی"
+        },
+        {
+          "key": "industrial",
+          "label": "پکیج صنعتی و فنی"
+        }
+      ]
+    },
+    "industries": {
+      "title": "برای چه حوزه‌هایی طراحی می‌کنیم؟",
+      "items": [
+        {
+          "key": "fashion",
+          "label": "مد، پوشاک و اکسسوری"
+        },
+        {
+          "key": "gifting",
+          "label": "هدیه و مناسبتی"
+        },
+        {
+          "key": "beauty",
+          "label": "آرایشی و بهداشتی"
+        },
+        {
+          "key": "electronics",
+          "label": "فناوری و الکترونیک"
+        },
+        {
+          "key": "jewelry",
+          "label": "جواهرات و زیورآلات"
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "ایده‌ی تو، اجرای ما!",
+      "title": "طرحت را داری و می‌خواهی برای چاپ آماده‌اش کنی؟",
+      "description": "کافی است فایل طراحی‌ات را برای ما آپلود کنی تا طراحان ما بعد از ثبت سفارش، آن را از نظر فنی برای چاپ آماده کنند و قبل از اجرا برای تأیید نهایی برایت ارسال کنند.",
+      "primaryCta": {
+        "label": "آپلود فایل طراحی",
+        "href": "/orders/upload-file?service=design-and-layout"
+      }
+    },
+    "faq": {
+      "title": "سوالات متداول درباره خدمات طراحی و فرم‌بندی",
+      "description": "اگر سوالی خارج از این موارد دارید، تیم پشتیبانی و طراحی ما با جزئیات بیشتر راهنمایی‌تان می‌کند.",
+      "items": [
+        {
+          "key": 1,
+          "question": "فایل طراحی باید چه فرمتی باشد؟",
+          "answer": "فرمت‌های پیشنهادی ما شامل PDF، AI، PSD، INDD و تصاویر با کیفیت بالا (JPG یا PNG) است. برای بهترین نتیجه، ارسال فایل باز به همراه فونت‌ها و تصاویر استفاده شده توصیه می‌شود."
+        },
+        {
+          "key": 2,
+          "question": "آیا می‌توانید طرح ناقص یا فایل مشکل‌دار من را اصلاح کنید؟",
+          "answer": "بله. فایل شما ابتدا از نظر فنی بررسی می‌شود و در صورت نیاز، مشکلاتی مثل حاشیه، رزولوشن، رنگ، فونت یا ساختار لایه‌ها اصلاح شده و نسخه نهایی برای تأیید شما ارسال می‌شود."
+        },
+        {
+          "key": 3,
+          "question": "هزینه طراحی و فرم‌بندی چگونه محاسبه می‌شود؟",
+          "answer": "هزینه بر اساس نوع محصول، تعداد صفحات، پیچیدگی طراحی، نیاز به بازطراحی و تعداد دفعات اصلاح تعیین می‌شود. بعد از بررسی فایل و توضیحات شما، پیش‌فاکتور شفاف ارائه می‌کنیم."
+        },
+        {
+          "key": 4,
+          "question": "فرآیند طراحی و فرم‌بندی معمولاً چقدر طول می‌کشد؟",
+          "answer": "برای کارهای ساده مثل کارت ویزیت، تراکت یا پوستر، معمولاً بین ۱ تا ۳ روز کاری زمان نیاز است. برای کاتالوگ، بسته‌بندی‌های خاص یا پروژه‌های حجیم، زمان دقیق پس از بررسی حجم کار اعلام می‌شود."
+        },
+        {
+          "key": 5,
+          "question": "آیا می‌توانم فایل نهایی را برای چاپ در جای دیگر هم استفاده کنم؟",
+          "answer": "بله. پس از تأیید نهایی، فایل آماده چاپ مطابق استانداردهای رایج در اختیار شما قرار می‌گیرد و می‌توانید آن را در هر چاپخانه معتبری استفاده کنید."
+        }
+      ]
+    }
+  },
+  "AR": {
+    "layout": {
+      "topLabel": "الخدمات",
+      "bottomButtons": {
+        "primary": {
+          "label": "ابدأ استشارة التصميم",
+          "href": "/contact?topic=design-and-layout"
+        },
+        "secondary": {
+          "label": "رفع ملف التصميم",
+          "href": "/orders/upload-file?service=design-and-layout"
+        }
+      }
+    },
+    "hero": {
+      "serviceName": "التصميم وتجهيز الملفات للطباعة",
+      "title": "خدمات احترافية للتصميم وتجهيز ملفات جاهزة للطباعة",
+      "subtitle": "من أول فكرة وحتى ملف الطباعة النهائي، يعمل فريق التصميم لدينا على ضمان تطابق العمل مع هوية علامتك وجودة الطباعة المطلوبة.",
+      "topImage": "/images/services/hero-square.gif",
+      "primaryCta": {
+        "label": "ابدأ مكالمة استشارة مجانية",
+        "href": "/contact?topic=design-and-layout"
+      },
+      "secondaryCta": {
+        "label": "رفع ملف التصميم",
+        "href": "/orders/upload-file?service=design-and-layout"
+      },
+      "secondaryImage": "/images/services/hero-square.gif"
+    },
+    "serviceIncludes": {
+      "title": "ماذا تتضمن خدمات التصميم وتجهيز الملفات للطباعة؟",
+      "description": "نهتم بالتفاصيل الإبداعية والتقنية في نفس الوقت، بحيث تكون ملفاتك جذابة بصرياً ومتوافقة تماماً مع متطلبات ماكينة الطباعة.",
+      "groups": [
+        {
+          "key": "file-check",
+          "title": "مراجعة وتحضير ملف التصميم",
+          "description": "نقوم بمراجعة دقيقة للملف قبل مرحلة الطباعة لتجنّب الأخطاء وإعادة الطباعة.",
+          "items": [
+            "فحص المقاس، الهوامش الآمنة وخط النزف (Bleed)",
+            "مراجعة خطوط القص، الطي وقوالب الـ Die-cut إن وُجدت",
+            "تحويل ألوان RGB إلى CMYK بطريقة صحيحة",
+            "فحص دقة الصور والخطوط والروابط"
+          ]
+        },
+        {
+          "key": "color-separation",
+          "title": "إعداد الألوان وفصلها للطباعة",
+          "description": "نجهّز الألوان وفق معايير الطباعة وهوية علامتك التجارية.",
+          "items": [
+            "فصل ألوان CMYK باحترافية للطباعة بالأوفست",
+            "إعداد الألوان الخاصة (Pantone) عند الحاجة",
+            "التحكم في نسبة تغطية الحبر وإجمالي الحبر على الورق",
+            "عمل مخرجات تجريبية للألوان الحساسة والتدرّجات"
+          ]
+        },
+        {
+          "key": "plate-prep",
+          "title": "مخرجات جاهزة للطباعة (للألواح أو الطباعة الرقمية)",
+          "description": "سواءً كنت ستطبع لدينا أو لدى مطبعة أخرى، نقدّم لك ملفات جاهزة للطباعة يمكن الاعتماد عليها.",
+          "items": [
+            "تجهيز نماذج Imposition للاستفادة القصوى من ورقة الطباعة",
+            "تصدير ملفات PDF/X متوافقة مع معايير الطباعة الاحترافية",
+            "إمكانية إنتاج ألواح CTP لأعمال الأوفست",
+            "تقرير فني (Pre-flight) قبل الموافقة النهائية"
+          ]
+        },
+        {
+          "key": "prepress-consulting",
+          "title": "استشارات فنية قبل الطباعة",
+          "description": "نساعدك في اختيار الخامة، المقاس، طريقة الطباعة والتشطيب الأنسب لمنتجك.",
+          "items": [
+            "الاستشارة في نوع الورق، السمك، التشطيب ومواد التغليف",
+            "تحسين توزيع العمل على شيت الطباعة لتقليل الهدر والتكلفة",
+            "مراجعة توافق التصميم مع ماكينة الطباعة وخدمات ما بعد الطباعة",
+            "إرشادك حول المؤثرات الخاصة مثل الطباعة باللوح المعدني، البروز أو طبقة الـ UV"
+          ]
+        }
+      ]
+    },
+    "packages": {
+      "title": "باقات شائعة لخدمات التصميم وتجهيز الملفات",
+      "items": [
+        {
+          "key": "corporate",
+          "label": "باقة الشركات والمكاتب"
+        },
+        {
+          "key": "luxury-gift",
+          "label": "باقة الهدايا الفاخرة"
+        },
+        {
+          "key": "event-seasonal",
+          "label": "باقة المناسبات والحملات الموسمية"
+        },
+        {
+          "key": "industrial",
+          "label": "باقة الاستخدامات الصناعية والفنية"
+        }
+      ]
+    },
+    "industries": {
+      "title": "القطاعات التي نخدمها",
+      "items": [
+        {
+          "key": "fashion",
+          "label": "الموضة، الأزياء والإكسسوارات"
+        },
+        {
+          "key": "gifting",
+          "label": "الهدايا والمناسبات"
+        },
+        {
+          "key": "beauty",
+          "label": "منتجات التجميل والعناية الشخصية"
+        },
+        {
+          "key": "electronics",
+          "label": "التقنية والإلكترونيات"
+        },
+        {
+          "key": "jewelry",
+          "label": "المجوهرات والإكسسوارات الفاخرة"
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "فكرتك، تنفيذنا",
+      "title": "لديك تصميم جاهز وتريد تجهيزه للطباعة؟",
+      "description": "يمكنك رفع ملف التصميم بسهولة، ليقوم فريقنا بمراجعته وضبطه تقنياً للطباعة، ثم إرساله إليك لاعتماده قبل بدء التنفيذ.",
+      "primaryCta": {
+        "label": "رفع ملف التصميم",
+        "href": "/orders/upload-file?service=design-and-layout"
+      }
+    },
+    "faq": {
+      "title": "أسئلة شائعة حول خدمات التصميم وتجهيز الملفات للطباعة",
+      "description": "إن لم تجد سؤالك هنا، يسعدنا تواصلك مع فريقنا للحصول على توضيحات أكثر تفصيلاً.",
+      "items": [
+        {
+          "key": 1,
+          "question": "ما هي صيغ الملفات التي تقبلونها؟",
+          "answer": "نستقبل ملفات PDF و AI و PSD و INDD بالإضافة إلى صور عالية الدقة بصيغة JPG أو PNG. ولأفضل نتيجة نفضّل الحصول على ملفات مفتوحة مرفقة بكل الخطوط والصور المستخدمة."
+        },
+        {
+          "key": 2,
+          "question": "هل يمكنكم تعديل أو استكمال تصميم موجود مسبقاً؟",
+          "answer": "نعم، يمكن لفريق التصميم لدينا مراجعة العمل الحالي، معالجة المشكلات التقنية، وتحسين التخطيط البصري مع الحفاظ على الفكرة الأساسية للعلامة التجارية."
+        },
+        {
+          "key": 3,
+          "question": "كيف يتم احتساب تكلفة خدمات التصميم وتجهيز الملفات؟",
+          "answer": "التكلفة تعتمد على نوع المنتج، عدد الصفحات، درجة تعقيد التصميم، وعدد جولات التعديل المطلوبة. بعد الاطلاع على الملف والموجز، نقدّم لك عرض سعر واضح قبل البدء."
+        },
+        {
+          "key": 4,
+          "question": "كم يستغرق إنجاز التصميم وتجهيز الملفات للطباعة؟",
+          "answer": "الأعمال البسيطة مثل بطاقات العمل أو البروشورات تستغرق عادة من يوم إلى ثلاثة أيام عمل، بينما تحتاج الكتالوجات والأنظمة الطباعية الكبيرة إلى مدة أطول يتم الاتفاق عليها حسب حجم المشروع."
+        },
+        {
+          "key": 5,
+          "question": "هل يمكنني استخدام الملفات النهائية مع مطبعة أخرى؟",
+          "answer": "بالتأكيد، بعد اعتماد النسخة النهائية يمكنك الحصول على ملفات جاهزة للطباعة وفق المعايير الشائعة، واستخدامها في أي مطبعة موثوقة."
+        }
+      ]
+    }
+  }
+}
