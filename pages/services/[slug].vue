@@ -1,11 +1,11 @@
 <!-- pages/services/[slug].vue -->
 <template>
-  <main class="py-6 md:py-10">
+  <main class="py-6 md:py-10 max-w-4xl mx-auto">
     <section class="space-y-8 md:space-y-10">
       <!-- Hero / intro -->
-      <header class="space-y-3 md:space-y-4">
+      <header class="space-y-4">
         <!-- Image Container -->
-        <div class="rounded-2xl w-full max-w-md mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+        <div class="rounded-2xl w-full max-w-full max-h-xs mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
           <img :src="hero.topImage" class="object-cover w-full h-full"/>
         </div>
 
@@ -16,20 +16,20 @@
           {{ hero.eyebrow }}
         </p>
 
-        <h1 class="text-2xl md:text-4xl font-bold leading-tight">
+        <h1 class="text-xl  font-bold leading-tight">
           {{ hero?.title || fallbackTitle }}
         </h1>
 
         <p
           v-if="hero?.subtitle"
-          class="text-sm md:text-base text-gray-600 max-w-2xl"
+          class="text-base font-bold max-w-2xl"
         >
           {{ hero.subtitle }}
         </p>
 
         <p
           v-if="hero?.description"
-          class="text-sm md:text-base text-gray-700 leading-relaxed max-w-3xl"
+          class="text-sm md:text-base text-gray-700 leading-relaxed max-w-3xl !my-9"
         >
           {{ hero.description }}
         </p>
@@ -48,8 +48,11 @@
         </div>
       </header>
 
+      
+
       <!-- “What this service includes” section -->
       <section v-if="serviceIncludes">
+
         <div class="space-y-4 md:space-y-6">
           <h2
             v-if="serviceIncludes.title"
@@ -80,7 +83,7 @@
               >
                 {{ group.description }}
               </p>
-              <ul class="space-y-1.5 text-xs md:text-sm text-gray-700 list-disc pl-5">
+              <ul class="space-y-1.5 text-xs md:text-sm text-gray-700 list-disc" :class="isRTL ? 'pr-5' : 'pl-5'">
                 <li v-for="(item, i) in group.items" :key="i">
                   {{ item }}
                 </li>
@@ -90,11 +93,55 @@
         </div>
       </section>
 
+            <!-- Mid-page CTA block -->
+      <section v-if="midCta">
+        <div
+          class="rounded-2xl bg-black text-white p-5 md:p-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+        >
+          <div class="space-y-2 md:space-y-3 max-w-xl">
+            <p
+              v-if="midCta.eyebrow"
+              class="text-xl font-extrabold"
+            >
+              {{ midCta.eyebrow }}
+            </p>
+            <p
+              v-if="midCta.title"
+              class="text-sm text-white/80 uppercase tracking-wide"
+            >
+              {{ midCta.title }}
+            </p>            
+            <p
+              v-if="midCta.description"
+              class="text-xs md:text-sm text-white/80"
+            >
+              {{ midCta.description }}
+            </p>
+          </div>
+          <div class="flex flex-col gap-2 mt-3 md:mt-0 md:flex-row">
+            <button
+              v-if="midCta.primaryCta.label"
+              type="button"
+              class="h-10 md:h-11 px-4 rounded-xl !bg-najmgrey text-black text-sm font-semibold"
+            >
+              {{ midCta.primaryCta.label }}
+            </button>
+          </div>
+        </div>
+      </section>
+
+
       <!-- Packages + industries / use-cases -->
       <section
         v-if="packages?.items?.length || industries?.items?.length"
         class="space-y-6 md:space-y-8"
       >
+
+                <!-- Image Container -->
+        <div class="rounded-2xl w-full max-w-full max-h-xs mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
+          <img :src="hero.secondaryImage" class="object-cover w-full h-full"/>
+        </div>
+
         <div
           v-if="packages?.items?.length"
           class="space-y-3 md:space-y-4"
@@ -144,42 +191,8 @@
         </div>
       </section>
 
-      <!-- Mid-page CTA block -->
-      <section v-if="midCta">
-        <div
-          class="rounded-2xl bg-black text-white p-5 md:p-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
-        >
-          <div class="space-y-2 md:space-y-3 max-w-xl">
-            <p
-              v-if="midCta.label"
-              class="text-xs md:text-sm font-medium text-white/80 uppercase tracking-wide"
-            >
-              {{ midCta.label }}
-            </p>
-            <h2
-              v-if="midCta.title"
-              class="text-lg md:text-2xl font-semibold"
-            >
-              {{ midCta.title }}
-            </h2>
-            <p
-              v-if="midCta.description"
-              class="text-xs md:text-sm text-white/80"
-            >
-              {{ midCta.description }}
-            </p>
-          </div>
-          <div class="flex flex-col gap-2 mt-3 md:mt-0 md:flex-row">
-            <button
-              v-if="midCta.primaryCta.label"
-              type="button"
-              class="h-10 md:h-11 px-4 rounded-xl !bg-najmgrey text-black text-xs md:text-sm font-semibold"
-            >
-              {{ midCta.primaryCta.label }}
-            </button>
-          </div>
-        </div>
-      </section>
+
+      
 
       <!-- FAQ -->
       <section v-if="faq?.items?.length" class="space-y-4 md:space-y-6">
@@ -234,6 +247,7 @@ const { ui } = usePageUI(`services-${serviceSlug}`)
 
 // locale (if you need it for RTL, etc.)
 const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const hero = computed(() => ui.value?.hero ?? null)
 const serviceIncludes = computed(() => ui.value?.serviceIncludes ?? null)

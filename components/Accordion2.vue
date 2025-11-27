@@ -19,7 +19,7 @@
   import { ref } from 'vue'
   import Menu from './Menu.vue'
   
-  const props = defineProps<{ item: any }>()
+  const props = defineProps<{ item?: any }>()
   const open = ref(false)
   </script>
   

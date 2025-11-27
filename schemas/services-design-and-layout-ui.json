@@ -1,15 +1,15 @@
 {
   "EN": {
     "layout": {
-      "topLabel": "Services",
+      "topLabel": "Services / design-and-layout",
       "bottomButtons": {
         "primary": {
-          "label": "Start design consultation",
+          "label": "Online consultation",
           "href": "/contact?topic=design-and-layout"
         },
         "secondary": {
-          "label": "Upload design file",
-          "href": "/orders/upload-file?service=design-and-layout"
+          "label": "Contact",
+          "href": "/contact"
         }
       }
     },
@@ -167,22 +167,22 @@
   },
   "FA": {
     "layout": {
-      "topLabel": "خدمات",
+      "topLabel": "خدمات / طراحی و فرم‌بندی",
       "bottomButtons": {
         "primary": {
-          "label": "شروع مشاوره طراحی",
+          "label": "مشاوره‌ی آنلاین",
           "href": "/contact?topic=design-and-layout"
         },
         "secondary": {
-          "label": "آپلود فایل طراحی",
-          "href": "/orders/upload-file?service=design-and-layout"
+          "label": "تماس",
+          "href": "/contact"
         }
       }
     },
     "hero": {
       "serviceName": "طراحی و فرم‌بندی",
-      "title": "خدمات حرفه‌ای طراحی و فرم‌بندی برای چاپ بی‌دردسر",
-      "subtitle": "از اولین ایده تا تحویل فایل نهایی آماده چاپ، تیم طراحی ما کنار شماست تا خروجی هم از نظر بصری و هم از نظر فنی، دقیق و استاندارد باشد.",
+      "title": "1. مشاوره و برنامه‌ریزی رایگان",
+      "subtitle": "خدمات لیتوگرافی حرفه‌ای | آماده‌سازی دقیق فایل چاپ برای بهترین نتیجه",
       "topImage": "/images/services/hero-square.gif",
       "primaryCta": {
         "label": "شروع مشاوره و برنامه‌ریزی رایگان",
@@ -192,7 +192,8 @@
         "label": "آپلود فایل طراحی",
         "href": "/orders/upload-file?service=design-and-layout"
       },
-      "secondaryImage": "/images/services/hero-square.gif"
+      "secondaryImage": "/images/services/hero-square.gif",
+      "description":"لیتوگرافی، مرحله‌ای حیاتی پیش از چاپ افست است. جایی که فایل‌های شما برای چاپ آماده‌سازی می‌شن، تفکیک رنگ صورت می‌گیره و خروجی پلیت‌های چاپ تهیه می‌شه. ما این مرحله رو با دقت، تخصص و تجهیزات روز انجام می‌دیم تا خیالت از کیفیت نهایی چاپ راحت باشه."
     },
     "serviceIncludes": {
       "title": "خدمات طراحی و فرم‌بندی ما شامل چه چیزهایی می‌شود؟",
@@ -341,7 +342,7 @@
         },
         "secondary": {
           "label": "رفع ملف التصميم",
-          "href": "/orders/upload-file?service=design-and-layout"
+          "href": "/contact"
         }
       }
     },

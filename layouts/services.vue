@@ -3,6 +3,7 @@
   <BackgroundGradient />
 
   <Header
+    :topLabel="topLabel"
     :menu-open="menuOpen"
     @update:menu-open="menuOpen = $event"
     class="fixed top-0 left-0 w-full z-50"
@@ -10,43 +11,43 @@
 
   <ClientOnly fallback="">
     <div  :dir="isRTL ? 'rtl' : 'ltr'"  class="relative min-h-screen pt-16 pb-24 bg-[#e4eaeb]">
-      <!-- Top label from backend (localized) -->
+      <!-- Top label from backend (localized)
       <div class="w-full">
-        <div class="containerCustom mx-auto px-4 md:px-8 mt-4">
+        <div class="w-full px-4 md:px-8 mt-4">
           <span
             class="inline-flex items-center rounded-full bg-white/80 text-xs md:text-sm font-medium px-3 py-1 shadow-sm"
           >
             {{ topLabel }}
           </span>
         </div>
-      </div>
+      </div> -->
 
       <!-- Main content -->
-      <div class="containerCustom mx-auto px-4 md:px-8 mt-4 pb-32">
+      <div class="w-full px-4 md:px-8 mt-4 pb-32">
         <slot />
       </div>
 
       <!-- <Footer2 /> -->
 
       <!-- Bottom fixed CTA bar -->
-      <div class="fixed inset-x-0 bottom-0 z-40">
-        <div class="containerCustom mx-auto px-4 md:px-8 pb-4">
+      <div class="fixed inset-x-0 bottom-0 z-40 bg-white/0 ">
+        <div class="w-full px-4 md:px-8 py-3">
           <div
-            class="bg-white/90 backdrop-blur rounded-2xl shadow-xl p-3 flex flex-col gap-2 sm:flex-row sm:gap-3"
+            class="flex flex-row gap-1 justify-center"
           >
-            <button
+            <div
               type="button"
-              class="flex-1 h-11 md:h-12 rounded-xl !bg-najmgreen hover:!bg-najmgreen/90 text-white text-sm md:text-base font-semibold flex items-center justify-center"
+              class="h-12 py-[13px] px-6 rounded-[15px] !bg-najmgreen hover:!bg-najmgreen/90 text-white text-sm md:text-base text-d4 text-demibold flex items-center justify-center"
             >
               <NuxtLink to="" >{{ primaryCta.label }}</NuxtLink>
-            </button>
-            <button
+            </div>
+            <div
               type="button"
-              class="flex-1 h-11 md:h-12 rounded-xl border border-black/10 !bg-najmgreen hover:!bg-najmgreen/90 text-white text-sm md:text-base font-semibold flex items-center justify-center"
+              class="h-12 py-[13px] px-6 rounded-[15px] border border-black/10 !bg-najmgreen hover:!bg-najmgreen/90 text-white text-sm md:text-base text-d4 text-demibold flex items-center justify-center"
             >
             <NuxtLink to="" >{{ secondaryCta.label }}</NuxtLink>
               
-            </button>
+            </div>
           </div>
         </div>
       </div>
@@ -102,33 +103,33 @@ const secondaryCta = computed(
 </script>
 
 <style scoped>
-.containerCustom {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+.w-screen {
+  /* width: 100%; */
+  /* margin-left: auto;
+  margin-right: auto; */
 }
 @media (min-width: 640px) {
-  .containerCustom {
+  .w-screen {
     max-width: 640px;
   }
 }
 @media (min-width: 768px) {
-  .containerCustom {
+  .w-screen {
     max-width: 768px;
   }
 }
 @media (min-width: 1024px) {
-  .containerCustom {
+  .w-screen {
     max-width: 1024px;
   }
 }
 @media (min-width: 1280px) {
-  .containerCustom {
+  .w-screen {
     max-width: 1280px;
   }
 }
 @media (min-width: 1536px) {
-  .containerCustom {
+  .w-screen {
     max-width: 1280px;
   }
 }
