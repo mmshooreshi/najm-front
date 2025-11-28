@@ -81,7 +81,7 @@ const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 
-const props = defineProps<{ topLabel: any }>()
+const props = defineProps<{ topLabel?: any }>()
 
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')

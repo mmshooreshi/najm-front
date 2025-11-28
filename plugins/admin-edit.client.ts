@@ -239,8 +239,8 @@ export default defineNuxtPlugin(nuxtApp => {
         paintChanged(el, isChanged(path, state.language))
       })
       mo.observe(el, { childList: true, characterData: true, subtree: true })
-      el.addEventListener('mouseenter', () => showTip(el, path, state.language))
-      el.addEventListener('mouseleave', hideTip)
+      // el.addEventListener('mouseenter', () => showTip(el, path, state.language))
+      // el.addEventListener('mouseleave', hideTip)
       ;(el as any)._cleanup = () => { el.removeEventListener('input', onInput); mo.disconnect() }
     },
 updated(el, binding) {

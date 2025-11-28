@@ -18,7 +18,8 @@
   </div> -->
 
   <div class="section-snap">
-    <ScrollWrapperWebpKiller />   
+    <!-- <ScrollWrapperWebpKiller />    -->
+     <SW/>
   </div>
 
 
@@ -74,6 +75,7 @@ import SceneCustomers from '@/components/scenes/SceneCustomers.vue'
 import ScrollWrapperW from '@/components/ScrollWrapperW.vue'
 import ScrollWrapperWebp from '@/components/ScrollWrapperW-webp.vue'
 import ScrollWrapperWebpKiller from '@/components/ScrollWrapperW-webp-killer.vue'
+import SW from '@/components/SW.vue'
 
 import { usePageUI } from '@/composables/ui/usePageUI'
 import { useAdminEditable } from '@/composables/useAdminEditable'

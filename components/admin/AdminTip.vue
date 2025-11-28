@@ -6,10 +6,10 @@ const props = defineProps<{ rows: string }>()
 </script>
 
 <template>
-  <div class="admin-tip">
+  <!-- <div class="admin-tip">
     <pre>{{ rows }}</pre>
     <ClipboardIcon :text="rows" />
-  </div>
+  </div> -->
 </template>
 
 <style scoped>

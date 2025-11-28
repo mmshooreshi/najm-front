@@ -52,7 +52,7 @@
 
     <div
       class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px]"
-      style="top:48px; padding:0px 0px;">
+      style="top:10vh; padding:0px 0px;">
       <ImagesFloating />
     </div>
 
