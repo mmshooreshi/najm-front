@@ -12,7 +12,7 @@
         @click.prevent="toggleType(type)"
         class="mx-1 px-6 py-[15px] rounded-[35px] text-sm transition-all"
         :class="[selectedType === type
-          ? 'bg-[#014439] text-white'
+          ? 'bg-najmgreen text-white'
           : 'bg-transparent text-black hover:bg-gray-300/40']"
       >
         {{ data.types[type]}}
@@ -29,9 +29,9 @@
       v-for="(group, i) in uniqueGroups"
       :key="`${selectedType}-${group}-${i}`"
       @click="selectTab(i, group)"
-      class="transition-all rounded-3xl border text-xs px-6 py-3 hover:bg-[#014439]/10 hover:scale-105"
+      class="transition-all rounded-3xl border text-xs px-6 py-3 hover:bg-najmgreen/10 hover:scale-105"
       :class="[activeTab === i
-        ? 'border-[#C2D3D1] !bg-[#014439] !text-white'
+        ? 'border-[#C2D3D1] !bg-najmgreen !text-white'
         : 'border-[#C2D3D1] text-gray-700']"
     >
       {{ group }}

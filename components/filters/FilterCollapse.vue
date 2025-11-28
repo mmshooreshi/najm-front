@@ -45,7 +45,7 @@
             :key="tab.key"
             @click.stop="selectTab(tab.key)"
             class="px-6 py-2 rounded-full font-medium text-center transition-colors cursor-pointer"
-            :class="activeTab === tab.key ? 'bg-[#014439]/100 text-white/100' : 'text-gray-700'"
+            :class="activeTab === tab.key ? 'bg-najmgreen/100 text-white/100' : 'text-gray-700'"
           >
             {{ tab.label }}
           </button>

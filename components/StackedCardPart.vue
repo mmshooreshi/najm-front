@@ -13,7 +13,7 @@
 
       <!-- Overlapping round badge with your existing SVG icon inside -->
       <span
-        class="absolute -top-1 right-[5%] -translate-x-1/2 flex items-center justify-center h-8 w-8 rounded-full bg-[#014439]"
+        class="absolute -top-1 right-[5%] -translate-x-1/2 flex items-center justify-center h-8 w-8 rounded-full bg-najmgreen"
       >
         <CheckIconSvg class="" />
       </span>

@@ -7,7 +7,7 @@
           v-model="searchQuery"
           type="text"
           placeholder="جست‌وجوی محصول"
-          class="w-full p-4 pl-12 border border-gray-300 rounded-[15px] text-[12px] font-semibold placeholder:text-[#626262] placeholder:font-medium hover:shadow-md focus:border-[#014439] focus:ring-2 focus:ring-[#014439] transition-all"          @focus="isFocused = true"
+          class="w-full p-4 pl-12 border border-gray-300 rounded-[15px] text-[12px] font-semibold placeholder:text-[#626262] placeholder:font-medium hover:shadow-md focus:border-najmgreen focus:ring-2 focus:ring-najmgreen transition-all"          @focus="isFocused = true"
           @input="filterResults"
           @blur="handleBlur"
           ref="searchInput"
@@ -21,7 +21,7 @@
       <!-- Search Dropdown (Only Show When Focused) -->
       <div
         v-show="isFocused && searchResults.length"
-        class="absolute w-full mt-2 bg-white border border-[#014439] rounded-lg shadow-xl overflow-hidden z-50"
+        class="absolute w-full mt-2 bg-white border border-najmgreen rounded-lg shadow-xl overflow-hidden z-50"
         ref="dropdown"
       >
         <ul class="max-h-60 overflow-y-auto">
@@ -29,7 +29,7 @@
             v-for="(result, index) in searchResults"
             :key="index"
             @click="selectSearchResult(result)"
-            class="px-4 py-2 text-sm cursor-pointer transition-all hover:bg-[#014439]/100 hover:text-white"
+            class="px-4 py-2 text-sm cursor-pointer transition-all hover:bg-najmgreen/100 hover:text-white"
           >
             {{ result }}
           </li>

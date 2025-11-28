@@ -1,7 +1,7 @@
 <!-- components/rotatory.vue -->
 <template>
     <button
-      class="group relative flex items-center justify-center overflow-hidden rounded-full bg-[#014439] text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 w-18 h-18 md:w-24 md:h-24"
+      class="group relative flex items-center justify-center overflow-hidden rounded-full bg-najmgreen text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 w-18 h-18 md:w-24 md:h-24"
     >
       <!-- Rotating text along a circular path -->
       <svg
@@ -30,7 +30,7 @@
   
       <!-- Icon container -->
       <div
-        class="absolute flex items-center justify-center overflow-hidden bg-white text-[#014439] rounded-full w-8 h-8 md:w-10 md:h-10"
+        class="absolute flex items-center justify-center overflow-hidden bg-white text-najmgreen rounded-full w-8 h-8 md:w-10 md:h-10"
       >
         <!-- Send icon -->
         <svg

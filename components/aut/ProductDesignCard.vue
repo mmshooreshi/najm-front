@@ -29,7 +29,7 @@
         </div>
         <div class="flex flex-col gap-2 text-right">
           <h1 class="text-2xl font-extrabold text-black">طرح ما، محصول تو!</h1>
-          <h2 class="text-xl font-extrabold text-[#014439]">رنگ و هویتی که برندتو متمایز می‌کنه</h2>
+          <h2 class="text-xl font-extrabold text-najmgreen">رنگ و هویتی که برندتو متمایز می‌کنه</h2>
         </div>
       </div>
 

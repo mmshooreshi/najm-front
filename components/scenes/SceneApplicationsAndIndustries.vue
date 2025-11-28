@@ -6,8 +6,8 @@
     <SceneHeading  :data="sceneApplicationsAndIndustries" path="sceneServicesAndCapabilities"/>
 
     <div class="w-max mx-auto cursor-pointer">
-    <button @click.prevent="toggleType('Applications')" class="mx-1 transition-all rounded-[35px]  px-6 py-[15px] text-d4 text-sm" :class="[selectedType == 'Applications' ? 'bg-[#014439] text-white' : 'hover:bg-gray-300/40 bg-transparent text-black']">{{sceneApplicationsAndIndustries.buttons.applications}}</button>
-    <button @click.prevent="toggleType('Industries')" class="mx-1 transition-all  rounded-[35px]  px-6 py-[15px] text-d4 text-sm" :class="[selectedType == 'Industries' ? 'bg-[#014439] text-white' : 'hover:bg-gray-300/40  bg-transparent text-black']">{{sceneApplicationsAndIndustries.buttons.industries}}</button>
+    <button @click.prevent="toggleType('Applications')" class="mx-1 transition-all rounded-[35px]  px-6 py-[15px] text-d4 text-sm" :class="[selectedType == 'Applications' ? 'bg-najmgreen text-white' : 'hover:bg-gray-300/40 bg-transparent text-black']">{{sceneApplicationsAndIndustries.buttons.applications}}</button>
+    <button @click.prevent="toggleType('Industries')" class="mx-1 transition-all  rounded-[35px]  px-6 py-[15px] text-d4 text-sm" :class="[selectedType == 'Industries' ? 'bg-najmgreen text-white' : 'hover:bg-gray-300/40  bg-transparent text-black']">{{sceneApplicationsAndIndustries.buttons.industries}}</button>
   </div>
     <ClientOnly>
       <EmblPackageCards ref="pkgsRef"  :selectedType="selectedType" controls="dots" position="center" :packages="filteredPackages"/>

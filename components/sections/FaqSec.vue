@@ -14,7 +14,7 @@
           <button v-for="(cat, i) in data.categories" :key="cat.name" @click="selectTab(i)" :class="[
             'rounded-3xl border text-demibold text-xs px-6 py-3 transition-colors',
             activeTab === i
-              ? 'border-[#C2D3D1] bg-[#014439]/20 text-[#014439]'
+              ? 'border-[#C2D3D1] bg-najmgreen/20 text-najmgreen'
               : 'border-[#C2D3D1] text-gray-700 bg-transparent hover:bg-gray-200'
           ]">
             {{ cat.name }}

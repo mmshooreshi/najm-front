@@ -17,7 +17,7 @@
               :class="[
                 'rounded-3xl border border-[#C2D3D1] text-demibold text-xs px-6 py-3 transition-colors',
                 activeTab === i
-                  ? 'bg-[#014439]/20 text-[#014439]'
+                  ? 'bg-najmgreen/20 text-najmgreen'
                   : 'text-gray-700 bg-transparent hover:bg-gray-200'
               ]"
             >

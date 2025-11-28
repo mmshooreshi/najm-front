@@ -11,7 +11,7 @@
       <Icon name="mdi:download"/>
       </button> -->
 
-      <div class="flex">
+      <div class="flex gap-4">
 
         <div v-for="(pkg, idx) in packages" role="group" :aria-label="`${pkg.name} (${idx + 1} of ${packages.length})`"
           v-motion :initial="{ scale: 0 }" :enter="{ scale: 1 }" :delay="idx * 50" :duration="100"
@@ -19,7 +19,7 @@
             selectedType != pkg.type
               ? 'scale-0 opacity-0 max-w-0'
               : 'sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]'
-          ]" class="tak z-40 hover:z-50 relative flex-none w-4/5 mr-2.5  rounded-[1.5rem] overflow-visible rtl">
+          ]" class="tak z-40 hover:z-50 relative flex-none w-4/5 rounded-[1.5rem] overflow-visible rtl">
           <!-- {{selectedType!=pkg.type}} -->
           <!-- <div  class="takcon z-10"> -->
 
@@ -69,7 +69,7 @@
     </div>
 
 
-    <div :class="['flex items-center mt-4', wrapperClass]" ref="dotsContainerRef">
+    <div :class="['flex items-center mt-10', wrapperClass]" ref="dotsContainerRef">
       <!-- arrows -->
       <div v-if="showArrows" class="flex gap-2">
         <button
@@ -84,11 +84,11 @@
         </button>
       </div>
 
-      <div v-if="showDots" class="flex gap-1.5">
+      <div v-if="showDots" class="flex gap-2">
         <button v-for="(pkg, idx) in packages" :key="pkg.id" @pointerin="scrollTo(idx)" @click="scrollTo(idx)"
           @touchstart.prevent="scrollTo(idx)" :style="{ backgroundColor: pkg.color }" :class="[
-            'w-2.5 h-2.5 !bg-najmgreen rounded-2xl border-none cursor-pointer transition-all  hover:!bg-najmgreen',
-            selectedIndex === idx ? 'w-8' : '!bg-gray-300/40'
+            'w-2 h-2  rounded-2xl border-none cursor-pointer transition-all hover:!bg-najmgreen',
+            selectedIndex === idx ? 'w-6 !bg-najmgreen' : 'bg-gray-300/40'
           ]" :aria-label="`Go to slide ${idx + 1}`">
         </button>
       </div>
@@ -517,7 +517,6 @@ onBeforeUnmount(() => {
 }
 
 .tak:hover {
-  transform: translate(-5px, -16px);
 
   margin-inline: 32px;
 

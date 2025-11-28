@@ -63,7 +63,7 @@ function handleClick(e: MouseEvent) {
     :delay="200"
     :duration="1200"
 
-    class="hover:bg-[#014439] bg-[#014439]/90 text-white cursor-pointer inline-flex items-center justify-center h-12 px-6 mx-auto rounded-2xl text-sm font-semibold border border-black outline-none z-10"
+    class="hover:bg-najmgreen bg-najmgreen/90 text-white cursor-pointer inline-flex items-center justify-center h-12 px-6 mx-auto rounded-2xl text-sm font-semibold border border-black outline-none z-10"
     @click="handleClick"
   >
     <span>{{ label }}</span>

@@ -30,7 +30,7 @@
           class="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
           <div
-            class="w-10 h-10 mt-0 bg-[#EAFED3] group-hover:scale-150 group-active:bg-[#014439] rounded-full flex items-center justify-center transition-transform duration-300"
+            class="w-10 h-10 mt-0 bg-[#EAFED3] group-hover:scale-150 group-active:bg-najmgreen rounded-full flex items-center justify-center transition-transform duration-300"
           >
             <TargetIcon />
           </div>
@@ -54,7 +54,7 @@
               <SearchBox v-model="query" :options="products" />
             </div>
             <button
-              class="group mt-6 w-full bg-[#014439] rounded-[25px] py-5 flex flex-col items-center text-white hover:scale-130 hover:translate-y-1 hover:rounded-none hover:shadow-xl hover:bg-[#016a50] transition-all"
+              class="group mt-6 w-full bg-najmgreen rounded-[25px] py-5 flex flex-col items-center text-white hover:scale-130 hover:translate-y-1 hover:rounded-none hover:shadow-xl hover:bg-[#016a50] transition-all"
             >
               <span class="text-lg font-semibold">رزرو پروژه جدید</span>
               <span class="animate-pulse text-white/50 text-sm mt-2">

@@ -47,7 +47,7 @@ definePageMeta({
     <teleport to="body">
     <div
       v-if="isFullScreen"
-      class="fixed inset-0 z-100 flex flex-col bg-[#014439] dark:bg-black  "
+      class="fixed inset-0 z-100 flex flex-col bg-najmgreen dark:bg-black  "
     >
       <!-- close btn -->
       <button

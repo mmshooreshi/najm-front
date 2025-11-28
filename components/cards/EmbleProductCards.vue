@@ -7,7 +7,8 @@
         <div
             v-for="(product, idx) in products"
             :key="product.id"
-            class="relative flex-none w-4/5 mr-2.5 max-h-[430px] max-w-[267px]  flex-shrink-0"
+         
+            class="relative flex-none w-4/5 mr-4 max-h-[430px] max-w-[267px]  flex-shrink-0 tak2"
           >
             <NuxtImg
               :src="product.image"
@@ -29,7 +30,7 @@
       </div >
   
       <!-- controls -->
-      <div class="flex items-center mt-8 px-2" :class="wrapperClass">
+      <div class="flex items-center mt-10 px-2" :class="wrapperClass">
         <div v-if="showArrows" class="flex gap-2">
           <button
             class="bg-white/60 active:scale-105 hover:bg-white rounded-xl p-3 disabled:opacity-30"
@@ -49,16 +50,20 @@
           </button>
         </div>
   
-        <div v-if="showDots" class="flex mx-auto">
+        <div v-if="showDots" class="flex mx-auto gap-2">
+                  <!-- @pointerin="scrollTo(idx)"
+        @mouseenter="scrollTo(idx)" 
+          @touchstart.prevent="scrollTo(idx)"
+          -->
+
           <button
         v-for="(product, idx) in products"
         :key="product.id"
-        @pointerin="scrollTo(idx)"
-        @mouseenter="scrollTo(idx)"
-        @touchstart.prevent="scrollTo(idx)"
+         @click="scrollTo(idx)"
         :class="[
-          'w-2 h-2 rounded-2xl border-none cursor-pointer transition-all hover:w-4 m-1',
-          selectedIndex === idx ? 'bg-[#014439] w-4' : '!bg-gray-300/40'
+          //  hover:w-3 hover:h-3 hover:-m-0.5
+          'w-2 h-2 rounded-2xl border-none cursor-pointer transition-all hover:!bg-najmgreen',
+          selectedIndex === idx ? 'bg-najmgreen !w-6' : '!bg-gray-300/40'
         ]"
         :aria-label="`Go to slide ${idx + 1}`"
       >
@@ -139,6 +144,7 @@ defineExpose({
     embla.value = EmblaCarousel(viewportRef.value, {
       containScroll: 'keepSnaps',
       draggable: true,
+      dragFree: true,
       loop: false,
       align: 'start',
       direction: 'rtl'
@@ -161,4 +167,23 @@ watch(() => props.products, async () => {
 
 
 
-  
+  <style scoped>
+.tak2 {
+  /* position: relative; */
+  /* display: flex; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* width: 320px; */
+  /* border-radius: 24px; */
+  /* line-height: 1.6; */
+  cursor: pointer;
+  transition: all 0.88s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.tak2:hover {
+  /* transform: translate(-2px, -8px); */
+  transform: translate( -8px);
+  margin-inline: 32px;
+
+}
+</style>

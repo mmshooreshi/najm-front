@@ -400,7 +400,7 @@ sections/ProjectReservation.vue
   
       <!-- CTA Button -->
       <div
-        class="group mt-6  bg-[#014439]/100  rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white/100 transition-all duration-300 ease-in-out transform hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]">
+        class="group mt-6  bg-najmgreen/100  rounded-[25px] px-[90px] py-[20px] space-y-2 flex flex-col items-center text-center text-white/100 transition-all duration-300 ease-in-out transform hover:scale-110 cursor-pointer hover:rounded-[0px] hover:translate-y-2.5 hover:shadow-xl hover:bg-[#016a50]">
         <span class="text-lg font-semibold">رزرو پروژه جدید</span>
         <p class="animate-pulse-alt text-white/50 text-sm font-normal mt-2">
             شروع دهی از <span class=" text-white/100 underline underline-offset-4">۵</span> روز دیگر
@@ -551,7 +551,7 @@ new/SelectBox.vue
       <!-- Dropdown Menu -->
       <div
         v-show="isOpen"
-        class="absolute w-full mt-2 bg-white border border-[#014439] rounded-lg shadow-xl overflow-hidden z-50"
+        class="absolute w-full mt-2 bg-white border border-najmgreen rounded-lg shadow-xl overflow-hidden z-50"
         ref="dropdown"
         style="top: 100%; left: 0;"
       >
@@ -564,7 +564,7 @@ new/SelectBox.vue
             @mouseover="hoverIndex = index"
             :class="[
               'px-4 py-3 cursor-pointer transition-all',
-              hoverIndex === index ? 'bg-[#014439]/100 text-[#66BA58]' : 'hover:bg-gray-100'
+              hoverIndex === index ? 'bg-najmgreen/100 text-[#66BA58]' : 'hover:bg-gray-100'
             ]"
             tabindex="0"
           >
@@ -1154,7 +1154,7 @@ new/SearchBox.vue
           v-model="searchQuery"
           type="text"
           placeholder="جست‌وجوی محصول"
-          class="w-full p-4 pl-12 border border-gray-300 rounded-[15px] text-[12px] font-semibold placeholder:text-[#626262] placeholder:font-medium hover:shadow-md focus:border-[#014439] focus:ring-2 focus:ring-[#014439] transition-all"          @focus="isFocused = true"
+          class="w-full p-4 pl-12 border border-gray-300 rounded-[15px] text-[12px] font-semibold placeholder:text-[#626262] placeholder:font-medium hover:shadow-md focus:border-najmgreen focus:ring-2 focus:ring-najmgreen transition-all"          @focus="isFocused = true"
           @input="filterResults"
           @blur="handleBlur"
           ref="searchInput"
@@ -1168,7 +1168,7 @@ new/SearchBox.vue
       <!-- Search Dropdown (Only Show When Focused) -->
       <div
         v-show="isFocused && searchResults.length"
-        class="absolute w-full mt-2 bg-white border border-[#014439] rounded-lg shadow-xl overflow-hidden z-50"
+        class="absolute w-full mt-2 bg-white border border-najmgreen rounded-lg shadow-xl overflow-hidden z-50"
         ref="dropdown"
       >
         <ul class="max-h-60 overflow-y-auto">
@@ -1176,7 +1176,7 @@ new/SearchBox.vue
             v-for="(result, index) in searchResults"
             :key="index"
             @click="selectSearchResult(result)"
-            class="px-4 py-3 cursor-pointer transition-all hover:bg-[#014439]/100 hover:text-white"
+            class="px-4 py-3 cursor-pointer transition-all hover:bg-najmgreen/100 hover:text-white"
           >
             {{ result }}
           </li>

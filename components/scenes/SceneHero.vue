@@ -26,7 +26,7 @@
         <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
           {{ ui.countdownLabelStart }}
           <span
-            class=" text-[#014439] underline decoration-0.5 decoration-offset-3 decoration-[#014439] px-0.5">{{ toLocalizedDigits(ui.countdownDays) }}</span>
+            class=" text-najmgreen underline decoration-0.5 decoration-offset-3 decoration-najmgreen px-0.5">{{ toLocalizedDigits(ui.countdownDays) }}</span>
           {{ ui.countdownLabelEnd }}
         </p>
       </div>
@@ -72,7 +72,7 @@
         <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
           <span v-editable="'sceneHero.countdownLabelStart'">{{ ui.countdownLabelStart }}</span>
           <span
-            class=" text-[#014439] underline decoration-0.5 decoration-offset-3 decoration-[#014439] px-0.5"
+            class=" text-najmgreen underline decoration-0.5 decoration-offset-3 decoration-najmgreen px-0.5"
             v-editable="'sceneHero.countdownDays'">{{ toLocalizedDigits(ui.countdownDays) }}</span>
           <span v-editable="'sceneHero.countdownLabelEnd'">{{ ui.countdownLabelEnd }}</span>
         </p>

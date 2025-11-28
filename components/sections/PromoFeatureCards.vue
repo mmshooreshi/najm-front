@@ -89,7 +89,7 @@ function bgUtility (card: FeatureCard) {
         <!-- 🔹 foreground (fills full card height) ------------------ -->
         <header class="relative z-10 flex  flex-col justify-between gap-3 h-full">
           <!-- title + optional description wrapped so they stick together -->
-        <h2 class="text-xl font-extrabold leading-[30px] text-[#014439] max-w-[150px]">
+        <h2 class="text-xl font-extrabold leading-[30px] text-najmgreen max-w-[150px]">
           <span v-for="(line, i) in card.title" :key="i" class="block">
             {{ line }}
           </span>

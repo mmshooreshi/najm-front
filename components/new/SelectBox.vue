@@ -16,7 +16,7 @@
       <!-- Dropdown Menu -->
       <div
         v-show="isOpen"
-        class="absolute w-full mt-2 bg-white border border-[#014439] rounded-lg shadow-xl overflow-hidden z-50"
+        class="absolute w-full mt-2 bg-white border border-najmgreen rounded-lg shadow-xl overflow-hidden z-50"
         ref="dropdown"
         style="top: 100%; left: 0;"
       >
@@ -29,7 +29,7 @@
             @mouseover="hoverIndex = index"
             :class="[
               'px-4 py-2 text-sm cursor-pointer transition-all',
-              hoverIndex === index ? 'bg-[#014439]/100 text-[#66BA58]' : 'hover:bg-gray-100'
+              hoverIndex === index ? 'bg-najmgreen/100 text-[#66BA58]' : 'hover:bg-gray-100'
             ]"
             tabindex="0"
           >
