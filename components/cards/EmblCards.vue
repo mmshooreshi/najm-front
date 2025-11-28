@@ -50,7 +50,7 @@
       <div ref="dotsContainerRef" class="flex gap-1.5 items-center justify-center h-4" :dir="isRTL ? 'rtl' : 'ltr'">
         <button v-for="(card, index) in cards" :key="card.id" @click="scrollTo(index)" v-show="shouldShowDot(index)"
           :class="[
-            'rounded-full transition-all duration-300 ease-out border-none cursor-pointer ',
+            'rounded-full transition-all duration-300 ease-out border-none cursor-pointer hover:!bg-najmgreen',
             getDotClasses(index)
           ]" :aria-label="`Go to slide ${index + 1}`" />
       </div>

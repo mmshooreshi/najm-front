@@ -84,11 +84,11 @@
         </button>
       </div>
 
-      <div v-if="showDots" class="flex gap-2">
-        <button v-for="(pkg, idx) in packages" :key="pkg.id" @pointerin="scrollTo(idx)" @mouseenter="scrollTo(idx)"
+      <div v-if="showDots" class="flex gap-1.5">
+        <button v-for="(pkg, idx) in packages" :key="pkg.id" @pointerin="scrollTo(idx)" @click="scrollTo(idx)"
           @touchstart.prevent="scrollTo(idx)" :style="{ backgroundColor: pkg.color }" :class="[
-            'w-3 h-3 !bg-najmgreen rounded-2xl border-none cursor-pointer transition-all hover:w-6 hover:!bg-najmgreen',
-            selectedIndex === idx ? 'w-6' : '!bg-gray-300/40'
+            'w-2.5 h-2.5 !bg-najmgreen rounded-2xl border-none cursor-pointer transition-all  hover:!bg-najmgreen',
+            selectedIndex === idx ? 'w-8' : '!bg-gray-300/40'
           ]" :aria-label="`Go to slide ${idx + 1}`">
         </button>
       </div>
