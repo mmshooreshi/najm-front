@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import SolutionsSection from '~/components/about/SolutionsSection.vue'
+import SolutionsSection from '~/components/about/SolutionsSectionGPinned.vue'
 import { scrollDirection } from '~/composables/useScrollStore'
 
 const sections = [
@@ -46,14 +46,14 @@ onMounted(() => {
   <!-- Sticky Sub Navigation -->
   <nav
     dir="rtl"
-    class="fixed w-full z-40   transition-all duration-400"
+    class="fixed w-full overflow-auto px-2 z-40   backdrop-blur transition-all duration-400 navcont"
     :class="subnavAtTop
       ? 'top-0'     // header hidden → nav at top, larger
       : 'top-16'    // header visible → nav below header
     "
   >
-    <ul class="flex gap-1.5 overflow-x-auto whitespace-nowrap mx-auto w-max py-4" > 
-      <li class="group border border-1 border-najmbordergrey hover:border-transparent backdrop-blur hover:bg-najmgreen transition-all  cursor-pointer rounded-full" v-for="item in sections" :key="item.id" :class="[activeSection === item.id ? 'bg-najmgreen':'', subnavAtTop? 'text-xs py-4 px-6': 'text-[10px] px-4 py-3']" >
+    <ul class="flex gap-1.5 overflow-x-auto whitespace-nowrap mx-auto w-max py-2" > 
+      <li class="group border border-1 border-najmbordergrey hover:border-transparent  hover:bg-najmgreen transition-all  cursor-pointer rounded-full" v-for="item in sections" :key="item.id" :class="[activeSection === item.id ? 'bg-najmgreen':'bg-transparent', subnavAtTop? 'text-[10px] py-3 px-4': 'text-[8px] px-3 py-2']" >
         <a
           :href="'#' + item.id"
           class="group-hover:text-white transition-colors"
@@ -79,9 +79,13 @@ onMounted(() => {
     <h2>ارزش‌ها</h2>
   </section>
 
-  <section id="solutions" class="min-h-screen py-20 px-6">
+  <section id="solutions" class="min-h-screen py-0 px-0"  
+>
     <!-- <h2>راهکارها و ویژگی‌ها</h2> -->
-    <SolutionsSection/>
+    <SolutionsSection class="transition-all duration-1000" :class="subnavAtTop
+      ? 'top-0'     // header hidden → nav at top, larger
+      : 'translate-y-12'    // header visible → nav below header
+    "/>
   </section>
 
   <section id="facility" class="min-h-screen py-20 px-6 bg-gray-50">
@@ -92,3 +96,14 @@ onMounted(() => {
     <h2>درباره ما</h2>
   </section>
 </template>
+
+
+<style scoped>
+.navcont {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+}
+.navcont::-webkit-scrollbar { 
+    display: none;  /* Older Safari and Chromium */
+}
+</style>
