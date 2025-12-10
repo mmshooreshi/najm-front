@@ -96,7 +96,7 @@ onUnmounted(() => {
     :style="{ height: `${totalHeight}px` }"
   >
     <!-- pinned area -->
-    <div class="sticky top-0 h-screen flex items-center bg-[#f7f3f3]">
+    <div class="sticky top-0 h-screen flex items-center ">
       <div class="relative w-full h-full">
         <!-- all slides occupy the same area -->
                        <!-- <div

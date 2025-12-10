@@ -53,7 +53,7 @@ onMounted(() => {
     "
   >
     <ul class="flex gap-1.5 overflow-x-auto whitespace-nowrap mx-auto w-max py-2" > 
-      <li class="group border border-1 border-najmbordergrey hover:border-transparent  hover:bg-najmgreen transition-all  cursor-pointer rounded-full" v-for="item in sections" :key="item.id" :class="[activeSection === item.id ? 'bg-najmgreen':'bg-transparent', subnavAtTop? 'text-[10px] py-3 px-4': 'text-[8px] px-3 py-2']" >
+      <li class="group border border-1 border-najmbordergrey hover:border-transparent  hover:bg-najmgreen transition-all  cursor-pointer rounded-full" v-for="item in sections" :key="item.id" :class="[activeSection === item.id ? 'bg-najmgreen':'bg-transparent', subnavAtTop? 'text-[10px] py-3 px-3': 'text-[8px] px-3 py-2']" >
         <a
           :href="'#' + item.id"
           class="group-hover:text-white transition-colors"
@@ -79,13 +79,9 @@ onMounted(() => {
     <h2>ارزش‌ها</h2>
   </section>
 
-  <section id="solutions" class="min-h-screen py-0 px-0"  
->
+  <section id="solutions" class="min-h-screen py-0 px-0" >
     <!-- <h2>راهکارها و ویژگی‌ها</h2> -->
-    <SolutionsSection class="transition-all duration-1000" :class="subnavAtTop
-      ? 'top-0'     // header hidden → nav at top, larger
-      : 'translate-y-12'    // header visible → nav below header
-    "/>
+    <SolutionsSection />
   </section>
 
   <section id="facility" class="min-h-screen py-20 px-6 bg-gray-50">
