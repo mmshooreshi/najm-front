@@ -1,14 +1,15 @@
 <!-- pages/about/index.vue -->
 <template>
   <div dir="rtl" class="min-h-screen bg-najmback text-gray-800 relative">
-    <!-- Smart Floating Capsule Sub-Nav (Auto-reveals on scroll up, hides on scroll down) -->
-    <header
-      class="fixed top-20 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 pointer-events-auto"
+    <!-- Smart Floating Capsule Sub-Nav (Smooth, zero initial jump, auto-hides on scroll down) -->
+    <div
+      v-if="isMounted"
+      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
       :class="[
-        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-16 opacity-0 pointer-events-none'
+        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
       ]"
     >
-      <nav class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
+      <nav class="pointer-events-auto bg-white/85 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
         <button
           v-for="item in sections"
           :key="item.id"
@@ -23,10 +24,10 @@
           {{ item.label }}
         </button>
       </nav>
-    </header>
+    </div>
 
     <!-- Main Editorial Container -->
-    <main class="pt-28 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-28">
+    <main class="pt-24 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-28">
       <!-- Section 1: Hero & Vision (Scale & Staff) -->
       <section id="vision" class="scroll-mt-28 space-y-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
@@ -153,12 +154,12 @@
         </div>
       </section>
 
-      <!-- Section 3: GSAP Pinned Slides (راهکارها و ویژگی‌ها) -->
+      <!-- Section 3: Locked Pinned Slides (راهکارها و ویژگی‌ها) -->
       <section id="solutions" class="scroll-mt-28">
         <AboutGsapPinnedSection />
       </section>
 
-      <!-- Section 4: Facilities & Industrial Fleet (Interactive Machinery Showcase) -->
+      <!-- Section 4: Facilities & Industrial Fleet (Machines 1-5 & QC Lab) -->
       <section id="facility" class="scroll-mt-28 space-y-10">
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div class="space-y-2 text-right">
@@ -378,7 +379,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
 
 definePageMeta({
@@ -397,19 +398,20 @@ const sections = [
 
 const activeSection = ref('vision')
 const navVisible = ref(true)
+const isMounted = ref(false)
 let lastScrollY = 0
 
 function handleScrollDirection() {
   if (typeof window === 'undefined') return
   const currentY = window.scrollY
   
-  if (currentY < 120) {
+  if (currentY < 180) {
     navVisible.value = true
-  } else if (currentY > lastScrollY + 10) {
-    // Scrolling down -> hide navbar smoothly
+  } else if (currentY > lastScrollY + 12) {
+    // Scrolling down -> smoothly hide
     navVisible.value = false
-  } else if (currentY < lastScrollY - 10) {
-    // Scrolling up -> reveal navbar smoothly
+  } else if (currentY < lastScrollY - 8) {
+    // Scrolling up -> smoothly reveal
     navVisible.value = true
   }
   
@@ -430,7 +432,10 @@ function scrollToSection(id: string) {
   activeSection.value = id
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
+  isMounted.value = true
+  lastScrollY = window.scrollY
   window.addEventListener('scroll', handleScrollDirection, { passive: true })
 
   const observer = new IntersectionObserver(
@@ -451,6 +456,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScrollDirection)
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScrollDirection)
+  }
 })
 </script>

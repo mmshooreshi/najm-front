@@ -1,48 +1,52 @@
 <!-- components/about/AboutGsapPinnedSection.vue -->
 <template>
-  <section
-    ref="pinWrapperRef"
+  <div
+    ref="trackRef"
     dir="rtl"
-    class="relative w-full overflow-hidden bg-neutral-900 text-white rounded-3xl my-12"
+    class="relative w-full"
+    :style="{ height: `${slides.length * 100}vh` }"
   >
-    <!-- Background Ambient Glow -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(1,68,57,0.4),rgba(255,255,255,0))] pointer-events-none"></div>
+    <!-- Sticky Firmly Locked Viewport Stage (100% locked until all slides are scrolled) -->
+    <div class="sticky top-20 h-[calc(100vh-6rem)] w-full flex flex-col justify-between rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-14 border border-white/10">
+      <!-- Background Ambient Glow -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(1,68,57,0.45),rgba(0,0,0,0))] pointer-events-none"></div>
 
-    <!-- Pinned Viewport Container -->
-    <div
-      ref="pinContentRef"
-      class="min-h-screen w-full flex flex-col justify-between py-12 px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto relative z-10"
-    >
-      <!-- Top Section Header -->
-      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-6">
-        <div class="space-y-2 text-right">
+      <!-- Top Section Bar -->
+      <div class="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-5">
+        <div class="space-y-1.5 text-right">
           <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 text-d4">
             رویکرد و استانداردهای تولید
           </span>
-          <h2 class="text-2xl sm:text-4xl font-extrabold text-white text-d4 tracking-tight">
+          <h2 class="text-xl sm:text-3xl font-extrabold text-white text-d4 tracking-tight">
             راهکارها و مزیت‌های محوری چاپ نجم
           </h2>
         </div>
 
-        <!-- Dynamic Counter -->
+        <!-- Step Pill Badge & Progress Bar -->
         <div class="flex items-center gap-3">
-          <span class="text-xs text-neutral-400">گام‌های تحول صنعتی</span>
-          <div class="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-emerald-400 font-mono text-sm font-bold border border-white/10">
-            ۰{{ currentStep + 1 }} / ۰{{ slides.length }}
+          <span class="text-xs text-neutral-400">گام ۰{{ currentStep + 1 }} از ۰{{ slides.length }}</span>
+          <div class="w-28 h-2 rounded-full bg-white/10 overflow-hidden relative">
+            <div
+              class="absolute inset-y-0 right-0 bg-emerald-400 rounded-full transition-all duration-150"
+              :style="{ width: `${progress * 100}%` }"
+            ></div>
           </div>
         </div>
       </div>
 
-      <!-- Main Stage: Slide Content & Media (Frameless GSAP Animation) -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center my-auto py-8">
+      <!-- Main Locked Stage: Slide Content & Media -->
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center my-auto py-4">
         <!-- Right: Text Narrative (6 cols) -->
-        <div class="lg:col-span-6 space-y-6 text-right order-2 lg:order-1 relative min-h-[260px] flex flex-col justify-center">
+        <div class="lg:col-span-6 space-y-6 text-right order-2 lg:order-1 relative min-h-[220px] flex flex-col justify-center">
           <div
             v-for="(slide, idx) in slides"
             :key="slide.id"
-            :ref="el => textSlideRefs[idx] = el as HTMLElement"
-            class="transition-opacity duration-300"
-            :class="currentStep === idx ? 'block' : 'hidden'"
+            class="transition-all duration-500 ease-out"
+            :class="[
+              currentStep === idx
+                ? 'opacity-100 translate-y-0 pointer-events-auto block'
+                : 'opacity-0 translate-y-4 pointer-events-none hidden'
+            ]"
           >
             <div class="flex items-center gap-2 mb-3">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -59,11 +63,11 @@
           </div>
 
           <!-- Step Progress Trackers -->
-          <div class="flex items-center gap-3 pt-6 border-t border-white/10">
+          <div class="flex items-center gap-2.5 pt-4 border-t border-white/10">
             <button
               v-for="(slide, idx) in slides"
               :key="slide.id"
-              @click="goToSlide(idx)"
+              @click="jumpToStep(idx)"
               class="h-1.5 rounded-full transition-all duration-400 cursor-pointer"
               :class="currentStep === idx ? 'w-12 bg-emerald-400' : 'w-3 bg-white/20 hover:bg-white/40'"
               :title="slide.title"
@@ -71,15 +75,18 @@
           </div>
         </div>
 
-        <!-- Left: Visual Asset Showcase with Morph & Scale (6 cols) -->
+        <!-- Left: Visual Asset Showcase (6 cols) -->
         <div class="lg:col-span-6 order-1 lg:order-2">
-          <div class="relative w-full aspect-[4/3] sm:aspect-[16/11] rounded-3xl overflow-hidden bg-neutral-800 border border-white/10 shadow-2xl">
+          <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-neutral-800 border border-white/10 shadow-2xl">
             <div
               v-for="(slide, idx) in slides"
               :key="slide.id"
-              :ref="el => imgSlideRefs[idx] = el as HTMLElement"
-              class="absolute inset-0 w-full h-full transition-opacity duration-500 ease-out"
-              :class="currentStep === idx ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 z-0 pointer-events-none'"
+              class="absolute inset-0 w-full h-full transition-all duration-500 ease-out"
+              :class="[
+                currentStep === idx
+                  ? 'opacity-100 scale-100 z-10'
+                  : 'opacity-0 scale-95 z-0 pointer-events-none'
+              ]"
             >
               <img
                 :src="'/' + slide.image.replace(/^\//, '')"
@@ -89,9 +96,9 @@
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
               
-              <div class="absolute bottom-4 right-4 left-4 flex items-center justify-between text-white pointer-events-none">
+              <div class="absolute bottom-3.5 right-4 left-4 flex items-center justify-between text-white pointer-events-none">
                 <span class="text-xs font-bold text-d4 text-emerald-300">{{ slide.title }}</span>
-                <span class="text-[11px] text-white/70 font-mono">NAJM PACKAGING 2026</span>
+                <span class="text-[10px] text-white/70 font-mono">۰{{ idx + 1 }} / ۰{{ slides.length }}</span>
               </div>
             </div>
           </div>
@@ -99,18 +106,16 @@
       </div>
 
       <!-- Bottom Hint Bar -->
-      <div class="flex items-center justify-between text-[11px] text-neutral-400 border-t border-white/10 pt-4">
-        <span>برای مرور راهکارها به اسکرول ادامه دهید</span>
-        <span class="font-mono text-emerald-400">GSAP PINNED TIMELINE</span>
+      <div class="relative z-10 flex items-center justify-between text-[11px] text-neutral-400 border-t border-white/10 pt-3">
+        <span>برای مرور کامل راهکارها، به اسکرول ادامه دهید</span>
+        <span class="font-mono text-emerald-400">PINNED SCROLL LOCK</span>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 interface Slide {
   id: string
@@ -123,7 +128,7 @@ const slides: Slide[] = [
   {
     id: 'full-service',
     title: 'خدمات صفر تا صد یکپارچه در یک مجتمع صنعتی',
-    body: `ما تمام مسیر یک پروژه چاپ و بسته‌بندی را در یک مجتمع پوشش می‌دهیم؛ از مشاوره و طراحی ساختاری تا لیتوگرافی CTP، چاپ افست ۵ رنگ هایدلبرگ، سلفون‌کشی حرارتی، دایکات و جعبه‌چسبانی اتوماتیک.\nاین یکپارچگی ضامن نظارت مستقیم بر دقت تیغ، انطباق کامل رنگ و زمان‌بندی دقیق تحویل است.`,
+    body: `ما تمام مسیر یک پروژه چاپ و بسته‌بندی را درون یک مجموعه پوشش می‌دهیم؛ از مشاوره و طراحی ساختاری تا لیتوگرافی CTP، چاپ افست ۵ رنگ هایدلبرگ، سلفون‌کشی حرارتی، دایکات و جعبه‌چسبانی اتوماتیک.\nاین یکپارچگی ضامن نظارت مستقیم بر دقت تیغ، انطباق کامل رنگ و زمان‌بندی دقیق تحویل است.`,
     image: 'images/about/solution-1.png'
   },
   {
@@ -146,49 +151,47 @@ const slides: Slide[] = [
   }
 ]
 
-const pinWrapperRef = ref<HTMLElement | null>(null)
-const pinContentRef = ref<HTMLElement | null>(null)
+const trackRef = ref<HTMLElement | null>(null)
 const currentStep = ref(0)
-const textSlideRefs = ref<HTMLElement[]>([])
-const imgSlideRefs = ref<HTMLElement[]>([])
+const progress = ref(0)
 
-let scrollTriggerInstance: ScrollTrigger | null = null
+function handleScroll() {
+  if (!trackRef.value || typeof window === 'undefined') return
 
-function goToSlide(idx: number) {
-  currentStep.value = idx
+  const rect = trackRef.value.getBoundingClientRect()
+  const totalTravel = trackRef.value.offsetHeight - window.innerHeight
+  if (totalTravel <= 0) return
+
+  // How far user has scrolled into this section
+  const scrolled = -rect.top
+  const rawProgress = Math.max(0, Math.min(1, scrolled / totalTravel))
+  progress.value = rawProgress
+
+  const step = Math.min(slides.length - 1, Math.floor(rawProgress * slides.length))
+  if (step !== currentStep.value) {
+    currentStep.value = step
+  }
 }
 
-onMounted(() => {
-  if (process.client) {
-    gsap.registerPlugin(ScrollTrigger)
+function jumpToStep(idx: number) {
+  if (!trackRef.value || typeof window === 'undefined') return
+  const totalTravel = trackRef.value.offsetHeight - window.innerHeight
+  const stepRatio = idx / (slides.length - 1)
+  const targetY = trackRef.value.offsetTop + stepRatio * totalTravel
+  window.scrollTo({ top: targetY, behavior: 'smooth' })
+}
 
-    const wrapper = pinWrapperRef.value
-    const content = pinContentRef.value
-    if (!wrapper || !content) return
-
-    scrollTriggerInstance = ScrollTrigger.create({
-      trigger: wrapper,
-      start: 'top top+=70',
-      end: () => `+=${slides.length * 550}`,
-      pin: content,
-      pinSpacing: true,
-      scrub: 0.5,
-      onUpdate: (self) => {
-        const p = self.progress
-        const count = slides.length
-        const index = Math.min(count - 1, Math.floor(p * count))
-        if (index !== currentStep.value) {
-          currentStep.value = index
-        }
-      }
-    })
-  }
+onMounted(async () => {
+  await nextTick()
+  handleScroll()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('resize', handleScroll)
 })
 
 onUnmounted(() => {
-  if (scrollTriggerInstance) {
-    scrollTriggerInstance.kill()
-    scrollTriggerInstance = null
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScroll)
+    window.removeEventListener('resize', handleScroll)
   }
 })
 </script>
