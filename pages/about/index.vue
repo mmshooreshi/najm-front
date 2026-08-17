@@ -13,13 +13,13 @@
           class="transition-all duration-200 rounded-full cursor-pointer"
           :class="[
             activeSection === item.id
-              ? 'bg-najmgreen text-white shadow-xs'
-              : 'bg-najmgrey text-gray-700 hover:bg-gray-200'
+              ? 'bg-najmgreen text-white shadow-xs font-bold'
+              : 'bg-najmgrey text-gray-700 hover:bg-gray-200 font-medium'
           ]"
         >
           <a
             :href="'#' + item.id"
-            class="block px-4 py-1.5 text-xs font-bold text-d4"
+            class="block px-4 py-1.5 text-xs text-d4"
           >
             {{ item.label }}
           </a>
@@ -28,59 +28,128 @@
     </nav>
 
     <!-- Main Content Container -->
-    <div class="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-20">
-      <!-- Section 1: Vision & Mission -->
-      <section id="vision" class="scroll-mt-36 bg-white rounded-3xl p-8 sm:p-12 shadow-xs border border-najmborder/40">
-        <div class="max-w-3xl space-y-4">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20">
-            چشم‌انداز و ماموریت
-          </span>
-          <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 leading-tight text-d4">
-            تعریف استانداردهای نوین در صنعت چاپ و بسته‌بندی پیشرفته
-          </h2>
-          <p class="text-sm sm:text-base text-gray-700 leading-relaxed">
-            چشم‌انداز ما در مجتمع چاپ نجم، تبدیل شدن به معتمدترین و پیشرفته‌ترین هاب تولید جعبه‌های اختصاصی و اقلام چاپی در خاورمیانه است. ما با ترکیب دانش فنی، متریال دوستدار محیط‌زیست و دقت میکرونی، هویت بصری محصولات مشتریانمان را متمایز می‌سازیم.
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-gray-100 font-mono">
-            <div class="p-4 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
-              <div class="text-2xl font-extrabold text-najmgreen mb-1">+۲۵ سال</div>
-              <div class="text-xs text-gray-600 font-sans">تجربه مستمر صنعتی</div>
+    <div class="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">
+      <!-- Section 1: Hero & Vision (with staff.png and machines-back.png) -->
+      <section id="vision" class="scroll-mt-36 space-y-8">
+        <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 space-y-5">
+            <span class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
+              درباره مجتمع چاپ و بسته‌بندی نجم
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 leading-tight tracking-tight text-d4">
+              نوآوری در چاپ افست، دقت در ساختار بسته‌بندی
+            </h1>
+            <p class="text-sm sm:text-base text-gray-700 leading-relaxed">
+              مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و تجاری کشور فعالیت می‌کند.
+            </p>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100 font-mono text-center">
+              <div class="p-3.5 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
+                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5">+۲۵ سال</div>
+                <div class="text-[11px] text-gray-600 font-sans">سابقه مستمر</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
+                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5">+۱۵ میلیون</div>
+                <div class="text-[11px] text-gray-600 font-sans">تولید سالانه</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
+                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5">۹۹.۸٪</div>
+                <div class="text-[11px] text-gray-600 font-sans">انطباق رنگی</div>
+              </div>
             </div>
-            <div class="p-4 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
-              <div class="text-2xl font-extrabold text-najmgreen mb-1">+۱۵ میلیون</div>
-              <div class="text-xs text-gray-600 font-sans">تیراژ بسته‌بندی سالانه</div>
-            </div>
-            <div class="p-4 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
-              <div class="text-2xl font-extrabold text-najmgreen mb-1">۹۹.۸٪</div>
-              <div class="text-xs text-gray-600 font-sans">دقت و انطباق رنگی</div>
+          </div>
+
+          <!-- Hero Image Asset -->
+          <div class="lg:col-span-5 relative rounded-3xl overflow-hidden bg-najmgrey border border-najmborder/40 aspect-[4/3] lg:aspect-square flex items-center justify-center group shadow-xs">
+            <img
+              src="/images/about/staff.png"
+              alt="تیم متخصص و خطوط تولید چاپ نجم"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              loading="lazy"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+            <div class="absolute bottom-4 right-4 text-white text-right">
+              <div class="text-xs font-bold text-d4">تیم متخصص مهندسی چاپ و تولید</div>
+              <div class="text-[10px] text-white/80 font-mono">Najm Industrial Printing Plant</div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Section 2: Our Story -->
-      <section id="story" class="scroll-mt-36 bg-white rounded-3xl p-8 sm:p-12 shadow-xs border border-najmborder/40">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div class="lg:col-span-7 space-y-4">
+      <!-- Section 2: Our Heritage & Engineering Leads (person-1, person-2, person-3) -->
+      <section id="story" class="scroll-mt-36 space-y-8">
+        <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 space-y-8">
+          <div class="max-w-3xl space-y-3">
             <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 border border-gray-200">
-              مسیر پیشرفت
+              سرمایه انسانی و تخصص فنی
             </span>
             <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 text-d4">
-              داستان رشد، تجربه و تخصص پایدار
+              تیم متخصص؛ قلب تپنده کیفیت و دقت در چاپ نجم
             </h2>
-            <p class="text-sm sm:text-base text-gray-700 leading-relaxed">
-              مجموعه چاپ نجم از آغاز فعالیت خود، با هدف ارتقای کیفیت چاپ صنعتی و رفع نیازهای بسته‌بندی برندهای مطرح دارویی، غذایی و بهداشتی گام برداشت. با گذشت سال‌ها و سرمایه‌گذاری مداوم در تجهیز ماشین‌آلات پیشرفته هایدلبرگ و خطوط پس از چاپ تمام‌اتوماتیک، امروز نجم به عنوان یکی از پیشگامان بسته‌بندی لوکس و بهداشتی شناخته می‌شود.
-            </p>
-            <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
-              ما باور داریم بسته‌بندی صرفاً یک محافظ فیزیکی نیست، بلکه نخستین زبان تعاملی برند شما با مخاطب نهایی است.
+            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+              هر مرحله از فرآیند تولید زیر نظر کارشناسان خبره لیتوگرافی، اپراتورهای ارشد چاپ افست و متخصصان کنترل کیفی هدایت می‌شود تا کیفیت نهایی همواره فراتر از انتظار مشتری باشد.
             </p>
           </div>
-          <div class="lg:col-span-5 rounded-2xl overflow-hidden bg-najmgrey/50 aspect-video lg:aspect-square flex items-center justify-center border border-najmborder/40">
-            <NuxtImg
-              src="/images/sections/footer/trust.png"
-              class="w-full h-full object-contain p-4"
-              alt="Chap Najm Story"
-            />
+
+          <!-- Team Spotlight Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Lead 1 -->
+            <div class="rounded-2xl bg-najmgrey/40 border border-najmborder/40 p-5 space-y-4 hover:border-najmgreen transition group">
+              <div class="aspect-square rounded-xl overflow-hidden bg-white border border-gray-100 flex items-center justify-center relative">
+                <img
+                  src="/images/about/person-1.png"
+                  alt="سرپرست لیتوگرافی و کنترل رنگ CTP"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold">
+                  پیش از چاپ
+                </span>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-bold text-gray-900 text-d4">واحد لیتوگرافی و تفکیک رنگ CTP</h3>
+                <p class="text-xs text-gray-500">کنترل تفکیک رنگ‌های اسپات و تهیه زینک‌های حرارتی با دقت ۲۴۰۰DPI</p>
+              </div>
+            </div>
+
+            <!-- Lead 2 -->
+            <div class="rounded-2xl bg-najmgrey/40 border border-najmborder/40 p-5 space-y-4 hover:border-najmgreen transition group">
+              <div class="aspect-square rounded-xl overflow-hidden bg-white border border-gray-100 flex items-center justify-center relative">
+                <img
+                  src="/images/about/person-2.png"
+                  alt="مدیریت خطوط چاپ افست هایدلبرگ"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold">
+                  خطوط چاپ
+                </span>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-bold text-gray-900 text-d4">اپراتوری خطوط افست ۵ رنگ</h3>
+                <p class="text-xs text-gray-500">تنظیم دانسیته مرکب، تعادل آب و رنگ و پایش ثبات در تیراژهای میلیونی</p>
+              </div>
+            </div>
+
+            <!-- Lead 3 -->
+            <div class="rounded-2xl bg-najmgrey/40 border border-najmborder/40 p-5 space-y-4 hover:border-najmgreen transition group">
+              <div class="aspect-square rounded-xl overflow-hidden bg-white border border-gray-100 flex items-center justify-center relative">
+                <img
+                  src="/images/about/person-3.png"
+                  alt="کنترل کیفیت، دایکات و جعبه‌چسبانی"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold">
+                  پس از چاپ
+                </span>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-bold text-gray-900 text-d4">تست استحکام و خطوط تکمیلی</h3>
+                <p class="text-xs text-gray-500">نظارت بر تیغ‌زنی دقیق، سلفون‌کشی حرارتی و چسب لاک‌باتم اتوماتیک</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -88,7 +157,7 @@
       <!-- Section 3: Core Values -->
       <section id="values" class="scroll-mt-36 space-y-8">
         <div class="text-center max-w-2xl mx-auto space-y-2">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
             اصول بنیادین
           </span>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 text-d4">
@@ -126,104 +195,203 @@
         </div>
       </section>
 
-      <!-- Section 4: Solutions & Features -->
-      <section id="solutions" class="scroll-mt-36 bg-white rounded-3xl p-6 sm:p-10 shadow-xs border border-najmborder/40">
-        <div class="mb-8">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 mb-2">
-            قابلیت‌ها و نوآوری
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 text-d4">
-            راهکارهای یکپارچه از ایده تا محصول نهایی
-          </h2>
-        </div>
+      <!-- Section 4: Pinned Solutions Section (solution-1, solution-2, solution-3, solution-4) -->
+      <section id="solutions" class="scroll-mt-36">
         <SolutionsSection />
       </section>
 
-      <!-- Section 5: Facilities & Machinery -->
-      <section id="facility" class="scroll-mt-36 bg-white rounded-3xl p-8 sm:p-12 shadow-xs border border-najmborder/40 space-y-8">
-        <div class="max-w-2xl space-y-2">
+      <!-- Section 5: Facilities & Machinery Fleet (machines-1, 2, 3, 4, 5, machines-small-1) -->
+      <section id="facility" class="scroll-mt-36 space-y-8">
+        <div class="text-center max-w-3xl mx-auto space-y-2">
           <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 border border-gray-200">
-            ظرفیت تولیدی
+            ناوگان ماشین‌آلات صنعتی
           </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 text-d4">
-            ماشین‌آلات و تجهیزات خطوط چاپ نجم
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 text-d4">
+            تجهیزات و خطوط پیشرفته تولید چاپ نجم
           </h2>
           <p class="text-xs sm:text-sm text-gray-600">
-            به‌کارگیری به‌روزترین فناوری‌های چاپ افست، جعبه‌چسبانی، لترپرس، دایکات فکی و طلاکوب حرارتی.
+            سرمایه‌گذاری مستمر در به‌روزترین ماشین‌آلات چاپ افست، دایکات اتوماتیک و خطوط جعبه‌چسبانی پرسرعت.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          <div class="p-5 rounded-2xl bg-najmgrey/50 border border-najmborder/40 flex gap-4 items-start">
-            <div class="w-10 h-10 rounded-xl bg-najmgreen text-white flex items-center justify-center flex-shrink-0">
-              <Icon name="mdi:printer-3d-nozzle" class="w-5 h-5" />
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Machine 1 -->
+          <div class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition group">
             <div>
-              <h4 class="font-bold text-gray-900 text-sm mb-1 text-d4">خطوط چاپ افست هایدلبرگ (Heidelberg)</h4>
+              <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-najmgrey/60 border border-najmborder/30 mb-4 flex items-center justify-center">
+                <img
+                  src="/images/about/machines-1.png"
+                  alt="دستگاه چاپ افست ۵ رنگ هایدلبرگ"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+                HEIDELBERG SPEEDMASTER
+              </span>
+              <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">چاپ افست ۵ رنگ ورقی</h3>
               <p class="text-xs text-gray-600 leading-relaxed">
-                دستگاه‌های ۵ رنگ و ۴ رنگ با ابعاد تا ۱۰۰×۷۰ سانتیمتر مجهز به سیستم‌های کنترل رنگ دیجیتال آنلاین.
+                مجهز به سیستم کنترل رنگ آنلاین Prinect Inpress Control با قابلیت چاپ رنگ‌های اختصاصی پنتون و ورنی همزمان.
               </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+              <span>حداکثر ابعاد: ۷۲×۱۰۲ cm</span>
+              <span class="font-bold text-gray-800">۱۵,۰۰۰ برگ/ساعت</span>
             </div>
           </div>
 
-          <div class="p-5 rounded-2xl bg-najmgrey/50 border border-najmborder/40 flex gap-4 items-start">
-            <div class="w-10 h-10 rounded-xl bg-najmgreen text-white flex items-center justify-center flex-shrink-0">
-              <Icon name="mdi:content-cut" class="w-5 h-5" />
-            </div>
+          <!-- Machine 2 -->
+          <div class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition group">
             <div>
-              <h4 class="font-bold text-gray-900 text-sm mb-1 text-d4">دایکات و تیغ‌زنی بوبست و فکی</h4>
+              <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-najmgrey/60 border border-najmborder/30 mb-4 flex items-center justify-center">
+                <img
+                  src="/images/about/machines-2.png"
+                  alt="ماشین دایکات اتوماتیک بوبست"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+                BOBST DIE-CUTTING
+              </span>
+              <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">دایکات و پوشال‌برداری اتوماتیک</h3>
               <p class="text-xs text-gray-600 leading-relaxed">
-                ماشین‌آلات لترپرس و بوبست اتوماتیک برای تیغ‌زنی، خط‌تا و پوشال‌برداری سریع جعبه‌های مقوایی و هاردباکس.
+                تیغ‌زنی، خط‌تا و برجسته‌سازی انواع مقواهای ایندربرد و فلوت‌دار با دقت میکرونی و سرعت صنعتی بالا.
               </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+              <span>فشار تیغ: ۳۰۰ تن</span>
+              <span class="font-bold text-gray-800">۸,۰۰۰ شیت/ساعت</span>
             </div>
           </div>
 
-          <div class="p-5 rounded-2xl bg-najmgrey/50 border border-najmborder/40 flex gap-4 items-start">
-            <div class="w-10 h-10 rounded-xl bg-najmgreen text-white flex items-center justify-center flex-shrink-0">
-              <Icon name="mdi:shimmer" class="w-5 h-5" />
-            </div>
+          <!-- Machine 3 -->
+          <div class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition group">
             <div>
-              <h4 class="font-bold text-gray-900 text-sm mb-1 text-d4">خدمات تکمیلی، سلفون‌کشی و یووی</h4>
+              <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-najmgrey/60 border border-najmborder/30 mb-4 flex items-center justify-center">
+                <img
+                  src="/images/about/machines-3.png"
+                  alt="سیستم لیتوگرافی CTP هایدلبرگ"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+                HEIDELBERG SUPRASETTER CTP
+              </span>
+              <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">خروجی مستقیم زینک حرارتی (CTP)</h3>
               <p class="text-xs text-gray-600 leading-relaxed">
-                سلفون حرارتی مات و براق، یووی موضعی برجسته، طلاکوب گرم و نقره‌کوب برای جلوه‌های بصری اعلا.
+                تولید زینک‌های بدون شیمیایی و حرارتی با تفکیک ترام ۱ الی ۹۹ درصد جهت بالاترین وضوح در تصاویر چاپی.
               </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+              <span>رزولوشن: ۲۵۴۰ DPI</span>
+              <span class="font-bold text-gray-800">۲۴ پلیت/ساعت</span>
             </div>
           </div>
 
-          <div class="p-5 rounded-2xl bg-najmgrey/50 border border-najmborder/40 flex gap-4 items-start">
-            <div class="w-10 h-10 rounded-xl bg-najmgreen text-white flex items-center justify-center flex-shrink-0">
-              <Icon name="mdi:package-variant-closed" class="w-5 h-5" />
-            </div>
+          <!-- Machine 4 -->
+          <div class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition group">
             <div>
-              <h4 class="font-bold text-gray-900 text-sm mb-1 text-d4">جعبه‌چسبانی تمام‌اتوماتیک</h4>
+              <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-najmgrey/60 border border-najmborder/30 mb-4 flex items-center justify-center">
+                <img
+                  src="/images/about/machines-4.png"
+                  alt="خط جعبه‌چسبانی تمام‌اتوماتیک"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+                AUTO FOLDER-GLUER
+              </span>
+              <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">جعبه‌چسبانی خطی و لاک‌باتم</h3>
               <p class="text-xs text-gray-600 leading-relaxed">
-                خطوط چسب خطی، لاک‌باتم و ۴ نقطه با ظرفیت تولید ۵۰ هزار جعبه در ساعت.
+                چسب‌زنی ۴ و ۶ نقطه جعبه‌های دارویی، غذایی و بهداشتی مجهز به سیستم‌های تزریق چسب سرد و گرم پیشرفته.
               </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+              <span>قابلیت: لاک‌باتم + خطی</span>
+              <span class="font-bold text-gray-800">۵۰,۰۰۰ جعبه/ساعت</span>
+            </div>
+          </div>
+
+          <!-- Machine 5 -->
+          <div class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition group">
+            <div>
+              <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-najmgrey/60 border border-najmborder/30 mb-4 flex items-center justify-center">
+                <img
+                  src="/images/about/machines-5.png"
+                  alt="خط سلفون‌کشی حرارتی و یووی موضعی"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+                THERMAL LAMINATOR & UV
+              </span>
+              <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">سلفون حرارتی و پوشش‌های UV</h3>
+              <p class="text-xs text-gray-600 leading-relaxed">
+                اعمال انواع سلفون مات، براق، سافت‌تاچ، ضدخش و یووی موضعی برجسته با چسبندگی فوق‌العاده روی شیت چاپی.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+              <span>پوشش: مات، براق، شنی</span>
+              <span class="font-bold text-gray-800">۶,۵۰۰ شیت/ساعت</span>
+            </div>
+          </div>
+
+          <!-- Machine 6 (small lab) -->
+          <div class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition group">
+            <div>
+              <div class="aspect-[16/10] rounded-2xl overflow-hidden bg-najmgrey/60 border border-najmborder/30 mb-4 flex items-center justify-center">
+                <img
+                  src="/images/about/machines-small-1.png"
+                  alt="آزمایشگاه کنترل کیفیت و تست مقوا"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+                QUALITY CONTROL LAB
+              </span>
+              <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">آزمایشگاه کنترل کیفیت مقوا</h3>
+              <p class="text-xs text-gray-600 leading-relaxed">
+                تست رطوبت‌سنجی، مقاومت به خمش و سایش، تست چسبندگی و انطباق رنگ در شرایط نوری استاندارد D50.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+              <span>استاندارد: ISO 12647-2</span>
+              <span class="font-bold text-gray-800">تست ۱۰۰٪ پچ‌ها</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Section 6: CTA -->
-      <section id="aboutus" class="scroll-mt-36 bg-white rounded-3xl p-8 sm:p-12 shadow-xs border border-najmborder/40 text-center max-w-4xl mx-auto space-y-6">
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 text-d4">
-          همراه شما در خلق بسته‌بندی‌های به یاد ماندنی
-        </h2>
-        <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-          تعهد ما فراتر از یک سفارش چاپ است؛ ما مشاور فنی و شریک راهبردی بسته‌بندی شما هستیم تا ارزش افزوده واقعی برای محصول شما بیافرینیم.
-        </p>
-        <div class="pt-2 flex flex-wrap justify-center gap-3">
+      <!-- Section 6: Closing Invitation & CTA -->
+      <section id="aboutus" class="scroll-mt-36 bg-najmgreen text-white rounded-3xl p-8 sm:p-14 shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div class="space-y-3 max-w-2xl text-right">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/20">
+            بازدید و مشاوره حضوری
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-d4 leading-tight">
+            از خطوط تولید و شوروم چاپ نجم بازدید فرمایید
+          </h2>
+          <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">
+            ما از مدیران برندها، تیم‌های توسعه محصول و طراحان بسته‌بندی دعوت می‌کنیم تا با حضور در کارخانه نجم، از نزدیک نظاره‌گر دقت ساخت و فرآیند تولید سفارشات باشند.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           <NuxtLink
             to="/contact"
-            class="px-8 py-3 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs transition shadow-sm"
+            class="px-8 py-3.5 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition text-center shadow-xs whitespace-nowrap"
           >
-            مشاوره و استعلام پروژه
+            هماهنگی بازدید و استعلام
           </NuxtLink>
           <NuxtLink
-            to="/products"
-            class="px-8 py-3 rounded-2xl bg-najmgrey hover:bg-gray-200 text-gray-800 font-bold text-xs transition"
+            to="/catalog"
+            class="px-8 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition text-center border border-white/20 whitespace-nowrap"
           >
-            مشاهده کاتالوگ محصولات
+            دانلود کاتالوگ جامع
           </NuxtLink>
         </div>
       </section>
@@ -242,12 +410,12 @@ definePageMeta({
 })
 
 const sections = [
-  { id: 'vision', label: 'چشم‌انداز و اهداف ما' },
-  { id: 'story', label: 'داستان ما' },
-  { id: 'values', label: 'ارزش‌ها' },
+  { id: 'vision', label: 'چشم‌انداز و معرفی' },
+  { id: 'story', label: 'تیم و تخصص فنی' },
+  { id: 'values', label: 'ارزش‌های کیفی' },
   { id: 'solutions', label: 'راهکارها و ویژگی‌ها' },
-  { id: 'facility', label: 'مجموعه و تجهیزات ‌ما' },
-  { id: 'aboutus', label: 'درباره ما' }
+  { id: 'facility', label: 'ماشین‌آلات و تجهیزات' },
+  { id: 'aboutus', label: 'دعوت به بازدید' }
 ]
 
 const activeSection = ref('vision')
@@ -262,7 +430,7 @@ onMounted(() => {
         }
       })
     },
-    { rootMargin: '-10% 0px -80% 0px' }
+    { rootMargin: '-10% 0px -70% 0px' }
   )
 
   sections.forEach(s => {
