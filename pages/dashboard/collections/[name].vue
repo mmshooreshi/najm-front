@@ -277,8 +277,8 @@
 
     <!-- Integrated Miller-Columns Drill-Down Modal Editor -->
     <MillerColumnModal
-      :isOpen="millerModalOpen"
-      :collectionName="collectionName"
+      :open="millerModalOpen"
+      :collection="collectionName"
       :record="editingRecord"
       @close="millerModalOpen = false"
       @saved="refreshData"

@@ -11,8 +11,8 @@
         <p class="text-xs text-gray-500 mt-0.5">
           {{
             isRTL
-              ? 'مدیریت و آپلود تصاویر محصولات، کاتالوگ‌ها و فایل‌های بسته‌بندی با کش پرسرعت'
-              : 'Product images, PDFs, packaging templates, and CDN media assets'
+              ? 'مدیریت و آپلود تصاویر محصولات، کاتالوگ‌ها و فایل‌های بسته‌بندی با کش پرسرعت و پوشه‌بندی تودرتو'
+              : 'Product images, PDFs, packaging templates, and CDN media assets with nested folders'
           }}
         </p>
       </div>
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <!-- Category Filter Bar & Search -->
+    <!-- Category Filter Bar & Search & Breadcrumbs -->
     <div class="flex flex-col gap-3 rounded-2xl bg-white p-3 sm:p-4 shadow-xs border border-gray-200 sm:flex-row sm:items-center sm:justify-between">
       <!-- Mime Category Chips -->
       <div class="flex items-center gap-1.5 flex-wrap">
@@ -68,7 +68,7 @@
           class="rounded-xl px-3 py-1 text-xs font-semibold transition cursor-pointer"
           :class="
             selectedCategory === cat.value
-              ? 'bg-najmgreen text-white shadow-xs'
+              ? 'bg-najmgreen text-white shadow-xs font-bold'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           "
         >
@@ -90,23 +90,23 @@
         <div class="flex items-center gap-1 bg-gray-100 p-1 rounded-xl">
           <button
             @click="viewMode = 'grid'"
-            class="p-1 rounded-lg transition"
+            class="p-1.5 rounded-lg transition cursor-pointer"
             :class="viewMode === 'grid' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-500 hover:text-gray-900'"
-            title="شبکه‌ای"
+            title="شبکه‌ای متراکم"
           >
             <Icon name="mdi:view-grid-outline" class="w-4 h-4" />
           </button>
           <button
             @click="viewMode = 'cards'"
-            class="p-1 rounded-lg transition"
+            class="p-1.5 rounded-lg transition cursor-pointer"
             :class="viewMode === 'cards' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-500 hover:text-gray-900'"
-            title="کارت‌ها"
+            title="کارت‌های همراه با جزئیات"
           >
             <Icon name="mdi:view-agenda-outline" class="w-4 h-4" />
           </button>
           <button
             @click="viewMode = 'table'"
-            class="p-1 rounded-lg transition"
+            class="p-1.5 rounded-lg transition cursor-pointer"
             :class="viewMode === 'table' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-500 hover:text-gray-900'"
             title="جدول"
           >
@@ -116,60 +116,153 @@
       </div>
     </div>
 
-    <!-- Main Workspace Layout: Folder Sidebar + File Grid -->
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
-      <!-- Left/Right Folder Tree Navigation Card -->
-      <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs space-y-3 h-fit">
+    <!-- Main Workspace Layout: Nested Folder Sidebar + File Grid -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-12 items-start">
+      <!-- Left Nested Folder Tree Navigation Card (3.5 cols) -->
+      <div class="lg:col-span-4 bg-white rounded-3xl p-4 border border-gray-200 shadow-xs space-y-3">
         <div class="flex items-center justify-between pb-2.5 border-b border-gray-100">
           <h3 class="text-xs font-bold text-gray-900 font-d4 flex items-center gap-1.5">
             <Icon name="mdi:folder-tree" class="h-4 w-4 text-najmgreen" />
-            {{ isRTL ? 'ساختار پوشه‌ها' : 'Folders' }}
+            {{ isRTL ? 'ساختار درختی پوشه‌ها' : 'Folders Tree' }}
           </h3>
-          <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold text-gray-600 font-mono">
-            {{ toLocalizedDigits(allFolders.length) }}
-          </span>
+          <button
+            @click="expandAllFolders = !expandAllFolders"
+            class="text-[10px] text-gray-500 hover:text-najmgreen transition"
+          >
+            {{ expandAllFolders ? 'بستن همه' : 'باز کردن همه' }}
+          </button>
         </div>
 
-        <!-- Folder List Tree -->
-        <div class="space-y-1 text-xs max-h-[50vh] overflow-y-auto">
-          <!-- Root item -->
-          <button
-            @click="currentFolder = ''"
-            class="flex items-center justify-between w-full rounded-xl px-3 py-2 text-start font-semibold transition cursor-pointer"
-            :class="!currentFolder ? 'bg-emerald-50 text-najmgreen font-bold' : 'text-gray-700 hover:bg-gray-100'"
-          >
-            <div class="flex items-center gap-2">
-              <Icon name="mdi:folder-home-outline" class="h-4 w-4 text-najmgreen" />
-              <span>/root</span>
-            </div>
-            <span class="rounded-full bg-gray-200 px-1.5 py-0.2 text-[10px] font-mono">
-              {{ toLocalizedDigits(countInFolder('')) }}
-            </span>
-          </button>
-
-          <!-- Subfolders -->
-          <div v-for="folder in allFolders" :key="folder.id">
-            <button
-              @click="currentFolder = folder.path"
-              class="flex items-center justify-between w-full rounded-xl px-3 py-1.5 text-start transition cursor-pointer font-mono text-[11px]"
-              :class="currentFolder === folder.path ? 'bg-emerald-50 text-najmgreen font-bold' : 'text-gray-700 hover:bg-gray-100'"
-            >
-              <div class="flex items-center gap-2 truncate">
-                <Icon name="mdi:folder-outline" class="h-4 w-4 text-gray-400 shrink-0" />
-                <span class="truncate">{{ folder.name || folder.path }}</span>
-              </div>
-              <span class="rounded-full bg-gray-100 px-1.5 py-0.2 text-[10px] text-gray-600 shrink-0 font-mono">
-                {{ toLocalizedDigits(countInFolder(folder.path)) }}
-              </span>
-            </button>
+        <!-- Root Folder Item -->
+        <button
+          @click="selectFolder('')"
+          class="flex items-center justify-between w-full rounded-2xl px-3.5 py-2.5 text-start font-semibold transition cursor-pointer"
+          :class="!currentFolder ? 'bg-emerald-50 text-najmgreen font-bold border border-najmgreen/30' : 'text-gray-700 hover:bg-gray-50'"
+        >
+          <div class="flex items-center gap-2">
+            <Icon name="mdi:folder-home-outline" class="h-4.5 w-4.5 text-najmgreen" />
+            <span class="text-xs font-bold">پوشه اصلی (/root)</span>
           </div>
+          <span class="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-mono text-gray-600">
+            {{ toLocalizedDigits(countInFolder('')) }}
+          </span>
+        </button>
+
+        <!-- Recursive Nested Folder Tree List -->
+        <div class="space-y-1 text-xs max-h-[60vh] overflow-y-auto pe-1">
+          <template v-for="node in nestedFolderTree" :key="node.path">
+            <div class="space-y-1">
+              <!-- Level 1 Node -->
+              <div
+                class="flex items-center justify-between rounded-xl px-2.5 py-1.5 transition cursor-pointer group"
+                :class="currentFolder === node.path ? 'bg-emerald-50 text-najmgreen font-bold' : 'text-gray-700 hover:bg-gray-50'"
+                @click="selectFolder(node.path)"
+              >
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <button
+                    v-if="node.children?.length"
+                    @click.stop="toggleNode(node)"
+                    class="p-1 rounded text-gray-400 hover:text-gray-800 transition"
+                  >
+                    <Icon
+                      :name="isNodeOpen(node) ? 'mdi:chevron-down' : 'mdi:chevron-left'"
+                      class="w-3.5 h-3.5"
+                    />
+                  </button>
+                  <span v-else class="w-5"></span>
+
+                  <Icon
+                    :name="isNodeOpen(node) ? 'mdi:folder-open-outline' : 'mdi:folder-outline'"
+                    class="w-4 h-4 text-najmgreen flex-shrink-0"
+                  />
+                  <span class="truncate font-mono text-[11px]">{{ node.name }}</span>
+                </div>
+
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-100 text-gray-600 font-mono">
+                    {{ toLocalizedDigits(countInFolder(node.path)) }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Level 2 Sub-nodes (if open) -->
+              <div v-if="isNodeOpen(node) && node.children?.length" class="pr-5 space-y-1 border-r border-gray-100 mr-3">
+                <template v-for="child in node.children" :key="child.path">
+                  <div
+                    class="flex items-center justify-between rounded-xl px-2.5 py-1.5 transition cursor-pointer group"
+                    :class="currentFolder === child.path ? 'bg-emerald-50 text-najmgreen font-bold' : 'text-gray-600 hover:bg-gray-50'"
+                    @click="selectFolder(child.path)"
+                  >
+                    <div class="flex items-center gap-1.5 min-w-0">
+                      <button
+                        v-if="child.children?.length"
+                        @click.stop="toggleNode(child)"
+                        class="p-0.5 rounded text-gray-400 hover:text-gray-800"
+                      >
+                        <Icon :name="isNodeOpen(child) ? 'mdi:chevron-down' : 'mdi:chevron-left'" class="w-3 h-3" />
+                      </button>
+                      <Icon name="mdi:folder-outline" class="w-3.5 h-3.5 text-gray-400 group-hover:text-najmgreen" />
+                      <span class="truncate font-mono text-[11px]">{{ child.name }}</span>
+                    </div>
+
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full bg-gray-100 text-gray-500 font-mono">
+                      {{ toLocalizedDigits(countInFolder(child.path)) }}
+                    </span>
+                  </div>
+
+                  <!-- Level 3 Sub-nodes -->
+                  <div v-if="isNodeOpen(child) && child.children?.length" class="pr-4 space-y-1 border-r border-gray-100 mr-2">
+                    <div
+                      v-for="subchild in child.children"
+                      :key="subchild.path"
+                      class="flex items-center justify-between rounded-lg px-2 py-1 transition cursor-pointer"
+                      :class="currentFolder === subchild.path ? 'bg-emerald-50 text-najmgreen font-bold' : 'text-gray-500 hover:bg-gray-50'"
+                      @click="selectFolder(subchild.path)"
+                    >
+                      <div class="flex items-center gap-1 min-w-0">
+                        <Icon name="mdi:folder-outline" class="w-3 h-3 text-gray-400" />
+                        <span class="truncate font-mono text-[10px]">{{ subchild.name }}</span>
+                      </div>
+                      <span class="text-[9px] font-mono text-gray-400">
+                        {{ toLocalizedDigits(countInFolder(subchild.path)) }}
+                      </span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
 
-      <!-- Right/Left Media Assets Canvas -->
-      <div class="lg:col-span-3 space-y-4">
+      <!-- Right Media Assets Canvas (8.5 cols) -->
+      <div class="lg:col-span-8 space-y-4">
+        <!-- Interactive Breadcrumbs -->
+        <div class="bg-white p-3.5 px-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center gap-1.5 text-gray-500 flex-wrap">
+            <button @click="selectFolder('')" class="hover:text-najmgreen font-bold flex items-center gap-1">
+              <Icon name="mdi:home" class="w-3.5 h-3.5 text-najmgreen" />
+              root
+            </button>
+            <template v-for="(seg, idx) in breadcrumbSegments" :key="idx">
+              <span>/</span>
+              <button
+                @click="selectFolder(seg.path)"
+                class="hover:text-najmgreen"
+                :class="idx === breadcrumbSegments.length - 1 ? 'text-gray-900 font-bold' : ''"
+              >
+                {{ seg.name }}
+              </button>
+            </template>
+          </div>
+
+          <span class="text-[11px] text-gray-400 font-sans">
+            {{ filteredFiles.length }} فایل در این مسیر
+          </span>
+        </div>
+
         <!-- Drag & Drop Uploader -->
-        <div class="rounded-2xl border-2 border-dashed border-gray-300 bg-white p-4 sm:p-6 hover:border-najmgreen transition">
+        <div class="rounded-3xl border-2 border-dashed border-gray-300 bg-white p-4 sm:p-6 hover:border-najmgreen transition shadow-xs">
           <FileUploader :currentPath="currentFolder" @uploaded="fetchData" />
         </div>
 
@@ -222,14 +315,16 @@ const fileSearchQuery = ref('')
 const currentFolder = ref('')
 const viewMode = ref<'grid' | 'cards' | 'table'>('grid')
 const infoFile = ref<any | null>(null)
+const expandAllFolders = ref(true)
+const openNodesMap = ref<Record<string, boolean>>({})
 
 const allFolders = ref<any[]>([])
 const allFiles = ref<any[]>([])
 
 const categoryOptions = [
-  { labelFa: 'همه', labelEn: 'All', value: 'all' },
+  { labelFa: 'همه فایل‌ها', labelEn: 'All', value: 'all' },
   { labelFa: 'تصاویر', labelEn: 'Images', value: 'images' },
-  { labelFa: 'قالب‌ها (PDF)', labelEn: 'PDFs', value: 'pdfs' },
+  { labelFa: 'قالب‌ها و PDF', labelEn: 'PDFs', value: 'pdfs' },
 ]
 
 const syncLabel = computed(() => {
@@ -238,8 +333,82 @@ const syncLabel = computed(() => {
   return 'بارگذاری از کش محلی'
 })
 
+interface FolderNode {
+  name: string
+  path: string
+  children: FolderNode[]
+}
+
+const nestedFolderTree = computed<FolderNode[]>(() => {
+  const rootMap = new Map<string, any>()
+  const sorted = [...allFolders.value].sort((a, b) => (a.path || a.name || '').localeCompare(b.path || b.name || ''))
+
+  for (const f of sorted) {
+    const rawPath = (f.path || f.name || '').replace(/^\/+|\/+$/g, '')
+    if (!rawPath) continue
+    const parts = rawPath.split('/')
+
+    let current = ''
+    let parentMap = rootMap
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i]
+      current = current ? `${current}/${part}` : part
+
+      if (!parentMap.has(part)) {
+        parentMap.set(part, {
+          name: part,
+          path: current,
+          _childrenMap: new Map<string, any>()
+        })
+      }
+      parentMap = parentMap.get(part)._childrenMap
+    }
+  }
+
+  function mapToArray(map: Map<string, any>): FolderNode[] {
+    const list: FolderNode[] = []
+    for (const [, item] of map) {
+      list.push({
+        name: item.name,
+        path: item.path,
+        children: mapToArray(item._childrenMap)
+      })
+    }
+    return list
+  }
+
+  return mapToArray(rootMap)
+})
+
+function isNodeOpen(node: FolderNode): boolean {
+  if (openNodesMap.value[node.path] !== undefined) {
+    return openNodesMap.value[node.path]
+  }
+  return expandAllFolders.value
+}
+
+function toggleNode(node: FolderNode) {
+  openNodesMap.value[node.path] = !isNodeOpen(node)
+}
+
+function selectFolder(path: string) {
+  currentFolder.value = path.replace(/^\/+|\/+$/g, '')
+}
+
+const breadcrumbSegments = computed(() => {
+  const norm = currentFolder.value.replace(/^\/+|\/+$/g, '')
+  if (!norm) return []
+  const parts = norm.split('/')
+  return parts.map((part, idx) => ({
+    name: part,
+    path: parts.slice(0, idx + 1).join('/')
+  }))
+})
+
 const filteredFiles = computed(() => {
-  let list = allFiles.value.filter((f) => (f.path || '') === currentFolder.value)
+  const target = currentFolder.value.replace(/^\/+|\/+$/g, '')
+  let list = allFiles.value.filter((f) => (f.path || '').replace(/^\/+|\/+$/g, '') === target)
 
   if (selectedCategory.value === 'images') {
     list = list.filter((f) => isImageFile(f))
@@ -255,7 +424,8 @@ const filteredFiles = computed(() => {
 })
 
 function countInFolder(path: string): number {
-  return allFiles.value.filter((f) => (f.path || '') === path).length
+  const target = path.replace(/^\/+|\/+$/g, '')
+  return allFiles.value.filter((f) => (f.path || '').replace(/^\/+|\/+$/g, '') === target).length
 }
 
 function isImageFile(file: any): boolean {
@@ -292,10 +462,14 @@ async function createFolderPrompt() {
   const name = prompt(isRTL.value ? 'نام پوشه جدید:' : 'New folder name:')?.trim()
   if (!name) return
 
+  const parent = currentFolder.value.replace(/^\/+|\/+$/g, '')
+  const path = parent ? `${parent}/${name}` : name
+
   try {
-    logNetwork('Media', `Creating folder "${name}"`)
-    await pb.collection('media_folders').create({ name, path: name })
+    logNetwork('Media', `Creating folder "${name}" at ${path}`)
+    await pb.collection('media_folders').create({ name, path })
     await fetchData()
+    selectFolder(path)
   } catch (err: any) {
     logError('Media', `Failed to create folder: ${err?.message || err}`)
   }
