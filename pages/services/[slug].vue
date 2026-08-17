@@ -1,12 +1,15 @@
 <!-- pages/services/[slug].vue -->
 <template>
-  <main class="py-6 md:py-10 max-w-4xl mx-auto">
+  <main class="py-6 md:py-10 max-w-4xl mx-auto" :dir="isRTL ? 'rtl' : 'ltr'">
     <section class="space-y-8 md:space-y-10">
       <!-- Hero / intro -->
       <header class="space-y-4">
         <!-- Image Container -->
-        <div class="rounded-2xl w-full max-w-full max-h-xs mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
-          <img :src="hero.topImage" class="object-cover w-full h-full"/>
+        <div
+          v-if="hero?.topImage"
+          class="rounded-2xl w-full max-w-full max-h-xs mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden"
+        >
+          <img :src="hero.topImage" class="object-cover w-full h-full" alt="Service Hero" />
         </div>
 
         <p
@@ -16,20 +19,20 @@
           {{ hero.eyebrow }}
         </p>
 
-        <h1 class="text-xl  font-bold leading-tight">
+        <h1 class="text-xl sm:text-3xl font-bold leading-tight text-gray-900">
           {{ hero?.title || fallbackTitle }}
         </h1>
 
         <p
           v-if="hero?.subtitle"
-          class="text-base font-bold max-w-2xl"
+          class="text-base font-bold max-w-2xl text-gray-800"
         >
           {{ hero.subtitle }}
         </p>
 
         <p
           v-if="hero?.description"
-          class="text-sm md:text-base text-gray-700 leading-relaxed max-w-3xl !my-9"
+          class="text-sm md:text-base text-gray-700 leading-relaxed max-w-3xl !my-6"
         >
           {{ hero.description }}
         </p>
@@ -48,15 +51,12 @@
         </div>
       </header>
 
-      
-
       <!-- “What this service includes” section -->
       <section v-if="serviceIncludes">
-
         <div class="space-y-4 md:space-y-6">
           <h2
             v-if="serviceIncludes.title"
-            class="text-xl md:text-2xl font-semibold"
+            class="text-xl md:text-2xl font-semibold text-gray-900"
           >
             {{ serviceIncludes.title }}
           </h2>
@@ -74,7 +74,7 @@
               :key="idx"
               class="rounded-2xl bg-white/80 p-4 md:p-5 shadow-sm border border-gray-100"
             >
-              <h3 class="text-sm md:text-base font-semibold mb-2">
+              <h3 class="text-sm md:text-base font-semibold mb-2 text-gray-900">
                 {{ group.title }}
               </h3>
               <p
@@ -93,7 +93,7 @@
         </div>
       </section>
 
-            <!-- Mid-page CTA block -->
+      <!-- Mid-page CTA block -->
       <section v-if="midCta">
         <div
           class="rounded-2xl bg-black text-white p-5 md:p-7 flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
@@ -119,34 +119,34 @@
             </p>
           </div>
           <div class="flex flex-col gap-2 mt-3 md:mt-0 md:flex-row">
-            <button
-              v-if="midCta.primaryCta.label"
-              type="button"
-              class="h-10 md:h-11 px-4 rounded-xl !bg-najmgrey text-black text-sm font-semibold"
+            <NuxtLink
+              to="/contact"
+              class="h-10 md:h-11 px-5 rounded-xl !bg-najmgrey text-black text-sm font-semibold flex items-center justify-center"
             >
-              {{ midCta.primaryCta.label }}
-            </button>
+              {{ midCta.primaryCta?.label || 'استعلام و مشاوره' }}
+            </NuxtLink>
           </div>
         </div>
       </section>
-
 
       <!-- Packages + industries / use-cases -->
       <section
         v-if="packages?.items?.length || industries?.items?.length"
         class="space-y-6 md:space-y-8"
       >
-
-                <!-- Image Container -->
-        <div class="rounded-2xl w-full max-w-full max-h-xs mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden">
-          <img :src="hero.secondaryImage" class="object-cover w-full h-full"/>
+        <!-- Secondary Image Container -->
+        <div
+          v-if="hero?.secondaryImage"
+          class="rounded-2xl w-full max-w-full max-h-xs mx-auto aspect-square bg-gray-100 flex items-center justify-center overflow-hidden"
+        >
+          <img :src="hero.secondaryImage" class="object-cover w-full h-full" alt="Secondary" />
         </div>
 
         <div
           v-if="packages?.items?.length"
           class="space-y-3 md:space-y-4"
         >
-          <h2 class="text-lg md:text-xl font-semibold">
+          <h2 class="text-lg md:text-xl font-semibold text-gray-900">
             {{ packages.title }}
           </h2>
           <p
@@ -158,10 +158,10 @@
           <div class="flex flex-wrap gap-2">
             <span
               v-for="(tag, idx) in packages.items"
-              :key="tag.key"
+              :key="tag.key || idx"
               class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 text-xs md:text-sm border border-gray-200"
             >
-              {{ tag.label }}
+              {{ tag.label || tag }}
             </span>
           </div>
         </div>
@@ -170,7 +170,7 @@
           v-if="industries?.items?.length"
           class="space-y-3 md:space-y-4"
         >
-          <h2 class="text-lg md:text-xl font-semibold">
+          <h2 class="text-lg md:text-xl font-semibold text-gray-900">
             {{ industries.title }}
           </h2>
           <p
@@ -182,22 +182,19 @@
           <div class="flex flex-wrap gap-2">
             <span
               v-for="(tag, idx) in industries.items"
-              :key="tag.key"
+              :key="tag.key || idx"
               class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 text-xs md:text-sm border border-gray-200"
             >
-              {{ tag.label }}
+              {{ tag.label || tag }}
             </span>
           </div>
         </div>
       </section>
 
-
-      
-
       <!-- FAQ -->
       <section v-if="faq?.items?.length" class="space-y-4 md:space-y-6">
         <div class="space-y-2">
-          <h2 class="text-lg md:text-xl font-semibold">
+          <h2 class="text-lg md:text-xl font-semibold text-gray-900">
             {{ faq.title }}
           </h2>
           <p
@@ -214,7 +211,7 @@
             :key="idx"
             class="rounded-2xl bg-white/80 p-4 md:p-5 border border-gray-100"
           >
-            <summary class="cursor-pointer text-sm md:text-base font-medium">
+            <summary class="cursor-pointer text-sm md:text-base font-medium text-gray-900">
               {{ item.question }}
             </summary>
             <p class="mt-2 text-xs md:text-sm text-gray-700 leading-relaxed">
@@ -234,37 +231,58 @@ import { usePageUI } from '@/composables/ui/usePageUI'
 import { useLocale } from '@/composables/useLocale'
 import { useAdminEditable } from '@/composables/useAdminEditable'
 
-// route slug, e.g. "design-and-layout"
 const route = useRoute()
-const serviceSlug = route.params.slug as string
+const serviceSlug = computed(() => (route.params.slug as string) || '')
 
-// Each service has its own UI JSON:
-//   services-design-and-layout-ui.json
-//   services-lithography-and-plates-ui.json
-//   ...
-// And a corresponding backend record with slug = "services-design-and-layout"
-const { ui } = usePageUI(`services-${serviceSlug}`)
+const { ui } = usePageUI(`services-${serviceSlug.value}`)
 
-// locale (if you need it for RTL, etc.)
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-const hero = computed(() => ui.value?.hero ?? null)
+// Safe fallbacks so null never throws errors
+const fallbackServiceTitles: Record<string, string> = {
+  'design-and-layout': 'طراحی، ماکت‌سازی و فرم‌بندی',
+  'lithography-and-plates': 'لیتوگرافی و زینک حرارتی CTP',
+  'printing-and-packaging': 'چاپ افست و چاپ بسته‌بندی',
+  'finishing-services': 'خدمات تکمیلی، سلفون، طلاکوب و دایکات',
+  'storage-and-warehousing': 'نگهداری، بسته‌بندی و انبارداری'
+}
+
+const fallbackTitle = computed(() => {
+  return fallbackServiceTitles[serviceSlug.value] || serviceSlug.value.replace(/-/g, ' ')
+})
+
+const hero = computed(() => {
+  if (ui.value?.hero) return ui.value.hero
+  return {
+    eyebrow: 'خدمات تخصصی چاپ و بسته‌بندی نجم',
+    title: fallbackTitle.value,
+    subtitle: 'بالاترین کیفیت تولید با خطوط مدرن هایدلبرگ و تجهیزات پس از چاپ',
+    description: 'ارائه کلیه خدمات پیش از چاپ، چاپ و پس از چاپ با رعایت استانداردهای کیفی بین‌المللی و دقت میکرونی.',
+    highlights: ['سرعت در تحویل', 'تضمین ثبات رنگ', 'مشاوره فنی رایگان'],
+    topImage: null,
+    secondaryImage: null
+  }
+})
+
 const serviceIncludes = computed(() => ui.value?.serviceIncludes ?? null)
 const packages = computed(() => ui.value?.packages ?? null)
 const industries = computed(() => ui.value?.industries ?? null)
-const midCta = computed(() => ui.value?.midCta ?? null)
+const midCta = computed(() => {
+  if (ui.value?.midCta) return ui.value.midCta
+  return {
+    eyebrow: 'مشاوره فنی و استعلام قیمت',
+    title: fallbackTitle.value,
+    description: 'برای دریافت برآورد قیمت و مشاوره تخصصی در زمینه این خدمت با کارشناسان ما تماس بگیرید.',
+    primaryCta: { label: 'تماس با واحد فروش' }
+  }
+})
 const faq = computed(() => ui.value?.faq ?? null)
-
-const fallbackTitle = computed(
-  () => ui.value?.fallbackTitle || serviceSlug.replace(/-/g, ' ')
-)
 
 definePageMeta({
   layout: 'services',
-  name: 'service-detail',
+  name: 'service-detail'
 })
 
-// connect to admin edit system for this service
-const { state } = useAdminEditable(`services-${serviceSlug}`)
+const { state } = useAdminEditable(`services-${serviceSlug.value}`)
 </script>

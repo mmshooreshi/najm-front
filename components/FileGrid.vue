@@ -1,144 +1,238 @@
 <!-- components/FileGrid.vue -->
 <template>
-
-    <!-- CREATE VIDEO BUTTON -->
-  <button
-    v-if="selected.size > 1"
-    @click="$router.push({ name:'VideoEditor', query:{ ids:[...selected].join(',') } })"
-    class="fixed z-50 bottom-6 right-6 bg-teal-600 text-white px-6 py-3 shadow-lg hover:bg-teal-500 transition hidden md:block rounded-2xl">
-    🎬  Create video ({{ selected.size }})
-  </button>
-
-  <!-- Sort by Name button -->
-  <div class="w-full flex justify-start gap-1 mb-2  pl-3">
-    <button
-      @click="sortByName"
-      class="bg-gray-200 hover:bg-gray-300 text-sm p-1 rounded-xl shadow-sm"
-    >
-      
-<Icon
-  class="w-7 h-7 -mb-1 transition"
-  :name="allSorted === 'asc'
-          ? 'tabler:sort-ascending-numbers'
-          : allSorted === 'desc'
-            ? 'tabler:sort-descending-numbers'
-            : 'tdesign:no-expression'"
-/>
-    </button>
-
- <button
-  @click="selectAll"
-  class="bg-gray-200 hover:bg-gray-300 text-sm p-1 rounded-xl shadow-sm"
->
-  <Icon
-    class="w-7 h-7 -mb-1 transition"
-    :name="allSelected ? 'fluent:select-all-off-16-regular' : 'fluent:select-all-on-16-regular'"
-  />
-</button>
-
-  </div>
-
-
-    <!-- DRAGGABLE WRAPS THE THUMB GRID -->
-  <client-only>
-    <draggable
-      v-model="internalFiles"
-      item-key="id"
-      class="mt-0 flex flex-wrap gap-3 p-1"
-      tag="div"
-      ghost-class="dragGhost"    
-      chosen-class="dragChosen"
-      @end="onReorder"
-    >
-    <template #item="{ element:file }">
-      <div class="relative">
-        <div
-          @click="select(file)"
-          :class="[
-            'transition-all cursor-pointer ring-4 shadow rounded-2xl overflow-hidden',
-            selected.has(file.id)
-              ? 'ring-teal-500/60'
-              : 'ring-black/10 hover:ring-teal-400/50'
-          ]"
+  <div class="space-y-4">
+    <!-- View & Bulk Action Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-gray-200/80 shadow-xs">
+      <div class="flex items-center gap-2">
+        <button
+          @click="selectAll"
+          class="px-3 py-1.5 rounded-xl border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition flex items-center gap-1.5"
         >
-          <img
-            :src="getUrl(file)"
-            class="block h-32 w-auto object-cover transition-opacity duration-500"
-            :class="loaded.has(file.id) ? 'opacity-100' : 'opacity-0 blur-md'"
-            @load="loaded.add(file.id)"
-          />
-        </div>
+          <Icon :name="allSelected ? 'fluent:select-all-off-16-regular' : 'fluent:select-all-on-16-regular'" class="w-4 h-4" />
+          <span>{{ allSelected ? 'لغو انتخاب' : 'انتخاب همه' }}</span>
+        </button>
 
-        <div class="absolute top-1 right-1 flex space-x-1">
-          <button
-            @click.stop="$emit('info', file)"
-            class="w-5 h-5 pt-1 aspect-square flex items-center justify-center
-                    shadow-sm rounded-2xl
-                  transition-transform duration-200 ease-out
-                  hover:scale-130 hover:text-teal
-                  active:scale-95
-                  focus:outline-none text-white"
-          ><Icon name="hugeicons:information-square"/></button>
+        <button
+          v-if="selected.size > 0"
+          @click="bulkDelete"
+          class="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 hover:bg-red-100 text-xs font-semibold transition flex items-center gap-1"
+        >
+          <Icon name="mdi:trash-can-outline" class="w-4 h-4" />
+          <span>حذف ({{ selected.size }})</span>
+        </button>
 
-          <button
-            @click.stop="renameFileDeep(file)"
-            class="w-5 h-5 pt-1  aspect-square flex items-center justify-center
-                    shadow-sm rounded-2xl
-                  transition-transform duration-200 ease-out
-                  hover:scale-130 hover:text-purple
-                  active:scale-95
-                  focus:outline-none text-white"
-          ><Icon name="hugeicons:pencil-edit-02"/></button>
-
-          <button
-            @click.stop="deleteFile(file)"
-            class="w-5 h-5 pt-1  aspect-square flex items-center justify-center
-                    shadow-sm rounded-2xl
-                  transition-transform duration-200 ease-out
-                    hover:scale-130 hover:text-pink
-                  active:scale-95
-                  focus:outline-none text-white"
-          ><Icon name="hugeicons:delete-02"/></button>
-        </div>
-
-        <div class="mt-1 text-xs text-center whitespace-nowrap">{{ file.filename }}</div>
+        <button
+          v-if="selected.size > 0"
+          @click="bulkCopyUrls"
+          class="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold transition flex items-center gap-1"
+        >
+          <Icon name="mdi:link-variant" class="w-4 h-4" />
+          <span>کپی لینک‌ها</span>
+        </button>
       </div>
-    </template>
-  </draggable>
-</client-only>
 
-  
+      <div class="flex items-center gap-2 text-xs text-gray-500">
+        <span>{{ internalFiles.length }} فایل در این پوشه</span>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div v-if="!internalFiles.length" class="text-center py-16 bg-white rounded-3xl border border-gray-200/80 space-y-2">
+      <div class="w-12 h-12 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto">
+        <Icon name="mdi:folder-open-outline" class="w-6 h-6" />
+      </div>
+      <p class="text-xs font-bold text-gray-700">هیچ فایلی در این پوشه وجود ندارد</p>
+      <p class="text-[11px] text-gray-400">برای آپلود فایل‌ها را به کادر بالا بکشید و رها کنید.</p>
+    </div>
+
+    <!-- MODE 1: DENSE GRID -->
+    <client-only v-else-if="viewMode === 'grid'">
+      <draggable
+        v-model="internalFiles"
+        item-key="id"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
+        tag="div"
+        ghost-class="dragGhost"
+        chosen-class="dragChosen"
+        @end="onReorder"
+      >
+        <template #item="{ element: file }">
+          <div
+            @click="select(file)"
+            class="relative group bg-white rounded-2xl border transition-all cursor-pointer overflow-hidden p-2 flex flex-col justify-between"
+            :class="selected.has(file.id) ? 'border-najmgreen ring-2 ring-najmgreen/20 shadow-sm' : 'border-gray-200 hover:border-gray-300 hover:shadow-xs'"
+          >
+            <!-- Image thumb -->
+            <div class="relative w-full aspect-square rounded-xl bg-gray-50 overflow-hidden flex items-center justify-center mb-2">
+              <img
+                :src="getUrl(file)"
+                class="w-full h-full object-cover transition-opacity duration-300"
+                :class="loaded.has(file.id) ? 'opacity-100' : 'opacity-0 blur-sm'"
+                @load="loaded.add(file.id)"
+              />
+
+              <!-- Overlay quick actions -->
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-1">
+                <button
+                  @click.stop="$emit('info', file)"
+                  class="w-7 h-7 rounded-lg bg-white/90 hover:bg-white text-gray-800 flex items-center justify-center shadow-xs transition"
+                  title="مشخصات فایل"
+                >
+                  <Icon name="mdi:information-variant" class="w-4 h-4" />
+                </button>
+                <button
+                  @click.stop="copyFileUrl(file)"
+                  class="w-7 h-7 rounded-lg bg-white/90 hover:bg-white text-gray-800 flex items-center justify-center shadow-xs transition"
+                  title="کپی لینک"
+                >
+                  <Icon name="mdi:content-copy" class="w-4 h-4" />
+                </button>
+                <button
+                  @click.stop="renameFile(file)"
+                  class="w-7 h-7 rounded-lg bg-white/90 hover:bg-white text-gray-800 flex items-center justify-center shadow-xs transition"
+                  title="تغییر نام"
+                >
+                  <Icon name="mdi:pencil-outline" class="w-4 h-4" />
+                </button>
+                <button
+                  @click.stop="deleteFile(file)"
+                  class="w-7 h-7 rounded-lg bg-red-600 hover:bg-red-700 text-white flex items-center justify-center shadow-xs transition"
+                  title="حذف"
+                >
+                  <Icon name="mdi:trash-can-outline" class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Meta info -->
+            <div class="space-y-0.5 text-right px-0.5">
+              <div class="text-[11px] font-bold text-gray-900 truncate font-mono ltr text-right">{{ file.filename }}</div>
+              <div class="flex items-center justify-between text-[10px] text-gray-400 font-mono">
+                <span>{{ formatSize(file.size) }}</span>
+                <span>{{ getFileExt(file.filename) }}</span>
+              </div>
+            </div>
+          </div>
+        </template>
+      </draggable>
+    </client-only>
+
+    <!-- MODE 2: DETAILED CARDS -->
+    <div v-else-if="viewMode === 'cards'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-for="file in internalFiles"
+        :key="file.id"
+        @click="select(file)"
+        class="bg-white rounded-2xl border p-4 flex gap-4 transition-all cursor-pointer items-start"
+        :class="selected.has(file.id) ? 'border-najmgreen ring-2 ring-najmgreen/20' : 'border-gray-200 hover:border-gray-300'"
+      >
+        <div class="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden flex-shrink-0 flex items-center justify-center">
+          <img :src="getUrl(file)" class="w-full h-full object-cover" />
+        </div>
+        <div class="flex-1 min-w-0 space-y-1 text-right">
+          <h4 class="text-xs font-bold text-gray-900 truncate font-mono ltr text-right">{{ file.filename }}</h4>
+          <div class="text-[11px] text-gray-500 font-mono">{{ formatSize(file.size) }} • {{ file.mime || 'image' }}</div>
+          <div class="text-[10px] text-gray-400">
+            {{ new Date(file.created).toLocaleDateString('fa-IR') }}
+          </div>
+          <div class="pt-2 flex items-center gap-2">
+            <button
+              @click.stop="copyFileUrl(file)"
+              class="px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-[10px] font-semibold text-gray-700 transition"
+            >
+              کپی لینک
+            </button>
+            <button
+              @click.stop="$emit('info', file)"
+              class="px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 text-[10px] font-semibold text-gray-700 transition"
+            >
+              مشخصات
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODE 3: TABLE VIEW -->
+    <div v-else-if="viewMode === 'table'" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <table class="min-w-full text-xs text-right divide-y divide-gray-100">
+        <thead class="bg-gray-50/80 text-gray-500 font-semibold">
+          <tr>
+            <th class="p-3 w-10 text-center">انتخاب</th>
+            <th class="p-3">پیش‌نمایش</th>
+            <th class="p-3">نام فایل</th>
+            <th class="p-3">فرمت</th>
+            <th class="p-3">حجم</th>
+            <th class="p-3">تاریخ آپلود</th>
+            <th class="p-3 text-center">عملیات</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 bg-white">
+          <tr
+            v-for="file in internalFiles"
+            :key="file.id"
+            class="hover:bg-gray-50/60 transition"
+            :class="selected.has(file.id) ? 'bg-emerald-50/30' : ''"
+          >
+            <td class="p-3 text-center">
+              <input
+                type="checkbox"
+                :checked="selected.has(file.id)"
+                @change="select(file)"
+                class="rounded text-najmgreen focus:ring-0"
+              />
+            </td>
+            <td class="p-3">
+              <div class="w-10 h-10 rounded-lg bg-gray-50 overflow-hidden border border-gray-100 flex items-center justify-center">
+                <img :src="getUrl(file)" class="w-full h-full object-cover" />
+              </div>
+            </td>
+            <td class="p-3 font-mono font-bold text-gray-900 ltr text-right">{{ file.filename }}</td>
+            <td class="p-3 text-gray-500 font-mono uppercase">{{ getFileExt(file.filename) }}</td>
+            <td class="p-3 text-gray-500 font-mono">{{ formatSize(file.size) }}</td>
+            <td class="p-3 text-gray-500">{{ new Date(file.created).toLocaleDateString('fa-IR') }}</td>
+            <td class="p-3 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <button @click.stop="copyFileUrl(file)" class="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100" title="کپی لینک">
+                  <Icon name="mdi:content-copy" class="w-4 h-4" />
+                </button>
+                <button @click.stop="$emit('info', file)" class="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100" title="مشخصات">
+                  <Icon name="mdi:information-variant" class="w-4 h-4" />
+                </button>
+                <button @click.stop="deleteFile(file)" class="p-1.5 rounded-lg text-red-500 hover:bg-red-50" title="حذف">
+                  <Icon name="mdi:trash-can-outline" class="w-4 h-4" />
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { usePocketBase } from '~/plugins/pb.client'
-import { useRoute, useRouter } from 'vue-router'
 
-/* ░░ vuedraggable loaded only on client to avoid SSR crash ░░ */
 const draggable = defineAsyncComponent(() => import('vuedraggable'))
 
-// Props & emits
-const props = defineProps<{ files: any[] }>()
-const emit = defineEmits(['refresh' , 'info','reorder'])
+const props = withDefaults(
+  defineProps<{
+    files: any[]
+    viewMode?: 'grid' | 'cards' | 'table'
+  }>(),
+  {
+    viewMode: 'grid'
+  }
+)
 
-// State
+const emit = defineEmits(['refresh', 'info', 'reorder'])
+
 const selected = ref<Set<string>>(new Set())
 const loaded = ref<Set<string>>(new Set())
-
-// PocketBase & router
 const pb = usePocketBase()
-const route = useRoute()
-const router = useRouter()
 
-
-/* ADD: expose an event when order changes */
-function onReorder () {
-  emit('reorder', internalFiles.value.map(f => f.id))
-}
-
-/* INTERNAL working copy so we can mutate the list that
-   comes in as a (readonly) prop */
 const internalFiles = ref<any[]>([])
 watch(
   () => props.files,
@@ -146,130 +240,82 @@ watch(
   { immediate: true }
 )
 
-// Reflect folder path in URL query
-watch(
-  () => route.query.path,
-  path => {
-    // trigger refresh if path changes externally
-    emit('refresh')
-  }
-)
+function onReorder() {
+  emit('reorder', internalFiles.value.map(f => f.id))
+}
 
 function select(file: any) {
   if (selected.value.has(file.id)) selected.value.delete(file.id)
   else selected.value.add(file.id)
 }
 
-function getUrl(file: any) {
-  return pb.files.getURL(file, file.file)
-}
-
-async function deleteFile(file: any) {
-  if (!confirm(`Delete file "${file.filename}"?`)) return
-  await pb.collection('media_files').delete(file.id)
-  emit('refresh')
-}
-
-async function renameFile(file: any) {
-  const newName = prompt('Rename file', file.filename)?.trim()
-  if (!newName) return
-  await pb.collection('media_files').update(file.id, { filename: newName })
-  emit('refresh')
-}
-
-
-async function renameFileDeep(file: any) {
-  const newName = prompt('New filename', file.filename)?.trim()
-  if (!newName) return
-
-  // 1. download the existing file blob
-  const url = getUrl(file)
-  const resp = await fetch(url)
-  if (!resp.ok) throw new Error('Could not fetch file for rename')
-
-  const blob = await resp.blob()
-
-  // 2. wrap it in a File with the new name
-  const newFile = new File([blob], newName, { type: file.mime })
-
-  // 3. send a multipart-form update to PocketBase
-  const formData = new FormData()
-  formData.append('file', newFile)
-  // (Optionally you can still send filename metadata too)
-  formData.append('filename', newName)
-
-  await pb.collection('media_files').update(file.id, formData)
-
-  emit('refresh')
-}
-
-
-type SortState = 'asc' | 'desc' | ''
-const allSorted = ref<SortState>('')     // '' = unsorted (original)
-const originalOrder = ref<any[]>([])     // new
-
-watch(
-  () => props.files,
-  n => {
-    internalFiles.value = [...n]
-    originalOrder.value = [...n]         // capture original unsorted order
-  },
-  { immediate: true }
-)
-
-
-function sortByName() {
-  if (allSorted.value === '') {
-    internalFiles.value.sort((a, b) =>
-      (a.filename || '').localeCompare(b.filename || '')
-    )
-    allSorted.value = 'asc'
-  } else if (allSorted.value === 'asc') {
-    internalFiles.value.sort((a, b) =>
-      (b.filename || '').localeCompare(a.filename || '')
-    )
-    allSorted.value = 'desc'
-  } else {
-    internalFiles.value = [...originalOrder.value]
-    allSorted.value = ''
-  }
-  onReorder()
-}
-
-
-
 const allSelected = computed(() =>
   internalFiles.value.length > 0 &&
   internalFiles.value.every(f => selected.value.has(f.id))
 )
 
-
 function selectAll() {
-  if (allSelected.value) {
-    selected.value.clear()
-  } else {
-    for (const f of internalFiles.value) {
-      selected.value.add(f.id)
-    }
-  }
+  if (allSelected.value) selected.value.clear()
+  else internalFiles.value.forEach(f => selected.value.add(f.id))
 }
 
+function getUrl(file: any) {
+  if (!file) return ''
+  return pb.files.getURL(file, file.file)
+}
+
+function formatSize(bytes?: number): string {
+  if (!bytes) return '0 KB'
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB'
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+}
+
+function getFileExt(filename = ''): string {
+  return filename.split('.').pop() || 'img'
+}
+
+function copyFileUrl(file: any) {
+  const url = getUrl(file)
+  navigator.clipboard?.writeText(url)
+  alert('لینک فایل کپی شد:\n' + url)
+}
+
+async function bulkCopyUrls() {
+  const urls = internalFiles.value
+    .filter(f => selected.value.has(f.id))
+    .map(f => getUrl(f))
+    .join('\n')
+  navigator.clipboard?.writeText(urls)
+  alert(`${selected.value.size} لینک کپی شد.`)
+}
+
+async function deleteFile(file: any) {
+  if (!confirm(`آیا از حذف فایل "${file.filename}" اطمینان دارید؟`)) return
+  await pb.collection('media_files').delete(file.id)
+  emit('refresh')
+}
+
+async function bulkDelete() {
+  if (!confirm(`آیا از حذف ${selected.value.size} فایل انتخاب‌شده اطمینان دارید؟`)) return
+  const ids = [...selected.value]
+  await Promise.all(ids.map(id => pb.collection('media_files').delete(id)))
+  selected.value.clear()
+  emit('refresh')
+}
+
+async function renameFile(file: any) {
+  const newName = prompt('نام جدید فایل:', file.filename)?.trim()
+  if (!newName || newName === file.filename) return
+  await pb.collection('media_files').update(file.id, { filename: newName })
+  emit('refresh')
+}
 </script>
 
-
-
 <style scoped>
-.image-pixelated { image-rendering: pixelated; }
-
-/* SortableJS helper classes (no Tailwind spaces in names) */
-.dragGhost  {           /* replicates "opacity-60 ring-4 ring-teal-400/50" */
-  opacity: .0;
-  /* border-radius: 1rem; */
-  /* box-shadow: 0 0 0 4px rgba(45, 212, 191, .5); */
+.dragGhost {
+  opacity: 0.2;
 }
-.dragChosen {           /* item currently picked up */
-  transform: scale(1.03);
-  /* border-radius: 1rem; */
-  /* box-shadow: 0 0 0 4px rgba(13, 148, 136, .6); */
+.dragChosen {
+  transform: scale(1.02);
 }
 </style>
