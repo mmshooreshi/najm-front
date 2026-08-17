@@ -5,13 +5,13 @@
     <div class="flex flex-col gap-3 rounded-2xl bg-white p-4 sm:p-6 shadow-xs border border-gray-200 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h2 class="text-lg sm:text-xl font-bold text-gray-900 font-d4 flex items-center gap-2">
-          <Icon name="mdi:file-document-edit-outline" class="h-5 w-5 text-[#018786]" />
-          {{ isRTL ? 'مدیریت محتوای صفحات (CMS)' : 'Page CMS Editor' }}
+          <Icon name="mdi:file-document-edit-outline" class="h-5 w-5 text-najmgreen" />
+          {{ isRTL ? 'مدیریت محتوای صفحات (CMS)' : 'Page CMS Studio' }}
         </h2>
         <p class="text-xs text-gray-500 mt-0.5">
           {{
             isRTL
-              ? 'ویرایش متون، عناوین، بنرها و بخش‌های اصلی صفحات سایت'
+              ? 'ویرایش متون، عناوین، بنرها و ساختار صفحات بدون نیاز به تغییر کد'
               : 'Edit page text, headings, banners, and structured sections'
           }}
         </p>
@@ -21,7 +21,7 @@
         <button
           @click="savePageChanges"
           :disabled="saving || !hasUnsavedChanges"
-          class="flex items-center gap-1.5 rounded-xl bg-[#018786] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#018786]/90 transition shadow-xs disabled:opacity-50 cursor-pointer"
+          class="flex items-center gap-1.5 rounded-xl bg-najmgreen px-4 py-2 text-xs font-bold text-white hover:bg-emerald-800 transition shadow-xs disabled:opacity-50 cursor-pointer"
         >
           <Icon name="mdi:content-save" class="h-4 w-4" :class="saving ? 'animate-spin' : ''" />
           {{ isRTL ? 'ذخیره تغییرات' : 'Save Changes' }}
@@ -34,15 +34,15 @@
       <!-- Page Slug Selector -->
       <div class="flex items-center gap-2 flex-wrap">
         <span class="font-bold text-gray-700 font-d4">{{ isRTL ? 'صفحه:' : 'Page:' }}</span>
-        <div class="flex flex-wrap gap-1">
+        <div class="flex flex-wrap gap-1.5">
           <button
             v-for="p in availablePages"
             :key="p.slug"
             @click="selectedSlug = p.slug"
-            class="rounded-xl px-3 py-1.5 font-semibold transition cursor-pointer"
+            class="rounded-xl px-3 py-1.5 font-semibold transition cursor-pointer text-xs"
             :class="
               selectedSlug === p.slug
-                ? 'bg-[#018786] text-white shadow-xs'
+                ? 'bg-najmgreen text-white shadow-xs font-bold'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             "
           >
@@ -62,7 +62,7 @@
             class="rounded-lg px-3 py-1 font-bold transition cursor-pointer"
             :class="
               activeLang === l
-                ? 'bg-white text-[#018786] shadow-xs'
+                ? 'bg-white text-najmgreen shadow-xs'
                 : 'text-gray-600 hover:text-gray-900'
             "
           >
@@ -78,10 +78,10 @@
       <div class="lg:col-span-2 space-y-4 rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-xs max-w-full">
         <div class="flex items-center justify-between pb-3 border-b border-gray-100 text-xs">
           <h3 class="font-bold text-gray-900 font-d4 flex items-center gap-1.5">
-            <Icon name="mdi:format-text" class="h-4 w-4 text-[#018786]" />
+            <Icon name="mdi:format-text" class="h-4 w-4 text-najmgreen" />
             {{ selectedSlug }} ({{ activeLang }})
           </h3>
-          <span class="rounded-full bg-teal-50 px-2.5 py-0.5 font-bold text-[#018786]">
+          <span class="rounded-full bg-emerald-50 px-2.5 py-0.5 font-bold text-najmgreen font-mono">
             {{ toLocalizedDigits(flattenedFields.length) }} {{ isRTL ? 'فیلد متنی' : 'fields' }}
           </span>
         </div>
@@ -91,7 +91,7 @@
           {{ isRTL ? 'محتوایی برای این زبان ثبت نشده است.' : 'No fields found for this page and language.' }}
         </div>
 
-        <!-- Flattened Clean Input List (No [object Object]!) -->
+        <!-- Flattened Clean Input List -->
         <div v-else class="space-y-3 max-h-[550px] overflow-y-auto pe-1">
           <div
             v-for="item in flattenedFields"
@@ -112,7 +112,7 @@
               v-model="item.value"
               rows="2"
               @input="onFieldInput(item.path, item.value)"
-              class="w-full rounded-lg border border-gray-300 bg-white p-2 text-xs text-gray-900 focus:outline-none focus:border-[#018786] transition"
+              class="w-full rounded-lg border border-gray-300 bg-white p-2 text-xs text-gray-900 focus:outline-none focus:border-najmgreen transition leading-relaxed"
             ></textarea>
 
             <input
@@ -120,7 +120,7 @@
               type="text"
               v-model="item.value"
               @input="onFieldInput(item.path, item.value)"
-              class="w-full rounded-lg border border-gray-300 bg-white p-2 text-xs text-gray-900 focus:outline-none focus:border-[#018786] transition"
+              class="w-full rounded-lg border border-gray-300 bg-white p-2 text-xs text-gray-900 focus:outline-none focus:border-najmgreen transition"
             />
           </div>
         </div>
@@ -131,12 +131,12 @@
         <div>
           <div class="flex items-center justify-between pb-2.5 border-b border-gray-100 mb-3 text-xs">
             <h3 class="font-bold text-gray-900 font-d4 flex items-center gap-1">
-              <Icon name="si:json-fill" class="h-4 w-4 text-[#018786]" />
+              <Icon name="si:json-fill" class="h-4 w-4 text-najmgreen" />
               JSON Schema
             </h3>
             <button
               @click="copyJson"
-              class="text-[#018786] font-semibold hover:underline cursor-pointer"
+              class="text-najmgreen font-semibold hover:underline cursor-pointer"
             >
               {{ isRTL ? 'کپی JSON' : 'Copy JSON' }}
             </button>
@@ -153,7 +153,7 @@
             class="rounded-full px-2.5 py-0.5 font-bold"
             :class="hasUnsavedChanges ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'"
           >
-            {{ hasUnsavedChanges ? (isRTL ? 'تغییرات ذخیره‌نشده' : 'Unsaved') : (isRTL ? 'ذخیره شد' : 'Saved') }}
+            {{ hasUnsavedChanges ? (isRTL ? 'تغییرات ذخیره‌نشده' : 'Unsaved') : (isRTL ? 'همگام با سرور' : 'Saved') }}
           </span>
         </div>
       </div>
@@ -189,11 +189,13 @@ const availablePages = [
   { slug: 'about', labelFa: 'درباره ما', labelEn: 'About' },
   { slug: 'services', labelFa: 'خدمات چاپ', labelEn: 'Services' },
   { slug: 'products', labelFa: 'محصولات', labelEn: 'Products' },
+  { slug: 'contact', labelFa: 'تماس با ما', labelEn: 'Contact' },
+  { slug: 'catalog', labelFa: 'کاتالوگ‌ها', labelEn: 'Catalog' },
+  { slug: 'guides', labelFa: 'راهنماهای فنی', labelEn: 'Guides' },
 ]
 
 const { allUi } = usePageUI(selectedSlug.value)
 
-/** Recursive flattener to extract ONLY primitive string values and prevent [object Object] */
 function flattenObject(obj: any, prefix = ''): { path: string; value: string }[] {
   let result: { path: string; value: string }[] = []
   if (!obj || typeof obj !== 'object') return result
@@ -234,7 +236,6 @@ watch([selectedSlug, activeLang, allUi], () => {
 
 function onFieldInput(path: string, newValue: string) {
   hasUnsavedChanges.value = true
-  // Update nested JSON schema structure dynamically
   setDeepProperty(currentRawSchema.value, path, newValue)
 }
 
@@ -274,10 +275,10 @@ async function savePageChanges() {
 
     hasUnsavedChanges.value = false
     logInfo('CMS', `Saved CMS changes for ${selectedSlug.value} [${activeLang.value}]`)
-    alert(isRTL.value ? 'ذخیره شد.' : 'Saved.')
+    alert(isRTL.value ? 'تغییرات با موفقیت ذخیره شد.' : 'Saved.')
   } catch (err: any) {
     logError('CMS', `Failed to save CMS changes: ${err?.message || err}`)
-    alert(isRTL.value ? 'خطا در ذخیره.' : 'Error saving.')
+    alert(isRTL.value ? 'خطا در ذخیره تغییرات.' : 'Error saving.')
   } finally {
     saving.value = false
   }

@@ -5,31 +5,37 @@
     <div class="flex flex-col gap-3 rounded-2xl bg-white p-4 sm:p-6 shadow-xs border border-gray-200 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <div class="flex items-center gap-1.5 text-xs text-gray-500 mb-0.5">
-          <NuxtLink to="/dashboard" class="hover:underline">{{ isRTL ? 'پیشخوان' : 'Home' }}</NuxtLink>
+          <NuxtLink to="/dashboard" class="hover:text-najmgreen">{{ isRTL ? 'پیشخوان' : 'Home' }}</NuxtLink>
           <span>/</span>
-          <NuxtLink to="/dashboard/collections" class="hover:underline">{{ isRTL ? 'دیتابیس' : 'DB' }}</NuxtLink>
+          <NuxtLink to="/dashboard/collections" class="hover:text-najmgreen">{{ isRTL ? 'دیتابیس' : 'DB' }}</NuxtLink>
           <span>/</span>
-          <span class="font-bold text-gray-800">{{ collectionName }}</span>
+          <span class="font-bold text-gray-900">{{ collectionName }}</span>
         </div>
 
         <h2 class="text-lg sm:text-xl font-bold text-gray-900 font-d4 flex items-center gap-2">
-          <Icon name="mdi:table" class="h-5 w-5 text-[#018786]" />
+          <Icon name="mdi:table" class="h-5 w-5 text-najmgreen" />
           {{ getHumanTitle(collectionName) }}
           <span class="text-xs font-normal text-gray-500">({{ toLocalizedDigits(totalRecords) }})</span>
         </h2>
       </div>
 
       <div class="flex items-center gap-2 shrink-0">
-        <!-- Add New Record Drawer -->
-        <RecordDrawer :collection="collectionName" @saved="refreshData" />
+        <!-- Add New Record Trigger -->
+        <button
+          @click="openCreateModal"
+          class="flex items-center gap-1.5 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white px-3.5 py-2 text-xs font-bold transition shadow-xs cursor-pointer"
+        >
+          <Icon name="mdi:plus" class="h-4 w-4" />
+          <span>{{ isRTL ? 'افزودن رکورد جدید' : 'New Record' }}</span>
+        </button>
 
         <button
           @click="refreshData"
           :disabled="pending"
           class="flex items-center gap-1 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 transition cursor-pointer"
+          :title="isRTL ? 'به‌روزرسانی' : 'Refresh'"
         >
           <Icon name="mdi:refresh" class="h-4 w-4" :class="pending ? 'animate-spin' : ''" />
-          <span class="hidden xs:inline">{{ isRTL ? 'به‌روزرسانی' : 'Refresh' }}</span>
         </button>
       </div>
     </div>
@@ -37,11 +43,12 @@
     <!-- Filter Bar & View Mode Toggle -->
     <div class="flex flex-col gap-3 rounded-2xl bg-white p-3 sm:p-4 shadow-xs border border-gray-200 sm:flex-row sm:items-center sm:justify-between">
       <div class="relative flex-1 max-w-sm">
+        <Icon name="mdi:magnify" class="absolute right-3 top-2.5 w-4 h-4 text-gray-400" />
         <input
           v-model="searchQuery"
           type="text"
-          :placeholder="isRTL ? 'جستجو...' : 'Search...'"
-          class="w-full rounded-xl border border-gray-300 bg-gray-50 px-3.5 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-[#018786] transition"
+          :placeholder="isRTL ? 'جستجو در رکوردها...' : 'Search records...'"
+          class="w-full rounded-xl border border-gray-300 bg-gray-50 pr-9 pl-3 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-najmgreen transition font-mono text-right"
         />
       </div>
 
@@ -51,7 +58,7 @@
           <button
             @click="viewMode = 'grid'"
             class="flex items-center gap-1 rounded-lg px-2.5 py-1 font-semibold transition cursor-pointer"
-            :class="viewMode === 'grid' ? 'bg-white text-[#018786] shadow-xs' : 'text-gray-600 hover:text-gray-900'"
+            :class="viewMode === 'grid' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-600 hover:text-gray-900'"
           >
             <Icon name="mdi:view-grid-outline" class="h-4 w-4" />
             <span class="hidden sm:inline">{{ isRTL ? 'کارت‌ها' : 'Grid' }}</span>
@@ -60,7 +67,7 @@
           <button
             @click="viewMode = 'list'"
             class="flex items-center gap-1 rounded-lg px-2.5 py-1 font-semibold transition cursor-pointer"
-            :class="viewMode === 'list' ? 'bg-white text-[#018786] shadow-xs' : 'text-gray-600 hover:text-gray-900'"
+            :class="viewMode === 'list' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-600 hover:text-gray-900'"
           >
             <Icon name="mdi:view-headline" class="h-4 w-4" />
             <span class="hidden sm:inline">{{ isRTL ? 'لیست' : 'List' }}</span>
@@ -69,40 +76,40 @@
           <button
             @click="viewMode = 'table'"
             class="flex items-center gap-1 rounded-lg px-2.5 py-1 font-semibold transition cursor-pointer"
-            :class="viewMode === 'table' ? 'bg-white text-[#018786] shadow-xs' : 'text-gray-600 hover:text-gray-900'"
+            :class="viewMode === 'table' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-600 hover:text-gray-900'"
           >
             <Icon name="mdi:table" class="h-4 w-4" />
             <span class="hidden sm:inline">{{ isRTL ? 'جدول' : 'Table' }}</span>
           </button>
         </div>
 
-        <span class="text-gray-500 hidden md:inline">
+        <span class="text-gray-500 hidden md:inline font-mono">
           {{ isRTL ? 'صفحه' : 'Page' }} <strong class="text-gray-900">{{ toLocalizedDigits(page) }}</strong>
         </span>
       </div>
     </div>
 
-    <!-- Loading Shimmer (Only if no cached items exist) -->
+    <!-- Loading Shimmer -->
     <div v-if="pending && !items.length" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       <div v-for="i in 6" :key="i" class="h-44 rounded-2xl bg-gray-100 animate-pulse border border-gray-200"></div>
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="filteredItems.length === 0" class="rounded-2xl border border-gray-200 bg-white p-12 text-center text-gray-500">
-      <Icon name="mdi:text-box-remove-outline" class="h-10 w-10 text-gray-300 mx-auto mb-2" />
+    <div v-else-if="filteredItems.length === 0" class="rounded-2xl border border-gray-200 bg-white p-12 text-center text-gray-500 space-y-2">
+      <Icon name="mdi:text-box-remove-outline" class="h-10 w-10 text-gray-300 mx-auto" />
       <p class="text-xs font-semibold">{{ isRTL ? 'هیچ رکوردی یافت نشد.' : 'No records found.' }}</p>
     </div>
 
-    <!-- VIEW MODE 1: GRID CARDS (Default Ordinary Admin View) -->
+    <!-- VIEW MODE 1: GRID CARDS -->
     <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
       <div
         v-for="item in filteredItems"
         :key="item.id"
-        class="group flex flex-col justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-xs hover:border-[#018786] hover:shadow-md transition"
+        class="group flex flex-col justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-xs hover:border-najmgreen hover:shadow-md transition"
       >
         <div>
           <!-- Thumbnail Image Header -->
-          <div v-if="getFileUrl(item)" class="mb-3 h-36 w-full overflow-hidden rounded-xl bg-gray-100 border border-gray-200/80">
+          <div v-if="getFileUrl(item)" class="mb-3 h-36 w-full overflow-hidden rounded-xl bg-gray-100 border border-gray-200/80 flex items-center justify-center">
             <img
               :src="getFileUrl(item)!"
               :alt="getRecordTitle(item)"
@@ -113,11 +120,11 @@
 
           <!-- Title & Type Badge -->
           <div class="flex items-start justify-between gap-2 mb-2">
-            <h3 class="text-sm font-bold text-gray-900 group-hover:text-[#018786] transition font-d4 line-clamp-2">
+            <h3 class="text-sm font-bold text-gray-900 group-hover:text-najmgreen transition font-d4 line-clamp-2">
               {{ getRecordTitle(item) }}
             </h3>
 
-            <span v-if="item.layoutType || item.type || item.status" class="rounded-lg bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-[#018786] shrink-0">
+            <span v-if="item.layoutType || item.type || item.status" class="rounded-lg bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-najmgreen shrink-0">
               {{ item.layoutType || item.type || item.status }}
             </span>
           </div>
@@ -133,13 +140,15 @@
           <span class="text-gray-400 text-[11px] font-mono">ID: {{ item.id.slice(0, 8) }}</span>
 
           <div class="flex items-center gap-1">
-            <!-- Edit Record Drawer -->
-            <RecordDrawer
-              :collection="collectionName"
-              :record="item"
-              icon="mdi:pencil"
-              @saved="refreshData"
-            />
+            <!-- Open Advanced Drill-Down Editor Button -->
+            <button
+              @click="openMillerModal(item)"
+              class="rounded-xl px-2.5 py-1 bg-najmgreen/10 text-najmgreen hover:bg-najmgreen hover:text-white font-bold text-xs flex items-center gap-1 transition cursor-pointer"
+              :title="isRTL ? 'ویرایشگر پیشرفته ستونی' : 'Miller Editor'"
+            >
+              <Icon name="mdi:pencil-outline" class="h-3.5 w-3.5" />
+              <span>{{ isRTL ? 'ویرایش' : 'Edit' }}</span>
+            </button>
 
             <!-- Duplicate Record Button -->
             <button
@@ -148,15 +157,6 @@
               :title="isRTL ? 'کپی و تکثیر' : 'Duplicate'"
             >
               <Icon name="mdi:content-copy" class="h-3.5 w-3.5" />
-            </button>
-
-            <!-- JSON Payload Toggle -->
-            <button
-              @click="toggleExpand(item.id)"
-              class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition cursor-pointer"
-              :title="isRTL ? 'مشاهده JSON' : 'Inspect JSON'"
-            >
-              <Icon name="si:json-fill" class="h-3.5 w-3.5" :class="expandedMap[item.id] ? 'text-[#018786]' : ''" />
             </button>
 
             <!-- Delete Record Button -->
@@ -169,15 +169,6 @@
             </button>
           </div>
         </div>
-
-        <!-- Expanded JSON Block -->
-        <div v-if="expandedMap[item.id]" class="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3 text-[11px] text-gray-800 overflow-x-auto shadow-inner" dir="ltr">
-          <div class="flex items-center justify-between mb-1 text-gray-400 text-[10px] pb-1 border-b">
-            <span>Raw JSON Payload</span>
-            <button @click="toggleExpand(item.id)" class="hover:text-gray-700">Close</button>
-          </div>
-          <pre class="whitespace-pre-wrap break-words">{{ JSON.stringify(item, null, 2) }}</pre>
-        </div>
       </div>
     </div>
 
@@ -186,7 +177,7 @@
       <div
         v-for="item in filteredItems"
         :key="item.id"
-        class="flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-xs hover:border-[#018786] transition gap-3"
+        class="flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl border border-gray-200 bg-white p-4 shadow-xs hover:border-najmgreen transition gap-3"
       >
         <div class="flex items-center gap-3.5 min-w-0">
           <div v-if="getFileUrl(item)" class="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gray-100 border border-gray-200">
@@ -198,7 +189,7 @@
               <h3 class="text-sm font-bold text-gray-900 font-d4 truncate">
                 {{ getRecordTitle(item) }}
               </h3>
-              <span v-if="item.layoutType || item.type" class="rounded bg-teal-50 px-1.5 py-0.2 text-[10px] font-bold text-[#018786]">
+              <span v-if="item.layoutType || item.type" class="rounded bg-emerald-50 px-1.5 py-0.2 text-[10px] font-bold text-najmgreen">
                 {{ item.layoutType || item.type }}
               </span>
             </div>
@@ -209,48 +200,48 @@
         </div>
 
         <div class="flex items-center gap-1.5 justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
-          <RecordDrawer :collection="collectionName" :record="item" icon="mdi:pencil" @saved="refreshData" />
+          <button
+            @click="openMillerModal(item)"
+            class="rounded-xl px-3 py-1.5 bg-najmgreen text-white font-bold text-xs flex items-center gap-1 transition"
+          >
+            <Icon name="mdi:pencil-outline" class="h-3.5 w-3.5" />
+            <span>ویرایش</span>
+          </button>
           <button @click="duplicateRecord(item)" class="p-1.5 text-gray-500 hover:bg-gray-100 rounded-lg">
             <Icon name="mdi:content-copy" class="h-3.5 w-3.5" />
-          </button>
-          <button @click="toggleExpand(item.id)" class="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg">
-            <Icon name="si:json-fill" class="h-3.5 w-3.5" />
           </button>
           <button @click="deleteRecord(item.id)" class="p-1.5 text-red-500 hover:bg-red-50 rounded-lg">
             <Icon name="mdi:delete-outline" class="h-3.5 w-3.5" />
           </button>
-        </div>
-
-        <!-- Expanded JSON -->
-        <div v-if="expandedMap[item.id]" class="w-full mt-2 rounded-xl border border-gray-200 bg-gray-50 p-3 text-[11px] overflow-x-auto" dir="ltr">
-          <pre class="whitespace-pre-wrap">{{ JSON.stringify(item, null, 2) }}</pre>
         </div>
       </div>
     </div>
 
     <!-- VIEW MODE 3: SIMPLE TABLE -->
     <div v-else class="relative overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-xs max-w-full">
-      <table class="w-full text-xs text-left">
+      <table class="w-full text-xs text-right">
         <thead class="bg-gray-50 text-gray-700 font-semibold border-b border-gray-200">
           <tr>
             <th class="px-3 py-2.5">ID</th>
             <th class="px-3 py-2.5">{{ isRTL ? 'عنوان / نام' : 'Title' }}</th>
             <th class="px-3 py-2.5">{{ isRTL ? 'توضیحات' : 'Description' }}</th>
             <th class="px-3 py-2.5">{{ isRTL ? 'نوع' : 'Type' }}</th>
-            <th class="px-3 py-2.5 text-center w-24">{{ isRTL ? 'عملیات' : 'Actions' }}</th>
+            <th class="px-3 py-2.5 text-center w-28">{{ isRTL ? 'عملیات' : 'Actions' }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
           <tr v-for="item in filteredItems" :key="item.id" class="hover:bg-gray-50 transition">
-            <td class="px-3 py-2.5 font-bold text-gray-900 font-mono">{{ item.id }}</td>
+            <td class="px-3 py-2.5 font-bold text-gray-900 font-mono">{{ item.id.slice(0, 8) }}</td>
             <td class="px-3 py-2.5 text-gray-900 font-bold truncate max-w-[200px]">{{ getRecordTitle(item) }}</td>
             <td class="px-3 py-2.5 text-gray-600 truncate max-w-[250px]">{{ getRecordExcerpt(item) || '—' }}</td>
             <td class="px-3 py-2.5 text-gray-500">{{ item.layoutType || item.type || item.status || '—' }}</td>
             <td class="px-3 py-2.5 text-center">
               <div class="flex items-center justify-center gap-1">
-                <RecordDrawer :collection="collectionName" :record="item" icon="mdi:pencil" @saved="refreshData" />
-                <button @click="deleteRecord(item.id)" class="p-1 text-red-500 hover:bg-red-50 rounded">
-                  <Icon name="mdi:delete-outline" class="h-3.5 w-3.5" />
+                <button @click="openMillerModal(item)" class="p-1.5 text-najmgreen hover:bg-emerald-50 rounded" title="ویرایش">
+                  <Icon name="mdi:pencil-outline" class="h-4 w-4" />
+                </button>
+                <button @click="deleteRecord(item.id)" class="p-1.5 text-red-500 hover:bg-red-50 rounded" title="حذف">
+                  <Icon name="mdi:delete-outline" class="h-4 w-4" />
                 </button>
               </div>
             </td>
@@ -270,7 +261,7 @@
         {{ isRTL ? 'قبلی' : 'Previous' }}
       </button>
 
-      <span class="font-semibold text-gray-600">
+      <span class="font-semibold text-gray-600 font-mono">
         {{ isRTL ? 'صفحه' : 'Page' }} <strong class="text-gray-900">{{ toLocalizedDigits(page) }}</strong>
       </span>
 
@@ -283,6 +274,15 @@
         <Icon :name="isRTL ? 'mdi:chevron-left' : 'mdi:chevron-right'" class="h-4 w-4" />
       </button>
     </div>
+
+    <!-- Integrated Miller-Columns Drill-Down Modal Editor -->
+    <MillerColumnModal
+      :isOpen="millerModalOpen"
+      :collectionName="collectionName"
+      :record="editingRecord"
+      @close="millerModalOpen = false"
+      @saved="refreshData"
+    />
   </div>
 </template>
 
@@ -293,7 +293,7 @@ import { useLocale } from '~/composables/useLocale'
 import { useAdminLogger } from '~/composables/useAdminLogger'
 import { useDashboardState } from '~/composables/useDashboardCache'
 import { toLocalizedDigits } from '~/utils/digits'
-import RecordDrawer from '~/components/RecordDrawer.vue'
+import MillerColumnModal from '~/components/admin/MillerColumnModal.vue'
 
 definePageMeta({
   layout: 'dashboard',
@@ -309,14 +309,16 @@ const page = ref(1)
 const per = 24
 const searchQuery = ref('')
 const viewMode = ref<'grid' | 'list' | 'table'>('grid')
-const expandedMap = ref<Record<string, boolean>>({})
+
+// Miller Column Drill-Down Modal State
+const millerModalOpen = ref(false)
+const editingRecord = ref<Record<string, any> | null>(null)
 
 interface CollectionResponse {
   items: Record<string, any>[]
   totalItems: number
 }
 
-// 0ms instant cached state
 const cachedState = useDashboardState<CollectionResponse>(`col-${collectionName.value}`, () => ({ items: [], totalItems: 0 }))
 
 const { data: colData, pending, refresh } = await useAsyncData<CollectionResponse>(
@@ -380,8 +382,14 @@ function getFileUrl(item: Record<string, any>): string | null {
   return `${pbUrl}/api/files/${colId}/${item.id}/${filename}`
 }
 
-function toggleExpand(id: string) {
-  expandedMap.value[id] = !expandedMap.value[id]
+function openMillerModal(item: Record<string, any>) {
+  editingRecord.value = JSON.parse(JSON.stringify(item))
+  millerModalOpen.value = true
+}
+
+function openCreateModal() {
+  editingRecord.value = null
+  millerModalOpen.value = true
 }
 
 async function refreshData() {
