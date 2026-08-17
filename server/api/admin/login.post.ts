@@ -5,41 +5,50 @@ import { readBody, setCookie, createError } from 'h3'
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   if (!email || !password) {
-    throw createError({ statusCode: 400, statusMessage: 'email & password required' })
+    throw createError({ statusCode: 400, statusMessage: 'ایمیل و گذرواژه را وارد کنید.' })
   }
 
+  const pbUrl = useRuntimeConfig().public.pbUrl || process.env.PB_URL || 'http://127.0.0.1:8090'
+  const pb = new PocketBase(pbUrl)
+
+  let token = ''
   try {
-    // 1) Authenticate against your superusers collection
-    const pb = new PocketBase(useRuntimeConfig().public.pbUrl)
-    const { token } = await pb
-      .collection('_superusers')
-      .authWithPassword(email, password)
+    // 1) Try PocketBase v0.23+ _superusers collection
+    const res = await pb.collection('_superusers').authWithPassword(email, password)
+    token = res.token
+  } catch (err1: any) {
+    try {
+      // 2) Fallback to legacy PocketBase admins API
+      const res = await pb.admins.authWithPassword(email, password)
+      token = res.token
+    } catch (err2: any) {
+      console.error('[Admin Login Failed]', {
+        pbUrl,
+        email,
+        superusersError: err1?.message || err1,
+        adminsError: err2?.message || err2
+      })
 
-    // 2) Store it in an httpOnly cookie
-    // setCookie(event, 'pb_admin', token, {
-    //   httpOnly: true,
-    //   // secure: false,
-    //   sameSite: 'lax',
-    //   maxAge: 60 * 60 * 48,
-    //   path: '/',
-    // })
-
-    // for dev:
-    setCookie(event, 'pb_admin', token, {
-      httpOnly: false,      // so you can inspect in dev
-      secure: false,        // localhost isn’t HTTPS
-      sameSite: 'lax',      // or 'none' if you need cross-site
-      domain: 'localhost',  // explicitly allow on your host
-      path: '/',
-      maxAge: 60 * 60 * 48,
-    })
-
-
-    return { ok: true }
-  } catch (err: any) {
-    throw createError({
-      statusCode: err?.status || 500,
-      statusMessage: err?.data?.message || 'authentication failed',
-    })
+      const status = err1?.status || err2?.status || 401
+      const msg = err1?.data?.message || err2?.data?.message || err1?.message || err2?.message || 'ایمیل یا گذرواژه اشتباه است یا به دیتابیس متصل نشد.'
+      
+      throw createError({
+        statusCode: status,
+        statusMessage: msg,
+        data: { message: msg }
+      })
+    }
   }
+
+  // Store in cookie
+  setCookie(event, 'pb_admin', token, {
+    httpOnly: false,
+    secure: false,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 48,
+  })
+
+  return { ok: true }
 })
+

@@ -81,6 +81,7 @@ onMounted(() => {
 
   <section id="solutions" class="min-h-screen py-0 px-0" >
     <!-- <h2>راهکارها و ویژگی‌ها</h2> -->
+     <ScrollStory/>
     <SolutionsSection />
   </section>
 
