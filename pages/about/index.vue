@@ -1,34 +1,31 @@
 <!-- pages/about/index.vue -->
 <template>
   <div dir="rtl" class="min-h-screen bg-najmback">
-    <!-- Sticky Sub Navigation (Scroll-spy) -->
-    <nav
-      class="fixed w-full overflow-auto px-4 z-40 bg-white/90 backdrop-blur-md border-b border-najmborder/60 transition-all duration-300 navcont"
-      :class="subnavAtTop ? 'top-0 py-2.5 shadow-xs' : 'top-16 py-3'"
-    >
-      <ul class="flex gap-2 overflow-x-auto whitespace-nowrap mx-auto w-max py-0.5">
+    <!-- Stable Fixed Sub Navigation (Scroll-spy) -->
+    <nav class="fixed top-16 inset-x-0 z-30 bg-white/90 backdrop-blur-md border-b border-najmborder/60 shadow-2xs py-2.5 px-4 transition-all">
+      <ul class="flex items-center gap-2 overflow-x-auto whitespace-nowrap mx-auto w-max py-0.5 navcont">
         <li
           v-for="item in sections"
           :key="item.id"
-          class="transition-all duration-200 rounded-full cursor-pointer"
-          :class="[
-            activeSection === item.id
-              ? 'bg-najmgreen text-white shadow-xs font-bold'
-              : 'bg-najmgrey text-gray-700 hover:bg-gray-200 font-medium'
-          ]"
+          class="transition-all duration-200 rounded-full"
         >
-          <a
-            :href="'#' + item.id"
-            class="block px-4 py-1.5 text-xs text-d4"
+          <button
+            @click="scrollToSection(item.id)"
+            class="block px-4 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer"
+            :class="[
+              activeSection === item.id
+                ? 'bg-najmgreen text-white shadow-xs font-bold'
+                : 'bg-najmgrey text-gray-700 hover:bg-gray-200 font-medium'
+            ]"
           >
             {{ item.label }}
-          </a>
+          </button>
         </li>
       </ul>
     </nav>
 
     <!-- Main Content Container -->
-    <div class="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">
+    <div class="pt-36 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">
       <!-- Section 1: Hero & Vision (with staff.png and machines-back.png) -->
       <section id="vision" class="scroll-mt-36 space-y-8">
         <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -44,18 +41,18 @@
             </p>
             
             <!-- Quick Stats -->
-            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100 font-mono text-center">
+            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-gray-100 text-center">
               <div class="p-3.5 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
-                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5">+۲۵ سال</div>
-                <div class="text-[11px] text-gray-600 font-sans">سابقه مستمر</div>
+                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5 text-d4">+۲۵ سال</div>
+                <div class="text-[11px] text-gray-600">سابقه مستمر صنعتی</div>
               </div>
               <div class="p-3.5 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
-                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5">+۱۵ میلیون</div>
-                <div class="text-[11px] text-gray-600 font-sans">تولید سالانه</div>
+                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5 text-d4">+۱۵ میلیون</div>
+                <div class="text-[11px] text-gray-600">تیراژ تولید سالانه</div>
               </div>
               <div class="p-3.5 rounded-2xl bg-najmgrey/60 border border-najmborder/40">
-                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5">۹۹.۸٪</div>
-                <div class="text-[11px] text-gray-600 font-sans">انطباق رنگی</div>
+                <div class="text-xl sm:text-2xl font-extrabold text-najmgreen mb-0.5 text-d4">۹۹.۸٪</div>
+                <div class="text-[11px] text-gray-600">انطباق دقیق رنگی</div>
               </div>
             </div>
           </div>
@@ -71,7 +68,7 @@
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
             <div class="absolute bottom-4 right-4 text-white text-right">
               <div class="text-xs font-bold text-d4">تیم متخصص مهندسی چاپ و تولید</div>
-              <div class="text-[10px] text-white/80 font-mono">Najm Industrial Printing Plant</div>
+              <div class="text-[10px] text-white/80">مجتمع تخصصی چاپ و بسته‌بندی نجم</div>
             </div>
           </div>
         </div>
@@ -81,7 +78,7 @@
       <section id="story" class="scroll-mt-36 space-y-8">
         <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 space-y-8">
           <div class="max-w-3xl space-y-3">
-            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 border border-gray-200">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 border border-gray-200 text-d4">
               سرمایه انسانی و تخصص فنی
             </span>
             <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 text-d4">
@@ -103,13 +100,13 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold">
+                <span class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold text-d4">
                   پیش از چاپ
                 </span>
               </div>
               <div class="space-y-1">
                 <h3 class="text-sm font-bold text-gray-900 text-d4">واحد لیتوگرافی و تفکیک رنگ CTP</h3>
-                <p class="text-xs text-gray-500">کنترل تفکیک رنگ‌های اسپات و تهیه زینک‌های حرارتی با دقت ۲۴۰۰DPI</p>
+                <p class="text-xs text-gray-500 leading-relaxed">کنترل تفکیک رنگ‌های اسپات و تهیه زینک‌های حرارتی با بالاترین وضوح</p>
               </div>
             </div>
 
@@ -122,13 +119,13 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold">
+                <span class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold text-d4">
                   خطوط چاپ
                 </span>
               </div>
               <div class="space-y-1">
                 <h3 class="text-sm font-bold text-gray-900 text-d4">اپراتوری خطوط افست ۵ رنگ</h3>
-                <p class="text-xs text-gray-500">تنظیم دانسیته مرکب، تعادل آب و رنگ و پایش ثبات در تیراژهای میلیونی</p>
+                <p class="text-xs text-gray-500 leading-relaxed">تنظیم دانسیته مرکب، تعادل آب و رنگ و پایش ثبات در تیراژهای میلیونی</p>
               </div>
             </div>
 
@@ -141,13 +138,13 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
                 />
-                <span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold">
+                <span class="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-md bg-najmgreen text-white text-[10px] font-bold text-d4">
                   پس از چاپ
                 </span>
               </div>
               <div class="space-y-1">
                 <h3 class="text-sm font-bold text-gray-900 text-d4">تست استحکام و خطوط تکمیلی</h3>
-                <p class="text-xs text-gray-500">نظارت بر تیغ‌زنی دقیق، سلفون‌کشی حرارتی و چسب لاک‌باتم اتوماتیک</p>
+                <p class="text-xs text-gray-500 leading-relaxed">نظارت بر تیغ‌زنی دقیق، سلفون‌کشی حرارتی و چسب لاک‌باتم اتوماتیک</p>
               </div>
             </div>
           </div>
@@ -203,7 +200,7 @@
       <!-- Section 5: Facilities & Machinery Fleet (machines-1, 2, 3, 4, 5, machines-small-1) -->
       <section id="facility" class="scroll-mt-36 space-y-8">
         <div class="text-center max-w-3xl mx-auto space-y-2">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 border border-gray-200">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 border border-gray-200 text-d4">
             ناوگان ماشین‌آلات صنعتی
           </span>
           <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 text-d4">
@@ -226,7 +223,7 @@
                   loading="lazy"
                 />
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen text-d4">
                 HEIDELBERG SPEEDMASTER
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">چاپ افست ۵ رنگ ورقی</h3>
@@ -234,9 +231,9 @@
                 مجهز به سیستم کنترل رنگ آنلاین Prinect Inpress Control با قابلیت چاپ رنگ‌های اختصاصی پنتون و ورنی همزمان.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
-              <span>حداکثر ابعاد: ۷۲×۱۰۲ cm</span>
-              <span class="font-bold text-gray-800">۱۵,۰۰۰ برگ/ساعت</span>
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between">
+              <span>حداکثر ابعاد: ۷۲×۱۰۲ سانتی‌متر</span>
+              <span class="font-bold text-gray-800 text-d4">۱۵,۰۰۰ برگ/ساعت</span>
             </div>
           </div>
 
@@ -251,7 +248,7 @@
                   loading="lazy"
                 />
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen text-d4">
                 BOBST DIE-CUTTING
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">دایکات و پوشال‌برداری اتوماتیک</h3>
@@ -259,9 +256,9 @@
                 تیغ‌زنی، خط‌تا و برجسته‌سازی انواع مقواهای ایندربرد و فلوت‌دار با دقت میکرونی و سرعت صنعتی بالا.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between">
               <span>فشار تیغ: ۳۰۰ تن</span>
-              <span class="font-bold text-gray-800">۸,۰۰۰ شیت/ساعت</span>
+              <span class="font-bold text-gray-800 text-d4">۸,۰۰۰ شیت/ساعت</span>
             </div>
           </div>
 
@@ -276,7 +273,7 @@
                   loading="lazy"
                 />
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen text-d4">
                 HEIDELBERG SUPRASETTER CTP
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">خروجی مستقیم زینک حرارتی (CTP)</h3>
@@ -284,9 +281,9 @@
                 تولید زینک‌های بدون شیمیایی و حرارتی با تفکیک ترام ۱ الی ۹۹ درصد جهت بالاترین وضوح در تصاویر چاپی.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between">
               <span>رزولوشن: ۲۵۴۰ DPI</span>
-              <span class="font-bold text-gray-800">۲۴ پلیت/ساعت</span>
+              <span class="font-bold text-gray-800 text-d4">۲۴ پلیت/ساعت</span>
             </div>
           </div>
 
@@ -301,7 +298,7 @@
                   loading="lazy"
                 />
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen text-d4">
                 AUTO FOLDER-GLUER
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">جعبه‌چسبانی خطی و لاک‌باتم</h3>
@@ -309,9 +306,9 @@
                 چسب‌زنی ۴ و ۶ نقطه جعبه‌های دارویی، غذایی و بهداشتی مجهز به سیستم‌های تزریق چسب سرد و گرم پیشرفته.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between">
               <span>قابلیت: لاک‌باتم + خطی</span>
-              <span class="font-bold text-gray-800">۵۰,۰۰۰ جعبه/ساعت</span>
+              <span class="font-bold text-gray-800 text-d4">۵۰,۰۰۰ جعبه/ساعت</span>
             </div>
           </div>
 
@@ -326,7 +323,7 @@
                   loading="lazy"
                 />
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen text-d4">
                 THERMAL LAMINATOR & UV
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">سلفون حرارتی و پوشش‌های UV</h3>
@@ -334,9 +331,9 @@
                 اعمال انواع سلفون مات، براق، سافت‌تاچ، ضدخش و یووی موضعی برجسته با چسبندگی فوق‌العاده روی شیت چاپی.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between">
               <span>پوشش: مات، براق، شنی</span>
-              <span class="font-bold text-gray-800">۶,۵۰۰ شیت/ساعت</span>
+              <span class="font-bold text-gray-800 text-d4">۶,۵۰۰ شیت/ساعت</span>
             </div>
           </div>
 
@@ -351,7 +348,7 @@
                   loading="lazy"
                 />
               </div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen font-mono">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-najmgreen text-d4">
                 QUALITY CONTROL LAB
               </span>
               <h3 class="text-base font-bold text-gray-900 mt-2 mb-1 text-d4">آزمایشگاه کنترل کیفیت مقوا</h3>
@@ -359,9 +356,9 @@
                 تست رطوبت‌سنجی، مقاومت به خمش و سایش، تست چسبندگی و انطباق رنگ در شرایط نوری استاندارد D50.
               </p>
             </div>
-            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex justify-between">
+            <div class="mt-4 pt-3 border-t border-gray-100 text-[11px] text-gray-500 flex justify-between">
               <span>استاندارد: ISO 12647-2</span>
-              <span class="font-bold text-gray-800">تست ۱۰۰٪ پچ‌ها</span>
+              <span class="font-bold text-gray-800 text-d4">تست ۱۰۰٪ پچ‌ها</span>
             </div>
           </div>
         </div>
@@ -370,7 +367,7 @@
       <!-- Section 6: Closing Invitation & CTA -->
       <section id="aboutus" class="scroll-mt-36 bg-najmgreen text-white rounded-3xl p-8 sm:p-14 shadow-xs flex flex-col lg:flex-row items-center justify-between gap-8">
         <div class="space-y-3 max-w-2xl text-right">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/20">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white border border-white/20 text-d4">
             بازدید و مشاوره حضوری
           </span>
           <h2 class="text-2xl sm:text-4xl font-extrabold text-d4 leading-tight">
@@ -383,13 +380,13 @@
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
           <NuxtLink
             to="/contact"
-            class="px-8 py-3.5 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition text-center shadow-xs whitespace-nowrap"
+            class="px-8 py-3.5 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition text-center shadow-xs whitespace-nowrap text-d4"
           >
             هماهنگی بازدید و استعلام
           </NuxtLink>
           <NuxtLink
             to="/catalog"
-            class="px-8 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition text-center border border-white/20 whitespace-nowrap"
+            class="px-8 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition text-center border border-white/20 whitespace-nowrap text-d4"
           >
             دانلود کاتالوگ جامع
           </NuxtLink>
@@ -400,9 +397,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import SolutionsSection from '~/components/about/SolutionsSectionGPinned.vue'
-import { scrollDirection } from '~/composables/useScrollStore'
 
 definePageMeta({
   name: 'درباره ما - چاپ نجم',
@@ -419,7 +415,21 @@ const sections = [
 ]
 
 const activeSection = ref('vision')
-const subnavAtTop = computed(() => scrollDirection.value === 'down')
+
+function scrollToSection(id: string) {
+  const el = document.getElementById(id)
+  if (!el) return
+  
+  // Calculate precise offset considering header (64px) + subnav (~48px) + padding
+  const yOffset = -135
+  const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+  
+  window.scrollTo({
+    top: y,
+    behavior: 'smooth'
+  })
+  activeSection.value = id
+}
 
 onMounted(() => {
   const observer = new IntersectionObserver(
@@ -430,7 +440,7 @@ onMounted(() => {
         }
       })
     },
-    { rootMargin: '-10% 0px -70% 0px' }
+    { rootMargin: '-15% 0px -65% 0px' }
   )
 
   sections.forEach(s => {
