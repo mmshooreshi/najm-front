@@ -155,62 +155,29 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    minify: true,
+    preset: 'vercel',
     compressPublicAssets: true,
-    experimental: {
-      wasm: true
+    prerender: {
+      crawlLinks: false
     }
   },
 
   build: {
     transpile: ['gsap']
   },
-  // routeRules: {
-  //     // Homepage pre-rendered at build time
-  //     '/': { prerender: true },
-  //   // apply to all files under /images
-  //   '**/_ipx/**': {
-  //     headers: {
-  //       'cache-control': 'public, max-age=31536000, immutable'
-  //     }
-  //   },
-  //   '**/main/**': {
-  //     headers: {
-  //       'cache-control': 'public, max-age=31536000, immutable'
-  //     }
-  //   },
-  //   // you can add other static folders too:
-  //   '/fonts/**': {
-  //     headers: {
-  //       'cache-control': 'public, max-age=31536000, immutable'
-  //     }
-  //   }
-  // },
 
   modules: [
-    //  'unplugin-icons/nuxt',
     'nuxt-headlessui',
     '@pinia/nuxt',
     '@unocss/nuxt',
     '@vueuse/nuxt',
-    '@vueuse/motion/nuxt', // '@hypernym/nuxt-gsap',
-    '@nuxt/icon', // 'nuxt-lodash',
+    '@vueuse/motion/nuxt',
+    '@nuxt/icon',
     'v-gsap-nuxt',
-    'nuxt-shiki',
     'nuxt-swiper',
-    '@nuxtjs/strapi',
     '@nuxt/image',
     'nuxt-mapbox'
   ],
-  strapi: {
-    url: process.env.STRAPI_URL || 'http://localhost:1337',
-    token: process.env.STRAPI_TOKEN || undefined,
-    prefix: '/api',
-    admin: '/admin',
-    version: 'v5',
-    cookie: {},
-    cookieName: 'strapi_jwt'
-  },
   proxy: {
     '/najm/': {
       target: 'http://65.108.80.205:8090'
@@ -220,15 +187,6 @@ export default defineNuxtConfig({
   features: {
     inlineStyles: false
   },
-  // gsap: {
-  //   composables: true
-  // },
-  //   vgsap: {
-  //     presets: [],
-  //     breakpoint: 768,
-  //     scroller: "",  // Now correctly targeting scroll container
-  //     composable: true
-  //  },
   router: {
     options: {
       scrollBehaviorType: 'smooth'
@@ -237,8 +195,7 @@ export default defineNuxtConfig({
 
   css: [
     '~/assets/css/fontiran.css',
-    '~/assets/css/main.css',
-    '~/assets/css/shiki.css'
+    '~/assets/css/main.css'
   ],
   runtimeConfig: {
     public: {

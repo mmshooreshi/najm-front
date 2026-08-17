@@ -124,11 +124,9 @@ onMounted(() => {
 
 
 <style scoped>
-/* Base color for the shine */
---skeleton-shine-color: rgba(233, 236, 240, 1);
-
 /* Container setup */
 .skeleton {
+  --skeleton-shine-color: rgba(233, 236, 240, 1);
   position: relative;
   overflow: hidden;          /* keep the shine inside rounded corners */
   border-radius: 8px;        /* smoother edges */
