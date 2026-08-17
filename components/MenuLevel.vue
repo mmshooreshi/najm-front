@@ -113,10 +113,12 @@
 //       : `${item.slug}`
 
   
-  const fullSlug = (item: any) =>
-    props.parentSlug
-      ? `${props.parentSlug}/${item.slug}`
-      : `${item.slug}`
+  const fullSlug = (item: any) => {
+    if (!item || !item.slug) return props.parentSlug || '/'
+    if (item.slug.startsWith('/')) return item.slug
+    if (!props.parentSlug || props.parentSlug === '/') return `/${item.slug}`
+    return `${props.parentSlug.replace(/\/+$/, '')}/${item.slug.replace(/^\/+/, '')}`
+  }
 
 
       function onAccordionOpen(itemId: string|number) {

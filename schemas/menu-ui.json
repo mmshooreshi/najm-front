@@ -9,7 +9,7 @@
       {
         "id": 1,
         "name": "چاپ و بسته‌بندی",
-        "slug": "printing-and-packaging",
+        "slug": "",
         "type": "accordion",
         "order": 1,
         "tabs": true,
@@ -268,7 +268,7 @@
       {
         "id": 2,
         "name": "بر اساس کاربرد و صنعت",
-        "slug": "industries-or-applications",
+        "slug": "",
         "type": "accordion",
         "order": 1,
         "tabs": true,
@@ -505,7 +505,7 @@
       {
         "id": 1,
         "name": "کاتالوگ",
-        "slug": "catalog",
+        "slug": "/resources",
         "type": "link-simple",
         "order": 1,
         "children": []
@@ -513,7 +513,7 @@
       {
         "id": 2,
         "name": "فایل‌های راهنما",
-        "slug": "guides",
+        "slug": "/resources/guides",
         "type": "link-simple",
         "order": 2,
         "children": []
@@ -530,7 +530,7 @@
       {
         "id": 1,
         "name": "درباره‌ما",
-        "slug": "about",
+        "slug": "/about",
         "type": "link-simple",
         "order": 1,
         "children": []
@@ -538,7 +538,7 @@
       {
         "id": 2,
         "name": "تماس با ما",
-        "slug": "contact",
+        "slug": "/contact",
         "type": "link-simple",
         "order": 2,
         "children": []

@@ -86,83 +86,58 @@ interface Product {
   name: string
   subtitle?: string
   buttonText?: string
+  to?: string
 }
 
 const products: Product[] = [
   {
     id: 1,
     image: '/images/products/test.png',
-    name: 'محصول ۱',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
+    name: 'جعبه مقوایی و دارویی',
+    subtitle: 'حداقل ۱,۰۰۰ عدد • ایندربرد بهداشتی',
+    buttonText: 'مشاهده مشخصات',
+    to: '/products/packaging/boxes'
   },
   {
     id: 2,
     image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
+    name: 'ساک دستی کاغذی (Shopping Bag)',
+    subtitle: 'حداقل ۵۰۰ عدد • گلاسه و کرافت',
+    buttonText: 'مشاهده مشخصات',
+    to: '/products/packaging/shopping-bags'
   },
   {
     id: 3,
     image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
+    name: 'سربرگ و ست اداری اختصاصی',
+    subtitle: 'حداقل ۱,۰۰۰ برگ • کاغذ تحریر و کتان',
+    buttonText: 'مشاهده مشخصات',
+    to: '/products/printing/letterhead'
   },
   {
     id: 4,
     image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
+    name: 'پاکت‌نامه و پاکت اداری A4',
+    subtitle: 'حداقل ۱,۰۰۰ عدد • چسب درب آماده',
+    buttonText: 'مشاهده مشخصات',
+    to: '/products/printing/envelopes'
   },
   {
     id: 5,
     image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
+    name: 'کارت ویزیت لوکس و مدیریتی',
+    subtitle: 'حداقل ۵۰۰ عدد • طلاکوب و مخملی',
+    buttonText: 'مشاهده مشخصات',
+    to: '/products/printing/business-cards'
   },
   {
     id: 6,
     image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
-  },
-  {
-    id: 7,
-    image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
-  },
-  {
-    id: 8,
-    image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
-  },
-  {
-    id: 9,
-    image: '/images/products/test.png',
-    name: 'محصول ۲',
-    subtitle: 'حداقل ۵۰۰+ عدد',
-    price: 'قیمت: ۲۰۰,۰۰۰ تومان',
-    buttonText: 'نمایش ابعاد'
+    name: 'کاتالوگ و بروشور تبلیغاتی',
+    subtitle: 'حداقل ۵۰۰ جلد • صحافی چسب گرم PUR',
+    buttonText: 'مشاهده مشخصات',
+    to: '/products/printing/brochures-catalogs'
   }
-  // …more products
 ]
-
 </script>
   

@@ -32,16 +32,12 @@
 
         </div>
   
-        <NuxtLink
+        <div
           v-else-if="section && section.type === 'hidden'"
-          :to="`/${section.slug}`"
-          class="py-3 border-t flex justify-between items-center"
+          class="my-2 border-t border-gray-100 pt-2"
         >
-        <template #default>
-            <MenuLevel :items="section.children" :parent-slug="section.slug" />
-          </template>
-
-        </NuxtLink>
+          <MenuLevel :items="section.children" :parent-slug="section.slug" />
+        </div>
       </div>
     </div>
   </template>
