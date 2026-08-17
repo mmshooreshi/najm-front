@@ -105,10 +105,10 @@
         </div>
       </div>
 
-      <!-- Bottom Hint Bar -->
+      <!-- Bottom Status Bar -->
       <div class="relative z-10 flex items-center justify-between text-[11px] text-neutral-400 border-t border-white/10 pt-3">
-        <span>برای مرور کامل راهکارها، به اسکرول ادامه دهید</span>
-        <span class="font-mono text-emerald-400">PINNED SCROLL LOCK</span>
+        <span class="text-neutral-400">برای مرور راهکارها به اسکرول ادامه دهید</span>
+        <span class="text-emerald-400/90 font-medium">مجتمع تخصصی چاپ و بسته‌بندی نجم</span>
       </div>
     </div>
   </div>

@@ -1,30 +1,34 @@
 <!-- pages/about/index.vue -->
 <template>
   <div dir="rtl" class="min-h-screen bg-najmback text-gray-800 relative">
-    <!-- Smart Floating Capsule Sub-Nav (Smooth, zero initial jump, auto-hides on scroll down) -->
-    <div
-      v-if="isMounted"
-      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
-      :class="[
-        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
-      ]"
-    >
-      <nav class="pointer-events-auto bg-white/85 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
-        <button
-          v-for="item in sections"
-          :key="item.id"
-          @click="scrollToSection(item.id)"
-          class="px-3.5 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer whitespace-nowrap"
+    <!-- Smart Floating Capsule Sub-Nav (Teleported to body so it never jumps during route transitions) -->
+    <ClientOnly>
+      <Teleport to="body">
+        <div
+          v-if="isMounted"
+          class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
           :class="[
-            activeSection === item.id
-              ? 'bg-najmgreen text-white shadow-xs font-bold'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
+            navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
           ]"
         >
-          {{ item.label }}
-        </button>
-      </nav>
-    </div>
+          <nav class="pointer-events-auto bg-white/85 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
+            <button
+              v-for="item in sections"
+              :key="item.id"
+              @click="scrollToSection(item.id)"
+              class="px-3.5 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer whitespace-nowrap"
+              :class="[
+                activeSection === item.id
+                  ? 'bg-najmgreen text-white shadow-xs font-bold'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
+              ]"
+            >
+              {{ item.label }}
+            </button>
+          </nav>
+        </div>
+      </Teleport>
+    </ClientOnly>
 
     <!-- Main Editorial Container -->
     <main class="pt-24 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-28">
