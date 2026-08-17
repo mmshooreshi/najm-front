@@ -1,47 +1,48 @@
 <!-- pages/about/index.vue -->
 <template>
-  <div dir="rtl" class="min-h-screen bg-najmback text-gray-800">
-    <!-- Stable Fixed Sub Navigation (Scroll-spy) -->
-    <nav class="fixed top-16 inset-x-0 z-30 bg-white/90 backdrop-blur-md border-b border-najmborder/60 shadow-2xs py-2.5 px-4 transition-all">
-      <ul class="flex items-center gap-2 overflow-x-auto whitespace-nowrap mx-auto w-max py-0.5 navcont">
-        <li
+  <div dir="rtl" class="min-h-screen bg-najmback text-gray-800 relative">
+    <!-- Smart Floating Capsule Sub-Nav (Auto-reveals on scroll up, hides on scroll down) -->
+    <header
+      class="fixed top-20 left-1/2 -translate-x-1/2 z-40 transition-all duration-300 pointer-events-auto"
+      :class="[
+        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-16 opacity-0 pointer-events-none'
+      ]"
+    >
+      <nav class="bg-white/80 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
+        <button
           v-for="item in sections"
           :key="item.id"
-          class="transition-all duration-200 rounded-full"
+          @click="scrollToSection(item.id)"
+          class="px-3.5 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer whitespace-nowrap"
+          :class="[
+            activeSection === item.id
+              ? 'bg-najmgreen text-white shadow-xs font-bold'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
+          ]"
         >
-          <button
-            @click="scrollToSection(item.id)"
-            class="block px-4 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer"
-            :class="[
-              activeSection === item.id
-                ? 'bg-najmgreen text-white shadow-xs font-bold'
-                : 'bg-najmgrey text-gray-700 hover:bg-gray-200 font-medium'
-            ]"
-          >
-            {{ item.label }}
-          </button>
-        </li>
-      </ul>
-    </nav>
+          {{ item.label }}
+        </button>
+      </nav>
+    </header>
 
-    <!-- Main Editorial Flow Container -->
-    <div class="pt-36 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-32">
-      <!-- Section 1: Hero & Vision (Editorial scale with staff.png) -->
-      <section id="vision" class="scroll-mt-36 space-y-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+    <!-- Main Editorial Container -->
+    <main class="pt-28 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-28">
+      <!-- Section 1: Hero & Vision (Scale & Staff) -->
+      <section id="vision" class="scroll-mt-28 space-y-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           <!-- Text Lead -->
           <div class="lg:col-span-6 space-y-6 text-right">
-            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4">
+            <span class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4">
               درباره مجتمع چاپ و بسته‌بندی نجم
             </span>
             <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
-              نوآوری در چاپ افست، دقت در ساختار بسته‌بندی
+              نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی
             </h1>
             <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
-              مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و تجاری کشور فعالیت می‌کند.
+              مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و صادراتی کشور فعالیت می‌کند.
             </p>
             
-            <!-- Typographic Key Metrics (Clean, no clunky bento boxes) -->
+            <!-- Typographic Key Metrics -->
             <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
               <div class="space-y-1">
                 <div class="text-2xl sm:text-3xl font-extrabold text-najmgreen text-d4">+۲۵ سال</div>
@@ -60,7 +61,7 @@
 
           <!-- Hero Photography Asset -->
           <div class="lg:col-span-6">
-            <div class="relative rounded-3xl overflow-hidden shadow-lg aspect-[4/3] sm:aspect-[16/11] bg-gray-100 group">
+            <div class="relative rounded-3xl overflow-hidden shadow-xl aspect-[4/3] sm:aspect-[16/11] bg-gray-100 group">
               <img
                 src="/images/about/staff.png"
                 alt="تیم متخصص و خطوط تولید چاپ نجم"
@@ -78,7 +79,7 @@
       </section>
 
       <!-- Section 2: Team & Engineering Leads (person-1, person-2, person-3) -->
-      <section id="story" class="scroll-mt-36 space-y-10">
+      <section id="story" class="scroll-mt-28 space-y-10">
         <div class="space-y-3 max-w-2xl text-right">
           <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 text-d4">
             سرمایه انسانی و تخصص فنی
@@ -152,21 +153,23 @@
         </div>
       </section>
 
-      <!-- Section 3: Interactive Solutions & Core Advantages (Fluid, no jumps) -->
-      <section id="solutions" class="scroll-mt-36">
-        <SolutionsShowcase />
+      <!-- Section 3: GSAP Pinned Slides (راهکارها و ویژگی‌ها) -->
+      <section id="solutions" class="scroll-mt-28">
+        <AboutGsapPinnedSection />
       </section>
 
-      <!-- Section 4: Facilities & Industrial Fleet (machines-1 to 5, machines-small-1) -->
-      <section id="facility" class="scroll-mt-36 space-y-10">
-        <div class="space-y-3 max-w-2xl text-right">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 text-d4">
-            ناوگان ماشین‌آلات صنعتی
-          </span>
-          <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 text-d4">
-            تجهیزات مدرن چاپ افست و خطوط تکمیلی
-          </h2>
-          <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+      <!-- Section 4: Facilities & Industrial Fleet (Interactive Machinery Showcase) -->
+      <section id="facility" class="scroll-mt-28 space-y-10">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div class="space-y-2 text-right">
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgrey text-gray-800 text-d4">
+              ناوگان ماشین‌آلات صنعتی
+            </span>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-gray-900 text-d4">
+              تجهیزات مدرن چاپ افست و خطوط تکمیلی
+            </h2>
+          </div>
+          <p class="text-xs sm:text-sm text-gray-500 max-w-md text-right leading-relaxed">
             سرمایه‌گذاری پیوسته در تکنولوژی‌های هایدلبرگ و بوبست ضامن دقت میکرونی و سرعت صنعتی در تحویل سفارشات است.
           </p>
         </div>
@@ -301,8 +304,8 @@
         </div>
       </section>
 
-      <!-- Section 5: Core Values & Principles (Clean 3-column typography) -->
-      <section id="values" class="scroll-mt-36 space-y-10">
+      <!-- Section 5: Core Values & Principles -->
+      <section id="values" class="scroll-mt-28 space-y-10">
         <div class="space-y-3 max-w-2xl text-right">
           <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4">
             اصول بنیادین
@@ -343,7 +346,7 @@
       </section>
 
       <!-- Section 6: Closing Invitation & CTA -->
-      <section id="aboutus" class="scroll-mt-36 bg-najmgreen text-white rounded-3xl p-8 sm:p-14 shadow-lg flex flex-col lg:flex-row items-center justify-between gap-8">
+      <section id="aboutus" class="scroll-mt-28 bg-najmgreen text-white rounded-3xl p-8 sm:p-14 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8">
         <div class="space-y-3 max-w-2xl text-right">
           <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/10 text-white text-d4">
             بازدید و مشاوره حضوری
@@ -352,7 +355,7 @@
             از خطوط تولید و شوروم چاپ نجم بازدید فرمایید
           </h2>
           <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-            ما از مدیران برندها، تیم‌های توسعه محصول و طراحان بسته‌بندی دعوت می‌کنیم تا با حضور در کارخانه نجم، از نزدیک نظاره‌گر دقت ساخت و فرآیند تولید سفارشات باشند.
+            ما از مدیران برندها، تیم‌های توسعه محصول و طراحان بسته‌بندی دعوت می‌کنیم تا با حضور در مجتمع نجم، از نزدیک نظاره‌گر دقت ساخت و فرآیند تولید سفارشات باشند.
           </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
@@ -370,13 +373,13 @@
           </NuxtLink>
         </div>
       </section>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import SolutionsShowcase from '~/components/about/SolutionsShowcase.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
 
 definePageMeta({
   name: 'درباره ما - چاپ نجم',
@@ -384,21 +387,40 @@ definePageMeta({
 })
 
 const sections = [
-  { id: 'vision', label: 'چشم‌انداز و معرفی' },
-  { id: 'story', label: 'تیم و تخصص فنی' },
-  { id: 'solutions', label: 'راهکارها و ویژگی‌ها' },
-  { id: 'facility', label: 'ماشین‌آلات و تجهیزات' },
-  { id: 'values', label: 'ارزش‌های کیفی' },
-  { id: 'aboutus', label: 'دعوت به بازدید' }
+  { id: 'vision', label: 'معرفی' },
+  { id: 'story', label: 'تیم فنی' },
+  { id: 'solutions', label: 'راهکارها' },
+  { id: 'facility', label: 'ماشین‌آلات' },
+  { id: 'values', label: 'ارزش‌ها' },
+  { id: 'aboutus', label: 'بازدید' }
 ]
 
 const activeSection = ref('vision')
+const navVisible = ref(true)
+let lastScrollY = 0
+
+function handleScrollDirection() {
+  if (typeof window === 'undefined') return
+  const currentY = window.scrollY
+  
+  if (currentY < 120) {
+    navVisible.value = true
+  } else if (currentY > lastScrollY + 10) {
+    // Scrolling down -> hide navbar smoothly
+    navVisible.value = false
+  } else if (currentY < lastScrollY - 10) {
+    // Scrolling up -> reveal navbar smoothly
+    navVisible.value = true
+  }
+  
+  lastScrollY = currentY
+}
 
 function scrollToSection(id: string) {
   const el = document.getElementById(id)
   if (!el) return
   
-  const yOffset = -135
+  const yOffset = -90
   const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
   
   window.scrollTo({
@@ -409,6 +431,8 @@ function scrollToSection(id: string) {
 }
 
 onMounted(() => {
+  window.addEventListener('scroll', handleScrollDirection, { passive: true })
+
   const observer = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
@@ -417,7 +441,7 @@ onMounted(() => {
         }
       })
     },
-    { rootMargin: '-15% 0px -65% 0px' }
+    { rootMargin: '-20% 0px -60% 0px' }
   )
 
   sections.forEach(s => {
@@ -425,14 +449,8 @@ onMounted(() => {
     if (el) observer.observe(el)
   })
 })
-</script>
 
-<style scoped>
-.navcont {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.navcont::-webkit-scrollbar {
-  display: none;
-}
-</style>
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScrollDirection)
+})
+</script>
