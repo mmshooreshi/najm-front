@@ -1,10 +1,11 @@
 <!-- pages/about/index.vue -->
 <template>
   <div dir="rtl" class="min-h-screen bg-najmback text-gray-800 relative">
-    <!-- Smart Floating Capsule Sub-Nav (Directly in template, permanently available on /about) -->
+    <!-- Smart Floating Capsule Sub-Nav (Zero initial jump: transitions enabled only after mount settles) -->
     <div
-      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
+      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none"
       :class="[
+        isReady ? 'transition-all duration-300' : '',
         navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
       ]"
     >
@@ -378,7 +379,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
 
 definePageMeta({
@@ -397,6 +398,7 @@ const sections = [
 
 const activeSection = ref('vision')
 const navVisible = ref(true)
+const isReady = ref(false)
 const isNavBypassing = ref(false)
 let lastScrollY = 0
 
@@ -428,15 +430,20 @@ function scrollToSection(id: string) {
   }
   activeSection.value = id
 
-  // Reset bypass flag after smooth scroll completes
   setTimeout(() => {
     isNavBypassing.value = false
   }, 1000)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
   lastScrollY = window.scrollY
   window.addEventListener('scroll', handleScrollDirection, { passive: true })
+
+  // Enable transitions only after layout has settled (prevents initial jump)
+  setTimeout(() => {
+    isReady.value = true
+  }, 400)
 
   const observer = new IntersectionObserver(
     entries => {

@@ -3,15 +3,12 @@
   <div
     ref="sectionContainerRef"
     dir="rtl"
-    class="relative w-full my-8"
+    class="relative w-full"
+    :style="{ height: `${slides.length * 90}vh` }"
   >
-    <!-- Viewport Stage -->
+    <!-- Sticky Pinned Viewport Stage (Physically locked to viewport while scrolling through 360vh track) -->
     <div
-      ref="cardRef"
-      class="relative h-[calc(100vh-6.5rem)] w-full flex flex-col justify-between rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 border border-white/10"
-      @wheel="handleWheel"
-      @touchstart.passive="handleTouchStart"
-      @touchmove="handleTouchMove"
+      class="sticky top-20 h-[calc(100vh-6.5rem)] w-full flex flex-col justify-between rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 border border-white/10"
     >
       <!-- Background Radial Glow -->
       <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(1,68,57,0.45),rgba(0,0,0,0))] pointer-events-none"></div>
@@ -27,14 +24,14 @@
           </h2>
         </div>
 
-        <!-- Step Pill Counter -->
+        <!-- Step Pill Counter & Progress Line -->
         <div class="flex items-center gap-3">
           <span class="text-xs text-neutral-400">راهکار ۰{{ activeIndex + 1 }} از ۰{{ slides.length }}</span>
           <div class="flex items-center gap-1.5">
             <div
               v-for="(_, idx) in slides"
               :key="idx"
-              class="h-2 rounded-full transition-all duration-400"
+              class="h-2 rounded-full transition-all duration-300"
               :class="activeIndex === idx ? 'w-8 bg-emerald-400' : 'w-2 bg-white/20'"
             ></div>
           </div>
@@ -67,15 +64,15 @@
             <button
               v-for="(slide, idx) in slides"
               :key="slide.id"
-              @click="setStep(idx)"
-              class="h-2 rounded-full transition-all duration-400 cursor-pointer"
+              @click="jumpToStep(idx)"
+              class="h-2 rounded-full transition-all duration-300 cursor-pointer"
               :class="activeIndex === idx ? 'w-12 bg-emerald-400' : 'w-3 bg-white/20 hover:bg-white/40'"
               :title="slide.title"
             ></button>
           </div>
         </div>
 
-        <!-- Left: Visual Asset Showcase with Cinematic Morph (6 cols) -->
+        <!-- Left: Visual Asset Showcase (6 cols) -->
         <div class="lg:col-span-6 order-1 lg:order-2">
           <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-neutral-800 border border-white/10 shadow-2xl">
             <transition name="image-morph" mode="out-in">
@@ -100,7 +97,7 @@
 
       <!-- Bottom Hint Bar -->
       <div class="relative z-10 flex items-center justify-between text-[11px] text-neutral-400 border-t border-white/10 pt-3">
-        <span>برای رفتن به گام بعد اسکرول کنید (گام ۰{{ activeIndex + 1 }} از ۰{{ slides.length }})</span>
+        <span>برای مرور راهکارها به اسکرول ادامه دهید (گام ۰{{ activeIndex + 1 }} از ۰{{ slides.length }})</span>
         <span class="text-emerald-400/90 font-medium">مجتمع تخصصی چاپ و بسته‌بندی نجم</span>
       </div>
     </div>
@@ -108,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -154,83 +151,48 @@ const slides: Slide[] = [
 ]
 
 const sectionContainerRef = ref<HTMLElement | null>(null)
-const cardRef = ref<HTMLElement | null>(null)
 const activeIndex = ref(0)
 
 const currentSlide = computed(() => slides[activeIndex.value] || slides[0])
 
-function setStep(idx: number) {
-  activeIndex.value = idx
-}
-
-let lastActionTime = 0
-const LOCKOUT_MS = 500
-
-function handleWheel(e: WheelEvent) {
+function handleScroll() {
   if (props.isBypassing || !sectionContainerRef.value || typeof window === 'undefined') return
 
   const rect = sectionContainerRef.value.getBoundingClientRect()
-  const inCenter = rect.top <= 120 && rect.bottom >= window.innerHeight - 120
+  const totalTravel = sectionContainerRef.value.offsetHeight - window.innerHeight
+  if (totalTravel <= 0) return
 
-  if (inCenter) {
-    const now = Date.now()
-    if (now - lastActionTime < LOCKOUT_MS) {
-      // Absorb scroll event while in transition
-      if ((e.deltaY > 0 && activeIndex.value < slides.length - 1) || (e.deltaY < 0 && activeIndex.value > 0)) {
-        e.preventDefault()
-      }
-      return
-    }
+  // Scrolled distance into the section
+  const scrolled = -rect.top
+  const progress = Math.max(0, Math.min(1, scrolled / totalTravel))
 
-    if (e.deltaY > 15 && activeIndex.value < slides.length - 1) {
-      e.preventDefault()
-      activeIndex.value++
-      lastActionTime = now
-    } else if (e.deltaY < -15 && activeIndex.value > 0) {
-      e.preventDefault()
-      activeIndex.value--
-      lastActionTime = now
-    }
+  const step = Math.min(slides.length - 1, Math.floor(progress * slides.length))
+  if (step !== activeIndex.value) {
+    activeIndex.value = step
   }
 }
 
-// Touch Support
-let touchStartY = 0
-
-function handleTouchStart(e: TouchEvent) {
-  touchStartY = e.touches[0].clientY
+function jumpToStep(idx: number) {
+  if (!sectionContainerRef.value || typeof window === 'undefined') return
+  const totalTravel = sectionContainerRef.value.offsetHeight - window.innerHeight
+  const stepRatio = idx / (slides.length - 1)
+  const targetY = sectionContainerRef.value.offsetTop + stepRatio * totalTravel
+  window.scrollTo({ top: targetY, behavior: 'smooth' })
 }
 
-function handleTouchMove(e: TouchEvent) {
-  if (props.isBypassing || !sectionContainerRef.value || typeof window === 'undefined') return
+onMounted(async () => {
+  await nextTick()
+  handleScroll()
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  window.addEventListener('resize', handleScroll)
+})
 
-  const rect = sectionContainerRef.value.getBoundingClientRect()
-  const inCenter = rect.top <= 120 && rect.bottom >= window.innerHeight - 120
-
-  if (inCenter) {
-    const currentY = e.touches[0].clientY
-    const delta = touchStartY - currentY
-    const now = Date.now()
-    if (now - lastActionTime < LOCKOUT_MS) {
-      if ((delta > 0 && activeIndex.value < slides.length - 1) || (delta < 0 && activeIndex.value > 0)) {
-        e.preventDefault()
-      }
-      return
-    }
-
-    if (delta > 25 && activeIndex.value < slides.length - 1) {
-      e.preventDefault()
-      activeIndex.value++
-      lastActionTime = now
-      touchStartY = currentY
-    } else if (delta < -25 && activeIndex.value > 0) {
-      e.preventDefault()
-      activeIndex.value--
-      lastActionTime = now
-      touchStartY = currentY
-    }
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScroll)
+    window.removeEventListener('resize', handleScroll)
   }
-}
+})
 </script>
 
 <style scoped>
