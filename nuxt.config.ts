@@ -148,6 +148,11 @@ export default defineNuxtConfig({
       ]
     }
   },
+  nitro: {
+    experimental: {
+      wasm: true
+    }
+  },
 
   build: {
     transpile: ['gsap']
@@ -249,29 +254,29 @@ export default defineNuxtConfig({
     }
   },
   // nuxt.config.ts
-  icon: {
-    serverBundle: {
-      collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
-    }
-  },
+  // icon: {
+  //   serverBundle: {
+  //     collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
+  //   }
+  // },
   mapbox: {
     accessToken:
       'pk.eyJ1IjoibW1zaG9vcmVzaGkiLCJhIjoiY205eGJla2tyMTB3ejJrc2Vma2VwY2VlaiJ9.PGekyHty46Af6FxyKY3HIw'
   },
   vite: {
     build: {
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('nuxt')) return 'nuxt-vendor'
-              if (id.includes('vue')) return 'vue-vendor'
-              if (id.includes('gsap')) return 'gsap'
-              return 'vendor'
-            }
-          }
-        }
-      }
+      // rollupOptions: {
+      //   output: {
+      //     manualChunks(id) {
+      //       if (id.includes('node_modules')) {
+      //         if (id.includes('nuxt')) return 'nuxt-vendor'
+      //         if (id.includes('vue')) return 'vue-vendor'
+      //         if (id.includes('gsap')) return 'gsap'
+      //         return 'vendor'
+      //       }
+      //     }
+      //   }
+      // }
     },
 
     optimizeDeps: {

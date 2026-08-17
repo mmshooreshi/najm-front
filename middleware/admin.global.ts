@@ -2,7 +2,7 @@
 export default defineNuxtRouteMiddleware((to) => {
   if (process.client) return
 
-  const isAdminRoute = to.path.startsWith('/admin')
+  const isAdminRoute = to.path.startsWith('/admin') || to.path.startsWith('/dashboard')
   const isLoginPage = to.path.startsWith('/admin-login')
   const adminCookie = useCookie('pb_admin')
 
@@ -10,18 +10,18 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const redirectUrl = encodeURIComponent(to.fullPath)
 
-  // If accessing /admin-login but already logged in, go to redirect or /admin
+  // If accessing /admin-login but already logged in, redirect to target or /dashboard
   if (isLoginPage) {
     if (adminCookie.value) {
-      console.log(to.query)
-      const redirect = to.query.redirect as string || '/admin'
+      const redirect = (to.query.redirect as string) || '/dashboard'
       return navigateTo(redirect)
     }
     return
   }
 
-  // If accessing /admin and NOT logged in, go to login with redirect back
+  // If accessing protected admin/dashboard route and NOT logged in, redirect to login page
   if (!adminCookie.value) {
     return navigateTo(`/admin-login?redirect=${redirectUrl}`)
   }
 })
+

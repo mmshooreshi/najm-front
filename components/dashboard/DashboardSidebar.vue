@@ -1,0 +1,102 @@
+<!-- components/dashboard/DashboardSidebar.vue -->
+<template>
+  <aside
+    :dir="isRTL ? 'rtl' : 'ltr'"
+    class="flex h-full flex-col bg-[#111827] text-gray-100 transition-all duration-300 select-none"
+    :class="[
+      collapsed ? 'w-16' : 'w-60',
+      isRTL ? 'border-l border-gray-800' : 'border-r border-gray-800'
+    ]"
+  >
+    <!-- Brand / Header -->
+    <div class="flex h-14 sm:h-16 items-center justify-between px-4 border-b border-gray-800/80">
+      <NuxtLink to="/dashboard" class="flex items-center gap-2.5 overflow-hidden">
+        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#018786] font-bold text-white shadow-sm">
+          {{ isRTL ? 'ن' : 'N' }}
+        </div>
+        <span v-if="!collapsed" class="font-bold tracking-tight text-white text-sm truncate font-d4">
+          {{ isRTL ? 'چاپ نجم' : 'Najm Admin' }}
+        </span>
+      </NuxtLink>
+
+      <button
+        @click="collapsed = !collapsed"
+        class="hidden rounded-lg p-1.5 text-gray-400 hover:bg-gray-800 hover:text-white md:flex transition cursor-pointer"
+        :title="isRTL ? 'تغییر سایز' : 'Toggle Sidebar'"
+      >
+        <Icon
+          :name="
+            isRTL
+              ? (collapsed ? 'mdi:chevron-left' : 'mdi:chevron-right')
+              : (collapsed ? 'mdi:chevron-right' : 'mdi:chevron-left')
+          "
+          class="h-5 w-5"
+        />
+      </button>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="flex-1 space-y-1 p-2.5 overflow-y-auto">
+      <NuxtLink
+        v-for="item in navItems"
+        :key="item.to"
+        :to="item.to"
+        class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium transition group cursor-pointer"
+        :class="
+          isNavActive(item.to)
+            ? 'bg-[#018786] text-white font-semibold shadow-xs'
+            : 'text-gray-300 hover:bg-gray-800/70 hover:text-white'
+        "
+        :title="collapsed ? getLabel(item) : undefined"
+      >
+        <Icon :name="item.icon" class="h-4.5 w-4.5 shrink-0 transition" />
+        <span v-if="!collapsed" class="truncate">{{ getLabel(item) }}</span>
+      </NuxtLink>
+    </nav>
+
+    <!-- Footer -->
+    <div v-if="!collapsed" class="p-2.5 border-t border-gray-800/80">
+      <div class="rounded-xl bg-gray-900 p-2.5 text-[11px] text-gray-400 border border-gray-800 flex items-center justify-between">
+        <span class="font-semibold text-gray-200">Najm Admin</span>
+        <span class="rounded bg-[#018786]/20 text-[#018786] px-1.5 py-0.2 text-[10px] font-bold">v2.0</span>
+      </div>
+    </div>
+  </aside>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useLocale } from '~/composables/useLocale'
+
+const route = useRoute()
+const collapsed = ref(false)
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
+interface NavItem {
+  labelFa: string
+  labelEn: string
+  to: string
+  icon: string
+}
+
+const navItems: NavItem[] = [
+  { labelFa: 'پیشخوان', labelEn: 'Dashboard', to: '/dashboard', icon: 'mdi:view-dashboard-outline' },
+  { labelFa: 'دیتابیس', labelEn: 'Database', to: '/dashboard/collections', icon: 'mdi:database-outline' },
+  { labelFa: 'رسانه', labelEn: 'Media', to: '/dashboard/media', icon: 'mdi:folder-multiple-image' },
+  { labelFa: 'محتوا', labelEn: 'CMS', to: '/dashboard/cms', icon: 'mdi:file-document-edit-outline' },
+  { labelFa: 'لاگ‌ها', labelEn: 'Logs', to: '/dashboard/logs', icon: 'mdi:format-list-bulleted-square' },
+]
+
+function getLabel(item: NavItem) {
+  return isRTL.value ? item.labelFa : item.labelEn
+}
+
+function isNavActive(to: string) {
+  if (to === '/dashboard') {
+    return route.path === '/dashboard'
+  }
+  return route.path.startsWith(to)
+}
+</script>
