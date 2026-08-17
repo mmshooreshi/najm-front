@@ -1,15 +1,15 @@
 <!-- layouts/services.vue -->
 <template>
-  <BackgroundGradient />
+  <div class="min-h-screen w-full relative">
+    <BackgroundGradient />
 
-  <Header
-    :topLabel="topLabel"
-    :menu-open="menuOpen"
-    @update:menu-open="menuOpen = $event"
-    class="fixed top-0 left-0 w-full z-50"
-  />
+    <Header
+      :topLabel="topLabel"
+      :menu-open="menuOpen"
+      @update:menu-open="menuOpen = $event"
+      class="fixed top-0 left-0 w-full z-50"
+    />
 
-  <ClientOnly fallback="">
     <div :dir="isRTL ? 'rtl' : 'ltr'" class="relative min-h-screen pt-16 pb-24 bg-najmback">
       <!-- Main content -->
       <div class="w-full px-4 md:px-8 mt-4 pb-32">
@@ -39,9 +39,11 @@
       </div>
     </div>
 
-    <AdminEditBar />
-    <HistoryModal :open="state.editMode ?? false" />
-  </ClientOnly>
+    <ClientOnly>
+      <AdminEditBar />
+      <HistoryModal :open="state.editMode ?? false" />
+    </ClientOnly>
+  </div>
 </template>
 
 <script setup lang="ts">

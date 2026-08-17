@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: { name: 'layout', mode: 'out-in' },
+    layoutTransition: false,
     head: {
       title: 'Najm Printing & Packaging | Quality Printing Solutions',
       htmlAttrs: {
