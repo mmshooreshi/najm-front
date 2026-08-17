@@ -261,10 +261,13 @@ export default defineNuxtConfig({
       }
     }
   },
-  // nuxt.config.ts
   icon: {
     serverBundle: {
-      collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
+      collections: ['mdi', 'carbon', 'tabler']
+    },
+    clientBundle: {
+      scan: true,
+      sizeLimitKb: 256
     }
   },
   mapbox: {
@@ -273,18 +276,8 @@ export default defineNuxtConfig({
   },
   vite: {
     build: {
-      // rollupOptions: {
-      //   output: {
-      //     manualChunks(id) {
-      //       if (id.includes('node_modules')) {
-      //         if (id.includes('nuxt')) return 'nuxt-vendor'
-      //         if (id.includes('vue')) return 'vue-vendor'
-      //         if (id.includes('gsap')) return 'gsap'
-      //         return 'vendor'
-      //       }
-      //     }
-      //   }
-      // }
+      chunkSizeWarningLimit: 2000,
+      cssMinify: 'esbuild'
     },
 
     optimizeDeps: {

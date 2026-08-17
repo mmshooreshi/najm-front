@@ -30,9 +30,9 @@ export default defineConfig({
       animation: {
 
         keyframes: {
-          shimmy: '{0%, 100% { transform: rotateY(0deg) skewX(0deg); } 50% { transform: rotateY(30deg) skewX(3deg); }}',
-          custom: '{0%, 100% { transform: scale(0.5); } 50% { transform: scale(1); }}',
-          border:  '{100% { --border-angle: 360deg; }}'
+          shimmy: '{0%, 100% { transform: rotateY(0deg) skewX(0deg) } 50% { transform: rotateY(30deg) skewX(3deg) }}',
+          custom: '{0%, 100% { transform: scale(0.5) } 50% { transform: scale(1) }}',
+          border: '{100% { --border-angle: 360deg }}'
         },
         durations: {
           shimmy: '1s',
