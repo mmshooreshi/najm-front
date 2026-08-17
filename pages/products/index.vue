@@ -23,12 +23,11 @@
               <button
               v-for="view in views"
               :key="view.key"
-              class="p-1 px-2 md:py-2 md:px-3 rounded-3xl font-medium text-center hover:bg-[#CBCBFB]/20 transition-all duration-300 bg-transparent text-black"
-              :class="activeView === view.key ? '!bg-[#CBCBFB]' : ''"
+              class="p-1 px-2 md:py-2 md:px-3 rounded-3xl font-medium text-center hover:bg-najmgrey transition-all duration-300 bg-transparent text-black"
+              :class="activeView === view.key ? '!bg-najmgreen text-white' : ''"
               @click="activeView = view.key"
             >
-              <component :is="view.icon" class="scale-75" />
-
+              <component :is="view.icon" class="scale-75" :class="activeView === view.key ? 'filter-invert' : ''" />
             </button>
 
             </div>

@@ -4,11 +4,11 @@
     <div
       v-if="visible"
       dir="rtl"
-      class="fixed mt-18 inset-x-4 sm:inset-x-8 top-0 max-h-[85vh] bg-white/95 backdrop-blur-xl rounded-3xl z-50 shadow-2xl border border-gray-200/80 overflow-hidden flex flex-col"
+      class="fixed mt-18 inset-x-4 sm:inset-x-8 top-0 max-h-[85vh] bg-white/95 backdrop-blur-xl rounded-3xl z-50 shadow-2xl border border-najmborder/60 overflow-hidden flex flex-col"
     >
       <!-- Header / Search Meta Bar -->
-      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-        <div class="flex items-center gap-2 text-xs text-gray-500">
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-najmgrey/40">
+        <div class="flex items-center gap-2 text-xs text-gray-600">
           <Icon name="mdi:magnify" class="w-4 h-4 text-najmgreen" />
           <span v-if="query.trim()">
             نتایج برای <strong class="text-gray-900">«{{ query }}»</strong> ({{ totalResults }} مورد)
@@ -33,7 +33,7 @@
           <!-- Recent searches -->
           <div v-if="recentSearches.length" class="space-y-3">
             <div class="flex items-center justify-between">
-              <h3 class="text-xs font-bold text-gray-400 flex items-center gap-1.5">
+              <h3 class="text-xs font-bold text-gray-400 flex items-center gap-1.5 text-d4">
                 <Icon name="mdi:history" class="w-4 h-4" />
                 آخرین جست‌وجوهای شما
               </h3>
@@ -48,7 +48,7 @@
               <div
                 v-for="term in recentSearches"
                 :key="term"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-xs text-gray-800 transition group cursor-pointer"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-najmgrey hover:bg-gray-200 text-xs text-gray-800 transition group cursor-pointer"
                 @click="selectTerm(term)"
               >
                 <Icon name="mdi:clock-outline" class="w-3.5 h-3.5 text-gray-400" />
@@ -65,7 +65,7 @@
 
           <!-- Quick Category Shortcuts -->
           <div class="space-y-3">
-            <h3 class="text-xs font-bold text-gray-400 flex items-center gap-1.5">
+            <h3 class="text-xs font-bold text-gray-400 flex items-center gap-1.5 text-d4">
               <Icon name="mdi:compass-outline" class="w-4 h-4" />
               دسترسی سریع به بخش‌ها
             </h3>
@@ -75,13 +75,13 @@
                 :key="cat.name"
                 :to="cat.url"
                 @click="handleNavigate"
-                class="p-3.5 rounded-2xl bg-white border border-gray-100 hover:border-najmgreen/40 hover:shadow-sm transition flex items-center gap-3 group"
+                class="p-3.5 rounded-2xl bg-white border border-najmborder/40 hover:border-najmgreen/60 hover:shadow-xs transition flex items-center gap-3 group"
               >
-                <div class="w-8 h-8 rounded-xl bg-emerald-50 text-najmgreen flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
+                <div class="w-8 h-8 rounded-xl bg-najmgrey text-najmgreen flex items-center justify-center group-hover:scale-105 transition-transform flex-shrink-0">
                   <Icon :name="cat.icon" class="w-4 h-4" />
                 </div>
                 <div>
-                  <div class="text-xs font-bold text-gray-800 group-hover:text-najmgreen transition-colors">{{ cat.name }}</div>
+                  <div class="text-xs font-bold text-gray-800 group-hover:text-najmgreen transition-colors text-d4">{{ cat.name }}</div>
                   <div class="text-[10px] text-gray-400">{{ cat.desc }}</div>
                 </div>
               </NuxtLink>
@@ -93,10 +93,10 @@
         <div v-else class="space-y-6 max-w-3xl mx-auto">
           <!-- No results found -->
           <div v-if="totalResults === 0" class="text-center py-12 space-y-3">
-            <div class="w-12 h-12 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center mx-auto">
+            <div class="w-12 h-12 rounded-2xl bg-najmgrey text-gray-400 flex items-center justify-center mx-auto">
               <Icon name="mdi:file-search-outline" class="w-6 h-6" />
             </div>
-            <h4 class="text-base font-bold text-gray-800">نتیجه‌ای برای «{{ query }}» پیدا نشد</h4>
+            <h4 class="text-base font-bold text-gray-800 text-d4">نتیجه‌ای برای «{{ query }}» پیدا نشد</h4>
             <p class="text-xs text-gray-500">
               لطفاً از کلمات کلیدی عام‌تر مانند «جعبه»، «کاتالوگ»، «سربرگ» یا «چاپ افست» استفاده فرمایید.
             </p>
@@ -104,26 +104,26 @@
 
           <!-- 1. Products Results -->
           <div v-if="categorizedResults.products.length" class="space-y-2">
-            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5">
+            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5 text-d4">
               <Icon name="mdi:package-variant-closed" class="w-4 h-4 text-najmgreen" />
               محصولات و بسته‌بندی‌ها ({{ categorizedResults.products.length }})
             </h4>
-            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-najmborder/40 overflow-hidden">
               <NuxtLink
                 v-for="item in categorizedResults.products"
                 :key="item.id"
                 :to="item.url"
                 @click="handleNavigate(item.title)"
-                class="p-3.5 px-4 flex items-center justify-between hover:bg-emerald-50/50 transition group"
+                class="p-3.5 px-4 flex items-center justify-between hover:bg-najmgrey/40 transition group"
               >
                 <div class="space-y-0.5">
-                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-najmgreen transition-colors">
+                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-najmgreen transition-colors text-d4">
                     {{ item.title }}
                   </div>
                   <div class="text-[11px] text-gray-500">{{ item.description }}</div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 text-gray-600 font-medium">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-najmgrey text-gray-700 font-medium">
                     {{ item.categoryLabel }}
                   </span>
                   <Icon name="mdi:chevron-left" class="w-4 h-4 text-gray-400 group-hover:text-najmgreen transition-colors" />
@@ -134,29 +134,29 @@
 
           <!-- 2. Services Results -->
           <div v-if="categorizedResults.services.length" class="space-y-2">
-            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5">
-              <Icon name="mdi:tools" class="w-4 h-4 text-blue-600" />
+            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5 text-d4">
+              <Icon name="mdi:tools" class="w-4 h-4 text-najmgreen" />
               خدمات تخصصی چاپ و تکمیلی ({{ categorizedResults.services.length }})
             </h4>
-            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-najmborder/40 overflow-hidden">
               <NuxtLink
                 v-for="item in categorizedResults.services"
                 :key="item.id"
                 :to="item.url"
                 @click="handleNavigate(item.title)"
-                class="p-3.5 px-4 flex items-center justify-between hover:bg-blue-50/40 transition group"
+                class="p-3.5 px-4 flex items-center justify-between hover:bg-najmgrey/40 transition group"
               >
                 <div class="space-y-0.5">
-                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
+                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-najmgreen transition-colors text-d4">
                     {{ item.title }}
                   </div>
                   <div class="text-[11px] text-gray-500">{{ item.description }}</div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-medium">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-najmgrey text-gray-700 font-medium">
                     {{ item.categoryLabel }}
                   </span>
-                  <Icon name="mdi:chevron-left" class="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
+                  <Icon name="mdi:chevron-left" class="w-4 h-4 text-gray-400 group-hover:text-najmgreen transition-colors" />
                 </div>
               </NuxtLink>
             </div>
@@ -164,29 +164,29 @@
 
           <!-- 3. Resources & Catalogs -->
           <div v-if="categorizedResults.resources.length" class="space-y-2">
-            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5">
-              <Icon name="mdi:file-download-outline" class="w-4 h-4 text-purple-600" />
+            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5 text-d4">
+              <Icon name="mdi:file-download-outline" class="w-4 h-4 text-najmgreen" />
               کاتالوگ‌ها، قالب‌های تیغ و راهنماها ({{ categorizedResults.resources.length }})
             </h4>
-            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-najmborder/40 overflow-hidden">
               <NuxtLink
                 v-for="item in categorizedResults.resources"
                 :key="item.id"
                 :to="item.url"
                 @click="handleNavigate(item.title)"
-                class="p-3.5 px-4 flex items-center justify-between hover:bg-purple-50/40 transition group"
+                class="p-3.5 px-4 flex items-center justify-between hover:bg-najmgrey/40 transition group"
               >
                 <div class="space-y-0.5">
-                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-purple-600 transition-colors">
+                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-najmgreen transition-colors text-d4">
                     {{ item.title }}
                   </div>
                   <div class="text-[11px] text-gray-500">{{ item.description }}</div>
                 </div>
                 <div class="flex items-center gap-2">
-                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-medium">
+                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-najmgrey text-gray-700 font-medium">
                     {{ item.categoryLabel }}
                   </span>
-                  <Icon name="mdi:download" class="w-4 h-4 text-gray-400 group-hover:text-purple-600 transition-colors" />
+                  <Icon name="mdi:download" class="w-4 h-4 text-gray-400 group-hover:text-najmgreen transition-colors" />
                 </div>
               </NuxtLink>
             </div>
@@ -194,20 +194,20 @@
 
           <!-- 4. Site Pages -->
           <div v-if="categorizedResults.pages.length" class="space-y-2">
-            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5">
-              <Icon name="mdi:web" class="w-4 h-4 text-gray-600" />
+            <h4 class="text-xs font-bold text-gray-400 flex items-center gap-1.5 text-d4">
+              <Icon name="mdi:web" class="w-4 h-4 text-najmgreen" />
               صفحات اصلی وبسایت ({{ categorizedResults.pages.length }})
             </h4>
-            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div class="divide-y divide-gray-100 bg-white rounded-2xl border border-najmborder/40 overflow-hidden">
               <NuxtLink
                 v-for="item in categorizedResults.pages"
                 :key="item.id"
                 :to="item.url"
                 @click="handleNavigate(item.title)"
-                class="p-3.5 px-4 flex items-center justify-between hover:bg-gray-50 transition group"
+                class="p-3.5 px-4 flex items-center justify-between hover:bg-najmgrey/40 transition group"
               >
                 <div class="space-y-0.5">
-                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-najmgreen transition-colors">
+                  <div class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-najmgreen transition-colors text-d4">
                     {{ item.title }}
                   </div>
                   <div class="text-[11px] text-gray-500">{{ item.description }}</div>
@@ -223,7 +223,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useSiteSearch } from '@/composables/useSiteSearch'
 
 const props = defineProps<{
@@ -246,7 +246,6 @@ const {
   clearAllRecentSearches
 } = useSiteSearch()
 
-// Sync prop query to internal search query
 watch(
   () => props.query,
   (val) => {

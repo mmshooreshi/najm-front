@@ -13,17 +13,17 @@
     </nav>
 
     <!-- Product Hero Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white rounded-3xl p-6 sm:p-10 shadow-xs border border-najmborder/40 items-start">
       <!-- Media Gallery -->
       <div class="lg:col-span-6 space-y-4">
-        <div class="rounded-3xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square flex items-center justify-center relative group">
+        <div class="rounded-3xl overflow-hidden bg-najmgrey/50 border border-najmborder/40 aspect-square flex items-center justify-center relative group">
           <NuxtImg
             :src="selectedImage || product.image"
             :alt="product.name"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
           />
-          <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-najmgreen text-white text-xs font-semibold">
-            چاپ افست پیشرفته
+          <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-najmgreen text-white text-xs font-bold text-d4">
+            چاپ افست هایدلبرگ
           </span>
         </div>
 
@@ -32,10 +32,10 @@
             v-for="(img, idx) in product.gallery"
             :key="idx"
             @click="selectedImage = img"
-            class="w-20 h-20 rounded-2xl overflow-hidden border-2 flex-shrink-0 transition-all"
+            class="w-20 h-20 rounded-2xl overflow-hidden border-2 flex-shrink-0 transition-all bg-najmgrey/40 p-1"
             :class="selectedImage === img ? 'border-najmgreen ring-2 ring-najmgreen/20' : 'border-gray-200 hover:border-gray-300'"
           >
-            <NuxtImg :src="img" class="w-full h-full object-cover" />
+            <NuxtImg :src="img" class="w-full h-full object-contain" />
           </button>
         </div>
       </div>
@@ -43,10 +43,10 @@
       <!-- Product Meta & Highlights -->
       <div class="lg:col-span-6 space-y-6">
         <div>
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 mb-2">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 mb-2">
             خدمات چاپ تجاری، اداری و کاتالوگ
           </span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3">
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3 text-d4">
             {{ product.name }}
           </h1>
           <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
@@ -55,29 +55,29 @@
         </div>
 
         <!-- Badges / Key Specs -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-100">
-            <span class="block text-[11px] text-gray-500 mb-0.5">حداقل تیراژ:</span>
-            <span class="text-xs sm:text-sm font-bold text-gray-900 font-mono">{{ product.minOrder }}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono">
+          <div class="p-3.5 rounded-2xl bg-najmgrey/50 border border-najmborder/40">
+            <span class="block text-[11px] text-gray-500 mb-0.5 font-sans">حداقل تیراژ:</span>
+            <span class="text-xs sm:text-sm font-bold text-gray-900">{{ product.minOrder }}</span>
           </div>
-          <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-100">
-            <span class="block text-[11px] text-gray-500 mb-0.5">زمان تحویل:</span>
+          <div class="p-3.5 rounded-2xl bg-najmgrey/50 border border-najmborder/40">
+            <span class="block text-[11px] text-gray-500 mb-0.5 font-sans">زمان تحویل:</span>
             <span class="text-xs sm:text-sm font-bold text-gray-900">{{ product.leadTime }}</span>
           </div>
-          <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-100 col-span-2 sm:col-span-1">
-            <span class="block text-[11px] text-gray-500 mb-0.5">نوع کاغذ:</span>
-            <span class="text-xs sm:text-sm font-bold text-gray-900">گلاسه، تحریر و کتان</span>
+          <div class="p-3.5 rounded-2xl bg-najmgrey/50 border border-najmborder/40 col-span-2 sm:col-span-1">
+            <span class="block text-[11px] text-gray-500 mb-0.5 font-sans">نوع چاپ:</span>
+            <span class="text-xs sm:text-sm font-bold text-gray-900 font-sans">افست ۵ رنگ</span>
           </div>
         </div>
 
         <!-- Paper Types -->
-        <div class="space-y-3 pt-2">
-          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider">انواع کاغذ و گرماژ قابل سفارش:</h3>
+        <div class="space-y-2.5 pt-2">
+          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider text-d4">انواع کاغذ و گرماژ قابل سفارش:</h3>
           <div class="flex flex-wrap gap-2">
             <span
               v-for="paper in product.papers"
               :key="paper"
-              class="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-700 text-xs font-medium"
+              class="px-3 py-1.5 rounded-xl bg-najmgrey text-gray-800 text-xs font-medium border border-najmborder/40"
             >
               {{ paper }}
             </span>
@@ -85,13 +85,13 @@
         </div>
 
         <!-- Finishing -->
-        <div class="space-y-3">
-          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider">پوشش‌ها و صحافی:</h3>
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider text-d4">پوشش‌ها و صحافی:</h3>
           <div class="flex flex-wrap gap-2">
             <span
               v-for="finish in product.finishes"
               :key="finish"
-              class="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-700 text-xs font-medium"
+              class="px-3 py-1.5 rounded-xl bg-najmgrey text-gray-800 text-xs font-medium border border-najmborder/40"
             >
               {{ finish }}
             </span>
@@ -102,13 +102,13 @@
         <div class="pt-4 flex flex-col sm:flex-row gap-3">
           <NuxtLink
             to="/contact"
-            class="flex-1 py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-semibold text-sm text-center shadow-sm transition"
+            class="flex-1 py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs text-center shadow-xs transition"
           >
             استعلام تیراژ و قیمت چاپ
           </NuxtLink>
           <NuxtLink
             to="/resources"
-            class="py-3.5 px-6 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm text-center transition flex items-center justify-center gap-2"
+            class="py-3.5 px-6 rounded-2xl bg-najmgrey hover:bg-gray-200 text-gray-800 font-bold text-xs text-center transition flex items-center justify-center gap-2"
           >
             <Icon name="mdi:palette-swatch-outline" class="w-4 h-4" />
             راهنمای تنظیم رنگ CMYK
@@ -144,7 +144,7 @@ const printingDatabase: Record<string, any> = {
     finishes: ['چاپ تک‌رنگ و ۴ رنگ اختصاصی', 'طلاکوب آرم و لوگو', 'برجسته‌سازی (امباس)']
   },
   envelopes: {
-    name: 'پاکت‌نامه و پاکت A4 اداری',
+    name: 'پاکت‌نامه و پاکت اداری A4',
     description: 'تولید انواع پاکت ملخی، پاکت A4 و A5 با چسب درب اختصاصی، آستر داخلی چاپی و مقاومت بالا در حمل اوراق اداری.',
     minOrder: '۱,۰۰۰ عدد',
     leadTime: '۵ الی ۷ روز کاری',
@@ -154,7 +154,7 @@ const printingDatabase: Record<string, any> = {
     finishes: ['چسب دوطرفه آماده درب پاکت', 'چاپ داخل پاکت (Security Pattern)', 'طلاکوب']
   },
   'business-cards': {
-    name: 'کارت ویزیت‌های خاص و مدیریتی',
+    name: 'کارت ویزیت لوکس و مدیریتی',
     description: 'تنوع گسترده کارت‌های ویزیت لمینت برجسته، سلفون مخملی، طلاکوب گرم، PVC و لترپرس روی مقواهای گرماژ بالا.',
     minOrder: '۵۰۰ عدد',
     leadTime: '۳ الی ۶ روز کاری',

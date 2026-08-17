@@ -3,13 +3,13 @@
   <div dir="rtl" class="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
     <!-- Header -->
     <div class="text-center max-w-3xl mx-auto space-y-4">
-      <span class="inline-block px-4 py-1 rounded-full text-xs font-semibold bg-najmgreen/10 text-najmgreen">
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
         مرکز منابع و راهنماهای فنی چاپ نجم
       </span>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight text-d4">
         کاتالوگ‌ها، قالب‌های تیغ و راهنماهای طراحی
       </h1>
-      <p class="text-base text-gray-600 leading-relaxed">
+      <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
         تمامی فایل‌های مورد نیاز طراحان، مدیران محصول و تولید، شامل استانداردهای رنگ، قالب‌های تیغ و کاتالوگ‌های جامع محصولات به صورت مستقیم قابل دانلود است.
       </p>
     </div>
@@ -20,11 +20,11 @@
         v-for="cat in categories"
         :key="cat.key"
         @click="activeCategory = cat.key"
-        class="px-5 py-2 rounded-2xl text-xs font-semibold transition-all duration-200"
+        class="px-5 py-2 rounded-2xl text-xs font-bold transition-all duration-200"
         :class="[
           activeCategory === cat.key
-            ? 'bg-najmgreen text-white shadow-sm'
-            : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+            ? 'bg-najmgreen text-white shadow-xs'
+            : 'bg-white text-gray-700 hover:bg-najmgrey border border-najmborder/60'
         ]"
       >
         {{ cat.label }}
@@ -36,21 +36,21 @@
       <article
         v-for="item in filteredResources"
         :key="item.id"
-        class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
+        class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
       >
         <div>
           <div class="flex items-center justify-between mb-4">
-            <span class="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-gray-100 text-gray-600">
+            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-najmgrey text-gray-700">
               {{ item.categoryLabel }}
             </span>
             <span class="text-xs text-gray-400 font-mono ltr">{{ item.fileSize }} • {{ item.fileFormat }}</span>
           </div>
 
-          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-najmgreen flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+          <div class="w-12 h-12 rounded-2xl bg-najmgrey text-najmgreen flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
             <Icon :name="item.icon" class="w-6 h-6" />
           </div>
 
-          <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-najmgreen transition-colors">
+          <h3 class="text-base font-bold text-gray-900 mb-2 group-hover:text-najmgreen transition-colors text-d4">
             {{ item.title }}
           </h3>
           <p class="text-xs text-gray-600 leading-relaxed mb-6">
@@ -61,14 +61,14 @@
         <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
           <NuxtLink
             :to="`/resources/${item.slug}`"
-            class="flex-1 py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold text-center transition"
+            class="flex-1 py-2.5 px-4 rounded-xl bg-najmgrey hover:bg-gray-200 text-gray-800 text-xs font-bold text-center transition"
           >
             مشاهده جزئیات
           </NuxtLink>
           <a
             :href="item.downloadUrl || '#'"
             download
-            class="py-2.5 px-4 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm"
+            class="py-2.5 px-4 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
           >
             <Icon name="mdi:download" class="w-4 h-4" />
             دانلود

@@ -13,16 +13,16 @@
     </nav>
 
     <!-- Product Hero Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 bg-white rounded-3xl p-6 sm:p-10 shadow-xs border border-najmborder/40 items-start">
       <!-- Media Gallery -->
       <div class="lg:col-span-6 space-y-4">
-        <div class="rounded-3xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square flex items-center justify-center relative group">
+        <div class="rounded-3xl overflow-hidden bg-najmgrey/50 border border-najmborder/40 aspect-square flex items-center justify-center relative group">
           <NuxtImg
             :src="selectedImage || product.image"
             :alt="product.name"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500"
           />
-          <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-najmgreen text-white text-xs font-semibold">
+          <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-najmgreen text-white text-xs font-bold text-d4">
             تولید اختصاصی
           </span>
         </div>
@@ -32,10 +32,10 @@
             v-for="(img, idx) in product.gallery"
             :key="idx"
             @click="selectedImage = img"
-            class="w-20 h-20 rounded-2xl overflow-hidden border-2 flex-shrink-0 transition-all"
+            class="w-20 h-20 rounded-2xl overflow-hidden border-2 flex-shrink-0 transition-all bg-najmgrey/40 p-1"
             :class="selectedImage === img ? 'border-najmgreen ring-2 ring-najmgreen/20' : 'border-gray-200 hover:border-gray-300'"
           >
-            <NuxtImg :src="img" class="w-full h-full object-cover" />
+            <NuxtImg :src="img" class="w-full h-full object-contain" />
           </button>
         </div>
       </div>
@@ -43,10 +43,10 @@
       <!-- Product Meta & Highlights -->
       <div class="lg:col-span-6 space-y-6">
         <div>
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-najmgreen mb-2">
+          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 mb-2">
             دسته‌بندی بسته‌بندی و جعبه‌سازی
           </span>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3">
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3 text-d4">
             {{ product.name }}
           </h1>
           <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
@@ -55,42 +55,42 @@
         </div>
 
         <!-- Badges / Key Specs -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-100">
-            <span class="block text-[11px] text-gray-500 mb-0.5">حداقل تیراژ:</span>
-            <span class="text-xs sm:text-sm font-bold text-gray-900 font-mono">{{ product.minOrder }}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono">
+          <div class="p-3.5 rounded-2xl bg-najmgrey/50 border border-najmborder/40">
+            <span class="block text-[11px] text-gray-500 mb-0.5 font-sans">حداقل تیراژ:</span>
+            <span class="text-xs sm:text-sm font-bold text-gray-900">{{ product.minOrder }}</span>
           </div>
-          <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-100">
-            <span class="block text-[11px] text-gray-500 mb-0.5">زمان تحویل:</span>
+          <div class="p-3.5 rounded-2xl bg-najmgrey/50 border border-najmborder/40">
+            <span class="block text-[11px] text-gray-500 mb-0.5 font-sans">زمان تحویل:</span>
             <span class="text-xs sm:text-sm font-bold text-gray-900">{{ product.leadTime }}</span>
           </div>
-          <div class="p-3.5 rounded-2xl bg-gray-50 border border-gray-100 col-span-2 sm:col-span-1">
-            <span class="block text-[11px] text-gray-500 mb-0.5">نوع چاپ:</span>
-            <span class="text-xs sm:text-sm font-bold text-gray-900">افست ۵ رنگ هایدلبرگ</span>
+          <div class="p-3.5 rounded-2xl bg-najmgrey/50 border border-najmborder/40 col-span-2 sm:col-span-1">
+            <span class="block text-[11px] text-gray-500 mb-0.5 font-sans">نوع چاپ:</span>
+            <span class="text-xs sm:text-sm font-bold text-gray-900 font-sans">افست ۵ رنگ هایدلبرگ</span>
           </div>
         </div>
 
         <!-- Material & Finishing options -->
-        <div class="space-y-3 pt-2">
-          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider">متریال و گرماژهای قابل سفارش:</h3>
+        <div class="space-y-2.5 pt-2">
+          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider text-d4">متریال و گرماژهای قابل سفارش:</h3>
           <div class="flex flex-wrap gap-2">
             <span
               v-for="mat in product.materials"
               :key="mat"
-              class="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-700 text-xs font-medium"
+              class="px-3 py-1.5 rounded-xl bg-najmgrey text-gray-800 text-xs font-medium border border-najmborder/40"
             >
               {{ mat }}
             </span>
           </div>
         </div>
 
-        <div class="space-y-3">
-          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider">خدمات تکمیلی پس از چاپ:</h3>
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-gray-900 uppercase tracking-wider text-d4">خدمات تکمیلی پس از چاپ:</h3>
           <div class="flex flex-wrap gap-2">
             <span
               v-for="finish in product.finishes"
               :key="finish"
-              class="px-3 py-1.5 rounded-xl bg-gray-100 text-gray-700 text-xs font-medium"
+              class="px-3 py-1.5 rounded-xl bg-najmgrey text-gray-800 text-xs font-medium border border-najmborder/40"
             >
               {{ finish }}
             </span>
@@ -101,13 +101,13 @@
         <div class="pt-4 flex flex-col sm:flex-row gap-3">
           <NuxtLink
             to="/contact"
-            class="flex-1 py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-semibold text-sm text-center shadow-sm transition"
+            class="flex-1 py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs text-center shadow-xs transition"
           >
             درخواست استعلام قیمت و ابعاد
           </NuxtLink>
           <NuxtLink
             to="/resources"
-            class="py-3.5 px-6 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-sm text-center transition flex items-center justify-center gap-2"
+            class="py-3.5 px-6 rounded-2xl bg-najmgrey hover:bg-gray-200 text-gray-800 font-bold text-xs text-center transition flex items-center justify-center gap-2"
           >
             <Icon name="mdi:download" class="w-4 h-4" />
             دانلود قالب تیغ (Die-Cut)
@@ -117,8 +117,8 @@
     </div>
 
     <!-- Technical Specs & Features Detail -->
-    <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-gray-100 space-y-6">
-      <h2 class="text-xl font-bold text-gray-900">مشخصات فنی و استانداردهای تولید</h2>
+    <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-xs border border-najmborder/40 space-y-6">
+      <h2 class="text-lg font-bold text-gray-900 text-d4">مشخصات فنی و استانداردهای تولید</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
         <div class="flex justify-between py-3 border-b border-gray-100">
           <span class="text-gray-500">قابلیت سفارشی‌سازی ابعاد:</span>
@@ -162,7 +162,7 @@ const packagingDatabase: Record<string, any> = {
     leadTime: '۷ الی ۱۰ روز کاری',
     image: '/images/products/test.png',
     gallery: ['/images/products/test.png'],
-    materials: ['مقوای ایندربرد (۲۵0 تا ۳۵۰ گرم)', 'مقوای پشت طوسی', 'کرافت سنگین', 'مقوای فانتزی و فلوت دار'],
+    materials: ['مقوای ایندربرد (۲۵۰ تا ۳۵۰ گرم)', 'مقوای پشت طوسی', 'کرافت سنگین', 'مقوای فانتزی و فلوت دار'],
     finishes: ['سلفون مات / براق', 'یووی موضعی برجسته', 'طلاکوب و نقره‌کوب گرم', 'امباس و برجسته‌سازی']
   },
   'shopping-bags': {

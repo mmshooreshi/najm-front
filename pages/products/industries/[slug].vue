@@ -13,15 +13,15 @@
     </nav>
 
     <!-- Industry Hero -->
-    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-gray-100">
+    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-xs border border-najmborder/40">
       <div class="max-w-3xl space-y-4">
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-najmgreen">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
           راهکار بسته‌بندی ویژه صنعت
         </span>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight text-d4">
           {{ industry.title }}
         </h1>
-        <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
+        <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
           {{ industry.description }}
         </p>
       </div>
@@ -29,24 +29,24 @@
 
     <!-- Tailored Solutions Grid -->
     <div class="space-y-6">
-      <h2 class="text-xl sm:text-2xl font-bold text-gray-900">اقلام و پکیج‌های پیشنهادی برای این صنعت</h2>
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 text-d4">اقلام و پکیج‌های پیشنهادی برای این صنعت</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div
           v-for="(item, idx) in industry.packages"
           :key="idx"
-          class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-all duration-300"
+          class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition-all duration-300"
         >
           <div>
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-najmgreen flex items-center justify-center mb-4">
+            <div class="w-10 h-10 rounded-xl bg-najmgrey text-najmgreen flex items-center justify-center mb-4">
               <Icon name="mdi:package-variant-closed" class="w-5 h-5" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">{{ item.title }}</h3>
-            <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">{{ item.desc }}</p>
+            <h3 class="text-base font-bold text-gray-900 mb-2 text-d4">{{ item.title }}</h3>
+            <p class="text-xs text-gray-600 leading-relaxed mb-4">{{ item.desc }}</p>
             <div class="flex flex-wrap gap-1.5 mb-6">
               <span
                 v-for="spec in item.specs"
                 :key="spec"
-                class="px-2.5 py-1 rounded-lg bg-gray-50 border border-gray-200 text-[11px] text-gray-600 font-medium"
+                class="px-2.5 py-1 rounded-lg bg-najmgrey border border-najmborder/40 text-[11px] text-gray-700 font-medium font-mono"
               >
                 {{ spec }}
               </span>
@@ -54,7 +54,7 @@
           </div>
           <NuxtLink
             to="/contact"
-            class="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-semibold text-center transition"
+            class="w-full py-2.5 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold text-center transition"
           >
             مشاوره این پکیج
           </NuxtLink>
@@ -63,16 +63,16 @@
     </div>
 
     <!-- Standards & Hygiene note -->
-    <div class="bg-gray-900 text-white rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div class="bg-najmgreen text-white rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
       <div class="space-y-2 max-w-xl text-right">
-        <h3 class="text-lg sm:text-xl font-bold">استانداردهای بهداشتی و ایمنی تماس با محصول</h3>
-        <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+        <h3 class="text-lg sm:text-xl font-bold text-d4">استانداردهای بهداشتی و ایمنی تماس با محصول</h3>
+        <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">
           کلیه بسته‌بندی‌های تولیدی در خطوط نجم با متریال فودگرید (Food Grade)، مقوای ایندربرد بهداشتی و مرکب‌های بدون بو و سازگار با سلامت مصرف‌کننده تولید می‌گردند.
         </p>
       </div>
       <NuxtLink
         to="/contact"
-        class="px-8 py-3.5 rounded-2xl bg-white text-gray-900 font-semibold text-sm hover:bg-gray-100 transition whitespace-nowrap shadow-sm"
+        class="px-8 py-3.5 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition whitespace-nowrap shadow-xs"
       >
         استعلام سفارش تولید
       </NuxtLink>

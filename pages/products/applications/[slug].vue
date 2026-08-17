@@ -13,15 +13,15 @@
     </nav>
 
     <!-- App Hero -->
-    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-gray-100">
+    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-xs border border-najmborder/40">
       <div class="max-w-3xl space-y-4">
-        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-najmgreen">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
           پکیج کاربردی و هدفمند
         </span>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight text-d4">
           {{ appData.title }}
         </h1>
-        <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
+        <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
           {{ appData.description }}
         </p>
       </div>
@@ -29,27 +29,27 @@
 
     <!-- Items in package -->
     <div class="space-y-6">
-      <h2 class="text-xl sm:text-2xl font-bold text-gray-900">اقلام موجود در این پکیج</h2>
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 text-d4">اقلام موجود در این پکیج</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div
           v-for="(item, idx) in appData.items"
           :key="idx"
-          class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-all duration-300"
+          class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition-all duration-300"
         >
           <div>
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+            <div class="w-10 h-10 rounded-xl bg-najmgrey text-najmgreen flex items-center justify-center mb-4">
               <Icon name="mdi:check-decagram-outline" class="w-5 h-5" />
             </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">{{ item.name }}</h3>
+            <h3 class="text-base font-bold text-gray-900 mb-2 text-d4">{{ item.name }}</h3>
             <p class="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">{{ item.desc }}</p>
-            <div class="p-3 bg-gray-50 rounded-xl text-xs text-gray-700 font-medium">
+            <div class="p-3 bg-najmgrey/50 border border-najmborder/40 rounded-xl text-xs text-gray-700 font-medium">
               ویژگی: {{ item.feature }}
             </div>
           </div>
           <div class="pt-6 mt-4 border-t border-gray-100">
             <NuxtLink
               to="/contact"
-              class="w-full block py-2.5 rounded-xl bg-gray-100 hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-semibold text-center transition"
+              class="w-full block py-2.5 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold text-center transition"
             >
               سفارش این آیتم
             </NuxtLink>
@@ -59,16 +59,16 @@
     </div>
 
     <!-- Call to action -->
-    <div class="bg-najmgreen text-white rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div class="bg-najmgreen text-white rounded-3xl p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
       <div class="space-y-2 max-w-xl text-right">
-        <h3 class="text-2xl font-bold">نیاز به سفارشی‌سازی اقلام این پکیج دارید؟</h3>
-        <p class="text-sm text-emerald-100 leading-relaxed">
+        <h3 class="text-2xl font-bold text-d4">نیاز به سفارشی‌سازی اقلام این پکیج دارید؟</h3>
+        <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed">
           شما می‌توانید متریال، ابعاد، پوشش‌های چاپی و تیراژ هر یک از اقلام را مطابق با بودجه و هویت بصری سازمان خود تغییر دهید.
         </p>
       </div>
       <NuxtLink
         to="/contact"
-        class="px-8 py-3.5 rounded-2xl bg-white text-najmgreen font-bold text-sm hover:bg-emerald-50 transition shadow-sm whitespace-nowrap"
+        class="px-8 py-3.5 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition shadow-xs whitespace-nowrap"
       >
         درخواست پکیج اختصاصی
       </NuxtLink>
