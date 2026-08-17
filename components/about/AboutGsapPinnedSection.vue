@@ -9,9 +9,9 @@
     <div
       ref="cardRef"
       class="relative h-[calc(100vh-6.5rem)] w-full flex flex-col justify-between rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 border border-white/10"
-      @wheel.passive="handleWheel"
+      @wheel="handleWheel"
       @touchstart.passive="handleTouchStart"
-      @touchmove.passive="handleTouchMove"
+      @touchmove="handleTouchMove"
     >
       <!-- Background Radial Glow -->
       <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(1,68,57,0.45),rgba(0,0,0,0))] pointer-events-none"></div>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <!-- Main Stage: Slide Content & Media (Animated with Distinct Step Transitions) -->
+      <!-- Main Stage: Slide Content & Media -->
       <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center my-auto py-2">
         <!-- Right: Text Narrative (6 cols) -->
         <div class="lg:col-span-6 space-y-5 text-right order-2 lg:order-1 relative min-h-[220px] flex flex-col justify-center">
@@ -110,6 +110,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 
+const props = withDefaults(
+  defineProps<{
+    isBypassing?: boolean
+  }>(),
+  {
+    isBypassing: false
+  }
+)
+
 interface Slide {
   id: string
   title: string
@@ -147,7 +156,6 @@ const slides: Slide[] = [
 const sectionContainerRef = ref<HTMLElement | null>(null)
 const cardRef = ref<HTMLElement | null>(null)
 const activeIndex = ref(0)
-const isLocked = ref(false)
 
 const currentSlide = computed(() => slides[activeIndex.value] || slides[0])
 
@@ -155,37 +163,38 @@ function setStep(idx: number) {
   activeIndex.value = idx
 }
 
-let lastWheelTime = 0
-const COOLDOWN_MS = 650 // Prevents fast scrolling skipping
+let lastActionTime = 0
+const LOCKOUT_MS = 500
 
 function handleWheel(e: WheelEvent) {
-  if (!sectionContainerRef.value || typeof window === 'undefined') return
+  if (props.isBypassing || !sectionContainerRef.value || typeof window === 'undefined') return
 
   const rect = sectionContainerRef.value.getBoundingClientRect()
-  const inView = rect.top >= -80 && rect.top <= 120
+  const inCenter = rect.top <= 120 && rect.bottom >= window.innerHeight - 120
 
-  // If section is currently centered in viewport
-  if (inView) {
+  if (inCenter) {
     const now = Date.now()
-    if (now - lastWheelTime < COOLDOWN_MS) return
+    if (now - lastActionTime < LOCKOUT_MS) {
+      // Absorb scroll event while in transition
+      if ((e.deltaY > 0 && activeIndex.value < slides.length - 1) || (e.deltaY < 0 && activeIndex.value > 0)) {
+        e.preventDefault()
+      }
+      return
+    }
 
-    if (e.deltaY > 25) {
-      // Scroll Down
-      if (activeIndex.value < slides.length - 1) {
-        activeIndex.value++
-        lastWheelTime = now
-      }
-    } else if (e.deltaY < -25) {
-      // Scroll Up
-      if (activeIndex.value > 0) {
-        activeIndex.value--
-        lastWheelTime = now
-      }
+    if (e.deltaY > 15 && activeIndex.value < slides.length - 1) {
+      e.preventDefault()
+      activeIndex.value++
+      lastActionTime = now
+    } else if (e.deltaY < -15 && activeIndex.value > 0) {
+      e.preventDefault()
+      activeIndex.value--
+      lastActionTime = now
     }
   }
 }
 
-// Touch Handling
+// Touch Support
 let touchStartY = 0
 
 function handleTouchStart(e: TouchEvent) {
@@ -193,29 +202,32 @@ function handleTouchStart(e: TouchEvent) {
 }
 
 function handleTouchMove(e: TouchEvent) {
-  if (!sectionContainerRef.value || typeof window === 'undefined') return
+  if (props.isBypassing || !sectionContainerRef.value || typeof window === 'undefined') return
 
   const rect = sectionContainerRef.value.getBoundingClientRect()
-  const inView = rect.top >= -80 && rect.top <= 120
+  const inCenter = rect.top <= 120 && rect.bottom >= window.innerHeight - 120
 
-  if (inView) {
+  if (inCenter) {
     const currentY = e.touches[0].clientY
     const delta = touchStartY - currentY
     const now = Date.now()
-    if (now - lastWheelTime < COOLDOWN_MS) return
+    if (now - lastActionTime < LOCKOUT_MS) {
+      if ((delta > 0 && activeIndex.value < slides.length - 1) || (delta < 0 && activeIndex.value > 0)) {
+        e.preventDefault()
+      }
+      return
+    }
 
-    if (delta > 35) {
-      if (activeIndex.value < slides.length - 1) {
-        activeIndex.value++
-        lastWheelTime = now
-        touchStartY = currentY
-      }
-    } else if (delta < -35) {
-      if (activeIndex.value > 0) {
-        activeIndex.value--
-        lastWheelTime = now
-        touchStartY = currentY
-      }
+    if (delta > 25 && activeIndex.value < slides.length - 1) {
+      e.preventDefault()
+      activeIndex.value++
+      lastActionTime = now
+      touchStartY = currentY
+    } else if (delta < -25 && activeIndex.value > 0) {
+      e.preventDefault()
+      activeIndex.value--
+      lastActionTime = now
+      touchStartY = currentY
     }
   }
 }
@@ -224,20 +236,20 @@ function handleTouchMove(e: TouchEvent) {
 <style scoped>
 .slide-fade-enter-active,
 .slide-fade-leave-active {
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .slide-fade-enter-from {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(10px);
 }
 .slide-fade-leave-to {
   opacity: 0;
-  transform: translateY(-12px);
+  transform: translateY(-10px);
 }
 
 .image-morph-enter-active,
 .image-morph-leave-active {
-  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .image-morph-enter-from {
   opacity: 0;

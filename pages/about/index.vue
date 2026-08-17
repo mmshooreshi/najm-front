@@ -1,34 +1,29 @@
 <!-- pages/about/index.vue -->
 <template>
   <div dir="rtl" class="min-h-screen bg-najmback text-gray-800 relative">
-    <!-- Smart Floating Capsule Sub-Nav (Strictly gated to /about and destroyed instantly on route leave) -->
-    <ClientOnly>
-      <Teleport to="body">
-        <div
-          v-if="isMounted && route.path === '/about'"
-          class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
+    <!-- Smart Floating Capsule Sub-Nav (Directly in template, permanently available on /about) -->
+    <div
+      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
+      :class="[
+        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
+      ]"
+    >
+      <nav class="pointer-events-auto bg-white/85 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
+        <button
+          v-for="item in sections"
+          :key="item.id"
+          @click="scrollToSection(item.id)"
+          class="px-3.5 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer whitespace-nowrap"
           :class="[
-            navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
+            activeSection === item.id
+              ? 'bg-najmgreen text-white shadow-xs font-bold'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
           ]"
         >
-          <nav class="pointer-events-auto bg-white/85 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5">
-            <button
-              v-for="item in sections"
-              :key="item.id"
-              @click="scrollToSection(item.id)"
-              class="px-3.5 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer whitespace-nowrap"
-              :class="[
-                activeSection === item.id
-                  ? 'bg-najmgreen text-white shadow-xs font-bold'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
-              ]"
-            >
-              {{ item.label }}
-            </button>
-          </nav>
-        </div>
-      </Teleport>
-    </ClientOnly>
+          {{ item.label }}
+        </button>
+      </nav>
+    </div>
 
     <!-- Main Editorial Container -->
     <main class="pt-24 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-28">
@@ -160,7 +155,7 @@
 
       <!-- Section 3: Locked Pinned Slides (راهکارها و ویژگی‌ها) -->
       <section id="solutions" class="scroll-mt-28">
-        <AboutGsapPinnedSection />
+        <AboutGsapPinnedSection :is-bypassing="isNavBypassing" />
       </section>
 
       <!-- Section 4: Facilities & Industrial Fleet (Machines 1-5 & QC Lab) -->
@@ -383,16 +378,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRoute, onBeforeRouteLeave } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
 import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
 
 definePageMeta({
   name: 'درباره ما - چاپ نجم',
   layout: 'default'
 })
-
-const route = useRoute()
 
 const sections = [
   { id: 'vision', label: 'معرفی' },
@@ -405,7 +397,7 @@ const sections = [
 
 const activeSection = ref('vision')
 const navVisible = ref(true)
-const isMounted = ref(false)
+const isNavBypassing = ref(false)
 let lastScrollY = 0
 
 function handleScrollDirection() {
@@ -424,24 +416,25 @@ function handleScrollDirection() {
 }
 
 function scrollToSection(id: string) {
+  isNavBypassing.value = true
   const el = document.getElementById(id)
-  if (!el) return
-  
-  const yOffset = -90
-  const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
-  
-  window.scrollTo({
-    top: y,
-    behavior: 'smooth'
-  })
+  if (el) {
+    const yOffset = -90
+    const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    })
+  }
   activeSection.value = id
+
+  // Reset bypass flag after smooth scroll completes
+  setTimeout(() => {
+    isNavBypassing.value = false
+  }, 1000)
 }
 
-onMounted(async () => {
-  await nextTick()
-  if (route.path === '/about') {
-    isMounted.value = true
-  }
+onMounted(() => {
   lastScrollY = window.scrollY
   window.addEventListener('scroll', handleScrollDirection, { passive: true })
 
@@ -462,16 +455,7 @@ onMounted(async () => {
   })
 })
 
-onBeforeRouteLeave(() => {
-  isMounted.value = false
-})
-
-onBeforeUnmount(() => {
-  isMounted.value = false
-})
-
 onUnmounted(() => {
-  isMounted.value = false
   if (typeof window !== 'undefined') {
     window.removeEventListener('scroll', handleScrollDirection)
   }
