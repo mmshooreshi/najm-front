@@ -262,11 +262,11 @@ export default defineNuxtConfig({
     }
   },
   // nuxt.config.ts
-  // icon: {
-  //   serverBundle: {
-  //     collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
-  //   }
-  // },
+  icon: {
+    serverBundle: {
+      collections: ['mdi', 'carbon', 'mage'] // Only the ones you actually use
+    }
+  },
   mapbox: {
     accessToken:
       'pk.eyJ1IjoibW1zaG9vcmVzaGkiLCJhIjoiY205eGJla2tyMTB3ejJrc2Vma2VwY2VlaiJ9.PGekyHty46Af6FxyKY3HIw'
