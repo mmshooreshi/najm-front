@@ -1,11 +1,11 @@
 <!-- pages/about/index.vue -->
 <template>
   <div dir="rtl" class="min-h-screen bg-najmback text-gray-800 relative">
-    <!-- Smart Floating Capsule Sub-Nav (Teleported to body so it never jumps during route transitions) -->
+    <!-- Smart Floating Capsule Sub-Nav (Strictly gated to /about and destroyed instantly on route leave) -->
     <ClientOnly>
       <Teleport to="body">
         <div
-          v-if="isMounted"
+          v-if="isMounted && route.path === '/about'"
           class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300"
           :class="[
             navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
@@ -383,13 +383,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, onBeforeUnmount, nextTick } from 'vue'
+import { useRoute, onBeforeRouteLeave } from 'vue-router'
 import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
 
 definePageMeta({
   name: 'درباره ما - چاپ نجم',
   layout: 'default'
 })
+
+const route = useRoute()
 
 const sections = [
   { id: 'vision', label: 'معرفی' },
@@ -412,10 +415,8 @@ function handleScrollDirection() {
   if (currentY < 180) {
     navVisible.value = true
   } else if (currentY > lastScrollY + 12) {
-    // Scrolling down -> smoothly hide
     navVisible.value = false
   } else if (currentY < lastScrollY - 8) {
-    // Scrolling up -> smoothly reveal
     navVisible.value = true
   }
   
@@ -438,7 +439,9 @@ function scrollToSection(id: string) {
 
 onMounted(async () => {
   await nextTick()
-  isMounted.value = true
+  if (route.path === '/about') {
+    isMounted.value = true
+  }
   lastScrollY = window.scrollY
   window.addEventListener('scroll', handleScrollDirection, { passive: true })
 
@@ -459,7 +462,16 @@ onMounted(async () => {
   })
 })
 
+onBeforeRouteLeave(() => {
+  isMounted.value = false
+})
+
+onBeforeUnmount(() => {
+  isMounted.value = false
+})
+
 onUnmounted(() => {
+  isMounted.value = false
   if (typeof window !== 'undefined') {
     window.removeEventListener('scroll', handleScrollDirection)
   }

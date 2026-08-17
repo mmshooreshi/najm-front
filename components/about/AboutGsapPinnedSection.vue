@@ -1,19 +1,24 @@
 <!-- components/about/AboutGsapPinnedSection.vue -->
 <template>
   <div
-    ref="trackRef"
+    ref="sectionContainerRef"
     dir="rtl"
-    class="relative w-full"
-    :style="{ height: `${slides.length * 100}vh` }"
+    class="relative w-full my-8"
   >
-    <!-- Sticky Firmly Locked Viewport Stage (100% locked until all slides are scrolled) -->
-    <div class="sticky top-20 h-[calc(100vh-6rem)] w-full flex flex-col justify-between rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-14 border border-white/10">
-      <!-- Background Ambient Glow -->
+    <!-- Viewport Stage -->
+    <div
+      ref="cardRef"
+      class="relative h-[calc(100vh-6.5rem)] w-full flex flex-col justify-between rounded-3xl bg-neutral-900 text-white overflow-hidden shadow-2xl p-6 sm:p-10 lg:p-12 border border-white/10"
+      @wheel.passive="handleWheel"
+      @touchstart.passive="handleTouchStart"
+      @touchmove.passive="handleTouchMove"
+    >
+      <!-- Background Radial Glow -->
       <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(1,68,57,0.45),rgba(0,0,0,0))] pointer-events-none"></div>
 
       <!-- Top Section Bar -->
       <div class="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-white/10 pb-5">
-        <div class="space-y-1.5 text-right">
+        <div class="space-y-1 text-right">
           <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 text-d4">
             رویکرد و استانداردهای تولید
           </span>
@@ -22,92 +27,80 @@
           </h2>
         </div>
 
-        <!-- Step Pill Badge & Progress Bar -->
+        <!-- Step Pill Counter -->
         <div class="flex items-center gap-3">
-          <span class="text-xs text-neutral-400">گام ۰{{ currentStep + 1 }} از ۰{{ slides.length }}</span>
-          <div class="w-28 h-2 rounded-full bg-white/10 overflow-hidden relative">
+          <span class="text-xs text-neutral-400">راهکار ۰{{ activeIndex + 1 }} از ۰{{ slides.length }}</span>
+          <div class="flex items-center gap-1.5">
             <div
-              class="absolute inset-y-0 right-0 bg-emerald-400 rounded-full transition-all duration-150"
-              :style="{ width: `${progress * 100}%` }"
+              v-for="(_, idx) in slides"
+              :key="idx"
+              class="h-2 rounded-full transition-all duration-400"
+              :class="activeIndex === idx ? 'w-8 bg-emerald-400' : 'w-2 bg-white/20'"
             ></div>
           </div>
         </div>
       </div>
 
-      <!-- Main Locked Stage: Slide Content & Media -->
-      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center my-auto py-4">
+      <!-- Main Stage: Slide Content & Media (Animated with Distinct Step Transitions) -->
+      <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center my-auto py-2">
         <!-- Right: Text Narrative (6 cols) -->
-        <div class="lg:col-span-6 space-y-6 text-right order-2 lg:order-1 relative min-h-[220px] flex flex-col justify-center">
-          <div
-            v-for="(slide, idx) in slides"
-            :key="slide.id"
-            class="transition-all duration-500 ease-out"
-            :class="[
-              currentStep === idx
-                ? 'opacity-100 translate-y-0 pointer-events-auto block'
-                : 'opacity-0 translate-y-4 pointer-events-none hidden'
-            ]"
-          >
-            <div class="flex items-center gap-2 mb-3">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-xs font-mono text-emerald-400 font-bold">۰{{ idx + 1 }} — راهکار اختصاصی</span>
+        <div class="lg:col-span-6 space-y-5 text-right order-2 lg:order-1 relative min-h-[220px] flex flex-col justify-center">
+          <transition name="slide-fade" mode="out-in">
+            <div :key="currentSlide.id" class="space-y-4">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs font-mono text-emerald-400 font-bold">۰{{ activeIndex + 1 }} — راهکار اختصاصی</span>
+              </div>
+
+              <h3 class="text-2xl sm:text-3xl font-extrabold text-white text-d4 leading-snug">
+                {{ currentSlide.title }}
+              </h3>
+
+              <p class="text-xs sm:text-sm text-neutral-300 leading-relaxed whitespace-pre-line">
+                {{ currentSlide.body }}
+              </p>
             </div>
-
-            <h3 class="text-2xl sm:text-3xl font-extrabold text-white text-d4 leading-snug mb-4">
-              {{ slide.title }}
-            </h3>
-
-            <p class="text-xs sm:text-sm text-neutral-300 leading-relaxed whitespace-pre-line">
-              {{ slide.body }}
-            </p>
-          </div>
+          </transition>
 
           <!-- Step Progress Trackers -->
           <div class="flex items-center gap-2.5 pt-4 border-t border-white/10">
             <button
               v-for="(slide, idx) in slides"
               :key="slide.id"
-              @click="jumpToStep(idx)"
-              class="h-1.5 rounded-full transition-all duration-400 cursor-pointer"
-              :class="currentStep === idx ? 'w-12 bg-emerald-400' : 'w-3 bg-white/20 hover:bg-white/40'"
+              @click="setStep(idx)"
+              class="h-2 rounded-full transition-all duration-400 cursor-pointer"
+              :class="activeIndex === idx ? 'w-12 bg-emerald-400' : 'w-3 bg-white/20 hover:bg-white/40'"
               :title="slide.title"
             ></button>
           </div>
         </div>
 
-        <!-- Left: Visual Asset Showcase (6 cols) -->
+        <!-- Left: Visual Asset Showcase with Cinematic Morph (6 cols) -->
         <div class="lg:col-span-6 order-1 lg:order-2">
           <div class="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-2xl overflow-hidden bg-neutral-800 border border-white/10 shadow-2xl">
-            <div
-              v-for="(slide, idx) in slides"
-              :key="slide.id"
-              class="absolute inset-0 w-full h-full transition-all duration-500 ease-out"
-              :class="[
-                currentStep === idx
-                  ? 'opacity-100 scale-100 z-10'
-                  : 'opacity-0 scale-95 z-0 pointer-events-none'
-              ]"
-            >
-              <img
-                :src="'/' + slide.image.replace(/^\//, '')"
-                :alt="slide.title"
-                class="w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-              
-              <div class="absolute bottom-3.5 right-4 left-4 flex items-center justify-between text-white pointer-events-none">
-                <span class="text-xs font-bold text-d4 text-emerald-300">{{ slide.title }}</span>
-                <span class="text-[10px] text-white/70 font-mono">۰{{ idx + 1 }} / ۰{{ slides.length }}</span>
+            <transition name="image-morph" mode="out-in">
+              <div :key="currentSlide.id" class="relative w-full h-full">
+                <img
+                  :src="'/' + currentSlide.image.replace(/^\//, '')"
+                  :alt="currentSlide.title"
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
+                
+                <div class="absolute bottom-3.5 right-4 left-4 flex items-center justify-between text-white pointer-events-none">
+                  <span class="text-xs font-bold text-d4 text-emerald-300">{{ currentSlide.title }}</span>
+                  <span class="text-[10px] text-white/70 font-mono">۰{{ activeIndex + 1 }} / ۰{{ slides.length }}</span>
+                </div>
               </div>
-            </div>
+            </transition>
           </div>
         </div>
       </div>
 
-      <!-- Bottom Status Bar -->
+      <!-- Bottom Hint Bar -->
       <div class="relative z-10 flex items-center justify-between text-[11px] text-neutral-400 border-t border-white/10 pt-3">
-        <span class="text-neutral-400">برای مرور راهکارها به اسکرول ادامه دهید</span>
+        <span>برای رفتن به گام بعد اسکرول کنید (گام ۰{{ activeIndex + 1 }} از ۰{{ slides.length }})</span>
         <span class="text-emerald-400/90 font-medium">مجتمع تخصصی چاپ و بسته‌بندی نجم</span>
       </div>
     </div>
@@ -115,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 
 interface Slide {
   id: string
@@ -151,47 +144,107 @@ const slides: Slide[] = [
   }
 ]
 
-const trackRef = ref<HTMLElement | null>(null)
-const currentStep = ref(0)
-const progress = ref(0)
+const sectionContainerRef = ref<HTMLElement | null>(null)
+const cardRef = ref<HTMLElement | null>(null)
+const activeIndex = ref(0)
+const isLocked = ref(false)
 
-function handleScroll() {
-  if (!trackRef.value || typeof window === 'undefined') return
+const currentSlide = computed(() => slides[activeIndex.value] || slides[0])
 
-  const rect = trackRef.value.getBoundingClientRect()
-  const totalTravel = trackRef.value.offsetHeight - window.innerHeight
-  if (totalTravel <= 0) return
+function setStep(idx: number) {
+  activeIndex.value = idx
+}
 
-  // How far user has scrolled into this section
-  const scrolled = -rect.top
-  const rawProgress = Math.max(0, Math.min(1, scrolled / totalTravel))
-  progress.value = rawProgress
+let lastWheelTime = 0
+const COOLDOWN_MS = 650 // Prevents fast scrolling skipping
 
-  const step = Math.min(slides.length - 1, Math.floor(rawProgress * slides.length))
-  if (step !== currentStep.value) {
-    currentStep.value = step
+function handleWheel(e: WheelEvent) {
+  if (!sectionContainerRef.value || typeof window === 'undefined') return
+
+  const rect = sectionContainerRef.value.getBoundingClientRect()
+  const inView = rect.top >= -80 && rect.top <= 120
+
+  // If section is currently centered in viewport
+  if (inView) {
+    const now = Date.now()
+    if (now - lastWheelTime < COOLDOWN_MS) return
+
+    if (e.deltaY > 25) {
+      // Scroll Down
+      if (activeIndex.value < slides.length - 1) {
+        activeIndex.value++
+        lastWheelTime = now
+      }
+    } else if (e.deltaY < -25) {
+      // Scroll Up
+      if (activeIndex.value > 0) {
+        activeIndex.value--
+        lastWheelTime = now
+      }
+    }
   }
 }
 
-function jumpToStep(idx: number) {
-  if (!trackRef.value || typeof window === 'undefined') return
-  const totalTravel = trackRef.value.offsetHeight - window.innerHeight
-  const stepRatio = idx / (slides.length - 1)
-  const targetY = trackRef.value.offsetTop + stepRatio * totalTravel
-  window.scrollTo({ top: targetY, behavior: 'smooth' })
+// Touch Handling
+let touchStartY = 0
+
+function handleTouchStart(e: TouchEvent) {
+  touchStartY = e.touches[0].clientY
 }
 
-onMounted(async () => {
-  await nextTick()
-  handleScroll()
-  window.addEventListener('scroll', handleScroll, { passive: true })
-  window.addEventListener('resize', handleScroll)
-})
+function handleTouchMove(e: TouchEvent) {
+  if (!sectionContainerRef.value || typeof window === 'undefined') return
 
-onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('scroll', handleScroll)
-    window.removeEventListener('resize', handleScroll)
+  const rect = sectionContainerRef.value.getBoundingClientRect()
+  const inView = rect.top >= -80 && rect.top <= 120
+
+  if (inView) {
+    const currentY = e.touches[0].clientY
+    const delta = touchStartY - currentY
+    const now = Date.now()
+    if (now - lastWheelTime < COOLDOWN_MS) return
+
+    if (delta > 35) {
+      if (activeIndex.value < slides.length - 1) {
+        activeIndex.value++
+        lastWheelTime = now
+        touchStartY = currentY
+      }
+    } else if (delta < -35) {
+      if (activeIndex.value > 0) {
+        activeIndex.value--
+        lastWheelTime = now
+        touchStartY = currentY
+      }
+    }
   }
-})
+}
 </script>
+
+<style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+.image-morph-enter-active,
+.image-morph-leave-active {
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.image-morph-enter-from {
+  opacity: 0;
+  transform: scale(0.96);
+}
+.image-morph-leave-to {
+  opacity: 0;
+  transform: scale(1.04);
+}
+</style>
