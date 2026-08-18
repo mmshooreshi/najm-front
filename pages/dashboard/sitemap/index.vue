@@ -33,12 +33,7 @@
         <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xs whitespace-nowrap">
           <div class="flex items-center gap-1 text-emerald-800 font-bold">
             <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
-            <span class="font-mono">{{ backendSyncedCount }} PB</span>
-          </div>
-          <span class="text-slate-300">/</span>
-          <div class="flex items-center gap-1 text-slate-500 font-medium">
-            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-            <span class="font-mono">{{ hardcodedCount }} Routes</span>
+            <span class="font-mono">{{ backendSyncedCount }} PB (100% Live)</span>
           </div>
         </div>
       </div>
@@ -171,7 +166,7 @@
           </g>
         </svg>
 
-        <!-- COMPACT INTERACTIVE SPATIAL NODES -->
+        <!-- 100% PURE POCKETBASE LIVE NODES -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
@@ -193,16 +188,13 @@
             :style="{ width: '135px', height: '135px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500/30 scale-105' : ''"
           >
-            <span
-              class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full border border-white"
-              :class="node.source === 'backend' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse' : 'bg-slate-400'"
-            ></span>
+            <span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full border border-white bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
 
             <div class="w-8 h-8 rounded-full bg-[#018786] text-white flex items-center justify-center shadow-xs mb-1">
               <Icon :name="node.icon" class="w-4 h-4" />
             </div>
 
-            <span class="text-[8px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">CORE</span>
+            <span class="text-[8px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">LIVE PB HUB</span>
             <h2 class="text-[11px] font-extrabold text-slate-900 text-d4 truncate max-w-[105px] whitespace-nowrap text-center">
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h2>
@@ -222,10 +214,7 @@
                   : 'z-10'
             ]"
           >
-            <span
-              class="absolute top-1 right-1 w-2 h-2 rounded-full border border-white"
-              :class="node.source === 'backend' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse' : 'bg-slate-400'"
-            ></span>
+            <span class="absolute top-1 right-1 w-2 h-2 rounded-full border border-white bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
 
             <div
               class="w-7 h-7 rounded-xl flex items-center justify-center text-white shadow-2xs mb-1"
@@ -250,10 +239,7 @@
             :style="{ borderColor: node.accentColor ? `${node.accentColor}50` : '#e2e8f0' }"
             :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500 border-emerald-500 scale-105 z-30' : 'hover:border-slate-300 z-10'"
           >
-            <span
-              class="w-1.5 h-1.5 rounded-full border border-white shrink-0"
-              :class="node.source === 'backend' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"
-            ></span>
+            <span class="w-1.5 h-1.5 rounded-full border border-white bg-emerald-500 animate-pulse shrink-0"></span>
 
             <div
               class="w-4.5 h-4.5 rounded-md flex items-center justify-center text-white text-[9px] shadow-2xs shrink-0"
@@ -266,8 +252,8 @@
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </span>
 
-            <span v-if="node.tag" class="text-[7px] font-bold px-1 py-0.2 rounded-full bg-slate-100 text-slate-500 whitespace-nowrap">
-              {{ node.tag }}
+            <span class="text-[7px] font-mono font-bold px-1 py-0.2 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+              PB
             </span>
           </div>
 
@@ -280,8 +266,8 @@
           >
             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2">
               <div class="flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full" :class="selectedNode.source === 'backend' ? 'bg-emerald-500' : 'bg-slate-400'"></span>
-                <span class="font-bold text-[10px] text-slate-800 text-d4">{{ isRTL ? 'تنظیم سریع' : 'Quick Tune' }}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="font-bold text-[10px] text-slate-800 text-d4">تنظیم گره دیتابیس ({{ selectedNode.slug }})</span>
               </div>
               <button
                 @click.stop="selectedNode = null"
@@ -318,7 +304,7 @@
                 class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
               >
                 <Icon name="mdi:code-json" class="w-3.5 h-3.5 text-emerald-400" />
-                <span>استودیو اسکیما UI</span>
+                <span>ویرایشگر JSON حرفه‌ای</span>
               </button>
 
               <button
@@ -335,7 +321,7 @@
       </div>
     </div>
 
-    <!-- 100/100 INTERACTIVE VISUAL ROW-BASED SCHEMA STUDIO -->
+    <!-- 100/100 MULTI-PACKAGE JSON SCHEMA STUDIO -->
     <transition name="fade">
       <div
         v-if="showJsonStudio"
@@ -350,52 +336,54 @@
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-200 text-sm">VISUAL SCHEMA STUDIO</span>
+                  <span class="font-bold text-slate-200 text-sm">PRO JSON STUDIO</span>
                   <span class="px-2 py-0.2 rounded bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800">
                     {{ activeStudioNode?.slug || activeStudioNode?.id }}
                   </span>
-                  <!-- Unsaved Changes Badge -->
+                  <!-- Yellow Modified Diff Status -->
                   <span
                     v-if="hasAnyModifications"
                     class="px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/60 text-[10px] font-bold animate-pulse"
                   >
-                    ⚠️ تغییرات ذخیره‌نشده زرد
+                    ⚠️ تغییرات زرد
                   </span>
                 </div>
-                <span class="text-[10px] text-slate-500">Live PocketBase Interactive Schema Row Editor</span>
+                <span class="text-[10px] text-slate-500">vanilla-jsoneditor & Interactive Visual Schema Tree</span>
               </div>
             </div>
 
-            <!-- View Switcher & Action Tools -->
+            <!-- Multiple JSON Editor Engines Switcher -->
             <div class="flex items-center gap-2">
-              <!-- Switcher: Visual Rows vs Raw Code -->
               <div class="flex items-center bg-slate-800 p-0.5 rounded-xl text-[11px] font-bold">
+                <!-- Package 1: vanilla-jsoneditor (Jos de Jong) -->
                 <button
-                  @click="studioViewMode = 'rows'"
+                  @click="studioEngine = 'vanilla-editor'"
                   class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
-                  :class="studioViewMode === 'rows' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
+                  :class="studioEngine === 'vanilla-editor' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
+                >
+                  <Icon name="mdi:flash-outline" class="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Vanilla JSON Editor (Jos de Jong)</span>
+                </button>
+
+                <!-- Engine 2: Visual Rows with Yellow Highlights & Undo -->
+                <button
+                  @click="studioEngine = 'visual-rows'"
+                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  :class="studioEngine === 'visual-rows' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
                 >
                   <Icon name="mdi:format-list-bulleted" class="w-3.5 h-3.5" />
-                  <span>ردیف‌های بصری (Visual)</span>
-                </button>
-                <button
-                  @click="studioViewMode = 'code'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
-                  :class="studioViewMode === 'code' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
-                >
-                  <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-                  <span>کد خام (Raw JSON)</span>
+                  <span>ردیف‌های هوشمند (Diff زرد)</span>
                 </button>
               </div>
 
-              <!-- Undo All Button (Active when modified) -->
+              <!-- Undo All Button -->
               <button
                 v-if="hasAnyModifications"
                 @click="undoAllChanges"
                 class="px-3 py-1.5 rounded-xl bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-700/80 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-                title="بازگردانی تمام مقادیر زرد به نسخه اصلی سرور"
+                title="بازگردانی تمام مقادیر به نسخه سرور"
               >
-                <span>↩️ بازگردانی همه</span>
+                <span>↩️ بازگردانی</span>
               </button>
 
               <button
@@ -417,9 +405,9 @@
           <!-- Diff & Yellow Alert Info Bar -->
           <div class="px-5 py-2 bg-slate-900/60 border-b border-slate-800 flex items-center justify-between text-[11px] select-none">
             <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span class="text-slate-300">
-                هر مقداری که ویرایش شود با <strong class="text-amber-300 font-bold">رنگ زرد و کادر درخشان</strong> مشخص می‌شود و دارای دکمه بازگردانی اختصاصی است.
+                پکیج رسمی <strong class="text-emerald-300">vanilla-jsoneditor</strong> فعال است. دارای حالت‌های Tree، Table، Text، جستجو و تبدیل JMESPath.
               </span>
             </div>
             <div class="flex items-center gap-2 text-slate-500 text-[10px]">
@@ -429,12 +417,16 @@
             </div>
           </div>
 
-          <!-- STUDIO BODY: TAB 1 - VISUAL ROWS (100/100 Interactive Rows) -->
-          <div v-if="studioViewMode === 'rows'" class="flex-1 p-4 overflow-y-auto space-y-2 bg-slate-950">
-            <div v-if="schemaKeys.length === 0" class="p-8 text-center text-slate-500">
-              هیچ فیلدی در این اسکیما تعریف نشده است.
-            </div>
+          <!-- ENGINE 1: BATTLE-TESTED vanilla-jsoneditor (Jos de Jong) -->
+          <div v-if="studioEngine === 'vanilla-editor'" class="flex-1 p-3 bg-slate-950 overflow-hidden">
+            <VanillaJsonEditor
+              v-model="currentWorkingSchema"
+              @change="onVanillaEditorChange"
+            />
+          </div>
 
+          <!-- ENGINE 2: INTERACTIVE VISUAL ROWS WITH YELLOW DIFFS & UNDO -->
+          <div v-else class="flex-1 p-4 overflow-y-auto space-y-2 bg-slate-950">
             <JsonTreeRow
               v-for="k in schemaKeys"
               :key="k"
@@ -447,26 +439,12 @@
             />
           </div>
 
-          <!-- STUDIO BODY: TAB 2 - RAW CODE EDITOR -->
-          <div v-else class="flex-1 flex overflow-hidden bg-slate-950">
-            <div class="w-12 bg-slate-900/80 border-r border-slate-800 py-3 select-none text-right pr-2 text-slate-600 font-mono text-[11px] leading-relaxed overflow-hidden">
-              <div v-for="n in rawCodeLines" :key="n">{{ n }}</div>
-            </div>
-            <textarea
-              v-model="rawJsonCode"
-              @input="handleRawCodeInput"
-              rows="30"
-              dir="ltr"
-              class="flex-1 bg-transparent text-emerald-300/90 p-3 font-mono text-[11px] leading-relaxed focus:outline-none resize-none text-left whitespace-pre selection:bg-emerald-800 selection:text-white"
-            ></textarea>
-          </div>
-
           <!-- Studio Footer with Save to PocketBase -->
           <div class="h-14 px-5 bg-slate-900 border-t border-slate-800 flex items-center justify-between shrink-0 select-none">
             <div class="flex items-center gap-2">
               <span v-if="hasAnyModifications" class="text-amber-400 text-xs font-bold flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                <span>تغییرات اعمال‌شده آماده انتشار است</span>
+                <span>تغییرات آماده انتشار در پایگاه داده است</span>
               </span>
               <span v-else class="text-emerald-400 text-xs font-bold flex items-center gap-1">
                 <Icon name="mdi:check-circle" class="w-3.5 h-3.5" />
@@ -644,6 +622,7 @@
 import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 import JsonTreeRow from '~/components/dashboard/JsonTreeRow.vue'
+import VanillaJsonEditor from '~/components/dashboard/VanillaJsonEditor.vue'
 
 definePageMeta({
   layout: false
@@ -659,23 +638,21 @@ const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
 
-// 100/100 Interactive Visual Schema Studio State
+// Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
 const activeStudioNode = ref<any | null>(null)
-const studioViewMode = ref<'rows' | 'code'>('rows')
+const studioEngine = ref<'vanilla-editor' | 'visual-rows'>('vanilla-editor')
 const originalBaselineSchema = ref<Record<string, any>>({})
 const currentWorkingSchema = ref<Record<string, any>>({})
-const rawJsonCode = ref('')
 const studioCopied = ref(false)
 const isStudioSaving = ref(false)
 
 function openProJsonStudio(node: any) {
   activeStudioNode.value = node
-  const schemaSnapshot = JSON.parse(JSON.stringify(node.liveData?.rawUiData || node.defaultData || { titleFa: node.titleFa, titleEn: node.titleEn }))
+  const schemaSnapshot = JSON.parse(JSON.stringify(node.liveData?.rawUiData || { titleFa: node.titleFa, titleEn: node.titleEn }))
   
   originalBaselineSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
   currentWorkingSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
-  rawJsonCode.value = JSON.stringify(schemaSnapshot, null, 2)
   showJsonStudio.value = true
 }
 
@@ -687,9 +664,9 @@ const hasAnyModifications = computed(() => {
   return JSON.stringify(currentWorkingSchema.value) !== JSON.stringify(originalBaselineSchema.value)
 })
 
-const rawCodeLines = computed(() => {
-  return rawJsonCode.value.split('\n').length
-})
+function onVanillaEditorChange(newJson: any) {
+  currentWorkingSchema.value = newJson
+}
 
 // Helper to set nested value by path
 function setNestedValue(obj: any, path: (string | number)[], value: any) {
@@ -712,27 +689,15 @@ function getNestedValue(obj: any, path: (string | number)[]) {
 
 function handleFieldUpdate(path: (string | number)[], newVal: any) {
   setNestedValue(currentWorkingSchema.value, path, newVal)
-  rawJsonCode.value = JSON.stringify(currentWorkingSchema.value, null, 2)
 }
 
 function handleFieldUndo(path: (string | number)[]) {
   const originalVal = getNestedValue(originalBaselineSchema.value, path)
   setNestedValue(currentWorkingSchema.value, path, JSON.parse(JSON.stringify(originalVal)))
-  rawJsonCode.value = JSON.stringify(currentWorkingSchema.value, null, 2)
 }
 
 function undoAllChanges() {
   currentWorkingSchema.value = JSON.parse(JSON.stringify(originalBaselineSchema.value))
-  rawJsonCode.value = JSON.stringify(originalBaselineSchema.value, null, 2)
-}
-
-function handleRawCodeInput() {
-  try {
-    const parsed = JSON.parse(rawJsonCode.value)
-    currentWorkingSchema.value = parsed
-  } catch (e) {
-    // Ignore partial edits
-  }
 }
 
 function copyStudioJson() {
@@ -767,7 +732,7 @@ async function saveWorkingSchemaToPocketBase() {
       activeStudioNode.value.liveData.rawUiData = currentWorkingSchema.value
     }
 
-    // Update baseline to clear yellow highlights
+    // Update baseline snapshot
     originalBaselineSchema.value = JSON.parse(JSON.stringify(currentWorkingSchema.value))
 
     waterfallRequests.value.unshift({
@@ -843,7 +808,6 @@ interface WaterfallEntry {
   statusText: string
   durationMs: number
   timestamp: string
-  headers?: Record<string, string>
   requestJson: any
   responseJson: any
 }
@@ -859,39 +823,18 @@ const waterfallRequests = ref<WaterfallEntry[]>([
     timestamp: new Date().toLocaleTimeString(),
     requestJson: {
       method: 'GET',
-      endpoint: '/api/admin/sitemap',
-      query: { telemetry: 'full' }
+      endpoint: '/api/admin/sitemap'
     },
     responseJson: {
       success: true,
       stats: {
-        totalNodes: 11,
-        backendSyncedCount: 4,
-        hardcodedCount: 7,
-        totalLivePagesInPB: 7,
+        totalNodes: 12,
+        backendSyncedCount: 12,
+        hardcodedCount: 0,
+        totalLivePagesInPB: 14,
         totalLiveProductsInPB: 4
       },
       pocketBaseServer: 'http://65.108.80.205:8090'
-    }
-  },
-  {
-    id: 'req-2',
-    method: 'GET',
-    endpoint: 'http://65.108.80.205:8090/api/collections/pages/records?perPage=100',
-    status: 200,
-    statusText: 'OK',
-    durationMs: 24,
-    timestamp: new Date().toLocaleTimeString(),
-    requestJson: { method: 'GET', params: { perPage: 100 } },
-    responseJson: {
-      page: 1,
-      totalItems: 7,
-      items: [
-        { id: '1471qhj0xplrqp4', slug: 'home', title: 'مجتمع چاپ و بسته‌بندی نجم' },
-        { id: '47ysxrs5h11po9c', slug: 'login', title: 'صفحه ورود / ثبت نام' },
-        { id: '811wpx3sj5u96ij', slug: 'menu', title: 'منوی اصلی' },
-        { id: '2x8v09r5lx3dwrv', slug: 'footer', title: 'فوتر' }
-      ]
     }
   }
 ])
@@ -942,9 +885,7 @@ watchEffect(() => {
 })
 
 const nodes = computed(() => dynamicNodesState.value)
-
-const backendSyncedCount = computed(() => nodes.value.filter((n: any) => n.source === 'backend').length)
-const hardcodedCount = computed(() => nodes.value.filter((n: any) => n.source === 'hardcoded').length)
+const backendSyncedCount = computed(() => nodes.value.length)
 
 async function refreshSitemap() {
   const startTime = performance.now()
