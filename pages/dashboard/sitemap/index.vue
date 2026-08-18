@@ -1128,6 +1128,104 @@ function applyLayoutCoordinates(mode: 'constellation' | 'tree' | 'columns' | 'ra
   }
 }
 
+// Dynamic Graph Edges
+const edges = computed(() => {
+  return rawDynamicNodes.value
+    .filter(n => n.parentId)
+    .map(n => ({
+      from: n.parentId,
+      to: n.id,
+      color: n.accentColor || '#018786'
+    }))
+})
+
+// Dynamically Filtered & Visible Nodes
+const visibleNodes = computed(() => {
+  return rawDynamicNodes.value.filter((n: any) => {
+    // True recursive ancestry check
+    if (isDescendantOfFolded(n.id)) {
+      return false
+    }
+
+    if (selectedGroup.value !== 'all') {
+      const grp = getNodeGroup(n)
+      if (grp !== selectedGroup.value && n.depth !== 0) return false
+    }
+
+    if (searchQuery.value) {
+      const q = searchQuery.value.toLowerCase()
+      const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
+      const matchEn = (n.liveData?.titleEn || n.titleEn || '').toLowerCase().includes(q)
+      if (!matchFa && !matchEn) return false
+    }
+    return true
+  })
+})
+
+const visibleEdges = computed(() => {
+  const visibleIds = new Set(visibleNodes.value.map((n: any) => n.id))
+  return edges.value.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
+})
+
+const canvasStageRef = ref<HTMLElement | null>(null)
+
+// DYNAMIC BOUNDING BOX AUTO-FIT & AUTO-CENTER ENGINE
+function autoFitConstellation() {
+  if (typeof window === 'undefined') return
+  const availableWidth = window.innerWidth - 40
+  const availableHeight = window.innerHeight - 85
+
+  const visible = visibleNodes.value || []
+  if (!visible || visible.length === 0) {
+    clusterFitScale.value = 1
+    clusterCenterOffsetX.value = 0
+    clusterCenterOffsetY.value = 0
+    return
+  }
+
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+
+  for (const n of visible) {
+    const halfW = n.depth === 0 ? 135 : (n.depth === 1 ? 110 : 75)
+    const halfH = n.depth === 0 ? 80 : (n.depth === 1 ? 65 : 35)
+    minX = Math.min(minX, n.currentX - halfW)
+    maxX = Math.max(maxX, n.currentX + halfW)
+    minY = Math.min(minY, n.currentY - halfH)
+    maxY = Math.max(maxY, n.currentY + halfH)
+  }
+
+  const clusterW = Math.max(200, maxX - minX + 60)
+  const clusterH = Math.max(200, maxY - minY + 60)
+
+  const scaleX = availableWidth / clusterW
+  const scaleY = availableHeight / clusterH
+  const isMobile = window.innerWidth < 640
+
+  const calculatedScale = Math.min(scaleX, scaleY)
+  clusterFitScale.value = isMobile
+    ? Math.max(0.45, Math.min(0.85, calculatedScale))
+    : Math.max(0.55, Math.min(1.15, calculatedScale))
+
+  // Dynamically center the cluster in stage view
+  const clusterCenterX = (minX + maxX) / 2
+  const clusterCenterOffsetYVal = (minY + maxY) / 2
+  clusterCenterOffsetX.value = Math.round((stageBaseWidth / 2 - clusterCenterX) * 0.5)
+  clusterCenterOffsetY.value = Math.round((stageBaseHeight / 2 - clusterCenterOffsetYVal) * 0.5)
+}
+
+function resetNodePositions() {
+  applyLayoutCoordinates(currentViewMode.value)
+  saveStateToLocalStorage()
+  autoFitConstellation()
+}
+
+async function refreshSitemap() {
+  await refreshSitemapApi()
+}
+
 // Ingest Dynamic Nodes from PocketBase API
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
@@ -1171,103 +1269,6 @@ watchEffect(() => {
     autoFitConstellation()
   }
 })
-
-// Dynamic Graph Edges
-const edges = computed(() => {
-  return rawDynamicNodes.value
-    .filter(n => n.parentId)
-    .map(n => ({
-      from: n.parentId,
-      to: n.id,
-      color: n.accentColor || '#018786'
-    }))
-})
-
-const visibleNodes = computed(() => {
-  return rawDynamicNodes.value.filter((n: any) => {
-    // True recursive ancestry check
-    if (isDescendantOfFolded(n.id)) {
-      return false
-    }
-
-    if (selectedGroup.value !== 'all') {
-      const grp = getNodeGroup(n)
-      if (grp !== selectedGroup.value && n.depth !== 0) return false
-    }
-
-    if (searchQuery.value) {
-      const q = searchQuery.value.toLowerCase()
-      const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
-      const matchEn = (n.liveData?.titleEn || n.titleEn || '').toLowerCase().includes(q)
-      if (!matchFa && !matchEn) return false
-    }
-    return true
-  })
-})
-
-const visibleEdges = computed(() => {
-  const visibleIds = new Set(visibleNodes.value.map((n: any) => n.id))
-  return edges.value.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
-})
-
-function resetNodePositions() {
-  applyLayoutCoordinates(currentViewMode.value)
-  saveStateToLocalStorage()
-  autoFitConstellation()
-}
-
-async function refreshSitemap() {
-  await refreshSitemapApi()
-}
-
-const canvasStageRef = ref<HTMLElement | null>(null)
-
-// DYNAMIC BOUNDING BOX AUTO-FIT & AUTO-CENTER ENGINE
-function autoFitConstellation() {
-  if (typeof window === 'undefined') return
-  const availableWidth = window.innerWidth - 40
-  const availableHeight = window.innerHeight - 85
-
-  const visible = visibleNodes.value
-  if (!visible || visible.length === 0) {
-    clusterFitScale.value = 1
-    clusterCenterOffsetX.value = 0
-    clusterCenterOffsetY.value = 0
-    return
-  }
-
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
-
-  for (const n of visible) {
-    const halfW = n.depth === 0 ? 135 : (n.depth === 1 ? 110 : 75)
-    const halfH = n.depth === 0 ? 80 : (n.depth === 1 ? 65 : 35)
-    minX = Math.min(minX, n.currentX - halfW)
-    maxX = Math.max(maxX, n.currentX + halfW)
-    minY = Math.min(minY, n.currentY - halfH)
-    maxY = Math.max(maxY, n.currentY + halfH)
-  }
-
-  const clusterW = Math.max(200, maxX - minX + 60)
-  const clusterH = Math.max(200, maxY - minY + 60)
-
-  const scaleX = availableWidth / clusterW
-  const scaleY = availableHeight / clusterH
-  const isMobile = window.innerWidth < 640
-
-  const calculatedScale = Math.min(scaleX, scaleY)
-  clusterFitScale.value = isMobile
-    ? Math.max(0.45, Math.min(0.85, calculatedScale))
-    : Math.max(0.55, Math.min(1.15, calculatedScale))
-
-  // Dynamically center the cluster in stage view
-  const clusterCenterX = (minX + maxX) / 2
-  const clusterCenterOffsetYVal = (minY + maxY) / 2
-  clusterCenterOffsetX.value = Math.round((stageBaseWidth / 2 - clusterCenterX) * 0.5)
-  clusterCenterOffsetY.value = Math.round((stageBaseHeight / 2 - clusterCenterOffsetYVal) * 0.5)
-}
 
 // Reactive Coordinate Tracker for 120 FPS Glitch-Free SVG Link Following
 const dragCoordRevision = ref(0)
