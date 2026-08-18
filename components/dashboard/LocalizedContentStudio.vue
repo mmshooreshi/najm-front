@@ -1,443 +1,562 @@
 <!-- components/dashboard/LocalizedContentStudio.vue -->
 <template>
-  <div class="w-full h-full flex flex-col font-sans text-xs bg-white select-text overflow-hidden">
-    <!-- Top Ultra-Compact Icon Toolbar -->
-    <div class="h-10 px-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
-      <!-- Section Tabs -->
-      <div class="flex items-center gap-1">
+  <div class="w-full h-full flex flex-col font-sans text-xs bg-slate-50/50 select-text overflow-hidden">
+    <!-- Top Fluid Toolbar -->
+    <div class="h-11 px-4 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 select-none shadow-2xs">
+      <!-- Left: Section Tabs & Global Collapse/Expand -->
+      <div class="flex items-center gap-1.5">
+        <div class="flex items-center bg-slate-100 p-0.5 rounded-xl text-[11px] font-bold">
+          <button
+            @click="activeMainTab = 'content'"
+            class="px-3 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            :class="activeMainTab === 'content' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
+          >
+            <Icon name="mdi:text-box-edit-outline" class="w-3.5 h-3.5" />
+            <span>محتوای صفحه</span>
+          </button>
+
+          <button
+            @click="activeMainTab = 'media'"
+            class="px-3 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            :class="activeMainTab === 'media' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
+          >
+            <Icon name="mdi:image-multiple-outline" class="w-3.5 h-3.5" />
+            <span>رسانه‌ها (16:9 & 4:3)</span>
+          </button>
+
+          <button
+            @click="activeMainTab = 'theme'"
+            class="px-3 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            :class="activeMainTab === 'theme' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
+          >
+            <Icon name="mdi:palette-outline" class="w-3.5 h-3.5" />
+            <span>تم و رنگ</span>
+          </button>
+        </div>
+
+        <!-- Accordion Quick Toggle -->
         <button
-          v-for="tab in sections"
-          :key="tab.id"
-          @click="activeSection = tab.id"
-          class="px-2.5 py-1 rounded-lg font-bold text-[11px] transition flex items-center gap-1.5 cursor-pointer"
-          :class="activeSection === tab.id ? 'bg-white text-emerald-800 shadow-2xs border border-slate-200' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'"
+          v-if="activeMainTab === 'content'"
+          @click="toggleAllSections"
+          class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold transition cursor-pointer"
         >
-          <Icon :name="tab.icon" class="w-3.5 h-3.5" :class="activeSection === tab.id ? 'text-emerald-800' : 'text-slate-400'" />
-          <span>{{ tab.label }}</span>
+          <Icon :name="isAllExpanded ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical'" class="w-3 h-3" />
+          <span>{{ isAllExpanded ? 'بستن همه' : 'بازکردن همه' }}</span>
         </button>
       </div>
 
-      <!-- Icon-Only Language Toggles with Tooltips -->
-      <div class="flex items-center bg-slate-200/70 p-0.5 rounded-lg text-xs font-bold">
+      <!-- Right: Language Perspective Mode Switcher -->
+      <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl text-xs font-bold">
         <button
           @click="activeLang = 'fa'"
-          class="w-7 h-6 flex items-center justify-center rounded transition cursor-pointer"
+          class="px-2.5 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
           :class="activeLang === 'fa' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
-          title="فارسی (FA)"
+          title="فارسی"
         >
           <span>🇮🇷</span>
+          <span class="text-[11px]">فارسی</span>
         </button>
+
         <button
           @click="activeLang = 'en'"
-          class="w-7 h-6 flex items-center justify-center rounded transition cursor-pointer"
+          class="px-2.5 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
           :class="activeLang === 'en' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
-          title="English (EN)"
+          title="English"
         >
           <span>🇬🇧</span>
+          <span class="text-[11px]">English</span>
         </button>
+
         <button
           @click="activeLang = 'ar'"
-          class="w-7 h-6 flex items-center justify-center rounded transition cursor-pointer"
+          class="px-2.5 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
           :class="activeLang === 'ar' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
-          title="العربية (AR)"
+          title="العربية"
         >
           <span>🇸🇦</span>
+          <span class="text-[11px]">العربية</span>
         </button>
+
         <button
           @click="activeLang = 'all'"
-          class="w-7 h-6 flex items-center justify-center rounded transition cursor-pointer text-slate-700"
+          class="px-2.5 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
           :class="activeLang === 'all' ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
-          title="نمایش همزمان ۳ زبانه (Parallel View)"
+          title="مقایسه همزمان ۳ زبانه"
         >
-          <Icon name="mdi:web" class="w-3.5 h-3.5" />
+          <Icon name="mdi:web" class="w-3.5 h-3.5 text-emerald-800" />
+          <span class="text-[11px]">۳ زبانه</span>
         </button>
       </div>
     </div>
 
-    <!-- Main High-Density Workspace -->
-    <div class="flex-1 p-4 overflow-y-auto bg-slate-50/30">
-      <!-- 1. COPY & CONTENT TAB -->
-      <div v-if="activeSection === 'copy'" class="space-y-3">
-        <!-- Title & Subtitle Card -->
-        <div class="bg-white rounded-xl border border-slate-200 p-3 space-y-3 shadow-2xs">
-          <!-- Title Row -->
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 text-xs">عنوان اصلی</span>
-              <span class="text-[9px] font-mono text-slate-400" dir="ltr">title</span>
+    <!-- MAIN SCROLLABLE BODY -->
+    <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-4">
+      <!-- ===================================================================== -->
+      <!-- TAB 1: CONTENT & ACCORDION BLOCKS (100% RECURSIVE & ZERO [object Object]) -->
+      <!-- ===================================================================== -->
+      <div v-if="activeMainTab === 'content'" class="max-w-4xl mx-auto space-y-3">
+        <!-- 1. INTRO & HEADER BLOCK (Collapsible) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden transition-all duration-200">
+          <div
+            @click="toggleSection('header')"
+            class="px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
+          >
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <h4 class="font-extrabold text-slate-900 text-xs">۱. هدر، عنوان و زیرعنوان اصلی</h4>
             </div>
-
-            <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
-              <div v-if="activeLang === 'fa' || activeLang === 'all'" class="flex items-center gap-1.5">
-                <span class="text-[9px] font-mono text-slate-400 shrink-0">FA</span>
-                <input
-                  type="text"
-                  :value="getLangValue('fa', 'title')"
-                  @input="setLangValue('fa', 'title', ($event.target as HTMLInputElement).value)"
-                  class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-900 focus:outline-none transition"
-                  placeholder="عنوان فارسی..."
-                />
-              </div>
-
-              <div v-if="activeLang === 'en' || activeLang === 'all'" class="flex items-center gap-1.5" dir="ltr">
-                <span class="text-[9px] font-mono text-slate-400 shrink-0">EN</span>
-                <input
-                  type="text"
-                  dir="ltr"
-                  :value="getLangValue('en', 'title')"
-                  @input="setLangValue('en', 'title', ($event.target as HTMLInputElement).value)"
-                  class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-900 focus:outline-none transition text-left"
-                  placeholder="English title..."
-                />
-              </div>
-
-              <div v-if="activeLang === 'ar' || activeLang === 'all'" class="flex items-center gap-1.5">
-                <span class="text-[9px] font-mono text-slate-400 shrink-0">AR</span>
-                <input
-                  type="text"
-                  :value="getLangValue('ar', 'title')"
-                  @input="setLangValue('ar', 'title', ($event.target as HTMLInputElement).value)"
-                  class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-900 focus:outline-none transition"
-                  placeholder="العنوان بالعربية..."
-                />
-              </div>
-            </div>
+            <Icon
+              :name="openSections.header ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+              class="w-4 h-4 text-slate-400 transition-transform duration-200"
+            />
           </div>
 
-          <!-- Subtitle Row -->
-          <div class="space-y-1.5 pt-2 border-t border-slate-100">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 text-xs">زیرعنوان و توضیحات</span>
-              <span class="text-[9px] font-mono text-slate-400" dir="ltr">subtitle</span>
+          <!-- Section Body -->
+          <div v-show="openSections.header" class="p-4 sm:p-5 space-y-4">
+            <!-- Title -->
+            <div class="space-y-1.5">
+              <label class="font-bold text-slate-800 text-xs block">عنوان صفحه (Title)</label>
+              <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
+                <div v-if="activeLang === 'fa' || activeLang === 'all'" class="space-y-0.5">
+                  <span class="text-[10px] font-bold text-slate-400">🇮🇷 فارسی</span>
+                  <input
+                    type="text"
+                    :value="getStringField('fa', 'title')"
+                    @input="setStringField('fa', 'title', ($event.target as HTMLInputElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none transition shadow-2xs"
+                    placeholder="عنوان به فارسی..."
+                  />
+                </div>
+
+                <div v-if="activeLang === 'en' || activeLang === 'all'" class="space-y-0.5" dir="ltr">
+                  <span class="text-[10px] font-bold text-slate-400">🇬🇧 English</span>
+                  <input
+                    type="text"
+                    dir="ltr"
+                    :value="getStringField('en', 'title')"
+                    @input="setStringField('en', 'title', ($event.target as HTMLInputElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none transition text-left shadow-2xs"
+                    placeholder="English title..."
+                  />
+                </div>
+
+                <div v-if="activeLang === 'ar' || activeLang === 'all'" class="space-y-0.5">
+                  <span class="text-[10px] font-bold text-slate-400">🇸🇦 العربية</span>
+                  <input
+                    type="text"
+                    :value="getStringField('ar', 'title')"
+                    @input="setStringField('ar', 'title', ($event.target as HTMLInputElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none transition shadow-2xs"
+                    placeholder="العنوان بالعربية..."
+                  />
+                </div>
+              </div>
             </div>
 
-            <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
-              <div v-if="activeLang === 'fa' || activeLang === 'all'">
-                <textarea
-                  rows="2"
-                  :value="getLangValue('fa', 'subtitle')"
-                  @input="setLangValue('fa', 'subtitle', ($event.target as HTMLTextAreaElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg p-2 text-xs text-slate-900 focus:outline-none transition leading-relaxed"
-                  placeholder="توضیحات فارسی..."
-                ></textarea>
-              </div>
+            <!-- Subtitle -->
+            <div class="space-y-1.5 pt-2 border-t border-slate-100">
+              <label class="font-bold text-slate-800 text-xs block">زیرعنوان و توضیحات (Subtitle)</label>
+              <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
+                <div v-if="activeLang === 'fa' || activeLang === 'all'">
+                  <textarea
+                    rows="2"
+                    :value="getStringField('fa', 'subtitle')"
+                    @input="setStringField('fa', 'subtitle', ($event.target as HTMLTextAreaElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none transition leading-relaxed shadow-2xs"
+                    placeholder="توضیحات فارسی..."
+                  ></textarea>
+                </div>
 
-              <div v-if="activeLang === 'en' || activeLang === 'all'" dir="ltr">
-                <textarea
-                  rows="2"
-                  dir="ltr"
-                  :value="getLangValue('en', 'subtitle')"
-                  @input="setLangValue('en', 'subtitle', ($event.target as HTMLTextAreaElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg p-2 text-xs text-slate-900 focus:outline-none transition leading-relaxed text-left font-sans"
-                  placeholder="English subtitle..."
-                ></textarea>
-              </div>
+                <div v-if="activeLang === 'en' || activeLang === 'all'" dir="ltr">
+                  <textarea
+                    rows="2"
+                    dir="ltr"
+                    :value="getStringField('en', 'subtitle')"
+                    @input="setStringField('en', 'subtitle', ($event.target as HTMLTextAreaElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none transition leading-relaxed text-left font-sans shadow-2xs"
+                    placeholder="English subtitle..."
+                  ></textarea>
+                </div>
 
-              <div v-if="activeLang === 'ar' || activeLang === 'all'">
-                <textarea
-                  rows="2"
-                  :value="getLangValue('ar', 'subtitle')"
-                  @input="setLangValue('ar', 'subtitle', ($event.target as HTMLTextAreaElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg p-2 text-xs text-slate-900 focus:outline-none transition leading-relaxed"
-                  placeholder="الوصف بالعربية..."
-                ></textarea>
+                <div v-if="activeLang === 'ar' || activeLang === 'all'">
+                  <textarea
+                    rows="2"
+                    :value="getStringField('ar', 'subtitle')"
+                    @input="setStringField('ar', 'subtitle', ($event.target as HTMLTextAreaElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none transition leading-relaxed shadow-2xs"
+                    placeholder="الوصف بالعربية..."
+                  ></textarea>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Stats / Mission Tagline -->
-          <div v-if="hasKeyInUiData('stats') || hasKeyInUiData('mission')" class="space-y-1.5 pt-2 border-t border-slate-100">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 text-xs">شعار یا آمار شاخص</span>
-              <span class="text-[9px] font-mono text-slate-400" dir="ltr">stats</span>
-            </div>
-
-            <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
-              <div v-if="activeLang === 'fa' || activeLang === 'all'">
-                <input
-                  type="text"
-                  :value="getLangValue('fa', 'stats') || getLangValue('fa', 'mission')"
-                  @input="setLangValue('fa', 'stats', ($event.target as HTMLInputElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none"
-                />
-              </div>
-              <div v-if="activeLang === 'en' || activeLang === 'all'" dir="ltr">
-                <input
-                  type="text"
-                  dir="ltr"
-                  :value="getLangValue('en', 'stats') || getLangValue('en', 'mission')"
-                  @input="setLangValue('en', 'stats', ($event.target as HTMLInputElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none text-left"
-                />
-              </div>
-              <div v-if="activeLang === 'ar' || activeLang === 'all'">
-                <input
-                  type="text"
-                  :value="getLangValue('ar', 'stats') || getLangValue('ar', 'mission')"
-                  @input="setLangValue('ar', 'stats', ($event.target as HTMLInputElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none"
-                />
+            <!-- Stats / Mission (If exists) -->
+            <div v-if="hasKeyAcrossLocales('stats') || hasKeyAcrossLocales('mission')" class="space-y-1.5 pt-2 border-t border-slate-100">
+              <label class="font-bold text-slate-800 text-xs block">شعار یا آمار شاخص (Stats / Mission)</label>
+              <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
+                <div v-if="activeLang === 'fa' || activeLang === 'all'">
+                  <input
+                    type="text"
+                    :value="getStringField('fa', 'stats') || getStringField('fa', 'mission')"
+                    @input="setStringField('fa', 'stats', ($event.target as HTMLInputElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none shadow-2xs"
+                  />
+                </div>
+                <div v-if="activeLang === 'en' || activeLang === 'all'" dir="ltr">
+                  <input
+                    type="text"
+                    dir="ltr"
+                    :value="getStringField('en', 'stats') || getStringField('en', 'mission')"
+                    @input="setStringField('en', 'stats', ($event.target as HTMLInputElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none text-left shadow-2xs"
+                  />
+                </div>
+                <div v-if="activeLang === 'ar' || activeLang === 'all'">
+                  <input
+                    type="text"
+                    :value="getStringField('ar', 'stats') || getStringField('ar', 'mission')"
+                    @input="setStringField('ar', 'stats', ($event.target as HTMLInputElement).value)"
+                    class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none shadow-2xs"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DYNAMIC SMART UNPACKED SECTIONS (No [object Object] Ever!) -->
+        <!-- 2. DYNAMIC COLLAPSIBLE SECTIONS (Zero [object Object] - Smart Deep Unpacker) -->
         <div
-          v-for="(sectionMeta, sectionKey) in recognizedPageSections"
+          v-for="sectionKey in detectedSectionKeys"
           :key="sectionKey"
-          class="bg-white rounded-xl border border-slate-200 p-3 space-y-3 shadow-2xs"
+          class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden transition-all duration-200"
         >
-          <!-- Section Header with Advanced Sub-Editor Icon -->
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <!-- Accordion Header -->
+          <div
+            @click="toggleSection(sectionKey)"
+            class="px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
+          >
             <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-              <span class="font-extrabold text-slate-900 text-xs">{{ sectionMeta.titleFa }}</span>
+              <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+              <h4 class="font-extrabold text-slate-900 text-xs">{{ getSectionTitle(sectionKey) }}</h4>
+              <span class="px-2 py-0.2 rounded-full bg-slate-200 text-slate-700 text-[10px] font-mono font-bold">
+                {{ getSectionSummaryCount(sectionKey) }}
+              </span>
             </div>
 
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-2">
               <span class="text-[9px] font-mono text-slate-400" dir="ltr">{{ sectionKey }}</span>
-              <!-- Advanced Sub-Editor Trigger Icon -->
-              <button
-                @click="openAdvancedSubEditor(sectionKey as string)"
-                class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-slate-100 text-slate-500 hover:text-emerald-800 transition cursor-pointer"
-                title="ویرایشگر پیشرفته JSON این بخش"
-              >
-                <Icon name="mdi:tune-vertical" class="w-3.5 h-3.5" />
-              </button>
+              <Icon
+                :name="openSections[sectionKey] ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                class="w-4 h-4 text-slate-400 transition-transform duration-200"
+              />
             </div>
           </div>
 
-          <!-- A. ARRAY OF OBJECTS (Smart Sub-Card Unpacking - ZERO [object Object]) -->
-          <div v-if="sectionMeta.isArrayOfObjects" class="space-y-2.5">
-            <div
-              v-for="(objItem, idx) in getArraySectionItems(sectionKey as string)"
-              :key="idx"
-              class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2"
-            >
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-slate-800 text-[11px]">
-                  #{{ idx + 1 }} {{ objItem.name || objItem.title || objItem.slug || 'مورد' }}
-                </span>
-                <button
-                  @click="removeArraySectionItem(sectionKey as string, idx)"
-                  class="w-5 h-5 flex items-center justify-center rounded hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition cursor-pointer"
-                  title="حذف"
-                >
-                  <Icon name="mdi:close" class="w-3 h-3" />
-                </button>
-              </div>
+          <!-- Accordion Body -->
+          <div v-show="openSections[sectionKey]" class="p-4 sm:p-5">
+            <!-- CASE A: ARRAY OF COMPLEX OBJECTS (e.g. FAQ Categories with nested items, Menu Products, Features) -->
+            <div v-if="isSectionArrayOfObjects(sectionKey)" class="space-y-3">
+              <div
+                v-for="(item, idx) in getArrayItems(sectionKey)"
+                :key="idx"
+                class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3 shadow-2xs"
+              >
+                <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-5 h-5 rounded-md bg-emerald-100 text-emerald-800 font-bold text-[10px] flex items-center justify-center font-mono">
+                      {{ idx + 1 }}
+                    </span>
+                    <span class="font-bold text-slate-800 text-xs">
+                      {{ getItemLabel(item) }}
+                    </span>
+                  </div>
 
-              <!-- Unpacked Sub-Properties Grid -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                <div v-for="propKey in getObjectKeys(objItem)" :key="propKey" class="space-y-0.5">
-                  <span class="text-[9px] font-mono text-slate-500 uppercase font-bold" dir="ltr">{{ propKey }}</span>
-                  <input
-                    v-if="typeof objItem[propKey] === 'string' || typeof objItem[propKey] === 'number'"
-                    :type="typeof objItem[propKey] === 'number' ? 'number' : 'text'"
-                    :dir="isLtrKey(propKey) ? 'ltr' : 'auto'"
-                    :value="objItem[propKey]"
-                    @input="updateObjectSubProperty(sectionKey as string, idx, propKey, ($event.target as HTMLInputElement).value)"
-                    class="w-full bg-white border border-slate-200 focus:border-emerald-600 rounded-md px-2 py-1 text-[11px] text-slate-800 focus:outline-none"
-                    :class="isLtrKey(propKey) ? 'font-mono text-left' : ''"
-                  />
-                  <div v-else class="text-[10px] font-mono text-slate-400 px-1 py-0.5">
-                    (تودرتو)
+                  <button
+                    @click="removeArrayItem(sectionKey, idx)"
+                    class="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition cursor-pointer"
+                    title="حذف این آیتم"
+                  >
+                    <Icon name="mdi:trash-can-outline" class="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                <!-- Unpack Direct Object Properties -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                  <div
+                    v-for="prop in getDirectObjectProps(item)"
+                    :key="prop.key"
+                    class="space-y-1"
+                  >
+                    <span class="text-[9px] font-mono text-slate-500 uppercase font-bold" dir="ltr">{{ prop.key }}</span>
+                    <input
+                      type="text"
+                      :dir="isLtrKey(prop.key) ? 'ltr' : 'auto'"
+                      :value="prop.value"
+                      @input="updateObjectProp(sectionKey, idx, prop.key, ($event.target as HTMLInputElement).value)"
+                      class="w-full bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none shadow-2xs"
+                      :class="isLtrKey(prop.key) ? 'font-mono text-left' : ''"
+                    />
+                  </div>
+                </div>
+
+                <!-- Unpack Nested Sub-Arrays (e.g. category.items inside FAQ) -->
+                <div v-for="subArrKey in getNestedArrayKeys(item)" :key="subArrKey" class="space-y-2 pt-2 border-t border-slate-200/60">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-[11px] text-emerald-800 flex items-center gap-1">
+                      <Icon name="mdi:format-list-checks" class="w-3.5 h-3.5" />
+                      <span>پرسش و پاسخ‌ها ({{ item[subArrKey].length }} مورد)</span>
+                    </span>
+                    <button
+                      @click="addNestedSubItem(sectionKey, idx, subArrKey)"
+                      class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-bold hover:bg-emerald-100 transition flex items-center gap-0.5"
+                    >
+                      <Icon name="mdi:plus" class="w-3 h-3" />
+                      <span>افزودن سوال</span>
+                    </button>
+                  </div>
+
+                  <div class="space-y-2">
+                    <div
+                      v-for="(subItem, subIdx) in item[subArrKey]"
+                      :key="subIdx"
+                      class="p-2.5 rounded-lg bg-white border border-slate-200 space-y-1.5"
+                    >
+                      <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-slate-500 font-mono">#{{ subIdx + 1 }} پرسش</span>
+                        <button
+                          @click="item[subArrKey].splice(subIdx, 1); emitChange()"
+                          class="text-slate-400 hover:text-rose-600"
+                          title="حذف"
+                        >
+                          <Icon name="mdi:close" class="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div class="space-y-1">
+                        <input
+                          type="text"
+                          :value="subItem.question || subItem.title || ''"
+                          @input="subItem.question = ($event.target as HTMLInputElement).value; emitChange()"
+                          placeholder="متن پرسش..."
+                          class="w-full bg-slate-50 border border-slate-200 rounded-md px-2 py-1 text-xs font-bold text-slate-800 focus:outline-none"
+                        />
+                        <textarea
+                          rows="2"
+                          :value="subItem.answer || subItem.desc || ''"
+                          @input="subItem.answer = ($event.target as HTMLTextAreaElement).value; emitChange()"
+                          placeholder="پاسخ کامل..."
+                          class="w-full bg-slate-50 border border-slate-200 rounded-md p-2 text-xs text-slate-800 focus:outline-none leading-relaxed"
+                        ></textarea>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <button
-              @click="addObjectToArraySection(sectionKey as string)"
-              class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-            >
-              <Icon name="mdi:plus" class="w-3 h-3" />
-              <span>افزودن مورد ساختاریافته</span>
-            </button>
-          </div>
-
-          <!-- B. ARRAY OF STRINGS (Categories, Fleet, Milestones) -->
-          <div v-else-if="sectionMeta.isArray" class="space-y-1.5">
-            <div
-              v-for="(item, idx) in getArraySectionItems(sectionKey as string)"
-              :key="idx"
-              class="flex items-center gap-2"
-            >
-              <span class="w-5 text-slate-400 font-mono text-[10px] text-center shrink-0">{{ idx + 1 }}</span>
-              <input
-                type="text"
-                :value="typeof item === 'string' ? item : JSON.stringify(item)"
-                @input="updateArraySectionItem(sectionKey as string, idx, ($event.target as HTMLInputElement).value)"
-                class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none"
-              />
+              <!-- Add New Structured Item -->
               <button
-                @click="removeArraySectionItem(sectionKey as string, idx)"
-                class="w-6 h-6 flex items-center justify-center rounded hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition cursor-pointer"
-                title="حذف"
+                @click="addStructuredArrayItem(sectionKey)"
+                class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
               >
-                <Icon name="mdi:trash-can-outline" class="w-3.5 h-3.5" />
+                <Icon name="mdi:plus" class="w-3.5 h-3.5" />
+                <span>افزودن آیتم جدید به این بخش</span>
               </button>
             </div>
 
-            <button
-              @click="addArraySectionItem(sectionKey as string)"
-              class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-            >
-              <Icon name="mdi:plus" class="w-3 h-3" />
-              <span>افزودن مورد</span>
-            </button>
-          </div>
-
-          <!-- C. SINGLE UNPACKED OBJECT OR STRING -->
-          <div v-else-if="sectionMeta.isObject" class="space-y-2">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
-              <div v-for="propKey in getObjectKeys(getSectionObjectValue(sectionKey as string))" :key="propKey" class="space-y-1">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-mono font-bold text-slate-600 uppercase" dir="ltr">{{ propKey }}</span>
-                </div>
+            <!-- CASE B: ARRAY OF STRINGS (Categories, Fleet, Milestones, Topics) -->
+            <div v-else-if="isSectionArrayOfStrings(sectionKey)" class="space-y-2">
+              <div
+                v-for="(strItem, idx) in getArrayItems(sectionKey)"
+                :key="idx"
+                class="flex items-center gap-2"
+              >
+                <span class="w-6 h-6 rounded-md bg-slate-100 text-slate-500 font-mono text-[10px] font-bold flex items-center justify-center shrink-0">
+                  {{ idx + 1 }}
+                </span>
                 <input
                   type="text"
-                  :dir="isLtrKey(propKey) ? 'ltr' : 'auto'"
-                  :value="getSectionObjectValue(sectionKey as string)[propKey]"
-                  @input="updateDirectObjectProperty(sectionKey as string, propKey, ($event.target as HTMLInputElement).value)"
-                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none"
-                  :class="isLtrKey(propKey) ? 'font-mono text-left' : ''"
+                  :value="strItem"
+                  @input="updateStringArrayItem(sectionKey, idx, ($event.target as HTMLInputElement).value)"
+                  class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-1.5 text-xs text-slate-900 focus:outline-none transition shadow-2xs"
+                />
+                <button
+                  @click="removeArrayItem(sectionKey, idx)"
+                  class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition cursor-pointer"
+                  title="حذف"
+                >
+                  <Icon name="mdi:trash-can-outline" class="w-4 h-4" />
+                </button>
+              </div>
+
+              <button
+                @click="addStringArrayItem(sectionKey)"
+                class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition flex items-center gap-1 cursor-pointer"
+              >
+                <Icon name="mdi:plus" class="w-3.5 h-3.5" />
+                <span>افزودن مورد</span>
+              </button>
+            </div>
+
+            <!-- CASE C: SINGLE DIRECT STRING FIELD (e.g. story, phone, factoryAddress) -->
+            <div v-else class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
+              <div v-if="activeLang === 'fa' || activeLang === 'all'">
+                <textarea
+                  v-if="String(getStringField('fa', sectionKey)).length > 45"
+                  rows="3"
+                  :value="getStringField('fa', sectionKey)"
+                  @input="setStringField('fa', sectionKey, ($event.target as HTMLTextAreaElement).value)"
+                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none leading-relaxed shadow-2xs"
+                ></textarea>
+                <input
+                  v-else
+                  type="text"
+                  :value="getStringField('fa', sectionKey)"
+                  @input="setStringField('fa', sectionKey, ($event.target as HTMLInputElement).value)"
+                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none shadow-2xs"
                 />
               </div>
-            </div>
-          </div>
 
-          <!-- D. TRILINGUAL STRING FIELDS -->
-          <div v-else class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
-            <div v-if="activeLang === 'fa' || activeLang === 'all'">
-              <input
-                type="text"
-                :value="getLangValue('fa', sectionKey as string)"
-                @input="setLangValue('fa', sectionKey as string, ($event.target as HTMLInputElement).value)"
-                class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none"
-              />
-            </div>
-            <div v-if="activeLang === 'en' || activeLang === 'all'" dir="ltr">
-              <input
-                type="text"
-                dir="ltr"
-                :value="getLangValue('en', sectionKey as string)"
-                @input="setLangValue('en', sectionKey as string, ($event.target as HTMLInputElement).value)"
-                class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none text-left"
-              />
-            </div>
-            <div v-if="activeLang === 'ar' || activeLang === 'all'">
-              <input
-                type="text"
-                :value="getLangValue('ar', sectionKey as string)"
-                @input="setLangValue('ar', sectionKey as string, ($event.target as HTMLInputElement).value)"
-                class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-lg px-2.5 py-1 text-xs text-slate-900 focus:outline-none"
-              />
+              <div v-if="activeLang === 'en' || activeLang === 'all'" dir="ltr">
+                <textarea
+                  v-if="String(getStringField('en', sectionKey)).length > 45"
+                  rows="3"
+                  dir="ltr"
+                  :value="getStringField('en', sectionKey)"
+                  @input="setStringField('en', sectionKey, ($event.target as HTMLTextAreaElement).value)"
+                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none leading-relaxed text-left font-sans shadow-2xs"
+                ></textarea>
+                <input
+                  v-else
+                  type="text"
+                  dir="ltr"
+                  :value="getStringField('en', sectionKey)"
+                  @input="setStringField('en', sectionKey, ($event.target as HTMLInputElement).value)"
+                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none text-left shadow-2xs"
+                />
+              </div>
+
+              <div v-if="activeLang === 'ar' || activeLang === 'all'">
+                <textarea
+                  v-if="String(getStringField('ar', sectionKey)).length > 45"
+                  rows="3"
+                  :value="getStringField('ar', sectionKey)"
+                  @input="setStringField('ar', sectionKey, ($event.target as HTMLTextAreaElement).value)"
+                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none leading-relaxed shadow-2xs"
+                ></textarea>
+                <input
+                  v-else
+                  type="text"
+                  :value="getStringField('ar', sectionKey)"
+                  @input="setStringField('ar', sectionKey, ($event.target as HTMLInputElement).value)"
+                  class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 focus:border-emerald-600 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none shadow-2xs"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 2. MEDIA HUB TAB (True Aspect Ratios & Tap to Big Zoom) -->
-      <div v-else-if="activeSection === 'media'" class="space-y-3">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <!-- 16:9 Banner Cover with Big Zoom on Tap -->
-          <div class="bg-white rounded-xl border border-slate-200 p-3 space-y-2 shadow-2xs">
+      <!-- ===================================================================== -->
+      <!-- TAB 2: MEDIA HUB WITH 16:9 & 4:3 PREVIEWS AND FULLSCREEN LIGHTBOX    -->
+      <!-- ===================================================================== -->
+      <div v-else-if="activeMainTab === 'media'" class="max-w-4xl mx-auto space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- 16:9 Banner Cover with Lightbox Zoom -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-2xs">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 text-xs">تصویر بنر هدر (16:9)</span>
+              <span class="font-bold text-slate-800 text-xs">تصویر بنر هدر (16:9 Aspect Ratio)</span>
               <div class="flex items-center gap-1">
-                <span class="px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 text-[9px] font-mono" dir="ltr">16:9</span>
+                <span class="px-2 py-0.2 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono font-bold" dir="ltr">16:9</span>
                 <button
-                  @click="openLightboxZoom(getCoverImageUrl(), 'تصویر بنر هدر')"
-                  class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 transition cursor-pointer"
-                  title="نمایش بزرگ تمام‌صفحه (Fullscreen Zoom)"
+                  @click="openLightbox(getCoverImageUrl(), 'تصویر بنر هدر')"
+                  class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-slate-100 text-slate-500 transition cursor-pointer"
+                  title="نمایش بزرگ تمام‌صفحه"
                 >
-                  <Icon name="mdi:magnify-plus-outline" class="w-3.5 h-3.5" />
+                  <Icon name="mdi:magnify-plus-outline" class="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            <!-- 16:9 Container -->
+            <!-- Aspect-Video Box -->
             <div
-              @click="openLightboxZoom(getCoverImageUrl(), 'تصویر بنر هدر')"
-              class="group relative w-full aspect-video rounded-lg border border-slate-200 overflow-hidden bg-slate-100 cursor-pointer shadow-2xs"
+              @click="openLightbox(getCoverImageUrl(), 'تصویر بنر هدر')"
+              class="group relative w-full aspect-video rounded-xl border border-slate-200 overflow-hidden bg-slate-100 cursor-pointer shadow-2xs"
             >
               <img
                 :src="getCoverImageUrl()"
                 alt="cover-16-9"
-                class="w-full h-full object-cover group-hover:scale-103 transition-transform duration-200"
+                class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
               />
               <div class="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition gap-2">
-                <span class="px-2.5 py-1 rounded-lg bg-white/95 text-slate-900 font-bold text-[11px] shadow-md flex items-center gap-1">
+                <span class="px-3 py-1.5 rounded-xl bg-white/95 text-slate-900 font-bold text-xs shadow-md flex items-center gap-1">
                   <Icon name="mdi:arrow-expand-all" class="w-3.5 h-3.5 text-emerald-800" />
-                  <span>کلیک برای نمایش بزرگ</span>
+                  <span>نمایش تمام‌صفحه</span>
                 </span>
               </div>
             </div>
 
-            <div class="flex items-center gap-1.5">
+            <!-- URL & 1-Click Replace -->
+            <div class="flex items-center gap-2">
               <input
                 type="text"
                 dir="ltr"
                 :value="rootSchema.coverImage || getCoverImageUrl()"
                 @input="rootSchema.coverImage = ($event.target as HTMLInputElement).value; emitChange()"
-                class="flex-1 bg-slate-50 border border-slate-200 rounded-md px-2 py-1 text-[10px] font-mono text-slate-700 text-left"
+                class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono text-xs text-slate-800 text-left focus:outline-none"
               />
               <button
-                @click="openMediaModalFor('coverImage')"
-                class="px-2 py-1 rounded-md bg-emerald-50 text-emerald-800 font-bold text-[10px] hover:bg-emerald-100 transition shrink-0"
+                @click="openMediaModal('coverImage')"
+                class="px-3 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs transition cursor-pointer shadow-2xs"
               >
                 تعویض
               </button>
             </div>
           </div>
 
-          <!-- 4:3 Feature Media with Big Zoom on Tap -->
-          <div class="bg-white rounded-xl border border-slate-200 p-3 space-y-2 shadow-2xs">
+          <!-- 4:3 Feature Media Card -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-2xs">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-800 text-xs">تصویر شاخص بدنه (4:3)</span>
+              <span class="font-bold text-slate-800 text-xs">تصویر شاخص بدنه (4:3 Aspect Ratio)</span>
               <div class="flex items-center gap-1">
-                <span class="px-1.5 py-0.2 rounded bg-slate-100 text-slate-500 text-[9px] font-mono" dir="ltr">4:3</span>
+                <span class="px-2 py-0.2 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono font-bold" dir="ltr">4:3</span>
                 <button
-                  @click="openLightboxZoom(getFeatureImageUrl(), 'تصویر شاخص بدنه')"
-                  class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-100 text-slate-500 transition cursor-pointer"
+                  @click="openLightbox(getFeatureImageUrl(), 'تصویر شاخص بدنه')"
+                  class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-slate-100 text-slate-500 transition cursor-pointer"
                   title="نمایش بزرگ تمام‌صفحه"
                 >
-                  <Icon name="mdi:magnify-plus-outline" class="w-3.5 h-3.5" />
+                  <Icon name="mdi:magnify-plus-outline" class="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            <!-- 4:3 Container -->
             <div
-              @click="openLightboxZoom(getFeatureImageUrl(), 'تصویر شاخص بدنه')"
-              class="group relative w-full aspect-[4/3] rounded-lg border border-slate-200 overflow-hidden bg-slate-100 cursor-pointer shadow-2xs"
+              @click="openLightbox(getFeatureImageUrl(), 'تصویر شاخص بدنه')"
+              class="group relative w-full aspect-[4/3] rounded-xl border border-slate-200 overflow-hidden bg-slate-100 cursor-pointer shadow-2xs"
             >
               <img
                 :src="getFeatureImageUrl()"
                 alt="feature-4-3"
-                class="w-full h-full object-cover group-hover:scale-103 transition-transform duration-200"
+                class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
               />
               <div class="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition gap-2">
-                <span class="px-2.5 py-1 rounded-lg bg-white/95 text-slate-900 font-bold text-[11px] shadow-md flex items-center gap-1">
+                <span class="px-3 py-1.5 rounded-xl bg-white/95 text-slate-900 font-bold text-xs shadow-md flex items-center gap-1">
                   <Icon name="mdi:arrow-expand-all" class="w-3.5 h-3.5 text-emerald-800" />
-                  <span>کلیک برای نمایش بزرگ</span>
+                  <span>نمایش تمام‌صفحه</span>
                 </span>
               </div>
             </div>
 
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-2">
               <input
                 type="text"
                 dir="ltr"
                 :value="rootSchema.featureImage || getFeatureImageUrl()"
                 @input="rootSchema.featureImage = ($event.target as HTMLInputElement).value; emitChange()"
-                class="flex-1 bg-slate-50 border border-slate-200 rounded-md px-2 py-1 text-[10px] font-mono text-slate-700 text-left"
+                class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-mono text-xs text-slate-800 text-left focus:outline-none"
               />
               <button
-                @click="openMediaModalFor('featureImage')"
-                class="px-2 py-1 rounded-md bg-emerald-50 text-emerald-800 font-bold text-[10px] hover:bg-emerald-100 transition shrink-0"
+                @click="openMediaModal('featureImage')"
+                class="px-3 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs transition cursor-pointer shadow-2xs"
               >
                 تعویض
               </button>
@@ -446,11 +565,13 @@
         </div>
       </div>
 
-      <!-- 3. STYLE & THEME TAB -->
-      <div v-else-if="activeSection === 'style'" class="space-y-3">
-        <div class="bg-white rounded-xl border border-slate-200 p-3 flex items-center justify-between shadow-2xs">
-          <div class="flex items-center gap-3">
-            <div class="relative w-8 h-8 rounded-lg overflow-hidden border border-slate-300 shadow-2xs shrink-0 cursor-pointer">
+      <!-- ===================================================================== -->
+      <!-- TAB 3: THEME & COLOR SETTINGS                                         -->
+      <!-- ===================================================================== -->
+      <div v-else-if="activeMainTab === 'theme'" class="max-w-2xl mx-auto space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-center justify-between shadow-2xs">
+          <div class="flex items-center gap-3.5">
+            <div class="relative w-11 h-11 rounded-2xl overflow-hidden border border-slate-300 shadow-2xs shrink-0 cursor-pointer">
               <input
                 type="color"
                 :value="rootSchema.accentColor || '#018786'"
@@ -460,7 +581,7 @@
               <div class="w-full h-full" :style="{ backgroundColor: rootSchema.accentColor || '#018786' }"></div>
             </div>
             <div>
-              <span class="font-bold text-slate-900 text-xs block">رنگ سازمانی و المان‌ها</span>
+              <span class="font-extrabold text-slate-900 text-xs block">رنگ سازمانی و نشانگرهای صفحه</span>
               <span class="text-[10px] text-slate-400 font-mono" dir="ltr">{{ rootSchema.accentColor || '#018786' }}</span>
             </div>
           </div>
@@ -470,64 +591,40 @@
             dir="ltr"
             :value="rootSchema.accentColor || '#018786'"
             @input="rootSchema.accentColor = ($event.target as HTMLInputElement).value; emitChange()"
-            class="w-28 bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 font-mono text-xs text-slate-900 focus:outline-none text-center font-bold"
+            class="w-32 bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 font-mono text-xs text-slate-900 focus:outline-none text-center font-bold"
           />
         </div>
       </div>
     </div>
 
-    <!-- IMMERSIVE BIG LIGHTBOX ZOOM MODAL -->
+    <!-- IMMERSIVE FULLSCREEN LIGHTBOX -->
     <transition name="fade">
       <div
         v-if="isLightboxOpen"
         class="fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-4 select-none"
         @click.self="isLightboxOpen = false"
       >
-        <!-- Lightbox Bar -->
         <div class="w-full max-w-4xl flex items-center justify-between text-white pb-3">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span class="font-bold text-sm">{{ lightboxTitle }}</span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button
-              @click="zoomLightbox(0.2)"
-              class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
-              title="بزرگنمایی"
-            >
-              <Icon name="mdi:plus" class="w-4 h-4" />
-            </button>
-            <button
-              @click="zoomLightbox(-0.2)"
-              class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
-              title="کوچکنمایی"
-            >
-              <Icon name="mdi:minus" class="w-4 h-4" />
-            </button>
-            <button
-              @click="isLightboxOpen = false"
-              class="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition cursor-pointer ml-2"
-              title="بستن"
-            >
-              <Icon name="mdi:close" class="w-4 h-4" />
-            </button>
-          </div>
+          <span class="font-bold text-sm">{{ lightboxTitle }}</span>
+          <button
+            @click="isLightboxOpen = false"
+            class="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition cursor-pointer"
+          >
+            <Icon name="mdi:close" class="w-4 h-4" />
+          </button>
         </div>
 
-        <!-- Big Image Display with Zoom -->
         <div class="w-full max-w-4xl max-h-[75vh] flex items-center justify-center overflow-hidden rounded-2xl bg-black/40 border border-white/10 p-2">
           <img
-            :src="lightboxImageUrl"
+            :src="lightboxUrl"
             :alt="lightboxTitle"
-            class="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl transition-transform duration-200"
-            :style="{ transform: `scale(${lightboxZoomScale})` }"
+            class="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl"
           />
         </div>
       </div>
     </transition>
 
-    <!-- Media Picker Modal -->
+    <!-- PocketBase Media Modal -->
     <MediaAssetModal
       :is-open="isMediaModalOpen"
       :initial-url="activeMediaField ? rootSchema[activeMediaField] : ''"
@@ -538,7 +635,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import MediaAssetModal from './MediaAssetModal.vue'
 
 const props = defineProps<{
@@ -550,33 +647,53 @@ const emit = defineEmits<{
   (e: 'change', val: Record<string, any>): void
 }>()
 
-const activeSection = ref<'copy' | 'media' | 'style'>('copy')
+const activeMainTab = ref<'content' | 'media' | 'theme'>('content')
 const activeLang = ref<'fa' | 'en' | 'ar' | 'all'>('fa')
-const isMediaModalOpen = ref(false)
-const activeMediaField = ref<string | null>(null)
 
-// Big Lightbox Zoom State
+// Accordion Expand/Collapse State
+const openSections = reactive<Record<string, boolean>>({
+  header: true
+})
+
+function toggleSection(key: string) {
+  openSections[key] = !openSections[key]
+}
+
+const isAllExpanded = ref(true)
+function toggleAllSections() {
+  isAllExpanded.value = !isAllExpanded.value
+  openSections.header = isAllExpanded.value
+  for (const k of detectedSectionKeys.value) {
+    openSections[k] = isAllExpanded.value
+  }
+}
+
+// Lightbox
 const isLightboxOpen = ref(false)
-const lightboxImageUrl = ref('')
+const lightboxUrl = ref('')
 const lightboxTitle = ref('')
-const lightboxZoomScale = ref(1)
 
-function openLightboxZoom(url: string, title: string) {
-  lightboxImageUrl.value = url
+function openLightbox(url: string, title: string) {
+  lightboxUrl.value = url
   lightboxTitle.value = title
-  lightboxZoomScale.value = 1
   isLightboxOpen.value = true
 }
 
-function zoomLightbox(delta: number) {
-  lightboxZoomScale.value = Math.max(0.6, Math.min(2.5, lightboxZoomScale.value + delta))
+// Media Modal
+const isMediaModalOpen = ref(false)
+const activeMediaField = ref<string | null>(null)
+
+function openMediaModal(field: string) {
+  activeMediaField.value = field
+  isMediaModalOpen.value = true
 }
 
-const sections = [
-  { id: 'copy', label: 'محتوا و متون', icon: 'mdi:format-text' },
-  { id: 'media', label: 'رسانه‌ها (16:9)', icon: 'mdi:image-outline' },
-  { id: 'style', label: 'رنگ و استایل', icon: 'mdi:palette-outline' }
-]
+function handleMediaSelect(newUrl: string) {
+  if (activeMediaField.value) {
+    rootSchema.value[activeMediaField.value] = newUrl
+    emitChange()
+  }
+}
 
 const rootSchema = computed({
   get: () => props.modelValue,
@@ -591,29 +708,6 @@ function emitChange() {
   emit('change', props.modelValue)
 }
 
-function isLtrKey(k: string) {
-  const lower = k.toLowerCase()
-  return lower.includes('slug') || lower.includes('url') || lower.includes('path') || lower.includes('icon') || lower.includes('count') || lower.includes('order') || lower.includes('id') || lower.includes('type')
-}
-
-function getObjectKeys(obj: any) {
-  if (!obj || typeof obj !== 'object') return []
-  return Object.keys(obj).filter(k => k !== 'id')
-}
-
-function getLangValue(lang: 'fa' | 'en' | 'ar', field: string) {
-  const langObj = props.modelValue[lang] || props.modelValue[lang.toUpperCase()] || {}
-  return langObj[field] || ''
-}
-
-function setLangValue(lang: 'fa' | 'en' | 'ar', field: string, val: any) {
-  if (!props.modelValue[lang]) {
-    props.modelValue[lang] = {}
-  }
-  props.modelValue[lang][field] = val
-  emitChange()
-}
-
 function getCoverImageUrl() {
   return rootSchema.value.coverImage || 'http://65.108.80.205:8090/api/files/media_files/af1wcbm41bpyl5u/03h7lwu7jexl_09nq786tge.avif'
 }
@@ -622,137 +716,159 @@ function getFeatureImageUrl() {
   return rootSchema.value.featureImage || 'http://65.108.80.205:8090/api/files/media_files/af1wcbm41bpyl5u/03h7lwu7jexl_09nq786tge.avif'
 }
 
-function hasKeyInUiData(key: string) {
+function hasKeyAcrossLocales(key: string) {
   const locales = ['fa', 'en', 'ar', 'FA', 'EN', 'AR']
   return locales.some(l => props.modelValue[l] && (props.modelValue[l][key] !== undefined))
 }
 
-const recognizedPageSections = computed(() => {
-  const knownSectionMeta: Record<string, { titleFa: string, isArray: boolean, isArrayOfObjects?: boolean, isObject?: boolean }> = {
-    'categories': { titleFa: 'دسته‌بندی‌های محصولات', isArray: true },
-    'fleet': { titleFa: 'ماشین‌آلات و خطوط تولید', isArray: true },
-    'milestones': { titleFa: 'گاه‌شمار تحول تاریخی', isArray: true },
-    'topics': { titleFa: 'پرسش‌های متداول', isArray: true },
-    'formats': { titleFa: 'فرمت‌های کاتالوگ', isArray: true },
-    'mission': { titleFa: 'ماموریت و کیفیت', isArray: false },
-    'story': { titleFa: 'روایت تاریخچه', isArray: false },
-    'factoryAddress': { titleFa: 'نشانی کارخانه', isArray: false },
-    'phone': { titleFa: 'تلفن مستقیم', isArray: false },
-    'links': { titleFa: 'لینک‌ها و پیوندها', isArray: false, isObject: true },
-    'contact': { titleFa: 'اطلاعات تماس', isArray: false, isObject: true },
-    'services': { titleFa: 'خدمات کارخانه', isArray: false, isObject: true },
-    'products': { titleFa: 'محصولات منو', isArray: false, isObject: true }
-  }
+function getStringField(lang: 'fa' | 'en' | 'ar', key: string): string {
+  const locObj = props.modelValue[lang] || props.modelValue[lang.toUpperCase()] || {}
+  const val = locObj[key]
+  if (typeof val === 'string') return val
+  if (typeof val === 'number') return String(val)
+  return ''
+}
 
-  const result: Record<string, { titleFa: string, isArray: boolean, isArrayOfObjects?: boolean, isObject?: boolean }> = {}
+function setStringField(lang: 'fa' | 'en' | 'ar', key: string, val: string) {
+  if (!props.modelValue[lang]) props.modelValue[lang] = {}
+  props.modelValue[lang][key] = val
+  emitChange()
+}
+
+// Smart Section Discovery
+const detectedSectionKeys = computed(() => {
+  const keys: string[] = []
   const locales = ['fa', 'en', 'ar', 'FA', 'EN', 'AR']
-
   for (const loc of locales) {
     const locObj = props.modelValue[loc]
     if (locObj && typeof locObj === 'object') {
       for (const k of Object.keys(locObj)) {
-        if (!['title', 'subtitle', 'stats'].includes(k)) {
-          const val = locObj[k]
-          const isArr = Array.isArray(val)
-          const isArrOfObj = isArr && val.length > 0 && typeof val[0] === 'object'
-          const isObj = !isArr && typeof val === 'object' && val !== null
-
-          if (knownSectionMeta[k]) {
-            result[k] = {
-              ...knownSectionMeta[k],
-              isArrayOfObjects: isArrOfObj,
-              isObject: isObj
-            }
-          } else {
-            result[k] = {
-              titleFa: `بخش ${k}`,
-              isArray: isArr,
-              isArrayOfObjects: isArrOfObj,
-              isObject: isObj
-            }
+        if (!['title', 'subtitle', 'stats'].includes(k) && !keys.includes(k)) {
+          keys.push(k)
+          if (openSections[k] === undefined) {
+            openSections[k] = true
           }
         }
       }
     }
   }
-
-  return result
+  return keys
 })
 
-function getSectionObjectValue(sectionKey: string) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  const locObj = props.modelValue[targetLang] || props.modelValue[targetLang.toUpperCase()] || {}
-  return locObj[sectionKey] || {}
+const knownSectionTitles: Record<string, string> = {
+  categories: 'دسته‌بندی‌های محصولات (Product Lines)',
+  fleet: 'ماشین‌آلات و تجهیزات کارخانه (Machinery Fleet)',
+  milestones: 'گاه‌شمار تاریخی تحول (Milestones Chronology)',
+  topics: 'دسته‌بندی‌های سوالات متداول (FAQ Topics)',
+  formats: 'فرمت‌ها و نمونه‌های کاتالوگ (Formats & Samples)',
+  mission: 'ماموریت و استاندارد سازمانی (Mission Statement)',
+  story: 'روایت تاریخچه و تاسیس (Founding Story)',
+  factoryAddress: 'نشانی کارخانه (Factory Location)',
+  phone: 'تلفن تماس مستقیم (Direct Phone)',
+  products: 'محصولات منو (Menu Products)',
+  services: 'خدمات کارخانه (Factory Services)',
+  sections: 'بخش‌های صفحه (Page Sections)',
+  features: 'ویژگی‌ها و مزایا (Key Features)'
 }
 
-function updateDirectObjectProperty(sectionKey: string, propKey: string, val: any) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  if (!props.modelValue[targetLang]) props.modelValue[targetLang] = {}
-  if (!props.modelValue[targetLang][sectionKey]) props.modelValue[targetLang][sectionKey] = {}
-  props.modelValue[targetLang][sectionKey][propKey] = val
-  emitChange()
+function getSectionTitle(key: string): string {
+  return knownSectionTitles[key] || `بخش ${key}`
 }
 
-function getArraySectionItems(sectionKey: string) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  const locObj = props.modelValue[targetLang] || props.modelValue[targetLang.toUpperCase()] || {}
-  return locObj[sectionKey] || []
+function getActiveLocaleObj() {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  return props.modelValue[target] || props.modelValue[target.toUpperCase()] || {}
 }
 
-function updateArraySectionItem(sectionKey: string, idx: number, val: string) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  if (!props.modelValue[targetLang]) props.modelValue[targetLang] = {}
-  if (!props.modelValue[targetLang][sectionKey]) props.modelValue[targetLang][sectionKey] = []
-  props.modelValue[targetLang][sectionKey][idx] = val
-  emitChange()
+function isSectionArrayOfObjects(key: string): boolean {
+  const val = getActiveLocaleObj()[key]
+  return Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && val[0] !== null
 }
 
-function updateObjectSubProperty(sectionKey: string, idx: number, propKey: string, val: any) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  if (!props.modelValue[targetLang]) props.modelValue[targetLang] = {}
-  if (!props.modelValue[targetLang][sectionKey]) props.modelValue[targetLang][sectionKey] = []
-  if (props.modelValue[targetLang][sectionKey][idx]) {
-    props.modelValue[targetLang][sectionKey][idx][propKey] = val
+function isSectionArrayOfStrings(key: string): boolean {
+  const val = getActiveLocaleObj()[key]
+  return Array.isArray(val) && (val.length === 0 || typeof val[0] !== 'object')
+}
+
+function getArrayItems(key: string): any[] {
+  const val = getActiveLocaleObj()[key]
+  return Array.isArray(val) ? val : []
+}
+
+function getSectionSummaryCount(key: string): string {
+  const val = getActiveLocaleObj()[key]
+  if (Array.isArray(val)) return `${val.length} آیتم`
+  return 'متن'
+}
+
+function getItemLabel(item: any): string {
+  if (!item || typeof item !== 'object') return 'آیتم'
+  return item.name || item.title || item.question || item.slug || 'آیتم ساختاریافته'
+}
+
+function getDirectObjectProps(item: any): { key: string, value: any }[] {
+  if (!item || typeof item !== 'object') return []
+  return Object.keys(item)
+    .filter(k => k !== 'id' && !Array.isArray(item[k]) && typeof item[k] !== 'object')
+    .map(k => ({ key: k, value: item[k] }))
+}
+
+function getNestedArrayKeys(item: any): string[] {
+  if (!item || typeof item !== 'object') return []
+  return Object.keys(item).filter(k => Array.isArray(item[k]))
+}
+
+function isLtrKey(k: string): boolean {
+  const lower = k.toLowerCase()
+  return lower.includes('slug') || lower.includes('url') || lower.includes('path') || lower.includes('icon') || lower.includes('count') || lower.includes('key') || lower.includes('order') || lower.includes('id')
+}
+
+function updateObjectProp(sectionKey: string, idx: number, propKey: string, val: any) {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  if (!props.modelValue[target]) props.modelValue[target] = {}
+  if (!props.modelValue[target][sectionKey]) props.modelValue[target][sectionKey] = []
+  if (props.modelValue[target][sectionKey][idx]) {
+    props.modelValue[target][sectionKey][idx][propKey] = val
     emitChange()
   }
 }
 
-function addArraySectionItem(sectionKey: string) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  if (!props.modelValue[targetLang]) props.modelValue[targetLang] = {}
-  if (!props.modelValue[targetLang][sectionKey]) props.modelValue[targetLang][sectionKey] = []
-  props.modelValue[targetLang][sectionKey].push('')
+function updateStringArrayItem(sectionKey: string, idx: number, val: string) {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  if (!props.modelValue[target]) props.modelValue[target] = {}
+  if (!props.modelValue[target][sectionKey]) props.modelValue[target][sectionKey] = []
+  props.modelValue[target][sectionKey][idx] = val
   emitChange()
 }
 
-function addObjectToArraySection(sectionKey: string) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  if (!props.modelValue[targetLang]) props.modelValue[targetLang] = {}
-  if (!props.modelValue[targetLang][sectionKey]) props.modelValue[targetLang][sectionKey] = []
-  props.modelValue[targetLang][sectionKey].push({ name: '', slug: '', order: 1 })
+function addStringArrayItem(sectionKey: string) {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  if (!props.modelValue[target]) props.modelValue[target] = {}
+  if (!props.modelValue[target][sectionKey]) props.modelValue[target][sectionKey] = []
+  props.modelValue[target][sectionKey].push('')
   emitChange()
 }
 
-function removeArraySectionItem(sectionKey: string, idx: number) {
-  const targetLang = activeLang.value === 'all' ? 'fa' : activeLang.value
-  if (props.modelValue[targetLang]?.[sectionKey]) {
-    props.modelValue[targetLang][sectionKey].splice(idx, 1)
+function addStructuredArrayItem(sectionKey: string) {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  if (!props.modelValue[target]) props.modelValue[target] = {}
+  if (!props.modelValue[target][sectionKey]) props.modelValue[target][sectionKey] = []
+  props.modelValue[target][sectionKey].push({ name: '', slug: '', count: 0 })
+  emitChange()
+}
+
+function addNestedSubItem(sectionKey: string, idx: number, subArrKey: string) {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  if (props.modelValue[target]?.[sectionKey]?.[idx]?.[subArrKey]) {
+    props.modelValue[target][sectionKey][idx][subArrKey].push({ question: '', answer: '' })
     emitChange()
   }
 }
 
-function openAdvancedSubEditor(sectionKey: string) {
-  // Can trigger focus or custom modal
-}
-
-function openMediaModalFor(field: string) {
-  activeMediaField.value = field
-  isMediaModalOpen.value = true
-}
-
-function handleMediaSelect(newUrl: string) {
-  if (activeMediaField.value) {
-    rootSchema.value[activeMediaField.value] = newUrl
+function removeArrayItem(sectionKey: string, idx: number) {
+  const target = activeLang.value === 'all' ? 'fa' : activeLang.value
+  if (props.modelValue[target]?.[sectionKey]) {
+    props.modelValue[target][sectionKey].splice(idx, 1)
     emitChange()
   }
 }
