@@ -144,7 +144,7 @@
           transformOrigin: 'center center'
         }"
       >
-        <!-- VECTOR CONNECTION PATHS -->
+        <!-- VECTOR CONNECTION PATHS (Instant Zero-Lag Rendering) -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <path
@@ -154,7 +154,6 @@
               :stroke-opacity="isEdgeActive(edge) ? 0.9 : 0.4"
               :stroke-width="isEdgeActive(edge) ? 3.5 : 1.8"
               stroke-linecap="round"
-              class="transition-all duration-300"
             />
             <circle
               v-if="isEdgeActive(edge)"
@@ -175,19 +174,22 @@
         <div
           v-for="node in visibleNodes"
           :key="node.id"
-          @mousedown="startNodeDrag($event, node)"
-          @touchstart="startNodeTouchDrag($event, node)"
+          @pointerdown="startNodePointerDrag($event, node)"
           @click.stop="handleNodeClick(node)"
           @dblclick.stop="openProJsonStudio(node, 'content-studio')"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute select-none transition-all duration-150 z-20 group"
-          :class="isNodeLocked(node.id) ? 'cursor-default' : 'cursor-move'"
+          class="absolute select-none group"
+          :class="[
+            isNodeLocked(node.id) ? 'cursor-default' : 'cursor-grab active:cursor-grabbing',
+            isDraggingNodeId === node.id ? 'z-50 duration-0 transition-none will-change-transform' : 'z-20 transition-transform duration-150 ease-out'
+          ]"
           :style="{
             left: `${node.currentX}px`,
             top: `${node.currentY}px`,
-            transform: `translate(-50%, -50%) scale(${getNodeScale(node)}) ${getNode3DTilt(node)}`,
-            transformOrigin: 'center center'
+            transform: `translate3d(-50%, -50%, 0) scale(${getNodeScale(node)}) ${getNode3DTilt(node)}`,
+            transformOrigin: 'center center',
+            touchAction: 'none'
           }"
         >
           <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px) -->
@@ -844,7 +846,7 @@ function getNodeScale(node: any) {
   return 1.0
 }
 
-// 3D Perspective Tilt & Exact Delta Dragging
+// 3D Perspective Tilt & Ultra-Smooth Dragging
 const mouseRelativeX = ref(0)
 const mouseRelativeY = ref(0)
 
@@ -852,24 +854,12 @@ let nodeDragStartClientX = 0
 let nodeDragStartClientY = 0
 let nodeDragStartNodeX = 0
 let nodeDragStartNodeY = 0
-
-function handleGlobalMouseMove(e: MouseEvent) {
-  mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
-  mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
-
-  if (isDraggingNodeId.value) {
-    const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
-    if (dragged && !isNodeLocked(dragged.id)) {
-      const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
-      const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
-      dragged.currentX = Math.round(nodeDragStartNodeX + dx)
-      dragged.currentY = Math.round(nodeDragStartNodeY + dy)
-    }
-  }
-}
+let pendingClientX = 0
+let pendingClientY = 0
+let dragRafId: number | null = null
 
 function getNode3DTilt(node: any) {
-  if (hoveredNodeId.value === node.id) {
+  if (hoveredNodeId.value === node.id && !isDraggingNodeId.value) {
     return `perspective(600px) rotateX(${mouseRelativeY.value * 1.3}deg) rotateY(${mouseRelativeX.value * 1.3}deg)`
   }
   return 'perspective(600px) rotateX(0deg) rotateY(0deg)'
@@ -947,35 +937,67 @@ function autoFitConstellation() {
   clusterFitScale.value = isMobile ? Math.min(0.85, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
 }
 
-// FREE PERSISTENT DRAGGING
+// 120 FPS HARDWARE ACCELERATED DRAGGING WITH POINTER CAPTURE
 const isDraggingNodeId = ref<string | null>(null)
 
-function startNodeDrag(e: MouseEvent, node: any) {
+function startNodePointerDrag(e: PointerEvent, node: any) {
   if (isNodeLocked(node.id)) return
   isDraggingNodeId.value = node.id
   nodeDragStartClientX = e.clientX
   nodeDragStartClientY = e.clientY
   nodeDragStartNodeX = node.currentX
   nodeDragStartNodeY = node.currentY
-}
+  pendingClientX = e.clientX
+  pendingClientY = e.clientY
 
-function startNodeTouchDrag(e: TouchEvent, node: any) {
-  if (isNodeLocked(node.id)) return
-  isDraggingNodeId.value = node.id
-  const touch = e.touches[0]
-  if (touch) {
-    nodeDragStartClientX = touch.clientX
-    nodeDragStartClientY = touch.clientY
-    nodeDragStartNodeX = node.currentX
-    nodeDragStartNodeY = node.currentY
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pointermove', onGlobalPointerMove, { passive: true })
+    window.addEventListener('pointerup', onGlobalPointerUp)
+    window.addEventListener('pointercancel', onGlobalPointerUp)
   }
 }
 
-function stopNodeDrag() {
+function onGlobalPointerMove(e: PointerEvent) {
+  mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
+  mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
+
+  if (!isDraggingNodeId.value) return
+  pendingClientX = e.clientX
+  pendingClientY = e.clientY
+
+  if (!dragRafId) {
+    dragRafId = requestAnimationFrame(applyNodePositionFrame)
+  }
+}
+
+function applyNodePositionFrame() {
+  dragRafId = null
+  if (!isDraggingNodeId.value) return
+
+  const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
+  if (dragged && !isNodeLocked(dragged.id)) {
+    const dx = (pendingClientX - nodeDragStartClientX) / clusterFitScale.value
+    const dy = (pendingClientY - nodeDragStartClientY) / clusterFitScale.value
+    dragged.currentX = nodeDragStartNodeX + dx
+    dragged.currentY = nodeDragStartNodeY + dy
+  }
+}
+
+function onGlobalPointerUp() {
+  if (dragRafId) {
+    cancelAnimationFrame(dragRafId)
+    dragRafId = null
+  }
   if (isDraggingNodeId.value) {
     saveStateToLocalStorage()
   }
   isDraggingNodeId.value = null
+
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('pointermove', onGlobalPointerMove)
+    window.removeEventListener('pointerup', onGlobalPointerUp)
+    window.removeEventListener('pointercancel', onGlobalPointerUp)
+  }
 }
 
 const edges = [
