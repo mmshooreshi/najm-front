@@ -348,25 +348,37 @@
               </div>
             </div>
 
-            <!-- Multi-Engine & Actions -->
+            <!-- Multi-Engine Switcher -->
             <div class="flex items-center gap-2">
               <div class="flex items-center bg-slate-200/80 p-0.5 rounded-xl text-[11px] font-bold">
+                <!-- Engine 1: Unified Multilingual Content Studio (Default) -->
                 <button
-                  @click="studioEngine = 'visual-rows'"
+                  @click="studioEngine = 'content-studio'"
                   class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
-                  :class="studioEngine === 'visual-rows' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                  :class="studioEngine === 'content-studio' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
-                  <Icon name="mdi:palette-swatch" class="w-3.5 h-3.5 text-emerald-800" />
-                  <span>ردیف‌های هوشمند (رنگ و رسانه)</span>
+                  <Icon name="mdi:translate" class="w-3.5 h-3.5 text-emerald-800" />
+                  <span>استودیو محتوای چندزبانه (FA / EN / AR)</span>
                 </button>
 
+                <!-- Engine 2: Vanilla JSON Editor (Jos de Jong) -->
                 <button
                   @click="studioEngine = 'vanilla-editor'"
                   class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
                   :class="studioEngine === 'vanilla-editor' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-                  <span>Vanilla JSON Editor</span>
+                  <span>Vanilla Editor</span>
+                </button>
+
+                <!-- Engine 3: Smart Spreadsheet Rows -->
+                <button
+                  @click="studioEngine = 'visual-rows'"
+                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  :class="studioEngine === 'visual-rows' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                >
+                  <Icon name="mdi:table" class="w-3.5 h-3.5" />
+                  <span>جدول ردیف‌ها</span>
                 </button>
               </div>
 
@@ -396,8 +408,24 @@
             </div>
           </div>
 
-          <!-- ENGINE 1: SMART VISUAL ROWS WITH COLOR & MEDIA PICKERS (100% Flush Rectangular Sheet) -->
-          <div v-if="studioEngine === 'visual-rows'" class="flex-1 p-0 overflow-y-auto bg-white">
+          <!-- ENGINE 1: UNIFIED MULTILINGUAL CONTENT STUDIO (FA / EN / AR) -->
+          <div v-if="studioEngine === 'content-studio'" class="flex-1 overflow-hidden">
+            <LocalizedContentStudio
+              v-model="currentWorkingSchema"
+              @change="onContentStudioChange"
+            />
+          </div>
+
+          <!-- ENGINE 2: vanilla-jsoneditor (Jos de Jong Light Pro) -->
+          <div v-else-if="studioEngine === 'vanilla-editor'" class="flex-1 bg-white overflow-hidden">
+            <VanillaJsonEditor
+              v-model="currentWorkingSchema"
+              @change="onVanillaEditorChange"
+            />
+          </div>
+
+          <!-- ENGINE 3: SMART VISUAL ROWS (100% Flush Rectangular Sheet) -->
+          <div v-else class="flex-1 p-0 overflow-y-auto bg-white">
             <JsonTreeRow
               v-for="k in schemaKeys"
               :key="k"
@@ -407,14 +435,6 @@
               :path="[k]"
               @update-field="handleFieldUpdate"
               @undo-field="handleFieldUndo"
-            />
-          </div>
-
-          <!-- ENGINE 2: vanilla-jsoneditor (Jos de Jong Light Pro) -->
-          <div v-else class="flex-1 bg-white overflow-hidden">
-            <VanillaJsonEditor
-              v-model="currentWorkingSchema"
-              @change="onVanillaEditorChange"
             />
           </div>
 
@@ -596,6 +616,7 @@ import { useLocale } from '~/composables/useLocale'
 import JsonTreeRow from '~/components/dashboard/JsonTreeRow.vue'
 import VanillaJsonEditor from '~/components/dashboard/VanillaJsonEditor.vue'
 import JsonLogViewer from '~/components/dashboard/JsonLogViewer.vue'
+import LocalizedContentStudio from '~/components/dashboard/LocalizedContentStudio.vue'
 
 definePageMeta({
   layout: false
@@ -614,7 +635,7 @@ const showDebugPane = ref(false)
 // Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
 const activeStudioNode = ref<any | null>(null)
-const studioEngine = ref<'visual-rows' | 'vanilla-editor'>('visual-rows')
+const studioEngine = ref<'content-studio' | 'vanilla-editor' | 'visual-rows'>('content-studio')
 const originalBaselineSchema = ref<Record<string, any>>({})
 const currentWorkingSchema = ref<Record<string, any>>({})
 const studioCopied = ref(false)
@@ -636,6 +657,10 @@ const schemaKeys = computed(() => {
 const hasAnyModifications = computed(() => {
   return JSON.stringify(currentWorkingSchema.value) !== JSON.stringify(originalBaselineSchema.value)
 })
+
+function onContentStudioChange(newVal: any) {
+  currentWorkingSchema.value = newVal
+}
 
 function onVanillaEditorChange(newJson: any) {
   currentWorkingSchema.value = newJson
