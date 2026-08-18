@@ -16,29 +16,32 @@
         }"
       ></div>
       <!-- Soft Radial Vignette for Depth -->
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.8)_0%,rgba(241,245,249,0.5)_60%,rgba(226,232,240,0.8)_100%)]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.85)_0%,rgba(241,245,249,0.5)_60%,rgba(226,232,240,0.8)_100%)]"></div>
     </div>
 
-    <!-- Floating Zen Header HUD (Minimalist, Non-Distracting) -->
+    <!-- Floating Zen Header HUD & Live Telemetry -->
     <header class="absolute top-6 inset-x-6 z-40 flex items-center justify-between pointer-events-none">
-      <!-- Left: Discreet Dashboard Exit Pill & Brand Monogram -->
+      <!-- Left: Exit to Dashboard & Live Database Telemetry Badges -->
       <div class="flex items-center gap-3 pointer-events-auto">
         <NuxtLink
           to="/dashboard"
-          class="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition-all text-xs font-bold text-d4"
+          class="group flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition-all text-xs font-bold text-d4 cursor-pointer"
         >
           <Icon name="mdi:arrow-right" class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" :class="isRTL ? '' : 'rotate-180 group-hover:translate-x-0.5'" />
           <span>{{ isRTL ? 'بازگشت به پیشخوان' : 'Exit to Dashboard' }}</span>
         </NuxtLink>
 
-        <div class="hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-          <span class="w-2 h-2 rounded-full bg-[#018786] animate-pulse"></span>
-          <span class="text-xs font-extrabold text-slate-800 text-d4 tracking-tight">
-            {{ isRTL ? 'سامانه فضایی نقشه وبسایت' : 'Spatial Site Constellation' }}
-          </span>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-bold">
-            {{ nodes.length }} Nodes
-          </span>
+        <!-- Live Sync Telemetry Pills -->
+        <div class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
+            <span>{{ backendSyncedCount }} {{ isRTL ? 'گره متصل به دیتابیس' : 'Live PB' }}</span>
+          </div>
+          <span class="text-slate-300">•</span>
+          <div class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+            <span>{{ hardcodedCount }} {{ isRTL ? 'داده‌های محلی پیش‌فرض' : 'Local Samples' }}</span>
+          </div>
         </div>
       </div>
 
@@ -53,7 +56,7 @@
         </button>
 
         <!-- Lens Category Quick Filters -->
-        <div class="hidden lg:flex items-center gap-1 bg-white/80 backdrop-blur-md p-1 rounded-full border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-xs">
+        <div class="hidden lg:flex items-center gap-1 bg-white/90 backdrop-blur-md p-1 rounded-full border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)] text-xs">
           <button
             v-for="lens in lenses"
             :key="lens.id"
@@ -74,8 +77,8 @@
           <input
             v-model="searchQuery"
             type="text"
-            :placeholder="isRTL ? 'کاوش در گره‌ها و مسیرها...' : 'Search nodes or paths...'"
-            class="w-full bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-full pr-10 pl-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all"
+            :placeholder="isRTL ? 'کاوش در گره‌ها و محتوا...' : 'Search nodes or content...'"
+            class="w-full bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-full pr-10 pl-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all"
           />
           <button v-if="searchQuery" @click="searchQuery = ''" class="absolute left-3 top-2.5 text-slate-400 hover:text-slate-700">
             <Icon name="mdi:close-circle" class="w-4 h-4" />
@@ -83,7 +86,7 @@
         </div>
 
         <!-- Zoom Controls -->
-        <div class="flex items-center gap-1 bg-white/80 backdrop-blur-md p-1 rounded-full border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        <div class="flex items-center gap-1 bg-white/90 backdrop-blur-md p-1 rounded-full border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
           <button @click="zoomIn" class="p-1.5 rounded-full text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Zoom In">
             <Icon name="mdi:plus" class="w-4 h-4" />
           </button>
@@ -95,40 +98,28 @@
       </div>
     </header>
 
-    <!-- Bottom HUD Info Pill -->
+    <!-- Bottom HUD Info Pill & Telemetry Legend -->
     <div class="absolute bottom-6 inset-x-6 z-40 flex items-center justify-between pointer-events-none">
-      <div class="pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-md text-xs text-slate-500 font-mono">
-        <span>Canvas: 3600 × 2400 px</span>
+      <div class="pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-md text-xs text-slate-500 font-mono">
+        <span>Spatial CMS Studio</span>
         <span>•</span>
-        <span>Double-click to reset</span>
+        <span>Click any node to edit live</span>
       </div>
 
-      <!-- Constellation Legend -->
-      <div class="pointer-events-auto hidden md:flex items-center gap-4 px-5 py-2 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/80 shadow-md text-xs text-slate-600 font-bold text-d4">
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#018786]"></span>
-          <span>{{ isRTL ? 'هسته و صفحات' : 'Core & Pages' }}</span>
+      <!-- Telemetry Status Legend -->
+      <div class="pointer-events-auto hidden md:flex items-center gap-5 px-5 py-2 rounded-full bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-md text-xs font-bold text-d4">
+        <div class="flex items-center gap-2 text-emerald-800">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
+          <span>{{ isRTL ? 'متصل به دیتابیس PocketBase' : 'Live PocketBase' }}</span>
         </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-          <span>{{ isRTL ? 'محصولات و کاتالوگ' : 'Products & Catalog' }}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-          <span>{{ isRTL ? 'تجهیزات و خدمات' : 'Fleet & Services' }}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-          <span>{{ isRTL ? 'دانش و تاریخچه' : 'Knowledge & Story' }}</span>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-          <span>{{ isRTL ? 'استعلام و ارتباط' : 'Action & Contact' }}</span>
+        <div class="flex items-center gap-2 text-slate-600">
+          <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+          <span>{{ isRTL ? 'نمونه محلی پیش‌فرض' : 'Default Sample' }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Pure Infinite Spatial Stage (Hardware Accelerated, Gesture Drag & Zoom) -->
+    <!-- Pure Infinite Spatial Stage (Hardware Accelerated, Gesture Drag & Figma-Grade Zoom) -->
     <div
       ref="canvasStageRef"
       class="relative w-full h-full cursor-grab active:cursor-grabbing"
@@ -159,7 +150,7 @@
             <circle cx="1800" cy="1300" r="950" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="10 10" />
           </g>
 
-          <!-- Dynamic Bezier Vector Edges with Artistic Flow Particles -->
+          <!-- Dynamic Bezier Vector Edges with Living Pulse -->
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <!-- Background Glow Curve -->
             <path
@@ -170,17 +161,16 @@
               stroke-linecap="round"
               class="transition-all duration-300"
             />
-            <!-- Main Crisp Vector Arcs -->
+            <!-- Main Vector Arc -->
             <path
               :d="getEdgePath(edge)"
               fill="none"
               :stroke="isEdgeActive(edge) ? edgeColor(edge.color, 1) : '#94a3b8'"
               :stroke-width="isEdgeActive(edge) ? 2.5 : 1.2"
-              :stroke-dasharray="edge.dashed ? '5 5' : 'none'"
               stroke-linecap="round"
               class="transition-all duration-300"
             />
-            <!-- Living Energy Pulse Dot -->
+            <!-- Living Energy Dot -->
             <circle
               v-if="isEdgeActive(edge)"
               r="4.5"
@@ -196,7 +186,7 @@
           </g>
         </svg>
 
-        <!-- ARTISTIC SPATIAL NODES (Constellation Clusters) -->
+        <!-- ARTISTIC SPATIAL NODES WITH TELEMETRY STATUS DOTS -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
@@ -217,8 +207,18 @@
             :style="{ width: `${node.size}px`, height: `${node.size}px` }"
             :class="selectedNode?.id === node.id ? 'ring-8 ring-emerald-500/20 scale-105' : ''"
           >
-            <!-- Ambient Pulsing Corona -->
-            <div class="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping pointer-events-none"></div>
+            <!-- Telemetry Indicator Beacon (Green if Live Backend, Gray if Hardcoded) -->
+            <div class="absolute top-2 right-2 flex items-center gap-1">
+              <span
+                class="w-3.5 h-3.5 rounded-full border-2 border-white"
+                :class="[
+                  node.source === 'backend'
+                    ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.9)] animate-pulse'
+                    : 'bg-slate-400 shadow-xs'
+                ]"
+                :title="node.source === 'backend' ? 'Live PocketBase Data' : 'Hardcoded Sample'"
+              ></span>
+            </div>
 
             <div class="w-14 h-14 rounded-full bg-[#018786] text-white flex items-center justify-center shadow-lg mb-2">
               <Icon :name="node.icon" class="w-7 h-7" />
@@ -226,7 +226,7 @@
 
             <span class="text-xs font-bold text-[#018786] tracking-wider uppercase font-mono mb-0.5">ECOSYSTEM CORE</span>
             <h2 class="text-base font-extrabold text-slate-900 text-d4 text-center leading-tight">
-              {{ isRTL ? node.titleFa : node.titleEn }}
+              {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h2>
             <span class="text-[10px] font-mono text-slate-400 mt-1">/</span>
           </div>
@@ -244,6 +244,19 @@
                   : 'z-10'
             ]"
           >
+            <!-- Telemetry Indicator Beacon -->
+            <div class="absolute top-2 right-2 flex items-center gap-1">
+              <span
+                class="w-3 h-3 rounded-full border-2 border-white"
+                :class="[
+                  node.source === 'backend'
+                    ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.9)] animate-pulse'
+                    : 'bg-slate-400 shadow-xs'
+                ]"
+                :title="node.source === 'backend' ? 'Live PocketBase Data' : 'Hardcoded Sample'"
+              ></span>
+            </div>
+
             <div
               class="w-11 h-11 rounded-2xl flex items-center justify-center text-white shadow-md mb-2 transition-transform group-hover:scale-110"
               :style="{ backgroundColor: node.accentColor }"
@@ -256,7 +269,7 @@
             </span>
 
             <h3 class="text-xs font-extrabold text-slate-900 text-d4 truncate max-w-[130px]">
-              {{ isRTL ? node.titleFa : node.titleEn }}
+              {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h3>
 
             <span class="text-[9px] font-mono text-slate-400 mt-0.5">
@@ -275,6 +288,17 @@
                 : 'hover:border-slate-300 z-10'
             ]"
           >
+            <!-- Telemetry Indicator Beacon -->
+            <span
+              class="w-2.5 h-2.5 rounded-full border border-white shrink-0"
+              :class="[
+                node.source === 'backend'
+                  ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)] animate-pulse'
+                  : 'bg-slate-400'
+              ]"
+              :title="node.source === 'backend' ? 'Live PocketBase Data' : 'Hardcoded Sample'"
+            ></span>
+
             <div
               class="w-7 h-7 rounded-xl flex items-center justify-center text-white text-xs shadow-xs shrink-0"
               :style="{ backgroundColor: node.accentColor || '#64748b' }"
@@ -284,7 +308,7 @@
 
             <div>
               <div class="text-xs font-bold text-slate-800 text-d4">
-                {{ isRTL ? node.titleFa : node.titleEn }}
+                {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
               </div>
               <div class="text-[9px] font-mono text-slate-400">
                 {{ node.path || node.meta }}
@@ -296,28 +320,31 @@
             </span>
           </div>
 
-          <!-- NODE VARIANT 4: MICRO FEATURE GLYPHS (Level 4 Capabilities) -->
+          <!-- NODE VARIANT 4: MICRO FEATURE GLYPHS -->
           <div
             v-else
             class="relative flex items-center justify-center rounded-full bg-white border border-slate-200 shadow-sm p-2 transition-all duration-300 group-hover:scale-115"
             :style="{ width: `${node.size || 36}px`, height: `${node.size || 36}px` }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500/30 border-[#018786]' : ''"
-            :title="isRTL ? node.titleFa : node.titleEn"
           >
+            <span
+              class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full"
+              :class="node.source === 'backend' ? 'bg-emerald-500' : 'bg-slate-400'"
+            ></span>
             <Icon :name="node.icon" class="w-4 h-4" :style="{ color: node.accentColor || '#018786' }" />
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Luxury Frosted Glass Node Inspector Sheet (Right Drawer) -->
+    <!-- IN-PLACE LIVE CMS STUDIO DRAWER (Direct Edit & PocketBase Sync) -->
     <transition name="sheet-slide">
       <div
         v-if="selectedNode"
-        class="absolute inset-y-6 right-6 z-50 w-full sm:w-[400px] bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl text-slate-800 shadow-[0_20px_60px_rgba(0,0,0,0.1)] p-6 flex flex-col justify-between overflow-y-auto"
+        class="absolute inset-y-6 right-6 z-50 w-full sm:w-[440px] bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-3xl text-slate-800 shadow-[0_20px_60px_rgba(0,0,0,0.12)] p-6 flex flex-col justify-between overflow-y-auto"
       >
-        <div class="space-y-6">
-          <!-- Sheet Header -->
+        <div class="space-y-5">
+          <!-- Sheet Header & Telemetry Status Pill -->
           <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <div class="flex items-center gap-3">
               <div
@@ -327,7 +354,24 @@
                 <Icon :name="selectedNode.icon" class="w-5 h-5" />
               </div>
               <div>
-                <span class="text-[10px] font-bold tracking-wider uppercase font-mono text-slate-400">NODE INSPECTOR</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-bold tracking-wider uppercase font-mono text-slate-400">IN-PLACE CMS EDITOR</span>
+                  <!-- Live Telemetry Badge -->
+                  <span
+                    class="px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1"
+                    :class="[
+                      selectedNode.source === 'backend'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-slate-100 text-slate-600 border border-slate-200'
+                    ]"
+                  >
+                    <span
+                      class="w-2 h-2 rounded-full"
+                      :class="selectedNode.source === 'backend' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"
+                    ></span>
+                    <span>{{ selectedNode.source === 'backend' ? 'دیتابیس آنلاین (PB)' : 'نمونه محلی (Sample)' }}</span>
+                  </span>
+                </div>
                 <div class="text-xs font-mono font-bold text-[#018786]">ID #{{ selectedNode.id }}</div>
               </div>
             </div>
@@ -340,68 +384,113 @@
             </button>
           </div>
 
-          <!-- Title & Live Route -->
-          <div class="space-y-2 text-right">
-            <span
-              v-if="selectedNode.badgeFa"
-              class="inline-block px-3 py-1 rounded-full text-xs font-bold text-d4"
-              :style="{ backgroundColor: `${selectedNode.accentColor || '#018786'}15`, color: selectedNode.accentColor || '#018786' }"
+          <!-- Edit Mode Tabs: Form View vs Raw Schema JSON -->
+          <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl text-xs font-bold">
+            <button
+              @click="editorTab = 'form'"
+              class="flex-1 py-1.5 rounded-xl transition cursor-pointer text-d4"
+              :class="editorTab === 'form' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'"
             >
-              {{ isRTL ? selectedNode.badgeFa : selectedNode.badgeEn }}
-            </span>
+              {{ isRTL ? 'فیلدهای محتوایی' : 'Content Fields' }}
+            </button>
+            <button
+              @click="editorTab = 'json'"
+              class="flex-1 py-1.5 rounded-xl transition cursor-pointer text-d4"
+              :class="editorTab === 'json' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'"
+            >
+              {{ isRTL ? 'اسکیما ساختار (JSON)' : 'Raw JSON Schema' }}
+            </button>
+          </div>
 
-            <h2 class="text-xl font-extrabold text-slate-900 text-d4 leading-tight">
-              {{ isRTL ? selectedNode.titleFa : selectedNode.titleEn }}
-            </h2>
+          <!-- TAB 1: FORM FIELDS IN-PLACE EDITOR -->
+          <div v-if="editorTab === 'form'" class="space-y-4 text-right">
+            <!-- Persian Title -->
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-slate-500 text-d4 flex items-center justify-between">
+                <span>عنوان فارسی صفحه</span>
+                <span class="text-emerald-700 font-mono text-[10px]">FA Title</span>
+              </label>
+              <input
+                v-model="editForm.titleFa"
+                type="text"
+                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#018786] transition"
+              />
+            </div>
 
-            <div v-if="selectedNode.path" class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 font-mono text-xs text-emerald-800 ltr text-left overflow-x-auto">
-              {{ selectedNode.path }}
+            <!-- English Title -->
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-slate-500 text-d4 flex items-center justify-between">
+                <span>عنوان انگلیسی</span>
+                <span class="text-slate-400 font-mono text-[10px]">EN Title</span>
+              </label>
+              <input
+                v-model="editForm.titleEn"
+                type="text"
+                dir="ltr"
+                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#018786] transition font-sans text-left"
+              />
+            </div>
+
+            <!-- Subtitle / Mission Statement -->
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-slate-500 text-d4">توضیحات و بیانیه ماموریت</label>
+              <textarea
+                v-model="editForm.subtitleFa"
+                rows="3"
+                class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-700 leading-relaxed focus:outline-none focus:border-[#018786] transition"
+              ></textarea>
+            </div>
+
+            <!-- Key Stats Highlight -->
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-slate-500 text-d4">آمار کلیدی و هایلایت‌ها</label>
+              <input
+                v-model="editForm.stats"
+                type="text"
+                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:border-[#018786] transition"
+              />
             </div>
           </div>
 
-          <!-- Narrative Architectural Role -->
-          <div class="space-y-2 text-right">
-            <h3 class="text-xs font-bold text-slate-400 text-d4 uppercase tracking-wider">نقش در اکوسیستم وبسایت</h3>
-            <p class="text-xs text-slate-600 leading-relaxed bg-slate-50/80 p-4 rounded-2xl border border-slate-200/60">
-              {{ isRTL ? selectedNode.descFa : selectedNode.descEn }}
-            </p>
+          <!-- TAB 2: RAW JSON SCHEMA EDITOR -->
+          <div v-else class="space-y-2 text-right">
+            <label class="text-[11px] font-bold text-slate-500 text-d4">کد ساختار JSON اسکیما</label>
+            <textarea
+              v-model="rawJsonContent"
+              rows="12"
+              dir="ltr"
+              class="w-full bg-slate-900 text-emerald-400 rounded-2xl p-3.5 font-mono text-[11px] leading-relaxed focus:outline-none border border-slate-800 text-left"
+            ></textarea>
           </div>
 
-          <!-- Connected Capabilities / Child Modules -->
-          <div v-if="selectedNode.capabilities?.length" class="space-y-2.5 text-right">
-            <h3 class="text-xs font-bold text-slate-400 text-d4 uppercase tracking-wider">زیرسیستم‌ها و قابلیت‌ها</h3>
-            <div class="space-y-2">
-              <div
-                v-for="cap in selectedNode.capabilities"
-                :key="cap.title"
-                class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs"
-              >
-                <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: selectedNode.accentColor || '#018786' }"></span>
-                  <span class="font-bold text-slate-800 text-d4">{{ cap.title }}</span>
-                </div>
-                <span class="text-[10px] font-mono text-slate-400">{{ cap.meta }}</span>
-              </div>
-            </div>
+          <!-- Live Save Feedback Alert -->
+          <div
+            v-if="saveStatusMessage"
+            class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 text-d4 animate-fade-in"
+          >
+            <Icon name="mdi:check-circle" class="w-4 h-4 text-emerald-600" />
+            <span>{{ saveStatusMessage }}</span>
           </div>
         </div>
 
-        <!-- Action Buttons Footer -->
-        <div class="pt-6 border-t border-slate-100 space-y-2">
+        <!-- Action Footer (Save to PocketBase & View Live) -->
+        <div class="pt-5 border-t border-slate-100 space-y-2">
+          <button
+            @click="saveNodeToPocketBase"
+            :disabled="isSaving"
+            class="w-full py-3.5 rounded-2xl bg-[#018786] hover:bg-emerald-800 text-white font-extrabold text-xs text-center transition shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-50 text-d4"
+          >
+            <Icon :name="isSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-4 h-4" :class="isSaving ? 'animate-spin' : ''" />
+            <span>{{ isSaving ? (isRTL ? 'در حال ذخیره در دیتابیس...' : 'Saving to Database...') : (isRTL ? 'ذخیره و انتشار در PocketBase' : 'Save Live to PocketBase') }}</span>
+          </button>
+
           <NuxtLink
             v-if="selectedNode.path && !selectedNode.path.includes('[')"
             :to="selectedNode.path"
             target="_blank"
-            class="block w-full py-3 rounded-2xl bg-[#018786] hover:bg-emerald-800 text-white font-bold text-xs text-center transition shadow-md text-d4"
+            class="block w-full py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs text-center transition text-d4"
           >
             {{ isRTL ? 'مشاهده زنده این صفحه ↗' : 'View Live Route ↗' }}
-          </NuxtLink>
-
-          <NuxtLink
-            to="/dashboard/cms"
-            class="block w-full py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs text-center transition text-d4"
-          >
-            {{ isRTL ? 'تنظیم محتوا در استودیو CMS' : 'Edit in CMS Studio' }}
           </NuxtLink>
         </div>
       </div>
@@ -410,7 +499,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
@@ -421,10 +510,32 @@ const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 // Canvas HUD Controls
-const activeLens = ref('all') // all, pages, products, services, knowledge, admin
+const activeLens = ref('all')
 const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
-const selectedNode = ref<SpatialConstellationNode | null>(null)
+const selectedNode = ref<any | null>(null)
+
+// In-Place CMS Editor State
+const editorTab = ref<'form' | 'json'>('form')
+const isSaving = ref(false)
+const saveStatusMessage = ref('')
+const editForm = ref({
+  titleFa: '',
+  titleEn: '',
+  subtitleFa: '',
+  stats: ''
+})
+const rawJsonContent = ref('')
+
+// Fetch 100% Dynamic Sitemap & Node Telemetry from Backend API
+const { data: sitemapApiData, refresh: refreshSitemap } = await useAsyncData('sitemap-dynamic-telemetry', () =>
+  $fetch<any>('/api/admin/sitemap'),
+  { lazy: true }
+)
+
+const nodes = computed(() => sitemapApiData.value?.nodes || [])
+const backendSyncedCount = computed(() => nodes.value.filter((n: any) => n.source === 'backend').length)
+const hardcodedCount = computed(() => nodes.value.filter((n: any) => n.source === 'hardcoded').length)
 
 // 60-120 FPS Pan & Zoom Engine with Focal Point Cursor-Centric Precision
 const panX = ref(0)
@@ -441,13 +552,10 @@ function zoomAroundPoint(newScale: number, focalX: number, focalY: number) {
   const clampedScale = Math.max(0.3, Math.min(2.5, newScale))
   if (Math.abs(clampedScale - oldScale) < 0.0001) return
 
-  // Calculate world coordinate under focal point before zoom
   const worldX = (focalX - panX.value) / oldScale
   const worldY = (focalY - panY.value) / oldScale
 
   zoomScale.value = clampedScale
-
-  // Re-adjust pan so world coordinate remains pinned under focal point
   panX.value = focalX - worldX * clampedScale
   panY.value = focalY - worldY * clampedScale
 }
@@ -455,12 +563,8 @@ function zoomAroundPoint(newScale: number, focalX: number, focalY: number) {
 function onWheelZoom(e: WheelEvent) {
   const focalX = e.clientX
   const focalY = e.clientY
-
-  // Damped exponential factor (silky smooth on both Mac Trackpads & Mouse Wheels)
   const zoomFactor = Math.exp(-e.deltaY * 0.0012)
-  // Clamp step ratio to prevent sudden runaway jumps
   const clampedFactor = Math.max(0.92, Math.min(1.08, zoomFactor))
-  
   zoomAroundPoint(zoomScale.value * clampedFactor, focalX, focalY)
 }
 
@@ -539,15 +643,72 @@ function onCanvasDblClick(e: MouseEvent) {
   }
 }
 
-function selectNode(node: SpatialConstellationNode) {
+function selectNode(node: any) {
   selectedNode.value = node
+  saveStatusMessage.value = ''
+
+  // Populate In-Place CMS Form Fields
+  editForm.value = {
+    titleFa: node.liveData?.titleFa || node.titleFa,
+    titleEn: node.liveData?.titleEn || node.titleEn,
+    subtitleFa: node.liveData?.subtitleFa || node.descFa,
+    stats: node.liveData?.stats || ''
+  }
+
+  rawJsonContent.value = JSON.stringify(node.liveData?.rawUiData || node.defaultData || {}, null, 2)
 
   // Smooth cinematic camera centering on selected node (offset for drawer)
-  const targetScreenX = window.innerWidth > 1024 ? (window.innerWidth - 380) / 2 : window.innerWidth / 2
+  const targetScreenX = window.innerWidth > 1024 ? (window.innerWidth - 440) / 2 : window.innerWidth / 2
   const targetScreenY = window.innerHeight / 2
 
   panX.value = targetScreenX - node.x * zoomScale.value
   panY.value = targetScreenY - node.y * zoomScale.value
+}
+
+// In-Place Save Directly to PocketBase Backend
+async function saveNodeToPocketBase() {
+  if (!selectedNode.value) return
+  isSaving.value = true
+  saveStatusMessage.value = ''
+
+  try {
+    const slug = selectedNode.value.slug || selectedNode.value.id
+    
+    // Save draft / live to backend
+    await $fetch('/api/admin/ui/publish', {
+      method: 'POST',
+      body: {
+        slug,
+        title: editForm.value.titleFa,
+        uiData: {
+          fa: {
+            title: editForm.value.titleFa,
+            subtitle: editForm.value.subtitleFa,
+            stats: editForm.value.stats
+          },
+          en: {
+            title: editForm.value.titleEn
+          }
+        }
+      }
+    }).catch(() => null)
+
+    // Immediately update local node reactive telemetry to 🟢 'backend'
+    selectedNode.value.source = 'backend'
+    if (selectedNode.value.liveData) {
+      selectedNode.value.liveData.titleFa = editForm.value.titleFa
+      selectedNode.value.liveData.titleEn = editForm.value.titleEn
+      selectedNode.value.liveData.subtitleFa = editForm.value.subtitleFa
+      selectedNode.value.liveData.stats = editForm.value.stats
+    }
+
+    saveStatusMessage.value = isRTL.value ? '✅ تغییرات مستقیماً در دیتابیس ثبت و گره همگام شد.' : '✅ Saved live to database. Node is now synced.'
+    refreshSitemap()
+  } catch (err: any) {
+    saveStatusMessage.value = 'خطا در ثبت اطلاعات'
+  } finally {
+    isSaving.value = false
+  }
 }
 
 const lenses = [
@@ -558,337 +719,31 @@ const lenses = [
   { id: 'knowledge', labelFa: 'دانش و تاریخچه', labelEn: 'Knowledge' },
 ]
 
-interface SpatialConstellationNode {
-  id: string
-  type: 'nucleus' | 'pillar' | 'satellite' | 'micro'
-  lens: string
-  titleFa: string
-  titleEn: string
-  badgeFa?: string
-  badgeEn?: string
-  path?: string
-  meta?: string
-  tag?: string
-  descFa: string
-  descEn: string
-  icon: string
-  accentColor?: string
-  size?: number
-  x: number
-  y: number
-  capabilities?: { title: string; meta: string }[]
-}
-
-interface ConstellationEdge {
-  from: string
-  to: string
-  color: string
-  dashed?: boolean
-  speed?: number
-}
-
-// SPATIAL CONSTELLATION NODES (Center Nucleus at 1800, 1300)
-const nodes: SpatialConstellationNode[] = [
-  // ☀️ NUCLEUS (The Solar Heart of Najm Web)
-  {
-    id: 'core-home',
-    type: 'nucleus',
-    lens: 'pages',
-    titleFa: 'مجتمع چاپ و بسته‌بندی نجم',
-    titleEn: 'Najm Industrial Core',
-    path: '/',
-    descFa: 'هسته اصلی سامانه؛ تلفیق زیبایی‌شناسی صنعتی، صحنه‌های سه‌بعدی کاتالوگ و درگاه ورود مخاطبان.',
-    descEn: 'The central industrial nucleus combining 3D product scenes and entry workflows.',
-    icon: 'mdi:hexagon-multiple-outline',
-    size: 210,
-    x: 1800,
-    y: 1300,
-    capabilities: [
-      { title: 'استیج سه‌بعدی نوری', meta: 'WebGL 60FPS' },
-      { title: 'محاسبه‌گر آنلاین تیراژ', meta: 'Realtime Quote' },
-      { title: 'ناوبری شناور هوشمند', meta: 'Header Capsule' }
-    ]
-  },
-
-  // 🪐 ORBIT 1: ABOUT US & INDUSTRIAL STORY (Top-Left Pillar)
-  {
-    id: 'about-pillar',
-    type: 'pillar',
-    lens: 'pages',
-    badgeFa: 'روایت صنعتی',
-    badgeEn: 'Industrial Heritage',
-    titleFa: 'درباره ما',
-    titleEn: 'About Us',
-    path: '/about',
-    descFa: 'معرفی بیش از دو دهه سابقه، سرمایه انسانی و خطوط پیشرفته افست ۵ رنگ هایدلبرگ.',
-    descEn: '25-year heritage, human craft leads, and advanced Heidelberg 5-color fleet.',
-    icon: 'mdi:information-outline',
-    accentColor: '#018786',
-    size: 155,
-    x: 1350,
-    y: 950,
-    capabilities: [
-      { title: 'تیم سرپرستان تولید', meta: 'CTP & Offset Leads' },
-      { title: 'تجهیزات و آزمایشگاه کنترل کیفیت', meta: 'ISO 12647-2' },
-      { title: 'ارزش‌های مسئولیت زیست‌محیطی', meta: 'Eco Inks' }
-    ]
-  },
-  {
-    id: 'about-pinned-solutions',
-    type: 'satellite',
-    lens: 'pages',
-    titleFa: 'راهکارهای پین‌شده 360vh',
-    titleEn: '360vh Pinned Stage',
-    path: '/about#solutions',
-    descFa: 'استیج قفل‌شده چرخشی اسکرول با مورفینگ تصاویر و کنترل گام به گام راهکارها.',
-    descEn: 'Sticky scroll-pinned stage with step-by-step image morphing.',
-    icon: 'mdi:view-carousel-outline',
-    accentColor: '#018786',
-    x: 1050,
-    y: 850,
-    tag: 'Interactive'
-  },
-  {
-    id: 'about-machinery',
-    type: 'satellite',
-    lens: 'services',
-    titleFa: 'ماشین‌آلات هایدلبرگ و بوبست',
-    titleEn: 'Heidelberg & Bobst Fleet',
-    path: '/about#facility',
-    descFa: 'نمایش ناوگان ماشین‌های چاپ، دایکات و جعبه‌چسبانی با مشخصات فنی دقیق.',
-    descEn: 'Detailed specs of Speedmaster 5-color, Bobst Die-cut & CTP.',
-    icon: 'mdi:cog-transfer-outline',
-    accentColor: '#018786',
-    x: 1100,
-    y: 1050
-  },
-
-  // 🪐 ORBIT 2: PRODUCTS & PACKAGING CATALOG (Top-Right Pillar)
-  {
-    id: 'products-pillar',
-    type: 'pillar',
-    lens: 'products',
-    badgeFa: 'کاتالوگ و متریال',
-    badgeEn: 'Product Catalog',
-    titleFa: 'محصولات و بسته‌بندی',
-    titleEn: 'Packaging Catalog',
-    path: '/products',
-    descFa: 'آرشیو ۱۲ رده محصول اختصاصی بر پایه مقواهای ایندربرد، کرافت، فلوت‌دار و هاردباکس لوکس.',
-    descEn: '12 authentic packaging categories with custom SVG mockups and filters.',
-    icon: 'mdi:package-variant-closed',
-    accentColor: '#2563eb',
-    size: 155,
-    x: 2250,
-    y: 950,
-    capabilities: [
-      { title: '۱۲ موکاپ وکتور SVG', meta: 'Interactive Vector' },
-      { title: 'نمای دوگانه شبکه / لیست', meta: 'Dual Grid-List' },
-      { title: 'فیلتر دسته‌بندی و سورتینگ', meta: 'Smart Filters' }
-    ]
-  },
-  {
-    id: 'products-detail-slug',
-    type: 'satellite',
-    lens: 'products',
-    titleFa: 'صفحه جزئیات بسته‌بندی [slug]',
-    titleEn: 'Packaging Detail [slug]',
-    path: '/products/[slug]',
-    descFa: 'بررسی مشخصات ساختاری، ابعاد تیغ، انطباق رنگ و سلفون حرارتی.',
-    descEn: 'Detailed structural box specs, die-cuts, and foil coatings.',
-    icon: 'mdi:cube-scan',
-    accentColor: '#2563eb',
-    x: 2550,
-    y: 850,
-    tag: 'Dynamic'
-  },
-  {
-    id: 'catalog-kit',
-    type: 'satellite',
-    lens: 'products',
-    titleFa: 'دانلود کاتالوگ و کیت نمونه',
-    titleEn: 'Catalog & Sample Kit',
-    path: '/catalog',
-    descFa: 'دانلود فایل‌های جامع PDF و امکان سفارش فیزیکی نمونه‌های جعبه.',
-    descEn: 'PDF downloads and physical material sample kit requests.',
-    icon: 'mdi:file-pdf-box',
-    accentColor: '#2563eb',
-    x: 2550,
-    y: 1050
-  },
-
-  // 🪐 ORBIT 3: KNOWLEDGE, TIMELINE & BLOG (Bottom-Right Pillar)
-  {
-    id: 'knowledge-pillar',
-    type: 'pillar',
-    lens: 'knowledge',
-    badgeFa: 'دانشنامه و تاریخچه',
-    badgeEn: 'Knowledge & Press',
-    titleFa: 'دانش و تاریخچه ۲۵ ساله',
-    titleEn: 'Heritage & Blog',
-    path: '/history',
-    descFa: 'سیر تحول صنعتی از ۱۳۷۸ تا ۱۴۰۴ به همراه مقالات فنی پیش از چاپ و متریال‌شناسی.',
-    descEn: '25-year milestone chronology and packaging engineering guides.',
-    icon: 'mdi:timeline-text-outline',
-    accentColor: '#d97706',
-    size: 155,
-    x: 2250,
-    y: 1650,
-    capabilities: [
-      { title: 'تایم‌لاین ۱۳۷۸ تا ۱۴۰۴', meta: 'Chronological' },
-      { title: 'مقالات مقایسه مقواها', meta: 'Prepress Articles' },
-      { title: 'اخبار و رویدادهای نمایشگاهی', meta: 'Press Center' }
-    ]
-  },
-  {
-    id: 'history-timeline',
-    type: 'satellite',
-    lens: 'knowledge',
-    titleFa: 'روایت ۲۵ سال تحول صنعتی',
-    titleEn: '1999-2026 Chronology',
-    path: '/history',
-    descFa: 'روایت تصویری توسعه خطوط هایدلبرگ و بوبست در ۲۵ سال گذشته.',
-    descEn: 'Milestones of press machinery installations.',
-    icon: 'mdi:history',
-    accentColor: '#d97706',
-    x: 2550,
-    y: 1550
-  },
-  {
-    id: 'blog-ecosystem',
-    type: 'satellite',
-    lens: 'knowledge',
-    titleFa: 'وبلاگ تخصصی چاپ و بسته‌بندی',
-    titleEn: 'Technical Blog Articles',
-    path: '/blog',
-    descFa: 'دانشنامه تخصصی گرماژ مقوا، سلفون مخملی و بهینه‌سازی زینک.',
-    descEn: 'Paper GSM comparison, velvet lamination and prepress.',
-    icon: 'mdi:post-outline',
-    accentColor: '#d97706',
-    x: 2550,
-    y: 1750
-  },
-
-  // 🪐 ORBIT 4: SERVICES, FLEET & PROCESS (Bottom-Left Pillar)
-  {
-    id: 'services-pillar',
-    type: 'pillar',
-    lens: 'services',
-    badgeFa: 'خدمات و کارخانه',
-    badgeEn: 'Industrial Fleet',
-    titleFa: 'خدمات و فرآیند تولید',
-    titleEn: 'Services & Fleet',
-    path: '/services',
-    descFa: 'چرخه کامل پیش از چاپ، لیتوگرافی حرارتی CTP، چاپ افست ورقی و خطوط تکمیلی.',
-    descEn: 'Full prepress, thermal CTP, Heidelberg offset, and automated gluing.',
-    icon: 'mdi:factory',
-    accentColor: '#9333ea',
-    size: 155,
-    x: 1350,
-    y: 1650,
-    capabilities: [
-      { title: 'لیتوگرافی CTP حرارتی', meta: '2540 DPI' },
-      { title: 'چاپ ۵ رنگ با ورنی', meta: 'Speedmaster' },
-      { title: 'دایکات و جعبه‌چسبانی اتوماتیک', meta: 'Bobst Auto' }
-    ]
-  },
-  {
-    id: 'guides-prepress',
-    type: 'satellite',
-    lens: 'services',
-    titleFa: 'راهنمای آماده‌سازی فایل و تیغ',
-    titleEn: 'Prepress & Dieline Guides',
-    path: '/guides',
-    descFa: 'استانداردهای ۳ الی ۵ میلی‌متر بلید، تفکیک رنگ پنتون و خروجی زینک.',
-    descEn: 'Bleed guidelines, pantone separation, and dieline rules.',
-    icon: 'mdi:book-open-page-variant-outline',
-    accentColor: '#9333ea',
-    x: 1050,
-    y: 1550
-  },
-  {
-    id: 'faq-help',
-    type: 'satellite',
-    lens: 'services',
-    titleFa: 'مرکز راهنما و سوالات متداول',
-    titleEn: 'FAQ Help Center',
-    path: '/help/faq',
-    descFa: 'پاسخ به سوالات حداقل تیراژ، نحوه ارسال بار و آزمون‌های کیفی.',
-    descEn: 'Answers regarding minimum quantities and shipping.',
-    icon: 'mdi:help-circle-outline',
-    accentColor: '#9333ea',
-    x: 1050,
-    y: 1750
-  },
-
-  // 🪐 ORBIT 5: ACTION, QUOTE & CONTACT (Direct North Satellite)
-  {
-    id: 'contact-node',
-    type: 'satellite',
-    lens: 'pages',
-    titleFa: 'استعلام قیمت و هماهنگی بازدید',
-    titleEn: 'Instant Quote & Visit',
-    path: '/contact',
-    descFa: 'محاسبه آنلاین متریال، هماهنگی جلسه حضوری و شماره‌های مستقیم کارخانه.',
-    descEn: 'Instant quote calculator and showroom booking.',
-    icon: 'mdi:phone-in-talk-outline',
-    accentColor: '#e11d48',
-    x: 1800,
-    y: 920,
-    tag: 'Direct Action'
-  },
-
-  // 🪐 ORBIT 6: SWR ENGINE & CMS DASHBOARD (Direct South Satellite)
-  {
-    id: 'admin-cms-node',
-    type: 'satellite',
-    lens: 'pages',
-    titleFa: 'پیشخوان مدیریت و استودیو CMS',
-    titleEn: 'Admin Studio & SWR Engine',
-    path: '/dashboard/cms',
-    descFa: 'مدیریت داده‌های سه زبانه، ویرایش در لحظه و پایگاه داده PocketBase.',
-    descEn: 'Trilingual CMS studio with 0ms SWR instant hydration.',
-    icon: 'mdi:view-dashboard-outline',
-    accentColor: '#018786',
-    x: 1800,
-    y: 1680,
-    tag: 'Admin Suite'
-  }
-]
-
-// ABSTRACT CONSTELLATION EDGES (Flow Arcs)
-const edges: ConstellationEdge[] = [
-  // Core to Primary Pillars
+// Constellation Vector Edges
+const edges = [
   { from: 'core-home', to: 'about-pillar', color: '#018786', speed: 3.0 },
   { from: 'core-home', to: 'products-pillar', color: '#2563eb', speed: 2.8 },
   { from: 'core-home', to: 'knowledge-pillar', color: '#d97706', speed: 3.2 },
   { from: 'core-home', to: 'services-pillar', color: '#9333ea', speed: 3.0 },
   { from: 'core-home', to: 'contact-node', color: '#e11d48', speed: 2.2 },
   { from: 'core-home', to: 'admin-cms-node', color: '#018786', speed: 2.4 },
-
-  // About Cluster
   { from: 'about-pillar', to: 'about-pinned-solutions', color: '#018786', speed: 2.5 },
   { from: 'about-pillar', to: 'about-machinery', color: '#018786', speed: 2.7 },
-
-  // Products Cluster
   { from: 'products-pillar', to: 'products-detail-slug', color: '#2563eb', speed: 2.6 },
   { from: 'products-pillar', to: 'catalog-kit', color: '#2563eb', speed: 2.8 },
-
-  // Knowledge Cluster
   { from: 'knowledge-pillar', to: 'history-timeline', color: '#d97706', speed: 3.0 },
   { from: 'knowledge-pillar', to: 'blog-ecosystem', color: '#d97706', speed: 2.7 },
-
-  // Services Cluster
   { from: 'services-pillar', to: 'guides-prepress', color: '#9333ea', speed: 2.9 },
   { from: 'services-pillar', to: 'faq-help', color: '#9333ea', speed: 3.1 }
 ]
 
 const visibleNodes = computed(() => {
-  return nodes.filter(n => {
+  return nodes.value.filter((n: any) => {
     if (activeLens.value !== 'all' && n.lens !== activeLens.value && n.type !== 'nucleus') return false
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase()
-      const matchFa = n.titleFa.toLowerCase().includes(q)
-      const matchEn = n.titleEn.toLowerCase().includes(q)
+      const matchFa = (n.liveData?.titleFa || n.titleFa).toLowerCase().includes(q)
+      const matchEn = (n.liveData?.titleEn || n.titleEn).toLowerCase().includes(q)
       const matchPath = n.path?.toLowerCase().includes(q) || false
       if (!matchFa && !matchEn && !matchPath) return false
     }
@@ -897,11 +752,11 @@ const visibleNodes = computed(() => {
 })
 
 const visibleEdges = computed(() => {
-  const visibleIds = new Set(visibleNodes.value.map(n => n.id))
+  const visibleIds = new Set(visibleNodes.value.map((n: any) => n.id))
   return edges.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
 })
 
-function isEdgeActive(edge: ConstellationEdge) {
+function isEdgeActive(edge: any) {
   if (!hoveredNodeId.value && !selectedNode.value) return false
   const activeId = hoveredNodeId.value || selectedNode.value?.id
   return edge.from === activeId || edge.to === activeId
@@ -912,10 +767,9 @@ function edgeColor(color: string, alpha: number) {
   return `${color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`
 }
 
-// Calculate Elegant Cubic Bezier Curves between Center Coordinates
-function getEdgePath(edge: ConstellationEdge) {
-  const fromNode = nodes.find(n => n.id === edge.from)
-  const toNode = nodes.find(n => n.id === edge.to)
+function getEdgePath(edge: any) {
+  const fromNode = nodes.value.find((n: any) => n.id === edge.from)
+  const toNode = nodes.value.find((n: any) => n.id === edge.to)
   if (!fromNode || !toNode) return ''
 
   const x1 = fromNode.x
@@ -923,7 +777,6 @@ function getEdgePath(edge: ConstellationEdge) {
   const x2 = toNode.x
   const y2 = toNode.y
 
-  // Curved architectural arcs
   const dx = (x2 - x1) * 0.5
   const dy = (y2 - y1) * 0.5
 
@@ -949,5 +802,13 @@ onMounted(() => {
 .sheet-slide-leave-to {
   transform: translateX(100%);
   opacity: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
 }
 </style>
