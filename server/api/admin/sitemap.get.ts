@@ -3,9 +3,10 @@ import { defineEventHandler } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig()
-  const pbUrl = runtimeConfig.public?.pbUrl || 'http://127.0.0.1:8090'
+  const pbUrl = runtimeConfig.public?.pbUrl || process.env.PB_URL || 'http://65.108.80.205:8090'
 
   let livePagesMap: Record<string, any> = {}
+  let livePagesList: any[] = []
   let productsList: any[] = []
   let mediaCount = 0
 
@@ -13,10 +14,11 @@ export default defineEventHandler(async (event) => {
     // 1. Fetch live pages collection from PocketBase
     const pagesRes: any = await $fetch(`${pbUrl}/api/collections/pages/records`, {
       params: { perPage: 100 },
-      timeout: 3000
+      timeout: 5000
     }).catch(() => null)
 
     if (pagesRes?.items) {
+      livePagesList = pagesRes.items
       pagesRes.items.forEach((p: any) => {
         if (p.slug) {
           livePagesMap[p.slug] = p
@@ -26,8 +28,8 @@ export default defineEventHandler(async (event) => {
 
     // 2. Fetch live products from PocketBase
     const productsRes: any = await $fetch(`${pbUrl}/api/collections/products/records`, {
-      params: { perPage: 20 },
-      timeout: 3000
+      params: { perPage: 50 },
+      timeout: 5000
     }).catch(() => null)
     if (productsRes?.items) {
       productsList = productsRes.items
@@ -36,7 +38,7 @@ export default defineEventHandler(async (event) => {
     // 3. Fetch live media count
     const mediaRes: any = await $fetch(`${pbUrl}/api/collections/media_files/records`, {
       params: { perPage: 1 },
-      timeout: 3000
+      timeout: 5000
     }).catch(() => null)
     if (mediaRes) {
       mediaCount = mediaRes.totalItems || 0
@@ -145,8 +147,8 @@ export default defineEventHandler(async (event) => {
       titleFa: 'محصولات و بسته‌بندی',
       titleEn: 'Packaging Catalog',
       path: '/products',
-      descFa: 'آرشیو ۱۲ رده محصول اختصاصی بر پایه مقواهای ایندربرد، کرافت، فلوت‌دار و هاردباکس لوکس.',
-      descEn: '12 authentic packaging categories with custom SVG mockups and filters.',
+      descFa: 'آرشیو رده‌های محصول اختصاصی بر پایه مقواهای ایندربرد، کرافت، فلوت‌دار و هاردباکس لوکس.',
+      descEn: 'Authentic packaging categories with custom SVG mockups and filters.',
       icon: 'mdi:package-variant-closed',
       accentColor: '#2563eb',
       size: 155,
@@ -156,7 +158,7 @@ export default defineEventHandler(async (event) => {
         titleFa: 'کاتالوگ انواع بسته‌بندی و مقواهای استاندارد',
         titleEn: 'Standard Paperboard & Packaging Catalog',
         subtitleFa: 'طراحی ساختار، جعبه‌های دارویی، آرایشی، غذایی و صنعتی',
-        stats: `${productsList.length || 12} رده محصول • ۱۰۰٪ استاندارد بهداشتی`
+        stats: `${productsList.length || 12} محصول فعال در دیتابیس`
       }
     },
     {
@@ -377,6 +379,74 @@ export default defineEventHandler(async (event) => {
         subtitleFa: 'کنترل کامل دیتابیس، کش SWR و مخزن رسانه',
         stats: 'Live Synced • 0ms Hydration'
       }
+    },
+
+    // Extra Live Pages directly present in PocketBase
+    {
+      id: 'pb-login',
+      slug: 'login',
+      type: 'satellite',
+      lens: 'pages',
+      titleFa: 'صفحه ورود و احراز هویت کاربران',
+      titleEn: 'User Login & Auth',
+      path: '/login',
+      descFa: 'درگاه ورود با کد یکبار مصرف پیامکی و رمز عبور.',
+      descEn: 'OTP and password user authentication gateway.',
+      icon: 'mdi:lock-outline',
+      accentColor: '#6366f1',
+      x: 1450,
+      y: 750,
+      tag: 'Auth',
+      defaultData: {
+        titleFa: 'ورود یا ثبت‌نام در سامانه مشتریان',
+        titleEn: 'Login or Sign Up',
+        subtitleFa: 'دسترسی به سفارشات اختصاصی، فاکتورها و وضعیت بار',
+        stats: 'OTP پیامکی • ورود امن'
+      }
+    },
+    {
+      id: 'pb-menu',
+      slug: 'menu',
+      type: 'satellite',
+      lens: 'pages',
+      titleFa: 'پیکربندی منوی ناوبری اصلی',
+      titleEn: 'Main Navigation Menu',
+      path: '/#menu',
+      descFa: 'داده‌های ساختار منوی هدر و منوی تمام‌صفحه موبایل.',
+      descEn: 'Navigation header menu items configuration.',
+      icon: 'mdi:menu',
+      accentColor: '#0ea5e9',
+      x: 1800,
+      y: 750,
+      tag: 'Navigation',
+      defaultData: {
+        titleFa: 'منوی ناوبری سه‌زبانه سامانه',
+        titleEn: 'Main Header Navigation',
+        subtitleFa: 'لینک‌های دسترسی سریع به کاتالوگ و مقالات',
+        stats: 'FA / EN / AR'
+      }
+    },
+    {
+      id: 'pb-footer',
+      slug: 'footer',
+      type: 'satellite',
+      lens: 'pages',
+      titleFa: 'پیکربندی فوتر و اطلاعات تماس',
+      titleEn: 'Footer & Company Info',
+      path: '/#footer',
+      descFa: 'داده‌های فوتر سایت شامل کپی‌رایت، مجوزها و لینک‌های شبکه اجتماعی.',
+      descEn: 'Footer copyright and social channel links.',
+      icon: 'mdi:page-layout-footer',
+      accentColor: '#64748b',
+      x: 2150,
+      y: 750,
+      tag: 'Footer',
+      defaultData: {
+        titleFa: 'فوتر جامع و مجوزهای صنعتی',
+        titleEn: 'Comprehensive Footer & Social Links',
+        subtitleFa: 'مجوز وزارت ارشاد، نماد اعتماد الکترونیکی و نشان ملی ثبت',
+        stats: '۳ بخش پیوندها'
+      }
     }
   ]
 
@@ -409,8 +479,12 @@ export default defineEventHandler(async (event) => {
       totalNodes: enrichedNodes.length,
       backendSyncedCount: enrichedNodes.filter(n => n.source === 'backend').length,
       hardcodedCount: enrichedNodes.filter(n => n.source === 'hardcoded').length,
+      totalLivePagesInPB: livePagesList.length,
+      totalLiveProductsInPB: productsList.length,
       mediaCount
     },
+    livePocketBasePages: livePagesList.map(p => ({ id: p.id, slug: p.slug, title: p.title })),
+    livePocketBaseProducts: productsList.map(p => ({ id: p.id, name: p.name, slug: p.slug })),
     nodes: enrichedNodes
   }
 })

@@ -1230,7 +1230,11 @@ const edges = [
   { from: 'knowledge-pillar', to: 'history-timeline', color: '#d97706', speed: 3.0 },
   { from: 'knowledge-pillar', to: 'blog-ecosystem', color: '#d97706', speed: 2.7 },
   { from: 'services-pillar', to: 'guides-prepress', color: '#9333ea', speed: 2.9 },
-  { from: 'services-pillar', to: 'faq-help', color: '#9333ea', speed: 3.1 }
+  { from: 'services-pillar', to: 'faq-help', color: '#9333ea', speed: 3.1 },
+  // PocketBase Live Auxiliary Pages
+  { from: 'core-home', to: 'pb-login', color: '#6366f1', speed: 2.5 },
+  { from: 'core-home', to: 'pb-menu', color: '#0ea5e9', speed: 2.3 },
+  { from: 'core-home', to: 'pb-footer', color: '#64748b', speed: 2.6 }
 ]
 
 const visibleNodes = computed(() => {
