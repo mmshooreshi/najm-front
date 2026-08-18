@@ -642,9 +642,14 @@ function getNodeScale(node: any) {
   return 1.0
 }
 
-// 3D Perspective Tilt on Mouse Movement
+// 3D Perspective Tilt & Exact Delta Dragging
 const mouseRelativeX = ref(0)
 const mouseRelativeY = ref(0)
+
+let nodeDragStartClientX = 0
+let nodeDragStartClientY = 0
+let nodeDragStartNodeX = 0
+let nodeDragStartNodeY = 0
 
 function handleGlobalMouseMove(e: MouseEvent) {
   mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
@@ -653,11 +658,10 @@ function handleGlobalMouseMove(e: MouseEvent) {
   if (isDraggingNodeId.value) {
     const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
-      const rect = canvasStageRef.value?.getBoundingClientRect()
-      if (rect) {
-        dragged.currentX = (e.clientX - rect.left - dragOffsetX) / clusterFitScale.value
-        dragged.currentY = (e.clientY - rect.top - dragOffsetY) / clusterFitScale.value
-      }
+      const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
+      const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
+      dragged.currentX = Math.round(nodeDragStartNodeX + dx)
+      dragged.currentY = Math.round(nodeDragStartNodeY + dy)
     }
   }
 }
@@ -739,25 +743,23 @@ function autoFitConstellation() {
 
 // FREE PERSISTENT DRAGGING
 const isDraggingNodeId = ref<string | null>(null)
-let dragOffsetX = 0
-let dragOffsetY = 0
 
 function startNodeDrag(e: MouseEvent, node: any) {
   isDraggingNodeId.value = node.id
-  const rect = canvasStageRef.value?.getBoundingClientRect()
-  if (rect) {
-    dragOffsetX = e.clientX - rect.left - node.currentX * clusterFitScale.value
-    dragOffsetY = e.clientY - rect.top - node.currentY * clusterFitScale.value
-  }
+  nodeDragStartClientX = e.clientX
+  nodeDragStartClientY = e.clientY
+  nodeDragStartNodeX = node.currentX
+  nodeDragStartNodeY = node.currentY
 }
 
 function startNodeTouchDrag(e: TouchEvent, node: any) {
   isDraggingNodeId.value = node.id
   const touch = e.touches[0]
-  const rect = canvasStageRef.value?.getBoundingClientRect()
-  if (rect && touch) {
-    dragOffsetX = touch.clientX - rect.left - node.currentX * clusterFitScale.value
-    dragOffsetY = touch.clientY - rect.top - node.currentY * clusterFitScale.value
+  if (touch) {
+    nodeDragStartClientX = touch.clientX
+    nodeDragStartClientY = touch.clientY
+    nodeDragStartNodeX = node.currentX
+    nodeDragStartNodeY = node.currentY
   }
 }
 
