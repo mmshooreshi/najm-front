@@ -11,7 +11,7 @@
       <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
     </div>
 
-    <!-- Top Minimalist HUD Bar with Quick Group Toggles & Auto-Centering -->
+    <!-- Top Minimalist HUD Bar with Quick Group Selectors & Reset Center -->
     <header class="relative z-40 h-13 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
       <!-- Left: Exit & Cluster Telemetry -->
       <div class="flex items-center gap-2">
@@ -30,31 +30,34 @@
         </div>
       </div>
 
-      <!-- Center: 1-Tap Group Filter Chips & Re-Center Button -->
+      <!-- Center: 1-Tap Group Selectors & Reset Layout Button -->
       <div class="flex items-center gap-1 sm:gap-2">
-        <!-- Smart Re-Center -->
+        <!-- Re-Center / Reset Positions -->
         <button
-          @click="autoFitAndCenter"
+          @click="resetNodePositions"
           class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-1 active:scale-95"
-          title="مرکز چین هوشمند کادر (Center & Fit)"
+          title="بازنشانی موقعیت‌ها به چیدمان اصلی"
         >
           <Icon name="mdi:crosshairs-gps" class="w-3.5 h-3.5" />
-          <span class="hidden sm:inline">مرکز چین</span>
+          <span class="hidden sm:inline">چینش مجدد</span>
         </button>
 
-        <!-- Group Visibility Toggles -->
+        <!-- Group Selector Chips (Single / Multi-Select Mode) -->
         <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
+          <button
+            @click="selectedGroup = 'all'"
+            class="px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            :class="selectedGroup === 'all' ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
+          >
+            <span>همه</span>
+          </button>
+
           <button
             v-for="grp in groupToggles"
             :key="grp.id"
-            @click="toggleGroup(grp.id)"
+            @click="selectedGroup = grp.id"
             class="px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
-            :class="[
-              activeGroups.includes(grp.id)
-                ? 'bg-white text-slate-900 shadow-2xs font-extrabold'
-                : 'text-slate-500 hover:text-slate-800 opacity-60'
-            ]"
-            :title="`تغییر وضعیت نمایش گروه ${grp.label}`"
+            :class="selectedGroup === grp.id ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
           >
             <span class="text-[10px]">{{ grp.icon }}</span>
             <span class="hidden md:inline">{{ grp.label }}</span>
@@ -62,7 +65,7 @@
         </div>
       </div>
 
-      <!-- Right: Search, Refresh & Debug -->
+      <!-- Right: Search, Refresh & Debug Console -->
       <div class="flex items-center gap-1.5">
         <div class="relative w-28 sm:w-36">
           <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
@@ -97,7 +100,7 @@
       </div>
     </header>
 
-    <!-- FIT-CONTAINED AUTO-RESIZING STAGE -->
+    <!-- FIT-CONTAINED AUTO-RESIZING STAGE WITH FREE DRAGGING -->
     <div
       ref="canvasStageRef"
       class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-default"
@@ -107,7 +110,7 @@
     >
       <!-- Centered Scaled Cluster Stage -->
       <div
-        class="relative transition-all duration-300 ease-out"
+        class="relative transition-transform duration-200 ease-out"
         :style="{
           width: `${stageBaseWidth}px`,
           height: `${stageBaseHeight}px`,
@@ -115,7 +118,7 @@
           transformOrigin: 'center center'
         }"
       >
-        <!-- VECTOR CONNECTION CURVES -->
+        <!-- VECTOR CONNECTION PATHS -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <path
@@ -142,7 +145,7 @@
           </g>
         </svg>
 
-        <!-- ORGANIC SEMI-3D MAGNETIC BLOBS -->
+        <!-- EXAGGERATED SIZE SEMI-3D MAGNETIC BLOBS -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
@@ -152,134 +155,142 @@
           @dblclick.stop="openProJsonStudio(node, 'content-studio')"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute cursor-pointer select-none transition-all duration-200 z-20 group"
+          class="absolute cursor-move select-none transition-all duration-150 z-20 group"
           :style="{
             left: `${node.currentX}px`,
             top: `${node.currentY}px`,
             transform: `translate(-50%, -50%) scale(${getNodeScale(node)}) ${getNode3DTilt(node)}`,
-            transformOrigin: 'center center',
-            transition: isDraggingNodeId === node.id ? 'none' : 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            transformOrigin: 'center center'
           }"
         >
-          <!-- TACTILE 3D BLOB CARD -->
+          <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px - Huge & Exaggerated) -->
           <div
-            class="relative rounded-[2rem] p-3.5 sm:p-4 flex flex-col justify-between transition-all duration-200"
-            :style="{
-              width: `${getNodeWidth(node)}px`,
-              minHeight: `${getNodeHeight(node)}px`,
-              background: getNodeBackground(node),
-              boxShadow: getNodeShadow(node)
-            }"
-            :class="[
-              selectedNode?.id === node.id
-                ? 'ring-3 ring-emerald-500/80 -translate-y-1'
-                : 'hover:-translate-y-1'
-            ]"
+            v-if="node.type === 'nucleus'"
+            class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/60 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
+            :style="{ width: '270px', minHeight: '155px' }"
+            :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500' : ''"
           >
-            <!-- Top Specular Highlight -->
-            <div class="absolute inset-x-3 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none rounded-t-full"></div>
+            <!-- Top Glass Rim -->
+            <div class="absolute inset-x-4 top-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent pointer-events-none"></div>
 
-            <!-- Card Header: Icon, Badge & 1-CLICK HOVER ACTIONS (Desktop Super Fast Access) -->
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-              <div
-                class="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0"
-                :style="{ backgroundColor: node.accentColor || '#018786' }"
-              >
-                <Icon :name="node.icon || 'mdi:layers'" class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-800 text-white flex items-center justify-center shadow-sm">
+                  <Icon :name="node.icon || 'mdi:home'" class="w-5 h-5" />
+                </div>
+                <div>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px] font-extrabold uppercase">
+                    CORE HUB
+                  </span>
+                </div>
               </div>
 
-              <!-- Desktop 1-Click Hover Actions (Visible on Hover for 0-Friction Access) -->
-              <div class="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+              <!-- Children Fold Button -->
+              <button
+                @click.stop="toggleFoldChildren(node.id)"
+                class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-emerald-800 text-white font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-xs"
+                :title="isChildrenFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'مخفی‌سازی زیرشاخه‌ها'"
+              >
+                <Icon :name="isChildrenFolded(node.id) ? 'mdi:eye-outline' : 'mdi:eye-off-outline'" class="w-3.5 h-3.5" />
+                <span>{{ isChildrenFolded(node.id) ? 'نمایش شاخه‌ها' : 'بستن شاخه‌ها' }}</span>
+              </button>
+            </div>
+
+            <div class="my-auto space-y-0.5">
+              <h2 class="font-black text-slate-900 text-base tracking-tight">
+                {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
+              </h2>
+              <p class="text-[10px] text-slate-500 font-mono" dir="ltr">/ (صفحه اصلی)</p>
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
+              <span class="font-bold text-emerald-800 flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>هسته مرکزی</span>
+              </span>
+
+              <div class="flex items-center gap-1">
                 <button
                   @click.stop="openProJsonStudio(node, 'content-studio')"
-                  class="w-6 h-6 rounded-lg bg-emerald-50 hover:bg-emerald-800 text-emerald-800 hover:text-white flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  title="ویرایش سریع محتوا"
+                  class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-800 text-emerald-800 hover:text-white font-bold text-[10px] transition cursor-pointer"
                 >
-                  <Icon name="mdi:pencil-outline" class="w-3 h-3" />
+                  ویرایش محتوا
                 </button>
-                <button
-                  @click.stop="openProJsonStudio(node, 'media')"
-                  class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  title="رسانه‌ها و کاور"
-                >
-                  <Icon name="mdi:image-outline" class="w-3 h-3" />
-                </button>
-                <button
-                  @click.stop="openProJsonStudio(node, 'vanilla-editor')"
-                  class="w-6 h-6 rounded-lg bg-blue-50 hover:bg-blue-700 text-blue-700 hover:text-white flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  title="ویرایشگر JSON"
-                >
-                  <Icon name="mdi:code-json" class="w-3 h-3" />
-                </button>
-              </div>
-
-              <!-- Status Badge (When not hovered) -->
-              <div class="flex sm:group-hover:hidden items-center gap-1">
-                <span
-                  v-if="isRecentlyUsed(node.id)"
-                  class="px-1.5 py-0.2 rounded-full bg-amber-500 text-white font-bold text-[8px] animate-pulse"
-                >
-                  فعال
-                </span>
-                <span class="px-1.5 py-0.2 rounded-full bg-slate-900/5 text-slate-600 font-mono text-[9px] font-bold">
-                  {{ node.lens?.toUpperCase() || 'PAGE' }}
-                </span>
               </div>
             </div>
+          </div>
 
-            <!-- Card Center: Title & Path -->
-            <div class="space-y-0.5 my-auto">
-              <h3 class="font-black text-slate-900 text-xs sm:text-sm tracking-tight leading-snug">
+          <!-- 2. PRIMARY PILLAR NODE (215px × 125px - Bold Structural Anchor) -->
+          <div
+            v-else-if="node.type === 'pillar'"
+            class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200 bg-white border border-slate-200 shadow-[0_16px_36px_-8px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(0,0,0,0.05)]"
+            :style="{ width: '215px', minHeight: '125px' }"
+            :class="selectedNode?.id === node.id ? 'ring-3 ring-emerald-500' : ''"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <div
+                class="w-8 h-8 rounded-2xl flex items-center justify-center text-white shadow-xs"
+                :style="{ backgroundColor: node.accentColor || '#2563eb' }"
+              >
+                <Icon :name="node.icon || 'mdi:layers'" class="w-4 h-4" />
+              </div>
+
+              <!-- Children Fold Toggle if has children -->
+              <button
+                v-if="hasConnectedChildren(node.id)"
+                @click.stop="toggleFoldChildren(node.id)"
+                class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer flex items-center gap-1"
+                :title="isChildrenFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'مخفی‌سازی زیرشاخه‌ها'"
+              >
+                <Icon :name="isChildrenFolded(node.id) ? 'mdi:eye-outline' : 'mdi:eye-off-outline'" class="w-3 h-3" />
+                <span>{{ isChildrenFolded(node.id) ? '+' : '-' }}</span>
+              </button>
+            </div>
+
+            <div class="my-auto space-y-0.5">
+              <h3 class="font-black text-slate-900 text-sm tracking-tight">
                 {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
               </h3>
-              <p class="text-[9px] sm:text-[10px] text-slate-500 font-mono truncate" dir="ltr">
-                {{ node.path || `/${node.slug}` }}
-              </p>
+              <p class="text-[10px] text-slate-500 font-mono truncate" dir="ltr">{{ node.path }}</p>
             </div>
 
-            <!-- Card Footer -->
-            <div class="mt-2 pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[9px] sm:text-[10px]">
-              <span class="flex items-center gap-1 font-bold text-emerald-800">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>همگام PB</span>
-              </span>
-
-              <span class="font-mono text-slate-400 font-bold">
-                {{ getKeyCount(node) }} فیلد
-              </span>
-            </div>
-
-            <!-- MOBILE / TAP QUICK ACTIONS PILL (On Selected) -->
-            <div
-              v-if="selectedNode?.id === node.id"
-              @click.stop
-              class="absolute -top-3 -right-2 flex sm:hidden items-center gap-1 bg-white/98 backdrop-blur-md p-1 rounded-2xl shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in duration-150"
-            >
+            <div class="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px]">
+              <span class="text-slate-400 font-mono font-bold">{{ getKeyCount(node) }} فیلد</span>
               <button
                 @click.stop="openProJsonStudio(node, 'content-studio')"
-                class="w-7 h-7 rounded-xl bg-emerald-800 text-white flex items-center justify-center shadow-xs"
+                class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-emerald-800 text-slate-700 hover:text-white font-bold text-[10px] transition cursor-pointer"
               >
-                <Icon name="mdi:pencil-outline" class="w-3.5 h-3.5" />
+                ویرایش
               </button>
-              <button
-                @click.stop="openProJsonStudio(node, 'media')"
-                class="w-7 h-7 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs"
-              >
-                <Icon name="mdi:image-outline" class="w-3.5 h-3.5" />
-              </button>
-              <button
-                @click.stop="openProJsonStudio(node, 'vanilla-editor')"
-                class="w-7 h-7 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-xs"
-              >
-                <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-              </button>
+            </div>
+          </div>
+
+          <!-- 3. COMPACT SATELLITE NODE (135px × 70px - Lightweight Pill) -->
+          <div
+            v-else
+            class="relative rounded-2xl p-2.5 flex items-center gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
+            :style="{ width: '145px', minHeight: '65px' }"
+            :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500' : ''"
+          >
+            <div
+              class="w-7 h-7 rounded-xl flex items-center justify-center text-white shadow-2xs shrink-0"
+              :style="{ backgroundColor: node.accentColor || '#64748b' }"
+            >
+              <Icon :name="node.icon || 'mdi:file-document-outline'" class="w-3.5 h-3.5" />
+            </div>
+
+            <div class="overflow-hidden space-y-0.5 flex-1">
+              <h4 class="font-extrabold text-slate-900 text-xs truncate">
+                {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
+              </h4>
+              <span class="text-[9px] font-mono text-slate-400 block truncate" dir="ltr">{{ node.path }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 100/100 MULTI-PACKAGE LIGHT JSON SCHEMA STUDIO -->
+    <!-- 100/100 LIGHT MULTI-ENGINE STUDIO -->
     <transition name="fade">
       <div
         v-if="showJsonStudio"
@@ -293,7 +304,7 @@
                 <Icon name="mdi:layers-outline" class="w-4 h-4" />
               </div>
               <div class="flex items-center gap-1.5">
-                <h3 class="font-extrabold text-slate-900 text-xs truncate max-w-[120px] sm:max-w-none">
+                <h3 class="font-extrabold text-slate-900 text-xs truncate max-w-[140px] sm:max-w-none">
                   {{ activeStudioNode?.liveData?.titleFa || activeStudioNode?.titleFa || 'تنظیم صفحه' }}
                 </h3>
                 <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono font-bold" dir="ltr">
@@ -302,7 +313,7 @@
               </div>
             </div>
 
-            <!-- Unified 3-Engine Switcher -->
+            <!-- Engine Switcher -->
             <div class="flex items-center gap-1.5">
               <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
                 <button
@@ -315,12 +326,12 @@
                 </button>
 
                 <button
-                  @click="studioEngine = 'vanilla-editor'"
+                  @click="studioEngine = 'vue-json-studio'"
                   class="px-2.5 sm:px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
-                  :class="studioEngine === 'vanilla-editor' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                  :class="studioEngine === 'vue-json-studio' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-                  <span>JSON</span>
+                  <span>JSON استودیو</span>
                 </button>
 
                 <button
@@ -361,10 +372,11 @@
             />
           </div>
 
-          <div v-else-if="studioEngine === 'vanilla-editor'" class="flex-1 bg-white overflow-hidden">
-            <VanillaJsonEditor
+          <!-- New Pro Vue JSON Studio -->
+          <div v-else-if="studioEngine === 'vue-json-studio'" class="flex-1 bg-white overflow-hidden">
+            <VueJsonStudio
               v-model="currentWorkingSchema"
-              @change="onVanillaEditorChange"
+              @change="onContentStudioChange"
             />
           </div>
 
@@ -449,7 +461,7 @@
 import { ref, computed, onMounted, watchEffect, onUnmounted } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 import JsonTreeRow from '~/components/dashboard/JsonTreeRow.vue'
-import VanillaJsonEditor from '~/components/dashboard/VanillaJsonEditor.vue'
+import VueJsonStudio from '~/components/dashboard/VueJsonStudio.vue'
 import LocalizedContentStudio from '~/components/dashboard/LocalizedContentStudio.vue'
 
 definePageMeta({
@@ -464,11 +476,9 @@ const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
-const recentNodeClicks = ref<string[]>([])
 
-// 1-Tap Group Visibility Toggles
-const activeGroups = ref<string[]>(['core', 'products', 'services', 'history', 'system'])
-
+// Group Selection
+const selectedGroup = ref<string>('all')
 const groupToggles = [
   { id: 'core', label: 'اصلی', icon: '🌟' },
   { id: 'products', label: 'محصولات', icon: '📦' },
@@ -476,18 +486,6 @@ const groupToggles = [
   { id: 'history', label: 'تاریخچه', icon: '🏛️' },
   { id: 'system', label: 'سیستم', icon: '🔧' }
 ]
-
-function toggleGroup(groupId: string) {
-  if (activeGroups.value.includes(groupId)) {
-    if (activeGroups.value.length > 1) {
-      activeGroups.value = activeGroups.value.filter(id => id !== groupId)
-    }
-  } else {
-    activeGroups.value.push(groupId)
-  }
-  // Smoothly re-center remaining visible nodes
-  setTimeout(autoFitAndCenter, 50)
-}
 
 function getNodeGroup(node: any) {
   if (node.id === 'pb-home' || node.id === 'pb-about' || node.id === 'pb-contact') return 'core'
@@ -497,27 +495,44 @@ function getNodeGroup(node: any) {
   return 'system'
 }
 
+// Subtree Branch Folding State
+const foldedBranches = ref<Set<string>>(new Set())
+
+function isChildrenFolded(nodeId: string) {
+  return foldedBranches.value.has(nodeId)
+}
+
+function toggleFoldChildren(nodeId: string) {
+  if (foldedBranches.value.has(nodeId)) {
+    foldedBranches.value.delete(nodeId)
+  } else {
+    foldedBranches.value.add(nodeId)
+  }
+}
+
+function hasConnectedChildren(nodeId: string) {
+  return edges.some(e => e.from === nodeId)
+}
+
 // Stage Dimensions & Auto-Fit
-const stageBaseWidth = 1080
-const stageBaseHeight = 700
+const stageBaseWidth = 1100
+const stageBaseHeight = 720
 const clusterFitScale = ref(1)
 
 // Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
 const activeStudioNode = ref<any | null>(null)
-const studioEngine = ref<'content-studio' | 'vanilla-editor' | 'visual-rows'>('content-studio')
+const studioEngine = ref<'content-studio' | 'vue-json-studio' | 'visual-rows'>('content-studio')
 const originalBaselineSchema = ref<Record<string, any>>({})
 const currentWorkingSchema = ref<Record<string, any>>({})
 const isStudioSaving = ref(false)
 
-function openProJsonStudio(node: any, engine: 'content-studio' | 'vanilla-editor' | 'visual-rows' | 'media' = 'content-studio') {
+function openProJsonStudio(node: any, engine: 'content-studio' | 'vue-json-studio' | 'visual-rows' = 'content-studio') {
   activeStudioNode.value = node
-  recordNodeUsage(node.id)
-
   const schemaSnapshot = JSON.parse(JSON.stringify(node.liveData?.rawUiData || { titleFa: node.titleFa, titleEn: node.titleEn }))
   originalBaselineSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
   currentWorkingSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
-  studioEngine.value = engine === 'media' ? 'content-studio' : engine
+  studioEngine.value = engine
   showJsonStudio.value = true
 }
 
@@ -526,16 +541,7 @@ function handleNodeClick(node: any) {
     selectedNode.value = null
   } else {
     selectedNode.value = node
-    recordNodeUsage(node.id)
   }
-}
-
-function recordNodeUsage(nodeId: string) {
-  recentNodeClicks.value = [nodeId, ...recentNodeClicks.value.filter(id => id !== nodeId)].slice(0, 5)
-}
-
-function isRecentlyUsed(nodeId: string) {
-  return recentNodeClicks.value.includes(nodeId)
 }
 
 const schemaKeys = computed(() => {
@@ -548,10 +554,6 @@ const hasAnyModifications = computed(() => {
 
 function onContentStudioChange(newVal: any) {
   currentWorkingSchema.value = newVal
-}
-
-function onVanillaEditorChange(newJson: any) {
-  currentWorkingSchema.value = newJson
 }
 
 function setNestedValue(obj: any, path: (string | number)[], value: any) {
@@ -630,57 +632,14 @@ const waterfallRequests = ref<any[]>([
   { id: '1', method: 'GET', endpoint: '/api/admin/sitemap', status: 200, durationMs: 12 }
 ])
 
-// Sizing & Semi-3D Calculations (Desktop & Mobile Friendly)
 function getKeyCount(node: any) {
   const ui = node.liveData?.rawUiData || {}
   return Object.keys(ui).length || 3
 }
 
-function getNodeWidth(node: any) {
-  if (typeof window !== 'undefined' && window.innerWidth < 640) {
-    if (node.type === 'nucleus') return 175
-    if (node.type === 'pillar') return 155
-    return 140
-  }
-  if (node.type === 'nucleus') return 205
-  if (node.type === 'pillar') return 180
-  return 160
-}
-
-function getNodeHeight(node: any) {
-  if (typeof window !== 'undefined' && window.innerWidth < 640) {
-    if (node.type === 'nucleus') return 110
-    if (node.type === 'pillar') return 100
-    return 85
-  }
-  if (node.type === 'nucleus') return 125
-  if (node.type === 'pillar') return 110
-  return 92
-}
-
 function getNodeScale(node: any) {
-  let scale = 1.0
-  if (node.type === 'nucleus') scale = 1.10
-  if (selectedNode.value?.id === node.id) scale *= 1.06
-  if (isRecentlyUsed(node.id)) scale *= 1.04
-  return scale
-}
-
-function getNodeBackground(node: any) {
-  if (node.type === 'nucleus') {
-    return 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
-  }
-  return 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-}
-
-function getNodeShadow(node: any) {
-  if (selectedNode.value?.id === node.id) {
-    return '0 20px 40px -10px rgba(1, 135, 134, 0.22), 0 6px 14px -3px rgba(0, 0, 0, 0.06)'
-  }
-  if (hoveredNodeId.value === node.id) {
-    return '0 18px 32px -8px rgba(15, 23, 42, 0.12), 0 5px 10px -2px rgba(0, 0, 0, 0.05)'
-  }
-  return '0 10px 24px -6px rgba(15, 23, 42, 0.06), 0 3px 6px -2px rgba(0, 0, 0, 0.03)'
+  if (selectedNode.value?.id === node.id) return 1.05
+  return 1.0
 }
 
 // 3D Perspective Tilt on Mouse Movement
@@ -691,22 +650,13 @@ function handleGlobalMouseMove(e: MouseEvent) {
   mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
-  // Neighbor Magnetic Push
   if (isDraggingNodeId.value) {
     const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
-      for (const other of dynamicNodesState.value) {
-        if (other.id !== dragged.id) {
-          const dx = other.currentX - dragged.currentX
-          const dy = other.currentY - dragged.currentY
-          const dist = Math.hypot(dx, dy)
-          const minDist = 170
-          if (dist < minDist && dist > 0) {
-            const push = (minDist - dist) * 0.12
-            other.currentX += (dx / dist) * push
-            other.currentY += (dy / dist) * push
-          }
-        }
+      const rect = canvasStageRef.value?.getBoundingClientRect()
+      if (rect) {
+        dragged.currentX = (e.clientX - rect.left - dragOffsetX) / clusterFitScale.value
+        dragged.currentY = (e.clientY - rect.top - dragOffsetY) / clusterFitScale.value
       }
     }
   }
@@ -729,24 +679,24 @@ const dynamicNodesState = ref<any[]>([])
 
 // COMPACT CENTROID CLUSTER POSITIONS
 const defaultClusterPositions: Record<string, { x: number, y: number }> = {
-  'pb-home': { x: 540, y: 350 },
-  'pb-about': { x: 340, y: 220 },
-  'pb-products': { x: 740, y: 220 },
-  'pb-services': { x: 740, y: 480 },
-  'pb-history': { x: 340, y: 480 },
-  'pb-contact': { x: 540, y: 160 },
-  'pb-catalog': { x: 920, y: 190 },
-  'pb-faq': { x: 920, y: 510 },
-  'pb-blog': { x: 160, y: 510 },
-  'pb-login': { x: 160, y: 190 },
-  'pb-menu': { x: 540, y: 540 },
-  'pb-footer': { x: 350, y: 610 }
+  'pb-home': { x: 550, y: 360 },
+  'pb-about': { x: 310, y: 200 },
+  'pb-products': { x: 790, y: 200 },
+  'pb-services': { x: 790, y: 520 },
+  'pb-history': { x: 310, y: 520 },
+  'pb-contact': { x: 550, y: 130 },
+  'pb-catalog': { x: 990, y: 160 },
+  'pb-faq': { x: 990, y: 560 },
+  'pb-blog': { x: 110, y: 560 },
+  'pb-login': { x: 110, y: 160 },
+  'pb-menu': { x: 550, y: 590 },
+  'pb-footer': { x: 320, y: 660 }
 }
 
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
     dynamicNodesState.value = sitemapApiData.value.nodes.map((n: any) => {
-      const pos = defaultClusterPositions[n.id] || { x: 540, y: 350 }
+      const pos = defaultClusterPositions[n.id] || { x: 550, y: 360 }
       return {
         ...n,
         currentX: pos.x,
@@ -755,18 +705,28 @@ watchEffect(() => {
         initialY: pos.y
       }
     })
-    autoFitAndCenter()
+    autoFitConstellation()
   }
 })
 
 const nodes = computed(() => dynamicNodesState.value)
 
+function resetNodePositions() {
+  for (const n of dynamicNodesState.value) {
+    n.currentX = n.initialX
+    n.currentY = n.initialY
+  }
+  autoFitConstellation()
+}
+
 async function refreshSitemap() {
   await refreshSitemapApi()
 }
 
-// Smart Auto-Fit & Dynamic Centroid Re-Centering
-function autoFitAndCenter() {
+const canvasStageRef = ref<HTMLElement | null>(null)
+
+// Auto-Fit Viewport
+function autoFitConstellation() {
   if (typeof window === 'undefined') return
   const availableWidth = window.innerWidth - 30
   const availableHeight = window.innerHeight - 80
@@ -774,27 +734,34 @@ function autoFitAndCenter() {
   const scaleX = availableWidth / stageBaseWidth
   const scaleY = availableHeight / stageBaseHeight
   const isMobile = window.innerWidth < 640
-  clusterFitScale.value = isMobile ? Math.min(0.82, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
+  clusterFitScale.value = isMobile ? Math.min(0.85, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
 }
 
-// Physics Dragging & Neighbor Push
+// FREE PERSISTENT DRAGGING
 const isDraggingNodeId = ref<string | null>(null)
+let dragOffsetX = 0
+let dragOffsetY = 0
 
 function startNodeDrag(e: MouseEvent, node: any) {
   isDraggingNodeId.value = node.id
+  const rect = canvasStageRef.value?.getBoundingClientRect()
+  if (rect) {
+    dragOffsetX = e.clientX - rect.left - node.currentX * clusterFitScale.value
+    dragOffsetY = e.clientY - rect.top - node.currentY * clusterFitScale.value
+  }
 }
 
 function startNodeTouchDrag(e: TouchEvent, node: any) {
   isDraggingNodeId.value = node.id
+  const touch = e.touches[0]
+  const rect = canvasStageRef.value?.getBoundingClientRect()
+  if (rect && touch) {
+    dragOffsetX = touch.clientX - rect.left - node.currentX * clusterFitScale.value
+    dragOffsetY = touch.clientY - rect.top - node.currentY * clusterFitScale.value
+  }
 }
 
 function stopNodeDrag() {
-  if (isDraggingNodeId.value) {
-    for (const n of dynamicNodesState.value) {
-      n.currentX = n.initialX
-      n.currentY = n.initialY
-    }
-  }
   isDraggingNodeId.value = null
 }
 
@@ -814,8 +781,16 @@ const edges = [
 
 const visibleNodes = computed(() => {
   return nodes.value.filter((n: any) => {
-    const grp = getNodeGroup(n)
-    if (!activeGroups.value.includes(grp)) return false
+    // Check if folded by parent
+    for (const parentId of foldedBranches.value) {
+      const isChild = edges.some(e => e.from === parentId && e.to === n.id)
+      if (isChild) return false
+    }
+
+    if (selectedGroup.value !== 'all') {
+      const grp = getNodeGroup(n)
+      if (grp !== selectedGroup.value && n.type !== 'nucleus') return false
+    }
 
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase()
@@ -860,15 +835,15 @@ function getEdgePath(edge: any) {
 }
 
 onMounted(() => {
-  autoFitAndCenter()
+  autoFitConstellation()
   if (typeof window !== 'undefined') {
-    window.addEventListener('resize', autoFitAndCenter)
+    window.addEventListener('resize', autoFitConstellation)
   }
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', autoFitAndCenter)
+    window.removeEventListener('resize', autoFitConstellation)
   }
 })
 </script>
