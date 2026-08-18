@@ -223,8 +223,7 @@ import { ref, computed } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
-  layout: 'admin',
-  middleware: 'auth'
+  layout: 'dashboard',
 })
 
 const { language } = useLocale()
