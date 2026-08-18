@@ -1,7 +1,7 @@
 <!-- components/dashboard/VanillaJsonEditor.vue -->
 <template>
-  <div class="w-full h-full flex flex-col overflow-hidden bg-[#1e293b] rounded-2xl border border-slate-700 select-text">
-    <div ref="editorContainerRef" class="w-full h-full jse-theme-dark"></div>
+  <div class="w-full h-full flex flex-col overflow-hidden bg-[#0A0E17] select-text">
+    <div ref="editorContainerRef" class="w-full h-full jse-theme-butter"></div>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ onMounted(async () => {
         readOnly: props.readOnly || false,
         mainMenuBar: true,
         navigationBar: true,
-        statusBar: true,
+        statusBar: false,
         askToFormat: true,
         onChange: (updatedContent: any) => {
           let updatedJson: any = null
@@ -46,7 +46,6 @@ onMounted(async () => {
             try {
               updatedJson = JSON.parse(updatedContent.text)
             } catch (e) {
-              // Syntax error while typing in text mode
               return
             }
           }
@@ -86,23 +85,46 @@ onBeforeUnmount(() => {
 </script>
 
 <style>
-/* Dark theme customization for vanilla-jsoneditor */
-.jse-theme-dark {
+/* Butter Theme: Monolithic, Seamless, Borderless Linear Dark Aesthetic */
+.jse-theme-butter {
   --jse-theme-color: #018786;
   --jse-theme-color-highlight: #00bfa5;
-  --jse-background-color: #0b0f19;
-  --jse-panel-background: #0f172a;
-  --jse-main-border: 1px solid #1e293b;
+  --jse-background-color: #070a12;
+  --jse-panel-background: #0d121f;
+  --jse-main-border: none;
   --jse-text-color: #e2e8f0;
   --jse-key-color: #38bdf8;
   --jse-value-color-number: #fb923c;
-  --jse-value-color-boolean: #a855f7;
+  --jse-value-color-boolean: #c084fc;
   --jse-value-color-string: #34d399;
   --jse-value-color-null: #f43f5e;
+  --jse-menu-background: #0d121f;
+  --jse-menu-button-background: transparent;
+  --jse-menu-button-background-hover: rgba(255, 255, 255, 0.06);
+  --jse-selection-background-color: rgba(1, 135, 134, 0.25);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 11.5px !important;
   height: 100%;
 }
-.jse-main {
+
+.jse-theme-butter .jse-main {
   border: none !important;
-  border-radius: 0.75rem;
+  box-shadow: none !important;
+}
+
+.jse-theme-butter .jse-menu {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 4px 8px !important;
+}
+
+.jse-theme-butter .jse-navigation-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.04) !important;
+  background: #070a12 !important;
+  color: #64748b !important;
+}
+
+.jse-theme-butter .jse-tree-mode,
+.jse-theme-butter .jse-text-mode {
+  background: #070a12 !important;
 }
 </style>

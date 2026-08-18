@@ -1,42 +1,43 @@
 <!-- components/dashboard/JsonLogViewer.vue -->
 <template>
-  <div class="w-full h-full flex flex-col font-mono text-xs select-text overflow-hidden">
-    <!-- Top Log Action Bar -->
-    <div class="h-9 px-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none text-[11px]">
+  <div class="w-full h-full flex flex-col font-mono text-xs select-text overflow-hidden bg-[#070a12]">
+    <!-- Top Minimalist Bar (Borderless) -->
+    <div class="h-8 px-3 bg-[#0d121f] border-b border-white/[0.05] flex items-center justify-between shrink-0 select-none text-[11px]">
       <div class="flex items-center gap-2">
-        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-[10px] font-bold">
-          {{ isArray ? `Array [${rootKeys.length}]` : `Object {${rootKeys.length} keys}` }}
+        <span class="text-slate-400 text-[10px]">
+          {{ isArray ? `Array [${rootKeys.length}]` : `Object {${rootKeys.length}}` }}
         </span>
+        <span class="text-slate-600 text-[10px]">•</span>
         <span class="text-slate-500 text-[10px]">{{ jsonSize }}</span>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5">
         <button
           @click="toggleAll(true)"
-          class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold transition cursor-pointer"
+          class="px-2 py-0.5 rounded text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] text-[10px] transition cursor-pointer"
         >
-          گسترش همه (Expand All)
+          گسترش همه
         </button>
         <button
           @click="toggleAll(false)"
-          class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold transition cursor-pointer"
+          class="px-2 py-0.5 rounded text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] text-[10px] transition cursor-pointer"
         >
-          بستن همه (Collapse)
+          بستن همه
         </button>
         <button
           @click="copyJson"
-          class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[10px] font-bold transition cursor-pointer flex items-center gap-1"
+          class="px-2 py-0.5 rounded text-emerald-400 hover:bg-white/[0.04] text-[10px] transition cursor-pointer flex items-center gap-1"
         >
           <Icon name="mdi:content-copy" class="w-3 h-3" />
-          <span>{{ copied ? 'کپی شد!' : 'کپی' }}</span>
+          <span>{{ copied ? 'کپی شد' : 'کپی' }}</span>
         </button>
       </div>
     </div>
 
-    <!-- Collapsible Tree Stream -->
-    <div class="flex-1 p-3 overflow-y-auto space-y-1 bg-slate-950/90 text-left ltr selection:bg-emerald-800 selection:text-white">
-      <div v-if="!data || rootKeys.length === 0" class="text-slate-500 py-4 text-center">
-        Empty payload (null or {})
+    <!-- Butter Tree Stream (Borderless, seamless) -->
+    <div class="flex-1 p-3 overflow-y-auto space-y-0.5 bg-[#070a12] text-left ltr selection:bg-emerald-800 selection:text-white">
+      <div v-if="!data || rootKeys.length === 0" class="text-slate-600 py-4 text-center">
+        (empty)
       </div>
 
       <JsonTreeNode

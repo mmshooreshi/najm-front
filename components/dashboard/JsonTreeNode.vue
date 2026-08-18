@@ -3,12 +3,11 @@
   <div class="font-mono text-[11px] leading-relaxed select-text">
     <!-- 1. CONTAINER NODE (Object or Array) -->
     <div v-if="isContainer" class="space-y-0.5">
-      <!-- Container Header / Toggle -->
+      <!-- Container Header -->
       <div
         @click="isOpen = !isOpen"
-        class="inline-flex items-center gap-1.5 py-0.5 px-1 rounded hover:bg-slate-800/80 cursor-pointer group select-none transition-colors"
+        class="inline-flex items-center gap-1.5 py-0.5 px-1 rounded hover:bg-white/[0.04] cursor-pointer group select-none transition-colors"
       >
-        <!-- Arrow Indicator -->
         <span
           class="w-3.5 h-3.5 flex items-center justify-center text-slate-500 group-hover:text-emerald-400 transition-transform duration-100 text-[9px]"
           :class="isOpen ? 'rotate-90 text-slate-400' : ''"
@@ -17,21 +16,21 @@
         </span>
 
         <!-- Key Name -->
-        <span class="text-sky-300 font-bold group-hover:text-sky-200">{{ keyName }}:</span>
+        <span class="text-sky-300/90 font-medium group-hover:text-sky-200">{{ keyName }}:</span>
 
-        <!-- Collapsed vs Expanded Bracket Preview -->
-        <span v-if="!isOpen" class="text-slate-400 bg-slate-900 px-1.5 py-0.2 rounded border border-slate-800 text-[10px]">
-          {{ isArray ? `Array(${childKeys.length}) [...]` : `Object{${childKeys.length}} {...}` }}
+        <!-- Preview when collapsed -->
+        <span v-if="!isOpen" class="text-slate-500 text-[10px]">
+          {{ isArray ? `[... ${childKeys.length}]` : `{... ${childKeys.length}}` }}
         </span>
         <span v-else class="text-slate-500 font-bold">
           {{ isArray ? '[' : '{' }}
         </span>
       </div>
 
-      <!-- Nested Children (When Open) -->
+      <!-- Nested Children -->
       <div
         v-if="isOpen"
-        class="pl-4 ml-1.5 border-l border-slate-800/80 space-y-0.5 py-0.5"
+        class="pl-3.5 ml-1.5 border-l border-white/[0.06] space-y-0.5 py-0.5"
       >
         <JsonTreeNode
           v-for="ck in childKeys"
@@ -43,42 +42,31 @@
         />
       </div>
 
-      <!-- Closing Bracket -->
-      <div v-if="isOpen" class="text-slate-500 pl-4 text-[10px]">
+      <div v-if="isOpen" class="text-slate-600 pl-3.5 text-[10px]">
         {{ isArray ? ']' : '}' }}
       </div>
     </div>
 
-    <!-- 2. PRIMITIVE LEAF NODE (String, Number, Boolean, Null) -->
+    <!-- 2. PRIMITIVE LEAF NODE -->
     <div
       v-else
-      class="flex items-center gap-1.5 py-0.5 px-1 rounded hover:bg-slate-800/50 group"
+      class="flex items-center gap-1.5 py-0.5 px-1 rounded hover:bg-white/[0.03] group"
     >
       <span class="w-3.5"></span>
-      <!-- Key Name -->
-      <span class="text-sky-300/90 font-medium">{{ keyName }}:</span>
+      <span class="text-sky-300/80 font-medium">{{ keyName }}:</span>
 
-      <!-- String Value -->
       <span v-if="valueType === 'string'" class="text-emerald-300 whitespace-pre-wrap break-all">
         "{{ val }}"
       </span>
-
-      <!-- Number Value -->
       <span v-else-if="valueType === 'number'" class="text-orange-400 font-bold">
         {{ val }}
       </span>
-
-      <!-- Boolean Value -->
-      <span v-else-if="valueType === 'boolean'" class="text-purple-400 font-extrabold">
+      <span v-else-if="valueType === 'boolean'" class="text-purple-400 font-bold">
         {{ val }}
       </span>
-
-      <!-- Null Value -->
       <span v-else-if="valueType === 'null'" class="text-rose-400 font-bold italic">
         null
       </span>
-
-      <!-- Fallback -->
       <span v-else class="text-slate-300">
         {{ String(val) }}
       </span>

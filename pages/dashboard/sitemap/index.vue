@@ -31,9 +31,9 @@
 
         <!-- Compact Telemetry Status -->
         <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xs whitespace-nowrap">
-          <div class="flex items-center gap-1 text-emerald-800 font-bold">
+          <div class="flex items-center gap-1.5 text-emerald-800 font-bold">
             <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
-            <span class="font-mono">{{ backendSyncedCount }} PB (100% Live)</span>
+            <span class="font-mono">{{ backendSyncedCount }} PB</span>
           </div>
         </div>
       </div>
@@ -127,14 +127,12 @@
       >
         <!-- VECTOR SVG CONNECTION ARCS -->
         <svg class="absolute inset-0 w-[4200px] h-[3000px] pointer-events-none z-10 overflow-visible">
-          <!-- Concentric Orbital Rings -->
           <g opacity="0.12">
             <circle cx="1800" cy="1300" r="320" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 6" />
             <circle cx="1800" cy="1300" r="620" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="8 8" />
             <circle cx="1800" cy="1300" r="950" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="10 10" />
           </g>
 
-          <!-- Dynamic Bezier Paths -->
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <path
               :d="getEdgePath(edge)"
@@ -194,7 +192,7 @@
               <Icon :name="node.icon" class="w-4 h-4" />
             </div>
 
-            <span class="text-[8px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">LIVE PB HUB</span>
+            <span class="text-[8px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">LIVE PB</span>
             <h2 class="text-[11px] font-extrabold text-slate-900 text-d4 truncate max-w-[105px] whitespace-nowrap text-center">
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h2>
@@ -267,7 +265,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2">
               <div class="flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span class="font-bold text-[10px] text-slate-800 text-d4">تنظیم گره دیتابیس ({{ selectedNode.slug }})</span>
+                <span class="font-bold text-[10px] text-slate-800 text-d4">تنظیم سریع ({{ selectedNode.slug }})</span>
               </div>
               <button
                 @click.stop="selectedNode = null"
@@ -304,7 +302,7 @@
                 class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
               >
                 <Icon name="mdi:code-json" class="w-3.5 h-3.5 text-emerald-400" />
-                <span>ویرایشگر JSON حرفه‌ای</span>
+                <span>استودیو اسکیما JSON</span>
               </button>
 
               <button
@@ -321,112 +319,85 @@
       </div>
     </div>
 
-    <!-- 100/100 MULTI-PACKAGE JSON SCHEMA STUDIO -->
+    <!-- BUTTER-SMOOTH MONOLITHIC JSON STUDIO -->
     <transition name="fade">
       <div
         v-if="showJsonStudio"
-        class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 select-text"
+        class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-2 sm:p-4 select-text"
       >
-        <div class="bg-slate-950 text-slate-100 rounded-3xl border border-slate-800 shadow-2xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden font-mono text-xs">
-          <!-- Studio Header Bar -->
-          <div class="h-14 px-5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
-                <Icon name="mdi:layers-triple-outline" class="w-4.5 h-4.5" />
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-200 text-sm">PRO JSON STUDIO</span>
-                  <span class="px-2 py-0.2 rounded bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800">
-                    {{ activeStudioNode?.slug || activeStudioNode?.id }}
-                  </span>
-                  <!-- Yellow Modified Diff Status -->
-                  <span
-                    v-if="hasAnyModifications"
-                    class="px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/60 text-[10px] font-bold animate-pulse"
-                  >
-                    ⚠️ تغییرات زرد
-                  </span>
-                </div>
-                <span class="text-[10px] text-slate-500">vanilla-jsoneditor & Interactive Visual Schema Tree</span>
-              </div>
+        <div class="bg-[#070a12] text-slate-100 rounded-2xl border border-white/[0.08] shadow-[0_30px_90px_rgba(0,0,0,0.8)] w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden font-mono text-xs">
+          <!-- Studio Header Bar (Whisper-thin divider) -->
+          <div class="h-12 px-4 bg-[#0d121f] border-b border-white/[0.05] flex items-center justify-between shrink-0 select-none">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="font-bold text-slate-200 text-xs">JSON SCHEMA STUDIO</span>
+              <span class="text-slate-600">•</span>
+              <span class="text-emerald-400 font-mono text-[11px] font-bold">
+                {{ activeStudioNode?.slug }}
+              </span>
+              <span
+                v-if="hasAnyModifications"
+                class="text-amber-400 text-[10px] font-bold"
+              >
+                (تغییرات زرد)
+              </span>
             </div>
 
-            <!-- Multiple JSON Editor Engines Switcher -->
+            <!-- Multi-Engine & Actions -->
             <div class="flex items-center gap-2">
-              <div class="flex items-center bg-slate-800 p-0.5 rounded-xl text-[11px] font-bold">
-                <!-- Package 1: vanilla-jsoneditor (Jos de Jong) -->
+              <div class="flex items-center bg-white/[0.04] p-0.5 rounded-lg text-[11px]">
                 <button
                   @click="studioEngine = 'vanilla-editor'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
-                  :class="studioEngine === 'vanilla-editor' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1"
+                  :class="studioEngine === 'vanilla-editor' ? 'bg-white/[0.08] text-emerald-400' : 'text-slate-400 hover:text-slate-200'"
                 >
-                  <Icon name="mdi:flash-outline" class="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Vanilla JSON Editor (Jos de Jong)</span>
+                  <span>Vanilla Editor</span>
                 </button>
-
-                <!-- Engine 2: Visual Rows with Yellow Highlights & Undo -->
                 <button
                   @click="studioEngine = 'visual-rows'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
-                  :class="studioEngine === 'visual-rows' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1"
+                  :class="studioEngine === 'visual-rows' ? 'bg-white/[0.08] text-emerald-400' : 'text-slate-400 hover:text-slate-200'"
                 >
-                  <Icon name="mdi:format-list-bulleted" class="w-3.5 h-3.5" />
-                  <span>ردیف‌های هوشمند (Diff زرد)</span>
+                  <span>ردیف‌های هوشمند</span>
                 </button>
               </div>
 
-              <!-- Undo All Button -->
+              <!-- Undo All -->
               <button
                 v-if="hasAnyModifications"
                 @click="undoAllChanges"
-                class="px-3 py-1.5 rounded-xl bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-700/80 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-                title="بازگردانی تمام مقادیر به نسخه سرور"
+                class="px-2.5 py-1 rounded-lg text-amber-300 hover:bg-white/[0.04] text-[11px] transition cursor-pointer"
+                title="بازگردانی به نسخه اصلی"
               >
-                <span>↩️ بازگردانی</span>
+                ↩ بازگردانی
               </button>
 
               <button
                 @click="copyStudioJson"
-                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold transition cursor-pointer"
+                class="px-2.5 py-1 rounded-lg text-slate-300 hover:bg-white/[0.04] text-[11px] transition cursor-pointer"
               >
-                {{ studioCopied ? 'کپی شد!' : 'کپی JSON' }}
+                {{ studioCopied ? 'کپی شد' : 'کپی' }}
               </button>
 
               <button
                 @click="showJsonStudio = false"
-                class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white cursor-pointer ml-1"
+                class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] cursor-pointer"
               >
                 <Icon name="mdi:close" class="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <!-- Diff & Yellow Alert Info Bar -->
-          <div class="px-5 py-2 bg-slate-900/60 border-b border-slate-800 flex items-center justify-between text-[11px] select-none">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-slate-300">
-                پکیج رسمی <strong class="text-emerald-300">vanilla-jsoneditor</strong> فعال است. دارای حالت‌های Tree، Table، Text، جستجو و تبدیل JMESPath.
-              </span>
-            </div>
-            <div class="flex items-center gap-2 text-slate-500 text-[10px]">
-              <span>Collection: pages</span>
-              <span>•</span>
-              <span class="font-mono">Server: 65.108.80.205:8090</span>
-            </div>
-          </div>
-
-          <!-- ENGINE 1: BATTLE-TESTED vanilla-jsoneditor (Jos de Jong) -->
-          <div v-if="studioEngine === 'vanilla-editor'" class="flex-1 p-3 bg-slate-950 overflow-hidden">
+          <!-- ENGINE 1: vanilla-jsoneditor (Jos de Jong) -->
+          <div v-if="studioEngine === 'vanilla-editor'" class="flex-1 bg-[#070a12] overflow-hidden">
             <VanillaJsonEditor
               v-model="currentWorkingSchema"
               @change="onVanillaEditorChange"
             />
           </div>
 
-          <!-- ENGINE 2: INTERACTIVE VISUAL ROWS WITH YELLOW DIFFS & UNDO -->
-          <div v-else class="flex-1 p-4 overflow-y-auto space-y-2 bg-slate-950">
+          <!-- ENGINE 2: BUTTERY SMOOTH STREAMLINE ROWS -->
+          <div v-else class="flex-1 p-3 overflow-y-auto space-y-0.5 bg-[#070a12]">
             <JsonTreeRow
               v-for="k in schemaKeys"
               :key="k"
@@ -439,23 +410,21 @@
             />
           </div>
 
-          <!-- Studio Footer with Save to PocketBase -->
-          <div class="h-14 px-5 bg-slate-900 border-t border-slate-800 flex items-center justify-between shrink-0 select-none">
+          <!-- Studio Footer with 1-Click Save to PocketBase -->
+          <div class="h-12 px-4 bg-[#0d121f] border-t border-white/[0.05] flex items-center justify-between shrink-0 select-none">
             <div class="flex items-center gap-2">
-              <span v-if="hasAnyModifications" class="text-amber-400 text-xs font-bold flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
-                <span>تغییرات آماده انتشار در پایگاه داده است</span>
+              <span v-if="hasAnyModifications" class="text-amber-400 text-[11px]">
+                تغییرات ذخیره‌نشده در دیتابیس
               </span>
-              <span v-else class="text-emerald-400 text-xs font-bold flex items-center gap-1">
-                <Icon name="mdi:check-circle" class="w-3.5 h-3.5" />
-                <span>داده‌ها همگام با دیتابیس PocketBase هستند</span>
+              <span v-else class="text-emerald-400 text-[11px]">
+                همگام با PocketBase (65.108.80.205)
               </span>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
               <button
                 @click="showJsonStudio = false"
-                class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition cursor-pointer"
+                class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] text-xs transition cursor-pointer"
               >
                 بستن
               </button>
@@ -463,10 +432,10 @@
               <button
                 @click="saveWorkingSchemaToPocketBase"
                 :disabled="isStudioSaving"
-                class="px-6 py-2 rounded-xl bg-[#018786] hover:bg-emerald-700 text-white font-extrabold text-xs transition flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
+                class="px-4 py-1.5 rounded-lg bg-[#018786] hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-md"
               >
-                <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-4 h-4" :class="isStudioSaving ? 'animate-spin' : ''" />
-                <span>{{ isStudioSaving ? 'در حال ذخیره در دیتابیس...' : 'ذخیره و انتشار در PocketBase' }}</span>
+                <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3.5 h-3.5" :class="isStudioSaving ? 'animate-spin' : ''" />
+                <span>{{ isStudioSaving ? '...' : 'ذخیره در PocketBase' }}</span>
               </button>
             </div>
           </div>
@@ -478,38 +447,38 @@
     <transition name="dock-slide">
       <div
         v-if="showDebugPane"
-        class="fixed bottom-0 inset-x-0 z-50 h-80 bg-slate-950/98 backdrop-blur-2xl border-t border-slate-800 shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col font-mono text-[11px] text-slate-200 select-text"
+        class="fixed bottom-0 inset-x-0 z-50 h-80 bg-[#070a12]/98 backdrop-blur-2xl border-t border-white/[0.06] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col font-mono text-[11px] text-slate-200 select-text"
       >
-        <!-- Top Dock Controller Bar -->
-        <div class="h-9 px-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
+        <!-- Top Dock Bar -->
+        <div class="h-8 px-3 bg-[#0d121f] border-b border-white/[0.05] flex items-center justify-between shrink-0 select-none">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span class="font-bold text-emerald-400 text-xs">POCKETBASE NETWORK TELEMETRY</span>
-            <span class="px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-400 text-[9px]">
+            <span class="text-slate-500 text-[10px]">
               {{ waterfallRequests.length }} requests
             </span>
           </div>
 
           <div class="flex items-center gap-2">
-            <div class="flex items-center bg-slate-800 rounded-md p-0.5 text-[9px]">
+            <div class="flex items-center bg-white/[0.04] rounded-md p-0.5 text-[9px]">
               <button
                 @click="logFilter = 'ALL'"
-                class="px-2 py-0.5 rounded font-bold transition"
-                :class="logFilter === 'ALL' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-slate-200'"
+                class="px-2 py-0.5 rounded transition"
+                :class="logFilter === 'ALL' ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'"
               >
-                ALL ({{ waterfallRequests.length }})
+                ALL
               </button>
               <button
                 @click="logFilter = 'GET'"
-                class="px-2 py-0.5 rounded font-bold transition text-emerald-400"
-                :class="logFilter === 'GET' ? 'bg-emerald-950 text-emerald-200' : 'opacity-70 hover:opacity-100'"
+                class="px-2 py-0.5 rounded transition text-emerald-400"
+                :class="logFilter === 'GET' ? 'bg-emerald-950/60 text-emerald-200' : 'opacity-70 hover:opacity-100'"
               >
                 GET
               </button>
               <button
                 @click="logFilter = 'POST'"
-                class="px-2 py-0.5 rounded font-bold transition text-blue-400"
-                :class="logFilter === 'POST' ? 'bg-blue-950 text-blue-200' : 'opacity-70 hover:opacity-100'"
+                class="px-2 py-0.5 rounded transition text-blue-400"
+                :class="logFilter === 'POST' ? 'bg-blue-950/60 text-blue-200' : 'opacity-70 hover:opacity-100'"
               >
                 POST
               </button>
@@ -517,7 +486,7 @@
 
             <button
               @click="refreshSitemap"
-              class="px-2.5 py-1 rounded-md bg-emerald-900/60 text-emerald-300 border border-emerald-700/80 hover:bg-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1"
+              class="px-2.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300 hover:bg-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1"
             >
               <Icon name="mdi:refresh" class="w-3 h-3" />
               <span>Fetch</span>
@@ -525,7 +494,7 @@
 
             <button
               @click="showDebugPane = false"
-              class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+              class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-white hover:bg-white/[0.04] cursor-pointer"
               title="Close"
             >
               <Icon name="mdi:close" class="w-3.5 h-3.5" />
@@ -535,14 +504,14 @@
 
         <!-- Master-Detail Split Pane -->
         <div class="flex-1 flex overflow-hidden">
-          <!-- Left: Fixed Waterfall Request Stream -->
-          <div class="w-72 sm:w-80 border-r border-slate-800 flex flex-col shrink-0 bg-slate-950/80">
-            <div class="p-1.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[9px] text-slate-400 font-bold select-none">
-              <span>REQUEST TRACES</span>
+          <!-- Left: Waterfall Stream -->
+          <div class="w-72 sm:w-80 border-r border-white/[0.05] flex flex-col shrink-0 bg-[#070a12]">
+            <div class="p-1.5 border-b border-white/[0.04] bg-white/[0.01] flex items-center justify-between text-[9px] text-slate-400 select-none">
+              <span>REQUESTS</span>
               <button @click="clearLogs" class="text-slate-500 hover:text-slate-300">Clear</button>
             </div>
 
-            <div class="flex-1 overflow-y-auto divide-y divide-slate-800/50">
+            <div class="flex-1 overflow-y-auto divide-y divide-white/[0.03]">
               <div
                 v-for="req in filteredWaterfallRequests"
                 :key="req.id"
@@ -550,49 +519,50 @@
                 class="p-2 cursor-pointer transition-colors flex items-center justify-between select-none"
                 :class="[
                   activeRequestId === req.id
-                    ? 'bg-slate-800/90 text-white border-l-2 border-emerald-400'
-                    : 'hover:bg-slate-900/80 text-slate-300'
+                    ? 'bg-white/[0.06] text-white border-l-2 border-emerald-400'
+                    : 'hover:bg-white/[0.02] text-slate-400'
                 ]"
               >
                 <div class="flex items-center gap-1.5 overflow-hidden">
                   <span
                     class="px-1 py-0.2 rounded text-[8px] font-bold shrink-0"
-                    :class="req.method === 'POST' ? 'bg-blue-950 text-blue-300 border border-blue-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'"
+                    :class="req.method === 'POST' ? 'bg-blue-950/60 text-blue-300' : 'bg-emerald-950/60 text-emerald-300'"
                   >
                     {{ req.method }}
                   </span>
-                  <span class="font-bold text-[10px] truncate">{{ req.endpoint }}</span>
+                  <span class="text-[10px] truncate font-medium">{{ req.endpoint }}</span>
                 </div>
 
                 <div class="flex items-center gap-1.5 shrink-0 text-[9px]">
-                  <span class="font-mono" :class="req.status >= 400 ? 'text-rose-400' : 'text-emerald-400'">{{ req.status }}</span>
-                  <span class="text-slate-500 font-mono">{{ req.durationMs }}ms</span>
+                  <span :class="req.status >= 400 ? 'text-rose-400' : 'text-emerald-400'">{{ req.status }}</span>
+                  <span class="text-slate-600 font-mono">{{ req.durationMs }}ms</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Right: Selected Request Deep Inspector -->
-          <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-slate-900/30">
-            <div class="p-1.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 select-none">
-              <div class="flex items-center gap-1.5">
+          <!-- Right: Deep Tree Inspector (JsonLogViewer) -->
+          <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-[#070a12]">
+            <div class="h-8 px-3 border-b border-white/[0.05] flex items-center justify-between bg-[#0d121f] select-none">
+              <div class="flex items-center gap-2">
                 <button
                   @click="activeDetailTab = 'response'"
-                  class="px-2.5 py-0.5 rounded font-bold text-[9px] transition cursor-pointer"
-                  :class="activeDetailTab === 'response' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-2 py-0.5 rounded text-[10px] transition cursor-pointer"
+                  :class="activeDetailTab === 'response' ? 'bg-white/[0.08] text-emerald-300' : 'text-slate-400 hover:text-slate-200'"
                 >
-                  RESPONSE JSON
+                  RESPONSE
                 </button>
                 <button
                   @click="activeDetailTab = 'request'"
-                  class="px-2.5 py-0.5 rounded font-bold text-[9px] transition cursor-pointer"
-                  :class="activeDetailTab === 'request' ? 'bg-blue-950 text-blue-300 border border-blue-700' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-2 py-0.5 rounded text-[10px] transition cursor-pointer"
+                  :class="activeDetailTab === 'request' ? 'bg-white/[0.08] text-blue-300' : 'text-slate-400 hover:text-slate-200'"
                 >
-                  REQUEST PAYLOAD
+                  REQUEST
                 </button>
               </div>
+            </div>
 
-            <!-- Inspector Body Viewer with Rich Colorful Collapsible Tree & Expand/Collapse All -->
+            <!-- Butter JSON Tree Log Viewer -->
             <div class="flex-1 overflow-hidden">
               <JsonLogViewer
                 v-if="activeDetailTab === 'response'"
@@ -661,7 +631,6 @@ function onVanillaEditorChange(newJson: any) {
   currentWorkingSchema.value = newJson
 }
 
-// Helper to set nested value by path
 function setNestedValue(obj: any, path: (string | number)[], value: any) {
   let current = obj
   for (let i = 0; i < path.length - 1; i++) {
@@ -670,7 +639,6 @@ function setNestedValue(obj: any, path: (string | number)[], value: any) {
   current[path[path.length - 1]] = value
 }
 
-// Helper to get nested value by path
 function getNestedValue(obj: any, path: (string | number)[]) {
   let current = obj
   for (let i = 0; i < path.length; i++) {
@@ -708,7 +676,7 @@ async function saveWorkingSchemaToPocketBase() {
     const slug = activeStudioNode.value.slug || activeStudioNode.value.id
     const payload = {
       slug,
-      title: currentWorkingSchema.value.hero?.titleFa || currentWorkingSchema.value.titleFa || activeStudioNode.value.titleFa,
+      title: currentWorkingSchema.value.fa?.title || currentWorkingSchema.value.titleFa || activeStudioNode.value.titleFa,
       uiData: currentWorkingSchema.value
     }
 
@@ -725,7 +693,6 @@ async function saveWorkingSchemaToPocketBase() {
       activeStudioNode.value.liveData.rawUiData = currentWorkingSchema.value
     }
 
-    // Update baseline snapshot
     originalBaselineSchema.value = JSON.parse(JSON.stringify(currentWorkingSchema.value))
 
     waterfallRequests.value.unshift({
@@ -1178,7 +1145,7 @@ onMounted(() => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.18s ease-out;
 }
 .fade-enter-from,
 .fade-leave-to {
