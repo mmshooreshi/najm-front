@@ -182,7 +182,9 @@
           class="absolute select-none group"
           :class="[
             isNodeLocked(node.id) ? 'cursor-default' : 'cursor-grab active:cursor-grabbing',
-            isDraggingNodeId === node.id ? 'z-50 duration-0 transition-none will-change-transform' : 'z-20 transition-transform duration-150 ease-out'
+            isDraggingNodeId === node.id
+              ? 'z-50 duration-0 transition-none will-change-transform'
+              : 'z-20 transition-[left,top,transform] duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]'
           ]"
           :style="{
             left: `${node.currentX}px`,
@@ -989,7 +991,17 @@ function onGlobalPointerUp() {
     dragRafId = null
   }
   if (isDraggingNodeId.value) {
-    saveStateToLocalStorage()
+    const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
+    if (dragged) {
+      if (!isNodeLocked(dragged.id)) {
+        // Elastic magnetic snap-back to original place
+        dragged.currentX = dragged.initialX
+        dragged.currentY = dragged.initialY
+      } else {
+        // Keep custom position if pinned/locked
+        saveStateToLocalStorage()
+      }
+    }
   }
   isDraggingNodeId.value = null
 
