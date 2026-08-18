@@ -4,16 +4,16 @@
     :dir="isRTL ? 'rtl' : 'ltr'"
     class="fixed inset-0 z-50 h-screen w-screen bg-[#F8FAFC] text-slate-900 select-none overflow-hidden font-sans text-xs flex flex-col"
   >
-    <!-- Soft Ambient Light Background -->
+    <!-- Ambient Light Background -->
     <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
       <div class="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-emerald-100/50 blur-[110px]"></div>
       <div class="absolute -bottom-[15%] -right-[10%] w-[55vw] h-[55vw] rounded-full bg-blue-100/50 blur-[110px]"></div>
       <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
     </div>
 
-    <!-- Top Minimalist HUD Bar with Quick Group Selectors & Reset Center -->
+    <!-- Top HUD Bar with Group Selectors & Master Recursive Toggles -->
     <header class="relative z-40 h-13 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
-      <!-- Left: Exit & Cluster Telemetry -->
+      <!-- Left: Exit & Live Status -->
       <div class="flex items-center gap-2">
         <NuxtLink
           to="/dashboard"
@@ -30,19 +30,45 @@
         </div>
       </div>
 
-      <!-- Center: 1-Tap Group Selectors & Reset Layout Button -->
+      <!-- Center: Master Recursive Fold/Unfold Icons, Lock & Group Selectors -->
       <div class="flex items-center gap-1 sm:gap-2">
-        <!-- Re-Center / Reset Positions -->
+        <!-- Re-Center Reset -->
         <button
           @click="resetNodePositions"
-          class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-1 active:scale-95"
+          class="w-8 h-8 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer active:scale-95"
           title="بازنشانی موقعیت‌ها به چیدمان اصلی"
         >
-          <Icon name="mdi:crosshairs-gps" class="w-3.5 h-3.5" />
-          <span class="hidden sm:inline">چینش مجدد</span>
+          <Icon name="mdi:crosshairs-gps" class="w-4 h-4" />
         </button>
 
-        <!-- Group Selector Chips (Single / Multi-Select Mode) -->
+        <!-- Master 1-Arrow (Toggle Direct) -->
+        <button
+          @click="toggleDirectChildrenOfAll"
+          class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
+          :title="isAnyDirectFolded ? 'نمایش شاخه‌های مستقیم' : 'بستن شاخه‌های مستقیم'"
+        >
+          <Icon :name="isAnyDirectFolded ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-4 h-4" />
+        </button>
+
+        <!-- Master 2-Arrow (Recursive Deep Fold/Unfold) -->
+        <button
+          @click="toggleRecursiveChildrenOfAll"
+          class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
+          :title="isAnyRecursiveFolded ? 'بازکردن تمام زیرشاخه‌ها به صورت آبشاری' : 'بستن تمام زیرشاخه‌ها به صورت آبشاری'"
+        >
+          <Icon :name="isAnyRecursiveFolded ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4 text-emerald-800" />
+        </button>
+
+        <!-- Unlock / Lock All -->
+        <button
+          @click="toggleLockAll"
+          class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
+          :title="isAllLocked ? 'بازکردن قفل همه' : 'قفل موقعیت همه صفحات'"
+        >
+          <Icon :name="isAllLocked ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3.5 h-3.5" :class="isAllLocked ? 'text-amber-600' : 'text-slate-400'" />
+        </button>
+
+        <!-- Group Selector Chips -->
         <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
             @click="selectedGroup = 'all'"
@@ -65,7 +91,7 @@
         </div>
       </div>
 
-      <!-- Right: Search, Refresh & Debug Console -->
+      <!-- Right: Search, Refresh & Console -->
       <div class="flex items-center gap-1.5">
         <div class="relative w-28 sm:w-36">
           <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
@@ -155,7 +181,8 @@
           @dblclick.stop="openProJsonStudio(node, 'content-studio')"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute cursor-move select-none transition-all duration-150 z-20 group"
+          class="absolute select-none transition-all duration-150 z-20 group"
+          :class="isNodeLocked(node.id) ? 'cursor-default' : 'cursor-move'"
           :style="{
             left: `${node.currentX}px`,
             top: `${node.currentY}px`,
@@ -163,37 +190,57 @@
             transformOrigin: 'center center'
           }"
         >
-          <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px - Huge & Exaggerated) -->
+          <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px) -->
           <div
             v-if="node.type === 'nucleus'"
             class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/60 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
             :style="{ width: '270px', minHeight: '155px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500' : ''"
           >
-            <!-- Top Glass Rim -->
+            <!-- Top Glass Highlight -->
             <div class="absolute inset-x-4 top-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent pointer-events-none"></div>
 
+            <!-- Header with 1-Arrow, 2-Arrow & Lock Icons -->
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <div class="w-10 h-10 rounded-2xl bg-emerald-800 text-white flex items-center justify-center shadow-sm">
                   <Icon :name="node.icon || 'mdi:home'" class="w-5 h-5" />
                 </div>
-                <div>
-                  <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px] font-extrabold uppercase">
-                    CORE HUB
-                  </span>
-                </div>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[9px] font-extrabold uppercase">
+                  CORE HUB
+                </span>
               </div>
 
-              <!-- Children Fold Button -->
-              <button
-                @click.stop="toggleFoldChildren(node.id)"
-                class="px-2.5 py-1 rounded-xl bg-slate-900 hover:bg-emerald-800 text-white font-bold text-[10px] transition cursor-pointer flex items-center gap-1 shadow-xs"
-                :title="isChildrenFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'مخفی‌سازی زیرشاخه‌ها'"
-              >
-                <Icon :name="isChildrenFolded(node.id) ? 'mdi:eye-outline' : 'mdi:eye-off-outline'" class="w-3.5 h-3.5" />
-                <span>{{ isChildrenFolded(node.id) ? 'نمایش شاخه‌ها' : 'بستن شاخه‌ها' }}</span>
-              </button>
+              <!-- Micro-Icons: 1-Arrow, 2-Arrow & Lock -->
+              <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl">
+                <!-- 1-Arrow (Direct Children) -->
+                <button
+                  @click.stop="toggleDirectChildren(node.id)"
+                  class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  :title="isChildrenFolded(node.id) ? 'نمایش شاخه‌های مستقیم' : 'بستن شاخه‌های مستقیم'"
+                >
+                  <Icon :name="isChildrenFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
+                </button>
+
+                <!-- 2-Arrow (Recursive Deep Fold) -->
+                <button
+                  @click.stop="toggleRecursiveChildren(node.id)"
+                  class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  title="بستن/بازکردن تمام زیرشاخه‌ها به صورت آبشاری"
+                >
+                  <Icon name="mdi:chevron-double-up" class="w-3.5 h-3.5" />
+                </button>
+
+                <!-- Lock Position -->
+                <button
+                  @click.stop="toggleLockNode(node.id)"
+                  class="w-6 h-6 rounded-lg hover:bg-white flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-400 hover:text-slate-700'"
+                  :title="isNodeLocked(node.id) ? 'قفل موقعیت باز شود' : 'قفل موقعیت این صفحه'"
+                >
+                  <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+                </button>
+              </div>
             </div>
 
             <div class="my-auto space-y-0.5">
@@ -209,18 +256,16 @@
                 <span>هسته مرکزی</span>
               </span>
 
-              <div class="flex items-center gap-1">
-                <button
-                  @click.stop="openProJsonStudio(node, 'content-studio')"
-                  class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-800 text-emerald-800 hover:text-white font-bold text-[10px] transition cursor-pointer"
-                >
-                  ویرایش محتوا
-                </button>
-              </div>
+              <button
+                @click.stop="openProJsonStudio(node, 'content-studio')"
+                class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-800 text-emerald-800 hover:text-white font-bold text-[10px] transition cursor-pointer"
+              >
+                ویرایش محتوا
+              </button>
             </div>
           </div>
 
-          <!-- 2. PRIMARY PILLAR NODE (215px × 125px - Bold Structural Anchor) -->
+          <!-- 2. PRIMARY PILLAR NODE (215px × 125px) -->
           <div
             v-else-if="node.type === 'pillar'"
             class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200 bg-white border border-slate-200 shadow-[0_16px_36px_-8px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(0,0,0,0.05)]"
@@ -235,16 +280,38 @@
                 <Icon :name="node.icon || 'mdi:layers'" class="w-4 h-4" />
               </div>
 
-              <!-- Children Fold Toggle if has children -->
-              <button
-                v-if="hasConnectedChildren(node.id)"
-                @click.stop="toggleFoldChildren(node.id)"
-                class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] transition cursor-pointer flex items-center gap-1"
-                :title="isChildrenFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'مخفی‌سازی زیرشاخه‌ها'"
-              >
-                <Icon :name="isChildrenFolded(node.id) ? 'mdi:eye-outline' : 'mdi:eye-off-outline'" class="w-3 h-3" />
-                <span>{{ isChildrenFolded(node.id) ? '+' : '-' }}</span>
-              </button>
+              <!-- 1-Arrow, 2-Arrow & Lock -->
+              <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl">
+                <!-- 1-Arrow -->
+                <button
+                  v-if="hasConnectedChildren(node.id)"
+                  @click.stop="toggleDirectChildren(node.id)"
+                  class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
+                  :title="isChildrenFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'بستن زیرشاخه‌ها'"
+                >
+                  <Icon :name="isChildrenFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
+                </button>
+
+                <!-- 2-Arrow -->
+                <button
+                  v-if="hasConnectedChildren(node.id)"
+                  @click.stop="toggleRecursiveChildren(node.id)"
+                  class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
+                  title="بستن/بازکردن تمام زیرشاخه‌ها به صورت آبشاری"
+                >
+                  <Icon name="mdi:chevron-double-up" class="w-3.5 h-3.5" />
+                </button>
+
+                <!-- Lock -->
+                <button
+                  @click.stop="toggleLockNode(node.id)"
+                  class="w-6 h-6 rounded-lg hover:bg-white flex items-center justify-center transition cursor-pointer"
+                  :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-400 hover:text-slate-700'"
+                  :title="isNodeLocked(node.id) ? 'قفل باز شود' : 'قفل موقعیت'"
+                >
+                  <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+                </button>
+              </div>
             </div>
 
             <div class="my-auto space-y-0.5">
@@ -265,26 +332,38 @@
             </div>
           </div>
 
-          <!-- 3. COMPACT SATELLITE NODE (135px × 70px - Lightweight Pill) -->
+          <!-- 3. COMPACT SATELLITE NODE (145px × 65px) -->
           <div
             v-else
-            class="relative rounded-2xl p-2.5 flex items-center gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
+            class="relative rounded-2xl p-2.5 flex items-center justify-between gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
             :style="{ width: '145px', minHeight: '65px' }"
             :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500' : ''"
           >
-            <div
-              class="w-7 h-7 rounded-xl flex items-center justify-center text-white shadow-2xs shrink-0"
-              :style="{ backgroundColor: node.accentColor || '#64748b' }"
-            >
-              <Icon :name="node.icon || 'mdi:file-document-outline'" class="w-3.5 h-3.5" />
+            <div class="flex items-center gap-2 overflow-hidden flex-1">
+              <div
+                class="w-7 h-7 rounded-xl flex items-center justify-center text-white shadow-2xs shrink-0"
+                :style="{ backgroundColor: node.accentColor || '#64748b' }"
+              >
+                <Icon :name="node.icon || 'mdi:file-document-outline'" class="w-3.5 h-3.5" />
+              </div>
+
+              <div class="overflow-hidden space-y-0.5 flex-1">
+                <h4 class="font-extrabold text-slate-900 text-xs truncate">
+                  {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
+                </h4>
+                <span class="text-[9px] font-mono text-slate-400 block truncate" dir="ltr">{{ node.path }}</span>
+              </div>
             </div>
 
-            <div class="overflow-hidden space-y-0.5 flex-1">
-              <h4 class="font-extrabold text-slate-900 text-xs truncate">
-                {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
-              </h4>
-              <span class="text-[9px] font-mono text-slate-400 block truncate" dir="ltr">{{ node.path }}</span>
-            </div>
+            <!-- Lock on Satellite -->
+            <button
+              @click.stop="toggleLockNode(node.id)"
+              class="w-5 h-5 rounded hover:bg-slate-100 flex items-center justify-center transition cursor-pointer shrink-0"
+              :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-300 hover:text-slate-600'"
+              title="قفل موقعیت"
+            >
+              <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+            </button>
           </div>
         </div>
       </div>
@@ -495,23 +574,146 @@ function getNodeGroup(node: any) {
   return 'system'
 }
 
-// Subtree Branch Folding State
+// Subtree Branch Folding & LocalStorage Persistence
 const foldedBranches = ref<Set<string>>(new Set())
+const lockedNodes = ref<Set<string>>(new Set())
 
 function isChildrenFolded(nodeId: string) {
   return foldedBranches.value.has(nodeId)
 }
 
-function toggleFoldChildren(nodeId: string) {
+function isNodeLocked(nodeId: string) {
+  return lockedNodes.value.has(nodeId)
+}
+
+function toggleLockNode(nodeId: string) {
+  if (lockedNodes.value.has(nodeId)) {
+    lockedNodes.value.delete(nodeId)
+  } else {
+    lockedNodes.value.add(nodeId)
+  }
+  saveStateToLocalStorage()
+}
+
+const isAllLocked = computed(() => {
+  return nodes.value.length > 0 && nodes.value.every(n => lockedNodes.value.has(n.id))
+})
+
+function toggleLockAll() {
+  if (isAllLocked.value) {
+    lockedNodes.value.clear()
+  } else {
+    for (const n of nodes.value) {
+      lockedNodes.value.add(n.id)
+    }
+  }
+  saveStateToLocalStorage()
+}
+
+// 1-Arrow (Toggle Direct Children)
+function toggleDirectChildren(nodeId: string) {
   if (foldedBranches.value.has(nodeId)) {
     foldedBranches.value.delete(nodeId)
   } else {
     foldedBranches.value.add(nodeId)
   }
+  saveStateToLocalStorage()
+}
+
+// 2-Arrow (Toggle Recursive Children)
+function toggleRecursiveChildren(nodeId: string) {
+  const isFolded = foldedBranches.value.has(nodeId)
+  const allSubtreeIds = getSubtreeNodeIds(nodeId)
+
+  for (const id of allSubtreeIds) {
+    if (isFolded) {
+      foldedBranches.value.delete(id)
+    } else {
+      foldedBranches.value.add(id)
+    }
+  }
+  saveStateToLocalStorage()
+}
+
+function getSubtreeNodeIds(parentId: string): string[] {
+  const result: string[] = [parentId]
+  const children = edges.filter(e => e.from === parentId).map(e => e.to)
+  for (const childId of children) {
+    result.push(...getSubtreeNodeIds(childId))
+  }
+  return result
+}
+
+const isAnyDirectFolded = computed(() => foldedBranches.value.size > 0)
+const isAnyRecursiveFolded = computed(() => foldedBranches.value.size > 2)
+
+function toggleDirectChildrenOfAll() {
+  if (foldedBranches.value.size > 0) {
+    foldedBranches.value.clear()
+  } else {
+    for (const n of nodes.value) {
+      if (hasConnectedChildren(n.id)) {
+        foldedBranches.value.add(n.id)
+      }
+    }
+  }
+  saveStateToLocalStorage()
+}
+
+function toggleRecursiveChildrenOfAll() {
+  if (foldedBranches.value.size > 0) {
+    foldedBranches.value.clear()
+  } else {
+    for (const n of nodes.value) {
+      foldedBranches.value.add(n.id)
+    }
+  }
+  saveStateToLocalStorage()
 }
 
 function hasConnectedChildren(nodeId: string) {
   return edges.some(e => e.from === nodeId)
+}
+
+function saveStateToLocalStorage() {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem('najm_sitemap_folded', JSON.stringify([...foldedBranches.value]))
+    localStorage.setItem('najm_sitemap_locked', JSON.stringify([...lockedNodes.value]))
+    
+    // Save custom positions
+    const posMap: Record<string, { x: number, y: number }> = {}
+    for (const n of dynamicNodesState.value) {
+      posMap[n.id] = { x: n.currentX, y: n.currentY }
+    }
+    localStorage.setItem('najm_sitemap_positions', JSON.stringify(posMap))
+  } catch (e) {}
+}
+
+function loadStateFromLocalStorage() {
+  if (typeof window === 'undefined') return
+  try {
+    const folded = localStorage.getItem('najm_sitemap_folded')
+    if (folded) {
+      foldedBranches.value = new Set(JSON.parse(folded))
+    }
+
+    const locked = localStorage.getItem('najm_sitemap_locked')
+    if (locked) {
+      lockedNodes.value = new Set(JSON.parse(locked))
+    }
+
+    const savedPos = localStorage.getItem('najm_sitemap_positions')
+    if (savedPos) {
+      const posMap = JSON.parse(savedPos)
+      for (const n of dynamicNodesState.value) {
+        if (posMap[n.id]) {
+          n.currentX = posMap[n.id].x
+          n.currentY = posMap[n.id].y
+        }
+      }
+    }
+  } catch (e) {}
 }
 
 // Stage Dimensions & Auto-Fit
@@ -657,7 +859,7 @@ function handleGlobalMouseMove(e: MouseEvent) {
 
   if (isDraggingNodeId.value) {
     const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
-    if (dragged) {
+    if (dragged && !isNodeLocked(dragged.id)) {
       const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
       const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
       dragged.currentX = Math.round(nodeDragStartNodeX + dx)
@@ -709,6 +911,7 @@ watchEffect(() => {
         initialY: pos.y
       }
     })
+    loadStateFromLocalStorage()
     autoFitConstellation()
   }
 })
@@ -717,9 +920,12 @@ const nodes = computed(() => dynamicNodesState.value)
 
 function resetNodePositions() {
   for (const n of dynamicNodesState.value) {
-    n.currentX = n.initialX
-    n.currentY = n.initialY
+    if (!isNodeLocked(n.id)) {
+      n.currentX = n.initialX
+      n.currentY = n.initialY
+    }
   }
+  saveStateToLocalStorage()
   autoFitConstellation()
 }
 
@@ -745,6 +951,7 @@ function autoFitConstellation() {
 const isDraggingNodeId = ref<string | null>(null)
 
 function startNodeDrag(e: MouseEvent, node: any) {
+  if (isNodeLocked(node.id)) return
   isDraggingNodeId.value = node.id
   nodeDragStartClientX = e.clientX
   nodeDragStartClientY = e.clientY
@@ -753,6 +960,7 @@ function startNodeDrag(e: MouseEvent, node: any) {
 }
 
 function startNodeTouchDrag(e: TouchEvent, node: any) {
+  if (isNodeLocked(node.id)) return
   isDraggingNodeId.value = node.id
   const touch = e.touches[0]
   if (touch) {
@@ -764,6 +972,9 @@ function startNodeTouchDrag(e: TouchEvent, node: any) {
 }
 
 function stopNodeDrag() {
+  if (isDraggingNodeId.value) {
+    saveStateToLocalStorage()
+  }
   isDraggingNodeId.value = null
 }
 
@@ -837,6 +1048,7 @@ function getEdgePath(edge: any) {
 }
 
 onMounted(() => {
+  loadStateFromLocalStorage()
   autoFitConstellation()
   if (typeof window !== 'undefined') {
     window.addEventListener('resize', autoFitConstellation)

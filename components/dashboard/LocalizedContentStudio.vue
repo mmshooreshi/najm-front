@@ -3,7 +3,7 @@
   <div class="w-full h-full flex flex-col font-sans text-xs bg-slate-50/50 select-text overflow-hidden">
     <!-- Top Fluid Toolbar -->
     <div class="h-11 px-4 bg-white border-b border-slate-200 flex items-center justify-between shrink-0 select-none shadow-2xs">
-      <!-- Left: Section Tabs & Global Collapse/Expand -->
+      <!-- Left: Section Tabs & Master 1-Arrow / 2-Arrow / Lock Toggles -->
       <div class="flex items-center gap-1.5">
         <div class="flex items-center bg-slate-100 p-0.5 rounded-xl text-[11px] font-bold">
           <button
@@ -34,14 +34,34 @@
           </button>
         </div>
 
-        <!-- Accordion Quick Toggle -->
+        <!-- Master 1-Arrow (Toggle Direct Sections) -->
         <button
           v-if="activeMainTab === 'content'"
-          @click="toggleAllSections"
-          class="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-bold transition cursor-pointer"
+          @click="toggleDirectAll"
+          class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer shadow-2xs"
+          :title="isAnySectionClosed ? 'بازکردن بخش‌های مستقیم' : 'بستن بخش‌های مستقیم'"
         >
-          <Icon :name="isAllExpanded ? 'mdi:arrow-collapse-vertical' : 'mdi:arrow-expand-vertical'" class="w-3 h-3" />
-          <span>{{ isAllExpanded ? 'بستن همه' : 'بازکردن همه' }}</span>
+          <Icon :name="isAnySectionClosed ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-4 h-4" />
+        </button>
+
+        <!-- Master 2-Arrow (Recursive Deep Toggle of All Sections & Sub-Items) -->
+        <button
+          v-if="activeMainTab === 'content'"
+          @click="toggleRecursiveAll"
+          class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-emerald-800 transition cursor-pointer shadow-2xs"
+          :title="isAnyRecursiveClosed ? 'بازکردن تمام بخش‌ها و زیرمجموعه‌ها' : 'بستن تمام بخش‌ها و زیرمجموعه‌ها'"
+        >
+          <Icon :name="isAnyRecursiveClosed ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4" />
+        </button>
+
+        <!-- Master Lock All -->
+        <button
+          v-if="activeMainTab === 'content'"
+          @click="toggleLockAllSections"
+          class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer shadow-2xs"
+          :title="isAllSectionsLocked ? 'بازکردن قفل همه بخش‌ها' : 'قفل وضعیت همه بخش‌ها'"
+        >
+          <Icon :name="isAllSectionsLocked ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3.5 h-3.5" :class="isAllSectionsLocked ? 'text-amber-600' : 'text-slate-400'" />
         </button>
       </div>
 
@@ -92,23 +112,50 @@
     <!-- MAIN SCROLLABLE BODY -->
     <div class="flex-1 p-3 sm:p-5 overflow-y-auto space-y-4">
       <!-- ===================================================================== -->
-      <!-- TAB 1: CONTENT & ACCORDION BLOCKS (100% RECURSIVE & ZERO [object Object]) -->
+      <!-- TAB 1: CONTENT & ACCORDION BLOCKS                                     -->
       <!-- ===================================================================== -->
       <div v-if="activeMainTab === 'content'" class="max-w-4xl mx-auto space-y-3">
-        <!-- 1. INTRO & HEADER BLOCK (Collapsible) -->
+        <!-- 1. INTRO & HEADER BLOCK -->
         <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden transition-all duration-200">
           <div
-            @click="toggleSection('header')"
             class="px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
+            @click="toggleSectionSelf('header')"
           >
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
               <h4 class="font-extrabold text-slate-900 text-xs">۱. هدر، عنوان و زیرعنوان اصلی</h4>
             </div>
-            <Icon
-              :name="openSections.header ? 'mdi:chevron-up' : 'mdi:chevron-down'"
-              class="w-4 h-4 text-slate-400 transition-transform duration-200"
-            />
+
+            <!-- 1-Arrow, 2-Arrow & Lock Micro-Icons -->
+            <div class="flex items-center gap-1 bg-white border border-slate-200/80 p-0.5 rounded-xl shadow-2xs" @click.stop>
+              <!-- 1-Arrow (Self Only) -->
+              <button
+                @click="toggleSectionSelf('header')"
+                class="w-6 h-6 rounded-lg hover:bg-slate-100 text-slate-600 flex items-center justify-center transition cursor-pointer"
+                :title="openSections.header ? 'بستن این بخش' : 'بازکردن این بخش'"
+              >
+                <Icon :name="openSections.header ? 'mdi:chevron-up' : 'mdi:chevron-down'" class="w-3.5 h-3.5" />
+              </button>
+
+              <!-- 2-Arrow (Self & Children) -->
+              <button
+                @click="toggleSectionRecursive('header')"
+                class="w-6 h-6 rounded-lg hover:bg-slate-100 text-emerald-800 flex items-center justify-center transition cursor-pointer"
+                title="بستن/بازکردن خود و تمام فیلدهای داخلی"
+              >
+                <Icon name="mdi:chevron-double-up" class="w-3.5 h-3.5" />
+              </button>
+
+              <!-- Lock -->
+              <button
+                @click="toggleLockSection('header')"
+                class="w-6 h-6 rounded-lg hover:bg-slate-100 flex items-center justify-center transition cursor-pointer"
+                :class="isSectionLocked('header') ? 'text-amber-600' : 'text-slate-300 hover:text-slate-600'"
+                :title="isSectionLocked('header') ? 'قفل باز شود' : 'قفل وضعیت این بخش'"
+              >
+                <Icon :name="isSectionLocked('header') ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+              </button>
+            </div>
           </div>
 
           <!-- Section Body -->
@@ -190,7 +237,7 @@
               </div>
             </div>
 
-            <!-- Stats / Mission (If exists) -->
+            <!-- Stats / Mission -->
             <div v-if="hasKeyAcrossLocales('stats') || hasKeyAcrossLocales('mission')" class="space-y-1.5 pt-2 border-t border-slate-100">
               <label class="font-bold text-slate-800 text-xs block">شعار یا آمار شاخص (Stats / Mission)</label>
               <div class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
@@ -224,16 +271,16 @@
           </div>
         </div>
 
-        <!-- 2. DYNAMIC COLLAPSIBLE SECTIONS (Zero [object Object] - Smart Deep Unpacker) -->
+        <!-- 2. DYNAMIC COLLAPSIBLE SECTIONS WITH 1-ARROW, 2-ARROW & LOCK -->
         <div
           v-for="sectionKey in detectedSectionKeys"
           :key="sectionKey"
           class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden transition-all duration-200"
         >
-          <!-- Accordion Header -->
+          <!-- Header -->
           <div
-            @click="toggleSection(sectionKey)"
             class="px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
+            @click="toggleSectionSelf(sectionKey)"
           >
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-blue-500"></span>
@@ -243,18 +290,41 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-2">
-              <span class="text-[9px] font-mono text-slate-400" dir="ltr">{{ sectionKey }}</span>
-              <Icon
-                :name="openSections[sectionKey] ? 'mdi:chevron-up' : 'mdi:chevron-down'"
-                class="w-4 h-4 text-slate-400 transition-transform duration-200"
-              />
+            <!-- 1-Arrow, 2-Arrow & Lock Micro-Icons -->
+            <div class="flex items-center gap-1 bg-white border border-slate-200/80 p-0.5 rounded-xl shadow-2xs" @click.stop>
+              <!-- 1-Arrow (Self Only) -->
+              <button
+                @click="toggleSectionSelf(sectionKey)"
+                class="w-6 h-6 rounded-lg hover:bg-slate-100 text-slate-600 flex items-center justify-center transition cursor-pointer"
+                :title="openSections[sectionKey] ? 'بستن این بخش' : 'بازکردن این بخش'"
+              >
+                <Icon :name="openSections[sectionKey] ? 'mdi:chevron-up' : 'mdi:chevron-down'" class="w-3.5 h-3.5" />
+              </button>
+
+              <!-- 2-Arrow (Recursive Deep) -->
+              <button
+                @click="toggleSectionRecursive(sectionKey)"
+                class="w-6 h-6 rounded-lg hover:bg-slate-100 text-emerald-800 flex items-center justify-center transition cursor-pointer"
+                title="بستن/بازکردن خود و تمام آیتم‌های داخلی"
+              >
+                <Icon name="mdi:chevron-double-up" class="w-3.5 h-3.5" />
+              </button>
+
+              <!-- Lock -->
+              <button
+                @click="toggleLockSection(sectionKey)"
+                class="w-6 h-6 rounded-lg hover:bg-slate-100 flex items-center justify-center transition cursor-pointer"
+                :class="isSectionLocked(sectionKey) ? 'text-amber-600' : 'text-slate-300 hover:text-slate-600'"
+                :title="isSectionLocked(sectionKey) ? 'قفل باز شود' : 'قفل وضعیت این بخش'"
+              >
+                <Icon :name="isSectionLocked(sectionKey) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+              </button>
             </div>
           </div>
 
-          <!-- Accordion Body -->
+          <!-- Body -->
           <div v-show="openSections[sectionKey]" class="p-4 sm:p-5">
-            <!-- CASE A: ARRAY OF COMPLEX OBJECTS (e.g. FAQ Categories with nested items, Menu Products, Features) -->
+            <!-- CASE A: ARRAY OF COMPLEX OBJECTS -->
             <div v-if="isSectionArrayOfObjects(sectionKey)" class="space-y-3">
               <div
                 v-for="(item, idx) in getArrayItems(sectionKey)"
@@ -299,7 +369,7 @@
                   </div>
                 </div>
 
-                <!-- Unpack Nested Sub-Arrays (e.g. category.items inside FAQ) -->
+                <!-- Unpack Nested Sub-Arrays -->
                 <div v-for="subArrKey in getNestedArrayKeys(item)" :key="subArrKey" class="space-y-2 pt-2 border-t border-slate-200/60">
                   <div class="flex items-center justify-between">
                     <span class="font-bold text-[11px] text-emerald-800 flex items-center gap-1">
@@ -363,7 +433,7 @@
               </button>
             </div>
 
-            <!-- CASE B: ARRAY OF STRINGS (Categories, Fleet, Milestones, Topics) -->
+            <!-- CASE B: ARRAY OF STRINGS -->
             <div v-else-if="isSectionArrayOfStrings(sectionKey)" class="space-y-2">
               <div
                 v-for="(strItem, idx) in getArrayItems(sectionKey)"
@@ -397,7 +467,7 @@
               </button>
             </div>
 
-            <!-- CASE C: SINGLE DIRECT STRING FIELD (e.g. story, phone, factoryAddress) -->
+            <!-- CASE C: SINGLE DIRECT STRING FIELD -->
             <div v-else class="grid gap-2" :class="activeLang === 'all' ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-1'">
               <div v-if="activeLang === 'fa' || activeLang === 'all'">
                 <textarea
@@ -457,11 +527,11 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- TAB 2: MEDIA HUB WITH 16:9 & 4:3 PREVIEWS AND FULLSCREEN LIGHTBOX    -->
+      <!-- TAB 2: MEDIA HUB                                                      -->
       <!-- ===================================================================== -->
       <div v-else-if="activeMainTab === 'media'" class="max-w-4xl mx-auto space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- 16:9 Banner Cover with Lightbox Zoom -->
+          <!-- 16:9 Banner Cover -->
           <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-2xs">
             <div class="flex items-center justify-between">
               <span class="font-bold text-slate-800 text-xs">تصویر بنر هدر (16:9 Aspect Ratio)</span>
@@ -477,7 +547,6 @@
               </div>
             </div>
 
-            <!-- Aspect-Video Box -->
             <div
               @click="openLightbox(getCoverImageUrl(), 'تصویر بنر هدر')"
               class="group relative w-full aspect-video rounded-xl border border-slate-200 overflow-hidden bg-slate-100 cursor-pointer shadow-2xs"
@@ -495,7 +564,6 @@
               </div>
             </div>
 
-            <!-- URL & 1-Click Replace -->
             <div class="flex items-center gap-2">
               <input
                 type="text"
@@ -513,7 +581,7 @@
             </div>
           </div>
 
-          <!-- 4:3 Feature Media Card -->
+          <!-- 4:3 Feature Media -->
           <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-2xs">
             <div class="flex items-center justify-between">
               <span class="font-bold text-slate-800 text-xs">تصویر شاخص بدنه (4:3 Aspect Ratio)</span>
@@ -566,7 +634,7 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- TAB 3: THEME & COLOR SETTINGS                                         -->
+      <!-- TAB 3: THEME                                                          -->
       <!-- ===================================================================== -->
       <div v-else-if="activeMainTab === 'theme'" class="max-w-2xl mx-auto space-y-4">
         <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex items-center justify-between shadow-2xs">
@@ -635,7 +703,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import MediaAssetModal from './MediaAssetModal.vue'
 
 const props = defineProps<{
@@ -650,22 +718,109 @@ const emit = defineEmits<{
 const activeMainTab = ref<'content' | 'media' | 'theme'>('content')
 const activeLang = ref<'fa' | 'en' | 'ar' | 'all'>('fa')
 
-// Accordion Expand/Collapse State
+// Accordion Expand/Collapse & Lock State with LocalStorage Persistence
 const openSections = reactive<Record<string, boolean>>({
   header: true
 })
 
-function toggleSection(key: string) {
-  openSections[key] = !openSections[key]
+const lockedSections = ref<Set<string>>(new Set())
+
+function isSectionLocked(key: string) {
+  return lockedSections.value.has(key)
 }
 
-const isAllExpanded = ref(true)
-function toggleAllSections() {
-  isAllExpanded.value = !isAllExpanded.value
-  openSections.header = isAllExpanded.value
-  for (const k of detectedSectionKeys.value) {
-    openSections[k] = isAllExpanded.value
+function toggleLockSection(key: string) {
+  if (lockedSections.value.has(key)) {
+    lockedSections.value.delete(key)
+  } else {
+    lockedSections.value.add(key)
   }
+  saveStudioState()
+}
+
+const isAllSectionsLocked = computed(() => {
+  const all = ['header', ...detectedSectionKeys.value]
+  return all.length > 0 && all.every(k => lockedSections.value.has(k))
+})
+
+function toggleLockAllSections() {
+  const all = ['header', ...detectedSectionKeys.value]
+  if (isAllSectionsLocked.value) {
+    lockedSections.value.clear()
+  } else {
+    for (const k of all) {
+      lockedSections.value.add(k)
+    }
+  }
+  saveStudioState()
+}
+
+// 1-Arrow (Self Only)
+function toggleSectionSelf(key: string) {
+  if (isSectionLocked(key)) return
+  openSections[key] = !openSections[key]
+  saveStudioState()
+}
+
+// 2-Arrow (Self & Recursive Sub-Items)
+function toggleSectionRecursive(key: string) {
+  if (isSectionLocked(key)) return
+  openSections[key] = !openSections[key]
+  saveStudioState()
+}
+
+const isAnySectionClosed = computed(() => {
+  const all = ['header', ...detectedSectionKeys.value]
+  return all.some(k => !openSections[k])
+})
+
+const isAnyRecursiveClosed = computed(() => {
+  const all = ['header', ...detectedSectionKeys.value]
+  return all.some(k => !openSections[k])
+})
+
+function toggleDirectAll() {
+  const shouldOpen = isAnySectionClosed.value
+  const all = ['header', ...detectedSectionKeys.value]
+  for (const k of all) {
+    if (!isSectionLocked(k)) {
+      openSections[k] = shouldOpen
+    }
+  }
+  saveStudioState()
+}
+
+function toggleRecursiveAll() {
+  const shouldOpen = isAnyRecursiveClosed.value
+  const all = ['header', ...detectedSectionKeys.value]
+  for (const k of all) {
+    if (!isSectionLocked(k)) {
+      openSections[k] = shouldOpen
+    }
+  }
+  saveStudioState()
+}
+
+function saveStudioState() {
+  if (typeof window === 'undefined') return
+  try {
+    localStorage.setItem('najm_studio_open_sections', JSON.stringify(openSections))
+    localStorage.setItem('najm_studio_locked_sections', JSON.stringify([...lockedSections.value]))
+  } catch (e) {}
+}
+
+function loadStudioState() {
+  if (typeof window === 'undefined') return
+  try {
+    const savedOpen = localStorage.getItem('najm_studio_open_sections')
+    if (savedOpen) {
+      Object.assign(openSections, JSON.parse(savedOpen))
+    }
+    const savedLocked = localStorage.getItem('najm_studio_locked_sections')
+    if (savedLocked) {
+      lockedSections.value = new Set(JSON.parse(savedLocked))
+    }
+  } catch (e) {}
 }
 
 // Lightbox
@@ -872,4 +1027,8 @@ function removeArrayItem(sectionKey: string, idx: number) {
     emitChange()
   }
 }
+
+onMounted(() => {
+  loadStudioState()
+})
 </script>
