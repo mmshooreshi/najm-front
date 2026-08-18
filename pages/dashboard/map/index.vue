@@ -1,70 +1,169 @@
 <!-- pages/dashboard/map/index.vue -->
 <template>
-  <div :dir="isRTL ? 'rtl' : 'ltr'" class="space-y-6 max-w-full">
-    <!-- Header Banner -->
-    <div class="flex flex-col gap-4 rounded-2xl bg-[#0b141a] p-5 sm:p-6 text-white border border-gray-800 shadow-md md:flex-row md:items-center md:justify-between">
-      <div class="space-y-1">
-        <div class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-semibold text-emerald-300 border border-emerald-500/30">
-          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          {{ isRTL ? 'نقشه زنده اکوسیستم (۱۰۰٪ پوشش)' : 'Live Ecosystem Canvas (100% Coverage)' }}
+  <div
+    :dir="isRTL ? 'rtl' : 'ltr'"
+    class="relative w-full transition-all duration-500 overflow-hidden bg-[#070b10] text-gray-100 select-none font-sans"
+    :class="[
+      isFullscreen
+        ? 'fixed inset-0 z-50 h-screen w-screen p-0'
+        : 'h-[calc(100vh-5rem)] rounded-3xl border border-gray-800/80 shadow-2xl'
+    ]"
+  >
+    <!-- Background Canvas Ambient FX -->
+    <div class="absolute inset-0 pointer-events-none z-0">
+      <div
+        class="absolute inset-0 opacity-20"
+        :style="{
+          backgroundImage: showGridPattern ? 'radial-gradient(circle, #2DD4BF 1.2px, transparent 1.2px)' : 'none',
+          backgroundSize: `${24 * zoomScale}px ${24 * zoomScale}px`,
+          backgroundPosition: `${panX}px ${panY}px`
+        }"
+      ></div>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(1,68,57,0.25),rgba(0,0,0,0.85))]"></div>
+    </div>
+
+    <!-- Top Command Toolbar -->
+    <header class="relative z-20 flex flex-wrap items-center justify-between gap-3 p-4 bg-[#0c131c]/90 backdrop-blur-xl border-b border-gray-800/80">
+      <!-- Left: Title & Live Status -->
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-xs">
+          <Icon name="mdi:sitemap-outline" class="w-5 h-5" />
         </div>
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-d4">
-          {{ isRTL ? 'نقشه جامع معماری و سیت‌مپ تعاملی' : 'Interactive System Architecture Map' }}
-        </h1>
-        <p class="text-xs sm:text-sm text-gray-400 max-w-2xl leading-relaxed">
-          {{ isRTL
-            ? 'نمای کامل تمام صفحات، کامپوننت‌ها، مدال‌ها، کامپوزبل‌های SWR، دیتابیس PocketBase و APIهای سیستم با قابلیت درگ، زوم و بازرسی جزئیات.'
-            : 'Interactive visual map of all pages, components, modals, SWR composables, PocketBase collections, and server API endpoints.' }}
-        </p>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-sm sm:text-base font-extrabold text-white text-d4">
+              {{ isRTL ? 'نقشه فضایی اکوسیستم' : 'Spatial Ecosystem Canvas' }}
+            </h1>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono border border-emerald-500/30">
+              LOD {{ lodLevel }}
+            </span>
+          </div>
+          <p class="text-[11px] text-gray-400">
+            {{ isRTL ? 'پیمایش فضایی تعاملی، سطح‌بندی هوشمند و اتصال گره‌ها' : 'Interactive spatial graph, level-of-detail & node connections' }}
+          </p>
+        </div>
       </div>
 
-      <!-- Quick Canvas Controls -->
-      <div class="flex items-center gap-2 flex-wrap">
+      <!-- Center: Layout Modes & View Options -->
+      <div class="flex items-center gap-1.5 bg-gray-900/90 p-1 rounded-2xl border border-gray-800">
         <button
-          @click="resetZoom"
-          class="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-bold text-gray-200 transition flex items-center gap-1 cursor-pointer"
+          v-for="mode in layoutModes"
+          :key="mode.id"
+          @click="activeLayoutMode = mode.id"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-d4"
+          :class="[
+            activeLayoutMode === mode.id
+              ? 'bg-najmgreen text-white shadow-xs'
+              : 'text-gray-400 hover:text-white hover:bg-gray-800/60'
+          ]"
         >
-          <Icon name="mdi:aspect-ratio" class="w-4 h-4" />
-          {{ isRTL ? 'بازتنظیم زوم' : 'Reset Zoom' }}
+          <Icon :name="mode.icon" class="w-4 h-4" />
+          <span class="hidden sm:inline">{{ isRTL ? mode.labelFa : mode.labelEn }}</span>
         </button>
+      </div>
+
+      <!-- Right: Controls & Options Dropdowns -->
+      <div class="flex items-center gap-2">
+        <!-- Node Shape Switcher -->
+        <div class="flex items-center gap-1 bg-gray-900/90 p-1 rounded-xl border border-gray-800">
+          <button
+            v-for="shape in nodeShapes"
+            :key="shape.id"
+            @click="activeShape = shape.id"
+            class="p-1.5 rounded-lg text-xs transition cursor-pointer"
+            :class="[
+              activeShape === shape.id ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'text-gray-400 hover:text-white'
+            ]"
+            :title="shape.label"
+          >
+            <Icon :name="shape.icon" class="w-4 h-4" />
+          </button>
+        </div>
+
+        <!-- Level of Detail (LOD) Stepper -->
+        <div class="flex items-center gap-1 bg-gray-900/90 px-2 py-1 rounded-xl border border-gray-800 text-xs">
+          <span class="text-gray-400 font-mono text-[10px]">LOD:</span>
+          <button
+            v-for="lvl in [1, 2, 3, 4]"
+            :key="lvl"
+            @click="lodLevel = lvl"
+            class="w-6 h-6 rounded-lg text-[11px] font-bold transition cursor-pointer"
+            :class="[
+              lodLevel === lvl ? 'bg-najmgreen text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
+            ]"
+          >
+            {{ lvl }}
+          </button>
+        </div>
+
+        <!-- Annotations Toggle -->
         <button
-          @click="zoomIn"
-          class="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition cursor-pointer"
-          title="Zoom In"
+          @click="showAnnotations = !showAnnotations"
+          class="p-2 rounded-xl transition cursor-pointer border"
+          :class="[
+            showAnnotations
+              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+              : 'bg-gray-900 text-gray-400 border-gray-800 hover:text-white'
+          ]"
+          :title="isRTL ? 'تغییر نمایش توضیحات درون‌خطی' : 'Toggle Inline Annotations'"
         >
-          <Icon name="mdi:magnify-plus-outline" class="w-4.5 h-4.5" />
+          <Icon name="mdi:text-box-outline" class="w-4.5 h-4.5" />
         </button>
+
+        <!-- Fullscreen Toggle -->
         <button
-          @click="zoomOut"
-          class="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition cursor-pointer"
-          title="Zoom Out"
+          @click="isFullscreen = !isFullscreen"
+          class="p-2 rounded-xl bg-gray-900 text-gray-300 hover:text-white border border-gray-800 transition cursor-pointer"
+          :title="isRTL ? 'حالت تمام صفحه' : 'Toggle Fullscreen'"
         >
-          <Icon name="mdi:magnify-minus-outline" class="w-4.5 h-4.5" />
+          <Icon :name="isFullscreen ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'" class="w-4.5 h-4.5" />
+        </button>
+      </div>
+    </header>
+
+    <!-- Sub-Toolbar: Search & Category Filters -->
+    <div class="relative z-20 flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-[#090e15]/80 border-b border-gray-800/60">
+      <!-- Category Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar">
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          @click="activeCategory = cat.id"
+          class="px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap text-d4 border"
+          :class="[
+            activeCategory === cat.id
+              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+              : 'bg-gray-900/60 text-gray-400 border-gray-800 hover:text-gray-200'
+          ]"
+        >
+          {{ isRTL ? cat.labelFa : cat.labelEn }}
+          <span class="ml-1 text-[10px] font-mono opacity-70">({{ getCategoryCount(cat.id) }})</span>
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full sm:w-64">
+        <Icon name="mdi:magnify" class="absolute right-3 top-2.5 w-4 h-4 text-gray-500" />
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="isRTL ? 'جستجوی نام گره، فریم‌ورک یا مسیر...' : 'Search nodes, tags or paths...'"
+          class="w-full bg-gray-900/90 border border-gray-800 rounded-xl pr-9 pl-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition"
+        />
+        <button
+          v-if="searchQuery"
+          @click="searchQuery = ''"
+          class="absolute left-2.5 top-2.5 text-gray-500 hover:text-white"
+        >
+          <Icon name="mdi:close-circle" class="w-4 h-4" />
         </button>
       </div>
     </div>
 
-    <!-- Category Filter Tabs Bar -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-1">
-      <button
-        v-for="cat in categories"
-        :key="cat.id"
-        @click="activeCategory = cat.id"
-        class="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap text-d4"
-        :class="[
-          activeCategory === cat.id
-            ? 'bg-najmgreen text-white shadow-xs border border-emerald-600'
-            : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-        ]"
-      >
-        {{ isRTL ? cat.labelFa : cat.labelEn }} ({{ getCategoryCount(cat.id) }})
-      </button>
-    </div>
-
-    <!-- Main Draggable & Zoomable Canvas Stage -->
+    <!-- Main Spatial Drag/Pan Canvas Viewport Stage -->
     <div
-      ref="canvasContainerRef"
-      class="relative w-full h-[650px] rounded-3xl bg-[#090d12] border border-gray-800 overflow-hidden select-none cursor-grab active:cursor-grabbing shadow-inner"
+      ref="canvasStageRef"
+      class="relative w-full h-[calc(100%-7.5rem)] overflow-hidden cursor-grab active:cursor-grabbing"
       @mousedown="startDrag"
       @mousemove="onDrag"
       @mouseup="stopDrag"
@@ -73,87 +172,172 @@
       @touchmove="onTouchDrag"
       @touchend="stopDrag"
     >
-      <!-- Ambient Grid Pattern Background -->
-      <div
-        class="absolute inset-0 pointer-events-none opacity-20"
+      <!-- Connected SVG Edge Lines Layer -->
+      <svg
+        class="absolute inset-0 w-full h-full pointer-events-none z-10"
         :style="{
-          backgroundImage: 'radial-gradient(circle, #2DD4BF 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
-          transform: `translate(${panX}px, ${panY}px) scale(${zoomScale})`
+          transform: `translate(${panX}px, ${panY}px) scale(${zoomScale})`,
+          transformOrigin: '0 0'
         }"
-      ></div>
+      >
+        <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
+          <!-- Main Edge Curve -->
+          <path
+            :d="getEdgePath(edge)"
+            fill="none"
+            :stroke="getEdgeColor(edge)"
+            :stroke-width="isEdgeHighlighted(edge) ? 2.5 : 1"
+            :stroke-dasharray="edge.type === 'dashed' ? '4 4' : 'none'"
+            class="transition-all duration-300 opacity-60 group-hover:opacity-100"
+          />
+          <!-- Flow Pulse Dot -->
+          <circle
+            v-if="isEdgeHighlighted(edge)"
+            r="3"
+            fill="#2DD4BF"
+            class="animate-ping"
+          >
+            <animateMotion
+              :path="getEdgePath(edge)"
+              dur="3s"
+              repeatCount="indefinite"
+            />
+          </circle>
+        </g>
+      </svg>
 
-      <!-- Transform Stage Layer -->
+      <!-- Spatial Node Elements Stage Layer -->
       <div
-        class="absolute inset-0 w-full h-full transition-transform duration-75 origin-center"
+        class="absolute inset-0 w-full h-full transition-transform duration-75 origin-top-left z-15"
         :style="{
           transform: `translate(${panX}px, ${panY}px) scale(${zoomScale})`
         }"
       >
-        <!-- Nodes Grid Container -->
-        <div class="p-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div
+          v-for="node in visibleNodes"
+          :key="node.id"
+          @click.stop="selectNode(node)"
+          @mouseenter="hoveredNodeId = node.id"
+          @mouseleave="hoveredNodeId = null"
+          class="absolute transition-all duration-300 cursor-pointer group"
+          :style="{
+            left: `${node.x}px`,
+            top: `${node.y}px`
+          }"
+        >
+          <!-- SHAPE 1: GLASS CARD SHAPE -->
           <div
-            v-for="node in filteredNodes"
-            :key="node.id"
-            @click.stop="selectNode(node)"
-            class="bg-[#111827]/90 backdrop-blur-md rounded-2xl p-5 border transition-all duration-300 cursor-pointer group hover:scale-102 hover:shadow-xl relative overflow-hidden"
+            v-if="activeShape === 'card'"
+            class="w-64 p-4 rounded-2xl bg-[#0f1722]/90 backdrop-blur-xl border transition-all duration-300 shadow-lg relative overflow-hidden"
             :class="[
               selectedNode?.id === node.id
-                ? 'border-emerald-400 ring-2 ring-emerald-500/20 shadow-emerald-950'
-                : 'border-gray-800 hover:border-emerald-600/50'
+                ? 'border-emerald-400 ring-2 ring-emerald-500/30 shadow-emerald-950 scale-105'
+                : hoveredNodeId === node.id
+                  ? 'border-emerald-500/70 scale-102'
+                  : 'border-gray-800 hover:border-gray-700'
             ]"
           >
-            <!-- Node Header -->
-            <div class="flex items-center justify-between mb-3">
-              <span
-                class="px-2.5 py-0.5 rounded-md text-[10px] font-bold text-d4 border"
-                :class="getNodeBadgeClass(node.category)"
-              >
+            <div class="flex items-center justify-between mb-2">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold text-d4 border" :class="getNodeBadgeClass(node.category)">
                 {{ getNodeCategoryLabel(node.category) }}
               </span>
-              <Icon :name="node.icon" class="w-5 h-5 text-gray-400 group-hover:text-emerald-400 transition-colors" />
+              <Icon :name="node.icon" class="w-4.5 h-4.5 text-gray-400 group-hover:text-emerald-400 transition" />
             </div>
 
-            <!-- Node Title & Path -->
-            <h3 class="text-sm font-bold text-white text-d4 group-hover:text-emerald-300 transition-colors mb-1">
+            <h3 class="text-xs font-bold text-white text-d4 group-hover:text-emerald-300 transition truncate mb-0.5">
               {{ isRTL ? node.titleFa : node.titleEn }}
             </h3>
-            <p class="text-[11px] font-mono text-gray-400 truncate ltr text-left mb-3">
+
+            <p class="text-[10px] font-mono text-gray-400 truncate text-left ltr mb-2">
               {{ node.path }}
             </p>
 
-            <!-- Description -->
-            <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-4">
-              {{ isRTL ? node.descFa : node.descEn }}
-            </p>
-
-            <!-- Tags Footer -->
-            <div class="flex items-center gap-1.5 flex-wrap pt-3 border-t border-gray-800">
-              <span
-                v-for="tag in node.tags"
-                :key="tag"
-                class="px-2 py-0.5 rounded-md bg-gray-800 text-[10px] font-mono text-gray-300"
-              >
-                #{{ tag }}
-              </span>
+            <div v-if="showAnnotations" class="space-y-1 pt-2 border-t border-gray-800/80 text-[10px]">
+              <div class="flex justify-between text-gray-400">
+                <span>وابستگی‌ها:</span>
+                <span class="font-mono text-emerald-400 font-bold">{{ node.depsCount }} گره</span>
+              </div>
+              <div class="flex justify-between text-gray-400">
+                <span>وضعیت SWR:</span>
+                <span class="font-mono text-cyan-400">0ms Eager</span>
+              </div>
             </div>
+          </div>
+
+          <!-- SHAPE 2: MINIMAL PILL SHAPE -->
+          <div
+            v-else-if="activeShape === 'pill'"
+            class="px-4 py-2 rounded-full bg-[#0f1722]/90 backdrop-blur-xl border flex items-center gap-2.5 shadow-md transition-all duration-300"
+            :class="[
+              selectedNode?.id === node.id
+                ? 'border-emerald-400 ring-2 ring-emerald-500/30 scale-105'
+                : 'border-gray-800 hover:border-emerald-500/60'
+            ]"
+          >
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <Icon :name="node.icon" class="w-4 h-4 text-emerald-300" />
+            <span class="text-xs font-bold text-white text-d4 whitespace-nowrap">
+              {{ isRTL ? node.titleFa : node.titleEn }}
+            </span>
+          </div>
+
+          <!-- SHAPE 3: TECH HEXAGON SHAPE -->
+          <div
+            v-else-if="activeShape === 'hex'"
+            class="w-40 p-3 rounded-2xl bg-[#0f1722]/95 border text-center transition-all duration-300 shadow-md"
+            :class="[
+              selectedNode?.id === node.id ? 'border-emerald-400 scale-105' : 'border-gray-800 hover:border-gray-600'
+            ]"
+          >
+            <Icon :name="node.icon" class="w-6 h-6 text-emerald-400 mx-auto mb-1" />
+            <div class="text-[11px] font-bold text-white text-d4 truncate">
+              {{ isRTL ? node.titleFa : node.titleEn }}
+            </div>
+            <div v-if="showAnnotations" class="text-[9px] font-mono text-gray-400 mt-1 truncate">
+              {{ node.id }}
+            </div>
+          </div>
+
+          <!-- SHAPE 4: COMPACT ORBIT CIRCLE SHAPE -->
+          <div
+            v-else
+            class="w-12 h-12 rounded-full bg-[#0f1722] border flex items-center justify-center shadow-lg transition-all duration-300"
+            :class="[
+              selectedNode?.id === node.id ? 'border-emerald-400 scale-110 ring-4 ring-emerald-500/20' : 'border-gray-800 hover:border-emerald-500'
+            ]"
+            :title="isRTL ? node.titleFa : node.titleEn"
+          >
+            <Icon :name="node.icon" class="w-5 h-5 text-emerald-300" />
           </div>
         </div>
       </div>
+
+      <!-- Floating Zoom Controls Footer -->
+      <div class="absolute bottom-5 left-5 z-20 flex items-center gap-1.5 bg-[#0c131c]/90 backdrop-blur-xl p-1.5 rounded-2xl border border-gray-800 shadow-xl">
+        <button @click="resetZoom" class="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold transition cursor-pointer">
+          <Icon name="mdi:aspect-ratio" class="w-4 h-4" />
+        </button>
+        <button @click="zoomIn" class="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition cursor-pointer">
+          <Icon name="mdi:plus" class="w-4 h-4" />
+        </button>
+        <button @click="zoomOut" class="p-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 transition cursor-pointer">
+          <Icon name="mdi:minus" class="w-4 h-4" />
+        </button>
+      </div>
     </div>
 
-    <!-- Node Detail Inspector Modal / Drawer -->
+    <!-- Node Detail Inspector Drawer -->
     <transition name="drawer-slide">
       <div
         v-if="selectedNode"
-        class="fixed inset-y-0 right-0 z-50 w-full sm:w-96 bg-[#0e1620] border-l border-gray-800 text-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto"
+        class="absolute inset-y-0 right-0 z-40 w-full sm:w-96 bg-[#090e15]/95 backdrop-blur-2xl border-l border-gray-800 text-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto"
       >
         <div class="space-y-6">
           <!-- Drawer Header -->
           <div class="flex items-center justify-between border-b border-gray-800 pb-4">
             <div class="flex items-center gap-2">
               <Icon :name="selectedNode.icon" class="w-6 h-6 text-emerald-400" />
-              <span class="text-xs font-bold text-emerald-300 font-mono">گره شماره #{{ selectedNode.id }}</span>
+              <span class="text-xs font-bold text-emerald-300 font-mono">گره اکوسیستم #{{ selectedNode.id }}</span>
             </div>
             <button
               @click="selectedNode = null"
@@ -165,36 +349,33 @@
 
           <!-- Title & Path -->
           <div class="space-y-2 text-right">
-            <span
-              class="inline-block px-3 py-1 rounded-md text-xs font-bold text-d4 border"
-              :class="getNodeBadgeClass(selectedNode.category)"
-            >
+            <span class="inline-block px-3 py-1 rounded-md text-xs font-bold text-d4 border" :class="getNodeBadgeClass(selectedNode.category)">
               {{ getNodeCategoryLabel(selectedNode.category) }}
             </span>
             <h2 class="text-xl font-extrabold text-white text-d4">
               {{ isRTL ? selectedNode.titleFa : selectedNode.titleEn }}
             </h2>
-            <div class="p-3 rounded-xl bg-gray-900 border border-gray-800 font-mono text-xs text-emerald-400 ltr overflow-x-auto">
+            <div class="p-3 rounded-xl bg-gray-950 border border-gray-800 font-mono text-xs text-emerald-400 ltr text-left overflow-x-auto">
               {{ selectedNode.path }}
             </div>
           </div>
 
-          <!-- Description & Architectural Role -->
+          <!-- Description -->
           <div class="space-y-2 text-right">
-            <h3 class="text-xs font-bold text-gray-400 text-d4">توضیحات و نقش معماری</h3>
-            <p class="text-xs text-gray-300 leading-relaxed bg-gray-900/50 p-4 rounded-2xl border border-gray-800">
+            <h3 class="text-xs font-bold text-gray-400 text-d4">نقش و مسئولیت در سامانه</h3>
+            <p class="text-xs text-gray-300 leading-relaxed bg-gray-950/60 p-4 rounded-2xl border border-gray-800/80">
               {{ isRTL ? selectedNode.descFa : selectedNode.descEn }}
             </p>
           </div>
 
           <!-- Technical Specs -->
           <div class="space-y-2 text-right">
-            <h3 class="text-xs font-bold text-gray-400 text-d4">مشخصات فنی و وابستگی‌ها</h3>
+            <h3 class="text-xs font-bold text-gray-400 text-d4">مشخصات فنی</h3>
             <div class="space-y-2">
               <div
                 v-for="(val, key) in selectedNode.specs"
                 :key="key"
-                class="flex items-center justify-between p-2.5 rounded-xl bg-gray-900 text-xs border border-gray-800/60"
+                class="flex items-center justify-between p-2.5 rounded-xl bg-gray-950 text-xs border border-gray-800/60"
               >
                 <span class="text-gray-400 font-mono">{{ key }}</span>
                 <span class="font-bold text-gray-200 font-mono">{{ val }}</span>
@@ -203,14 +384,14 @@
           </div>
         </div>
 
-        <!-- Action Links Footer -->
+        <!-- Action Links -->
         <div class="pt-6 border-t border-gray-800 space-y-2">
           <NuxtLink
             v-if="selectedNode.actionUrl"
             :to="selectedNode.actionUrl"
             class="block w-full py-3 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs text-center transition shadow-xs text-d4"
           >
-            {{ isRTL ? 'مشاهده و پیمایش گره' : 'Navigate to Node' }}
+            {{ isRTL ? 'پیمایش مستقیم به گره' : 'Navigate to Node' }}
           </NuxtLink>
         </div>
       </div>
@@ -223,16 +404,28 @@ import { ref, computed } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
-  layout: 'dashboard',
+  layout: 'dashboard'
 })
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-// Canvas Drag & Zoom State
-const panX = ref(0)
-const panY = ref(0)
-const zoomScale = ref(1)
+// Options State
+const isFullscreen = ref(false)
+const showAnnotations = ref(true)
+const showGridPattern = ref(true)
+const lodLevel = ref(3) // 1: Entry, 2: Pages, 3: Components, 4: Micro
+const activeCategory = ref('all')
+const activeLayoutMode = ref('graph') // graph, tree, grid, orbit
+const activeShape = ref('card') // card, pill, hex, circle
+const searchQuery = ref('')
+const hoveredNodeId = ref<string | null>(null)
+const selectedNode = ref<SpatialNode | null>(null)
+
+// Canvas Drag/Pan State
+const panX = ref(60)
+const panY = ref(60)
+const zoomScale = ref(0.9)
 const isDragging = ref(false)
 let dragStartX = 0
 let dragStartY = 0
@@ -270,259 +463,262 @@ function zoomIn() {
 }
 
 function zoomOut() {
-  zoomScale.value = Math.max(0.6, zoomScale.value - 0.15)
+  zoomScale.value = Math.max(0.4, zoomScale.value - 0.15)
 }
 
 function resetZoom() {
-  panX.value = 0
-  panY.value = 0
-  zoomScale.value = 1
+  panX.value = 60
+  panY.value = 60
+  zoomScale.value = 0.9
 }
 
-// Categories Filter
-const activeCategory = ref('all')
-
-const categories = [
-  { id: 'all', labelFa: 'همه گره‌ها', labelEn: 'All Nodes' },
-  { id: 'pages', labelFa: 'صفحات و مسیرها (Sitemap)', labelEn: 'Pages & Sitemap' },
-  { id: 'components', labelFa: 'کامپوننت‌ها و مدال‌ها', labelEn: 'Components & Modals' },
-  { id: 'composables', labelFa: 'کامپوزبل‌ها و SWR', labelEn: 'Composables & SWR' },
-  { id: 'pb', labelFa: 'دیتابیس PocketBase', labelEn: 'PocketBase Database' },
-  { id: 'api', labelFa: 'سرویس‌های API سرور', labelEn: 'Server APIs' },
-  { id: 'infra', labelFa: 'موتور و زیرساخت', labelEn: 'Engine & Infra' },
+// Modes & Shapes Definitions
+const layoutModes = [
+  { id: 'graph', labelFa: 'گراف فضایی', labelEn: 'Spatial Graph', icon: 'mdi:graph-outline' },
+  { id: 'tree', labelFa: 'درختی', labelEn: 'Tree View', icon: 'mdi:file-tree' },
+  { id: 'grid', labelFa: 'ماتریس', labelEn: 'Grid Matrix', icon: 'mdi:view-grid-outline' },
 ]
 
-interface NodeItem {
+const nodeShapes = [
+  { id: 'card', label: 'کارت شیشه‌ای', icon: 'mdi:card-bulleted-outline' },
+  { id: 'pill', label: 'کپسول کم‌حجم', icon: 'mdi:pill' },
+  { id: 'hex', label: 'شش‌ضلعی فنی', icon: 'mdi:hexagon-outline' },
+  { id: 'circle', label: 'دایره مدار', icon: 'mdi:circle-outline' },
+]
+
+const categories = [
+  { id: 'all', labelFa: 'همه گره‌ها', labelEn: 'All' },
+  { id: 'pages', labelFa: 'صفحات (Sitemap)', labelEn: 'Pages' },
+  { id: 'components', labelFa: 'کامپوننت‌ها', labelEn: 'Components' },
+  { id: 'composables', labelFa: 'کامپوزبل‌ها', labelEn: 'Composables' },
+  { id: 'pb', labelFa: 'دیتابیس PB', labelEn: 'Database' },
+  { id: 'api', labelFa: 'ای‌پیک‌آی سرور', labelEn: 'Server API' },
+]
+
+interface SpatialNode {
   id: string
   category: string
+  lod: number
   titleFa: string
   titleEn: string
   path: string
   descFa: string
   descEn: string
   icon: string
-  tags: string[]
+  x: number
+  y: number
+  depsCount: number
   specs: Record<string, string>
   actionUrl?: string
 }
 
-const nodes: NodeItem[] = [
-  // 1. Pages
+interface Edge {
+  from: string
+  to: string
+  type?: 'solid' | 'dashed'
+}
+
+// Node Position Graph Matrix
+const allNodes: SpatialNode[] = [
+  // Core Entry
   {
-    id: 'page-home',
+    id: 'home',
     category: 'pages',
+    lod: 1,
     titleFa: 'صفحه اصلی (Home)',
     titleEn: 'Home Page',
     path: 'pages/index.vue',
-    descFa: 'صفحه اصلی فرانت‌اند شامل صحنه‌های سه بعدی، ویدیوها، کاتالوگ و فرم‌های استعلام.',
-    descEn: 'Main frontend landing page with 3D scenes, videos, catalogs, and quote forms.',
+    descFa: 'ورودی اصلی فرانت‌اند با صحنه‌های سه بعدی و فرم استعلام.',
+    descEn: 'Main entry point with 3D scenes and quote calculator.',
     icon: 'mdi:home-outline',
-    tags: ['Nuxt', 'GSAP', 'MiniSearch'],
-    specs: { Layout: 'default', Route: '/', Status: 'Active 200 OK' },
+    x: 420,
+    y: 60,
+    depsCount: 8,
+    specs: { Route: '/', Layout: 'default' },
     actionUrl: '/'
   },
   {
-    id: 'page-about',
+    id: 'about',
     category: 'pages',
+    lod: 2,
     titleFa: 'درباره ما (About Us)',
     titleEn: 'About Us Page',
     path: 'pages/about/index.vue',
-    descFa: 'روایت صنعتی، تیم متخصص، استانداردهای کیفی و خط پین‌شده GSAP برای راهکارها.',
-    descEn: 'Industrial vision, team leads, quality standards, and GSAP pinned slides.',
+    descFa: 'تیم متخصص و خط پین‌شده 400vh برای راهکارها.',
+    descEn: 'Industrial team and 400vh pinned solutions stage.',
     icon: 'mdi:information-outline',
-    tags: ['GSAP', 'StaffImg', 'Fleet'],
-    specs: { Layout: 'default', Route: '/about', Status: 'Active 200 OK' },
+    x: 100,
+    y: 220,
+    depsCount: 4,
+    specs: { Route: '/about', Layout: 'default' },
     actionUrl: '/about'
   },
   {
-    id: 'page-products',
+    id: 'products',
     category: 'pages',
+    lod: 2,
     titleFa: 'کاتالوگ محصولات (Products)',
     titleEn: 'Products Catalog',
     path: 'pages/products/index.vue',
-    descFa: '۱۲ نوع محصول واقعی با موکاپ وکتور SVG، فیلتر دسته‌بندی و حالت دوگانه شبکه/لیست.',
-    descEn: '12 authentic products with SVG mockups, category tabs, and dual Grid/List view.',
+    descFa: '۱۲ نوع محصول واقعی با موکاپ وکتور SVG.',
+    descEn: '12 authentic packaging products with SVG mockups.',
     icon: 'mdi:package-variant-closed',
-    tags: ['SVG', 'Grid/List', 'Filters'],
-    specs: { Layout: 'default', Route: '/products', Status: 'Active 200 OK' },
+    x: 420,
+    y: 220,
+    depsCount: 6,
+    specs: { Route: '/products', Layout: 'default' },
     actionUrl: '/products'
   },
   {
-    id: 'page-history',
+    id: 'history',
     category: 'pages',
+    lod: 2,
     titleFa: 'تاریخچه ۲۵ ساله (History)',
-    titleEn: '25-Year History Timeline',
+    titleEn: '25-Year History',
     path: 'pages/history.vue',
-    descFa: 'تایم‌لاین کرونولوژیک تحولات لیتوگرافی، ماشین‌های هایدلبرگ و بوبست از ۱۳۷۸ تا ۱۴۰۴.',
-    descEn: 'Chronological timeline of Heidelberg and Bobst acquisitions from 1999 to 2026.',
+    descFa: 'تایم‌لاین کرونولوژیک صنعتی از ۱۳۷۸ تا ۱۴۰۴.',
+    descEn: '25-year chronological journey timeline.',
     icon: 'mdi:timeline-text-outline',
-    tags: ['Timeline', 'Milestones', '1999-2026'],
-    specs: { Layout: 'default', Route: '/history', Status: 'Active 200 OK' },
+    x: 740,
+    y: 220,
+    depsCount: 3,
+    specs: { Route: '/history', Layout: 'default' },
     actionUrl: '/history'
   },
-  {
-    id: 'page-blog',
-    category: 'pages',
-    titleFa: 'وبلاگ تخصصی (Blog)',
-    titleEn: 'Blog Ecosystem',
-    path: 'pages/blog/index.vue',
-    descFa: 'دانشنامه مقایسه ایندربرد و پشت طوسی، سلفون مخملی و استانداردهای صادرات.',
-    descEn: 'Printing knowledge base, material comparisons, and packaging design rules.',
-    icon: 'mdi:post-outline',
-    tags: ['Blog', 'Prepress', 'Articles'],
-    specs: { Layout: 'default', Route: '/blog', Status: 'Active 200 OK' },
-    actionUrl: '/blog'
-  },
-  {
-    id: 'page-faq',
-    category: 'pages',
-    titleFa: 'سوالات متداول (FAQ Help)',
-    titleEn: 'FAQ Help Center',
-    path: 'pages/help/faq.vue',
-    descFa: 'مرکز راهنمای آکاردئونی دسته‌بندی‌شده برای تیراژ، آماده‌سازی فایل و ارسال.',
-    descEn: 'Categorized accordion help center for minimum quantities and pre-press.',
-    icon: 'mdi:help-circle-outline',
-    tags: ['Accordion', 'Ordering', 'Support'],
-    specs: { Layout: 'default', Route: '/help/faq', Status: 'Active 200 OK' },
-    actionUrl: '/help/faq'
-  },
-  {
-    id: 'page-dashboard-cms',
-    category: 'pages',
-    titleFa: 'مدیریت CMS صفحات (Dashboard CMS)',
-    titleEn: 'Page CMS Studio',
-    path: 'pages/dashboard/cms/index.vue',
-    descFa: 'ویرایشگر درگاه پیش‌نویس با کارت‌های آکاردئونی و ویرایش مستقیم فیلدها روی نوار سربرگ.',
-    descEn: 'In-place CMS page studio with collapsible section cards and live draft saving.',
-    icon: 'mdi:file-document-edit-outline',
-    tags: ['CMS', 'In-Place', 'Drafts'],
-    specs: { Layout: 'admin', Route: '/dashboard/cms', Status: 'Admin Only' },
-    actionUrl: '/dashboard/cms'
-  },
-  {
-    id: 'page-dashboard-media',
-    category: 'pages',
-    titleFa: 'مخزن رسانه و فایل‌ها (Media Lab)',
-    titleEn: 'Media Studio',
-    path: 'pages/dashboard/media/index.vue',
-    descFa: 'مدیریت پوشه‌های درختی توئیده recursive با فیلتر پسوند، جستجو و ساخت لینک CDN.',
-    descEn: 'Recursive directory tree media manager with search, extension filters, and CDN links.',
-    icon: 'mdi:folder-multiple-image',
-    tags: ['Tree', 'Folders', 'CDN'],
-    specs: { Layout: 'admin', Route: '/dashboard/media', Status: 'Admin Only' },
-    actionUrl: '/dashboard/media'
-  },
 
-  // 2. Components & Modals
+  // Components & Tools
   {
-    id: 'comp-search-modal',
+    id: 'gsap-pinned',
     category: 'components',
-    titleFa: 'مدال جستجوی زنده (SearchModal)',
-    titleEn: 'Live Search Modal',
-    path: 'components/atom/SearchModal.vue',
-    descFa: 'موتور جستجوی ایندکس‌شده MiniSearch در فرانت‌اند با حافظه تاریخچه جستجو.',
-    descEn: 'Client-side MiniSearch indexing modal with persistent search history.',
-    icon: 'mdi:magnify',
-    tags: ['MiniSearch', 'Modal', 'Reactive'],
-    specs: { Type: 'Atom Component', Engine: 'MiniSearch 0.7' }
-  },
-  {
-    id: 'comp-solutions-showcase',
-    category: 'components',
-    titleFa: 'نمایشگر راهکارها (SolutionsShowcase)',
-    titleEn: 'Solutions Showcase',
-    path: 'components/about/SolutionsShowcase.vue',
-    descFa: 'تایم‌لاین تعاملی ۰۱ الی ۰۴ با نوار زمان پیشرفت و تغییر فریم عکس‌های وضوح بالا.',
-    descEn: 'Interactive step timeline with progress timer line and image cross-fading.',
+    lod: 3,
+    titleFa: 'بخش پین‌شده راهکارها',
+    titleEn: 'GSAP Pinned Stage',
+    path: 'components/about/AboutGsapPinnedSection.vue',
+    descFa: 'استیج قفل‌شده sticky با پیمایش گام به گام.',
+    descEn: 'Sticky pinned viewport stage with step locking.',
     icon: 'mdi:view-carousel-outline',
-    tags: ['Timeline', 'TimerBar', 'Fade'],
-    specs: { Type: 'About Component', Transitions: 'Vue Dynamic' }
+    x: 100,
+    y: 450,
+    depsCount: 2,
+    specs: { Mode: 'Sticky 360vh', Motion: 'Vue Morph' }
   },
-
-  // 3. Composables & SWR
   {
-    id: 'comp-usepageui',
+    id: 'use-page-ui',
     category: 'composables',
+    lod: 3,
     titleFa: 'کامپوزبل SWR (usePageUI)',
-    titleEn: 'SWR Page UI Composable',
+    titleEn: 'usePageUI SWR',
     path: 'composables/ui/usePageUI.ts',
-    descFa: 'لود فوری ۰ میلی‌ثانیه با اسکیماهای محلی JSON و به‌روزرسانی ریداکتیو از PocketBase.',
-    descEn: '0ms instant hydration via local JSON schemas + background PocketBase sync.',
+    descFa: 'لود ۰ms با اسکیماهای محلی و همگام‌سازی PB.',
+    descEn: '0ms instant hydration + PocketBase background sync.',
     icon: 'mdi:flash-outline',
-    tags: ['SWR', '0ms Cache', 'Eager JSON'],
-    specs: { Caching: 'SWR 0ms', Source: 'schemas/*-ui.json + PB' }
+    x: 420,
+    y: 450,
+    depsCount: 11,
+    specs: { Strategy: 'SWR 0ms', Hydration: 'Progressive' }
   },
 
-  // 4. PocketBase Collections
+  // PocketBase & Server APIs
   {
-    id: 'pb-pages',
+    id: 'pb-pages-coll',
     category: 'pb',
-    titleFa: 'کالکشن اسکیماها (pages)',
+    lod: 3,
+    titleFa: 'کالکشن اسکیما (pages)',
     titleEn: 'Pages Collection',
     path: 'PocketBase: pages',
-    descFa: 'نگهداری داده‌های سه زبانه uiData (FA, EN, AR) برای تمام ۱۱ صفحه اصلی سایت.',
-    descEn: 'Stores trilingual JSON UI data for all 11 public pages.',
+    descFa: 'رکورد سه زبانه uiData برای تمام ۱۱ صفحه.',
+    descEn: 'Trilingual UI schemas for all public pages.',
     icon: 'mdi:database-outline',
-    tags: ['PocketBase', 'JSON', 'Trilingual'],
-    specs: { Schema: 'slug, uiData, title', Type: 'Base Collection' }
+    x: 740,
+    y: 450,
+    depsCount: 11,
+    specs: { Type: 'PocketBase Record', Langs: 'FA, EN, AR' }
   },
-  {
-    id: 'pb-products',
-    category: 'pb',
-    titleFa: 'کالکشن محصولات (products)',
-    titleEn: 'Products Collection',
-    path: 'PocketBase: products',
-    descFa: 'نگهداری مشخصات فنی، قیمت، تیراژ، دسته‌بندی و موکاپ‌های وکتور محصولات.',
-    descEn: 'Stores product catalog specs, min quantity, pricing, and SVG mockups.',
-    icon: 'mdi:cube-outline',
-    tags: ['PocketBase', 'Products', 'Specs'],
-    specs: { Schema: 'name, slug, sections', Type: 'Base Collection' }
-  },
-
-  // 5. Server API Endpoints
   {
     id: 'api-publish',
     category: 'api',
-    titleFa: 'ای‌پی‌آی انتشار محتوا (ui/publish)',
-    titleEn: 'Publish UI API',
+    lod: 4,
+    titleFa: 'ای‌پی‌آی انتشار (publish)',
+    titleEn: 'Publish API',
     path: 'server/api/admin/ui/publish.post.ts',
-    descFa: 'تایید و انتشار پیش‌نویس‌های CMS روی دیتابیس اصلی PocketBase.',
-    descEn: 'Publishes draft UI schemas to production PocketBase records.',
+    descFa: 'انتشار رسمی پیش‌نویس‌های CMS.',
+    descEn: 'Publish CMS draft schemas to production.',
     icon: 'mdi:cloud-upload-outline',
-    tags: ['H3', 'Nitro', 'Server API'],
-    specs: { Method: 'POST', Endpoint: '/api/admin/ui/publish' }
-  },
-
-  // 6. Infrastructure & Engine
-  {
-    id: 'infra-nitro',
-    category: 'infra',
-    titleFa: 'موتور Nitro Server',
-    titleEn: 'Nitro Engine',
-    path: 'nuxt.config.ts -> nitro',
-    descFa: 'پکیجینگ بهینه تابع سرورلس Vercel با فشرده‌سازی پابلیک و حذف Sourcemap سنگین.',
-    descEn: 'Optimized Vercel serverless function packaging with asset compression.',
-    icon: 'mdi:server-network',
-    tags: ['Vercel', 'Nitro', 'Edge'],
-    specs: { Preset: 'vercel', Compression: 'Enabled' }
+    x: 420,
+    y: 650,
+    depsCount: 2,
+    specs: { Method: 'POST', Route: '/api/admin/ui/publish' }
   }
 ]
 
-const selectedNode = ref<NodeItem | null>(null)
+const allEdges: Edge[] = [
+  { from: 'home', to: 'about' },
+  { from: 'home', to: 'products' },
+  { from: 'home', to: 'history' },
+  { from: 'about', to: 'gsap-pinned' },
+  { from: 'products', to: 'use-page-ui' },
+  { from: 'use-page-ui', to: 'pb-pages-coll' },
+  { from: 'use-page-ui', to: 'api-publish' }
+]
 
-function selectNode(node: NodeItem) {
+const visibleNodes = computed(() => {
+  return allNodes.filter(n => {
+    if (n.lod > lodLevel.value) return false
+    if (activeCategory.value !== 'all' && n.category !== activeCategory.value) return false
+    if (searchQuery.value) {
+      const q = searchQuery.value.toLowerCase()
+      const matchFa = n.titleFa.toLowerCase().includes(q)
+      const matchEn = n.titleEn.toLowerCase().includes(q)
+      const matchPath = n.path.toLowerCase().includes(q)
+      if (!matchFa && !matchEn && !matchPath) return false
+    }
+    return true
+  })
+})
+
+const visibleEdges = computed(() => {
+  const visibleIds = new Set(visibleNodes.value.map(n => n.id))
+  return allEdges.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
+})
+
+function selectNode(node: SpatialNode) {
   selectedNode.value = node
 }
 
-function getCategoryCount(catId: string) {
-  if (catId === 'all') return nodes.length
-  return nodes.filter(n => n.category === catId).length
+function isEdgeHighlighted(edge: Edge) {
+  if (!hoveredNodeId.value && !selectedNode.value) return false
+  const activeId = hoveredNodeId.value || selectedNode.value?.id
+  return edge.from === activeId || edge.to === activeId
 }
 
-const filteredNodes = computed(() => {
-  if (activeCategory.value === 'all') return nodes
-  return nodes.filter(n => n.category === activeCategory.value)
-})
+function getEdgePath(edge: Edge) {
+  const fromNode = allNodes.find(n => n.id === edge.from)
+  const toNode = allNodes.find(n => n.id === edge.to)
+  if (!fromNode || !toNode) return ''
+
+  const x1 = fromNode.x + 100
+  const y1 = fromNode.y + 40
+  const x2 = toNode.x + 100
+  const y2 = toNode.y + 40
+
+  const dx = x2 - x1
+  const dy = y2 - y1
+  const cx1 = x1 + dx * 0.5
+  const cy1 = y1
+  const cx2 = x1 + dx * 0.5
+  const cy2 = y2
+
+  return `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`
+}
+
+function getEdgeColor(edge: Edge) {
+  return isEdgeHighlighted(edge) ? '#2DD4BF' : '#374151'
+}
+
+function getCategoryCount(catId: string) {
+  if (catId === 'all') return allNodes.length
+  return allNodes.filter(n => n.category === catId).length
+}
 
 function getNodeCategoryLabel(catId: string) {
   const cat = categories.find(c => c.id === catId)
@@ -537,16 +733,23 @@ function getNodeBadgeClass(catId: string) {
     case 'composables': return 'bg-amber-500/20 text-amber-300 border-amber-500/30'
     case 'pb': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
     case 'api': return 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-    case 'infra': return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30'
     default: return 'bg-gray-800 text-gray-300 border-gray-700'
   }
 }
 </script>
 
 <style scoped>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .drawer-slide-enter-active,
 .drawer-slide-leave-active {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
 }
 .drawer-slide-enter-from,
 .drawer-slide-leave-to {
