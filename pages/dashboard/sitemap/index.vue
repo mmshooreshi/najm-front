@@ -1273,19 +1273,33 @@ watchEffect(() => {
 // Reactive Coordinate Tracker for 120 FPS Glitch-Free SVG Link Following
 const dragCoordRevision = ref(0)
 
-// 120 FPS INSTANT DRAGGING WITH REAL-TIME DISPATCH
+// 120 FPS INSTANT DRAGGING WITH FAMILY GROUP DRAGGING & MINIMUM DISPLACEMENT
 const isDraggingNodeId = ref<string | null>(null)
+let draggedFamilyNodeSnapshots: { id: string, startX: number, startY: number }[] = []
 
 function startNodePointerDrag(e: PointerEvent, node: any) {
   if (isNodeLocked(node.id)) return
+  if ((e.target as HTMLElement).closest('button, input, a')) return
+
   isDraggingNodeId.value = node.id
   nodeDragStartClientX = e.clientX
   nodeDragStartClientY = e.clientY
   nodeDragStartNodeX = node.currentX
   nodeDragStartNodeY = node.currentY
 
+  // Capture all unlocked children of this parent to drag the whole family together!
+  const familyIds = getSubtreeNodeIds(node.id)
+  draggedFamilyNodeSnapshots = familyIds
+    .map(id => rawDynamicNodes.value.find(n => n.id === id))
+    .filter(n => n && !isNodeLocked(n.id))
+    .map(n => ({ id: n.id, startX: n.currentX, startY: n.currentY }))
+
+  try {
+    ;(e.currentTarget as HTMLElement)?.setPointerCapture?.(e.pointerId)
+  } catch (err) {}
+
   if (typeof window !== 'undefined') {
-    window.addEventListener('pointermove', onGlobalPointerMove, { passive: true })
+    window.addEventListener('pointermove', onGlobalPointerMove, { passive: false })
     window.addEventListener('pointerup', onGlobalPointerUp)
     window.addEventListener('pointercancel', onGlobalPointerUp)
   }
@@ -1296,59 +1310,90 @@ function onGlobalPointerMove(e: PointerEvent) {
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
   if (!isDraggingNodeId.value) return
-  const dragged = rawDynamicNodes.value.find(n => n.id === isDraggingNodeId.value)
-  if (dragged && !isNodeLocked(dragged.id)) {
-    const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
-    const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
-    dragged.currentX = Math.round(nodeDragStartNodeX + dx)
-    dragged.currentY = Math.round(nodeDragStartNodeY + dy)
-    dragCoordRevision.value++
+  if (e.cancelable) e.preventDefault()
+
+  const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
+  const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
+
+  // Move the dragged node and its family subtree smoothly
+  for (const snap of draggedFamilyNodeSnapshots) {
+    const item = rawDynamicNodes.value.find(n => n.id === snap.id)
+    if (item && !isNodeLocked(item.id)) {
+      item.currentX = Math.round(snap.startX + dx)
+      item.currentY = Math.round(snap.startY + dy)
+    }
   }
+
+  dragCoordRevision.value++
 }
 
 function getNodeRadius(node: any): number {
-  if (node.depth === 0) return 135
-  if (node.depth === 1) return 110
-  return 75
+  if (node.depth === 0) return 130
+  if (node.depth === 1) return 105
+  return 70
 }
 
-function smartRepulseOverlap(activeNode: any) {
-  const rA = getNodeRadius(activeNode)
+// SMART MINIMAL-DISPLACEMENT ORGANIC NON-OVERLAP SOLVER
+function smartPrepositionAllNodes() {
+  const visible = visibleNodes.value || []
+  if (visible.length < 2) return
 
-  for (let iter = 0; iter < 3; iter++) {
-    for (const other of rawDynamicNodes.value) {
-      if (other.id === activeNode.id || isNodeLocked(other.id)) continue
-      const rB = getNodeRadius(other)
-      const minDist = rA + rB + repulsionCushion.value
+  // Multi-pass soft relaxation: resolves overlaps with minimum necessary movement
+  for (let pass = 0; pass < 5; pass++) {
+    for (let i = 0; i < visible.length; i++) {
+      const nodeA = visible[i]
+      const rA = getNodeRadius(nodeA)
 
-      const dx = other.currentX - activeNode.currentX
-      const dy = other.currentY - activeNode.currentY
-      const dist = Math.hypot(dx, dy) || 1
+      for (let j = i + 1; j < visible.length; j++) {
+        const nodeB = visible[j]
+        const rB = getNodeRadius(nodeB)
+        const minDist = rA + rB + repulsionCushion.value
 
-      if (dist < minDist) {
-        const overlap = minDist - dist
-        const nx = dx / dist
-        const ny = dy / dist
-        const pushDist = Math.min(20, Math.round(overlap * 0.35))
+        const dx = nodeB.currentX - nodeA.currentX
+        const dy = nodeB.currentY - nodeA.currentY
+        const dist = Math.hypot(dx, dy) || 1
 
-        other.currentX = Math.min(stageBaseWidth - 70, Math.max(70, other.currentX + nx * pushDist))
-        other.currentY = Math.min(stageBaseHeight - 50, Math.max(50, other.currentY + ny * pushDist))
+        if (dist < minDist) {
+          const overlap = minDist - dist
+          const nx = dx / dist
+          const ny = dy / dist
+
+          const aLocked = isNodeLocked(nodeA.id)
+          const bLocked = isNodeLocked(nodeB.id)
+
+          if (!aLocked && !bLocked) {
+            // Push both away symmetrically with minimal displacement
+            const halfOverlap = overlap * 0.5
+            nodeA.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeA.currentX - nx * halfOverlap)))
+            nodeA.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeA.currentY - ny * halfOverlap)))
+            nodeB.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeB.currentX + nx * halfOverlap)))
+            nodeB.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeB.currentY + ny * halfOverlap)))
+          } else if (!aLocked && bLocked) {
+            // Only push A
+            nodeA.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeA.currentX - nx * overlap)))
+            nodeA.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeA.currentY - ny * overlap)))
+          } else if (aLocked && !bLocked) {
+            // Only push B
+            nodeB.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeB.currentX + nx * overlap)))
+            nodeB.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeB.currentY + ny * overlap)))
+          }
+        }
       }
     }
   }
 
   saveStateToLocalStorage()
   dragCoordRevision.value++
+  autoFitConstellation()
 }
 
 function onGlobalPointerUp() {
   if (isDraggingNodeId.value) {
-    const dragged = rawDynamicNodes.value.find(n => n.id === isDraggingNodeId.value)
-    if (dragged) {
-      smartRepulseOverlap(dragged)
-    }
+    // Settle layout with minimal displacement anti-overlap solver
+    smartPrepositionAllNodes()
   }
   isDraggingNodeId.value = null
+  draggedFamilyNodeSnapshots = []
 
   if (typeof window !== 'undefined') {
     window.removeEventListener('pointermove', onGlobalPointerMove)
