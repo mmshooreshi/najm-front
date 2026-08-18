@@ -11,9 +11,9 @@
       <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
     </div>
 
-    <!-- Top HUD Toolbar with 4 Dynamic Layout Engines & Global Controls -->
-    <header class="relative z-40 h-14 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
-      <!-- Left: Navigation & Graph Telemetry -->
+    <!-- Top Clean HUD Toolbar -->
+    <header class="relative z-40 h-14 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
+      <!-- Left: Navigation & Node Count Badge -->
       <div class="flex items-center gap-2">
         <NuxtLink
           to="/dashboard"
@@ -23,14 +23,14 @@
           <Icon name="mdi:arrow-right" class="w-4 h-4" :class="isRTL ? '' : 'rotate-180'" />
         </NuxtLink>
 
-        <!-- Live Graph Count -->
-        <div class="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
+        <!-- Live Node Count -->
+        <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
           <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
           <span>{{ visibleNodes.length }} صفحه در نقشه</span>
         </div>
       </div>
 
-      <!-- Center: 4 DYNAMIC VIEW MODES & RECURSIVE SUBTREE TOGGLES -->
+      <!-- Center: 4 View Modes, Math Layout Re-Center, Cascading Toggles, and Spacing -->
       <div class="flex items-center gap-1.5 sm:gap-2 py-1">
         <!-- 4 Layout Engines -->
         <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
@@ -49,16 +49,16 @@
 
         <div class="h-5 w-[1px] bg-slate-200 hidden sm:block"></div>
 
-        <!-- Re-Center / Re-Calculate Math Layout -->
+        <!-- Auto-Fit & Re-Center Math Layout -->
         <button
           @click="resetNodePositions"
           class="w-8 h-8 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer active:scale-95"
-          title="محاسبه مجدد موقعیت‌های هندسی"
+          title="محاسبه مجدد و تراز خودکار در مرکز"
         >
           <Icon name="mdi:crosshairs-gps" class="w-4 h-4" />
         </button>
 
-        <!-- Master 1-Arrow (Toggle Direct) -->
+        <!-- Master 1-Arrow (Toggle Direct Children) -->
         <button
           @click="toggleDirectChildrenOfAll"
           class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
@@ -76,7 +76,7 @@
           <Icon :name="isAnyRecursiveFolded ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4" />
         </button>
 
-        <!-- Unlock / Lock All -->
+        <!-- Lock / Unlock All -->
         <button
           @click="toggleLockAll"
           class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
@@ -85,7 +85,7 @@
           <Icon :name="isAllLocked ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3.5 h-3.5" :class="isAllLocked ? 'text-amber-600' : 'text-slate-400'" />
         </button>
 
-        <!-- Spacing & Density Physics Tuner Button -->
+        <!-- Spacing & Density Tuner Button -->
         <button
           @click="showTuningPanel = !showTuningPanel"
           class="px-2.5 py-1 rounded-xl border flex items-center gap-1.5 shadow-2xs transition cursor-pointer font-bold text-xs"
@@ -96,7 +96,7 @@
           <span class="hidden sm:inline">فواصل: {{ Math.round(clusterSpacingScale * 100) }}%</span>
         </button>
 
-        <!-- Group Selector Chips -->
+        <!-- Category Group Filters -->
         <div class="hidden lg:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
             @click="selectedGroup = 'all'"
@@ -119,9 +119,9 @@
         </div>
       </div>
 
-      <!-- Right: Search, Refresh & Debug -->
+      <!-- Right: Live Search & Refresh -->
       <div class="flex items-center gap-1.5">
-        <div class="relative w-24 sm:w-32">
+        <div class="relative w-28 sm:w-36">
           <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
           <input
             v-model="searchQuery"
@@ -134,61 +134,48 @@
         <button
           @click="refreshSitemap"
           class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-800 shadow-2xs transition cursor-pointer"
-          title="بروزرسانی داده‌ها از PocketBase"
+          title="بروزرسانی داده‌ها از دیتابیس"
         >
           <Icon name="mdi:refresh" class="w-4 h-4" />
-        </button>
-
-        <button
-          @click="showDebugPane = !showDebugPane"
-          class="w-8 h-8 flex items-center justify-center rounded-xl border shadow-2xs transition cursor-pointer"
-          :class="[
-            showDebugPane
-              ? 'bg-emerald-800 text-white border-emerald-800'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-          ]"
-          title="کنسول شبکه"
-        >
-          <Icon name="mdi:code-json" class="w-4 h-4" />
         </button>
       </div>
     </header>
 
-    <!-- FIT-CONTAINED AUTO-RESIZING STAGE -->
+    <!-- AUTO-FIT & AUTO-CENTERED CLUSTER CANVAS STAGE -->
     <div
       ref="canvasStageRef"
       class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-default"
       style="touch-action: none;"
     >
-      <!-- Centered Scaled Cluster Stage -->
+      <!-- Scaled & Centered Dynamic Cluster Stage -->
       <div
-        class="relative transition-transform duration-300 ease-out"
+        class="relative transition-[transform,left,top] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
         :style="{
           width: `${stageBaseWidth}px`,
           height: `${stageBaseHeight}px`,
-          transform: `scale(${clusterFitScale})`,
+          transform: `translate3d(${clusterCenterOffsetX}px, ${clusterCenterOffsetY}px, 0) scale(${clusterFitScale})`,
           transformOrigin: 'center center'
         }"
       >
-        <!-- DYNAMIC TOPOLOGICAL VECTOR PATHS -->
+        <!-- DYNAMIC TOPOLOGICAL VECTOR PATHS (GLUED TO NODES AT 120 FPS) -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
-            <!-- Background Glow for Active Route -->
+            <!-- Active Route Glowing Halo -->
             <path
               v-if="isEdgeActive(edge)"
               :d="getEdgePath(edge)"
               fill="none"
               :stroke="edge.color"
-              stroke-opacity="0.25"
+              stroke-opacity="0.3"
               stroke-width="8"
               stroke-linecap="round"
             />
-            <!-- Main Vector Path (Thinner 1.2px by default, bold 3.5px when active) -->
+            <!-- Vector Link (1.3px default, 3.5px active) -->
             <path
               :d="getEdgePath(edge)"
               fill="none"
               :stroke="isEdgeActive(edge) ? edge.color : '#94a3b8'"
-              :stroke-opacity="isEdgeActive(edge) ? 1.0 : 0.45"
+              :stroke-opacity="isEdgeActive(edge) ? 1.0 : 0.4"
               :stroke-width="isEdgeActive(edge) ? 3.5 : 1.3"
               stroke-linecap="round"
             />
@@ -208,7 +195,7 @@
           </g>
         </svg>
 
-        <!-- DYNAMIC MATHEMATICALLY POSITIONED NODES -->
+        <!-- DYNAMIC NODES WITH ZERO OVERLAP GEOMETRY -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
@@ -222,7 +209,7 @@
             isNodeLocked(node.id) ? 'cursor-default' : 'cursor-grab active:cursor-grabbing',
             isDraggingNodeId === node.id
               ? 'z-50 duration-0 transition-none will-change-transform'
-              : 'z-20 transition-[left,top,transform] duration-500 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]'
+              : 'z-20 transition-[left,top,transform] duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
           ]"
           :style="{
             left: `${node.currentX}px`,
@@ -232,16 +219,13 @@
             touchAction: 'none'
           }"
         >
-          <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px) -->
+          <!-- 1. ROOT COMMAND NUCLEUS NODE (260px × 150px) -->
           <div
             v-if="node.depth === 0"
             class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/70 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
-            :style="{ width: '270px', minHeight: '155px' }"
+            :style="{ width: '260px', minHeight: '150px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500' : ''"
           >
-            <!-- Top Glass Highlight -->
-            <div class="absolute inset-x-4 top-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent pointer-events-none"></div>
-
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <div class="w-10 h-10 rounded-2xl bg-emerald-800 text-white flex items-center justify-center shadow-sm">
@@ -294,7 +278,7 @@
             <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
               <span class="font-bold text-emerald-800 flex items-center gap-1">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>هسته مرکزی ({{ node.childrenIds?.length || 0 }} شاخه)</span>
+                <span>{{ node.childrenIds?.length || 0 }} شاخه متصل</span>
               </span>
 
               <button
@@ -306,11 +290,11 @@
             </div>
           </div>
 
-          <!-- 2. PRIMARY PILLAR NODE (215px × 125px) -->
+          <!-- 2. PRIMARY PILLAR NODE (210px × 120px) -->
           <div
             v-else-if="node.depth === 1"
             class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200 bg-white border border-slate-200 shadow-[0_16px_36px_-8px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(0,0,0,0.05)]"
-            :style="{ width: '215px', minHeight: '125px' }"
+            :style="{ width: '210px', minHeight: '120px' }"
             :class="selectedNode?.id === node.id ? 'ring-3 ring-emerald-500' : ''"
           >
             <div class="flex items-center justify-between gap-2">
@@ -373,16 +357,16 @@
             </div>
           </div>
 
-          <!-- 3. COMPACT SATELLITE NODE (145px × 65px) -->
+          <!-- 3. COMPACT SATELLITE NODE (140px × 60px) -->
           <div
             v-else
-            class="relative rounded-2xl p-2.5 flex items-center justify-between gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
-            :style="{ width: '145px', minHeight: '65px' }"
+            class="relative rounded-2xl p-2 flex items-center justify-between gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
+            :style="{ width: '140px', minHeight: '60px' }"
             :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500' : ''"
           >
             <div class="flex items-center gap-2 overflow-hidden flex-1">
               <div
-                class="w-7 h-7 rounded-xl flex items-center justify-center text-white shadow-2xs shrink-0"
+                class="w-6 h-6 rounded-xl flex items-center justify-center text-white shadow-2xs shrink-0"
                 :style="{ backgroundColor: node.accentColor || '#64748b' }"
               >
                 <Icon :name="node.icon || 'mdi:file-document-outline'" class="w-3.5 h-3.5" />
@@ -410,7 +394,7 @@
       </div>
     </div>
 
-    <!-- ALWAYS-VISIBLE FLOATING PHYSICS & SPACING TUNING DOCK -->
+    <!-- FLOATING PHYSICS & SPACING CONTROL DOCK -->
     <transition name="fade">
       <div
         v-if="showTuningPanel"
@@ -514,7 +498,7 @@
       </div>
     </transition>
 
-    <!-- 100/100 LIGHT MULTI-ENGINE STUDIO -->
+    <!-- LIGHT MULTI-ENGINE CONTENT & JSON STUDIO -->
     <transition name="fade">
       <div
         v-if="showJsonStudio"
@@ -636,44 +620,8 @@
               class="px-4 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
             >
               <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3.5 h-3.5" :class="isStudioSaving ? 'animate-spin' : ''" />
-              <span>{{ isStudioSaving ? 'در حال ذخیره...' : 'ذخیره در PocketBase' }}</span>
+              <span>{{ isStudioSaving ? 'در حال ذخیره...' : 'ذخیره در دیتابیس' }}</span>
             </button>
-          </div>
-        </div>
-      </div>
-    </transition>
-
-    <!-- NETWORK TELEMETRY DOCK -->
-    <transition name="dock-slide">
-      <div
-        v-if="showDebugPane"
-        class="fixed bottom-0 inset-x-0 z-50 h-72 bg-white/98 backdrop-blur-2xl border-t border-slate-200 shadow-2xl flex flex-col font-sans text-xs text-slate-800 select-text"
-      >
-        <div class="h-8 px-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
-          <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="font-bold text-emerald-800 text-xs">POCKETBASE NETWORK TELEMETRY</span>
-          </div>
-
-          <button
-            @click="showDebugPane = false"
-            class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-800 hover:bg-slate-200 transition cursor-pointer"
-          >
-            <Icon name="mdi:close" class="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <div class="flex-1 p-3 overflow-y-auto divide-y divide-slate-100">
-          <div
-            v-for="req in waterfallRequests"
-            :key="req.id"
-            class="py-1.5 flex items-center justify-between font-mono text-[11px]"
-          >
-            <div class="flex items-center gap-2">
-              <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold">{{ req.method }}</span>
-              <span class="text-slate-700 font-medium">{{ req.endpoint }}</span>
-            </div>
-            <span class="text-emerald-700 font-bold">{{ req.durationMs }}ms • {{ req.status }}</span>
           </div>
         </div>
       </div>
@@ -699,7 +647,6 @@ const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
-const showDebugPane = ref(false)
 
 // 4 VIEW MODES
 const currentViewMode = ref<'constellation' | 'tree' | 'columns' | 'radial'>('constellation')
@@ -714,6 +661,7 @@ function switchViewMode(modeId: 'constellation' | 'tree' | 'columns' | 'radial')
   currentViewMode.value = modeId
   applyLayoutCoordinates(modeId)
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 // Group Selection
@@ -783,6 +731,7 @@ function toggleDirectChildren(nodeId: string) {
     foldedBranches.value.add(nodeId)
   }
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 // 2-Arrow (Recursive Subtree Deep Fold)
@@ -798,6 +747,7 @@ function toggleRecursiveChildren(nodeId: string) {
     }
   }
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 function getSubtreeNodeIds(parentId: string): string[] {
@@ -837,6 +787,7 @@ function toggleDirectChildrenOfAll() {
     }
   }
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 function toggleRecursiveChildrenOfAll() {
@@ -848,6 +799,7 @@ function toggleRecursiveChildrenOfAll() {
     }
   }
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 function saveStateToLocalStorage() {
@@ -859,7 +811,7 @@ function saveStateToLocalStorage() {
     localStorage.setItem('najm_sitemap_folded', JSON.stringify([...foldedBranches.value]))
     localStorage.setItem('najm_sitemap_locked', JSON.stringify([...lockedNodes.value]))
     
-    // Save custom positions
+    // Save custom positions of locked nodes
     const posMap: Record<string, { x: number, y: number }> = {}
     for (const n of rawDynamicNodes.value) {
       posMap[n.id] = { x: n.currentX, y: n.currentY }
@@ -913,6 +865,8 @@ function loadStateFromLocalStorage() {
 const stageBaseWidth = 1100
 const stageBaseHeight = 720
 const clusterFitScale = ref(1)
+const clusterCenterOffsetX = ref(0)
+const clusterCenterOffsetY = ref(0)
 
 // Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
@@ -984,7 +938,6 @@ function undoAllChanges() {
 async function saveWorkingSchemaToPocketBase() {
   if (!activeStudioNode.value) return
   isStudioSaving.value = true
-  const startTime = performance.now()
 
   try {
     const slug = activeStudioNode.value.slug || activeStudioNode.value.id
@@ -994,27 +947,17 @@ async function saveWorkingSchemaToPocketBase() {
       uiData: currentWorkingSchema.value
     }
 
-    const res = await $fetch('/api/admin/ui/publish', {
+    await $fetch('/api/admin/ui/publish', {
       method: 'POST',
       body: payload
     }).catch(() => null)
 
-    const durationMs = Math.round(performance.now() - startTime)
     activeStudioNode.value.source = 'backend'
     if (activeStudioNode.value.liveData) {
       activeStudioNode.value.liveData.rawUiData = currentWorkingSchema.value
     }
 
     originalBaselineSchema.value = JSON.parse(JSON.stringify(currentWorkingSchema.value))
-
-    waterfallRequests.value.unshift({
-      id: `req-${Date.now()}`,
-      method: 'POST',
-      endpoint: `/api/admin/ui/publish [${slug}]`,
-      status: 200,
-      durationMs
-    })
-
     showJsonStudio.value = false
   } catch (err) {
     //
@@ -1022,10 +965,6 @@ async function saveWorkingSchemaToPocketBase() {
     isStudioSaving.value = false
   }
 }
-
-const waterfallRequests = ref<any[]>([
-  { id: '1', method: 'GET', endpoint: '/api/admin/sitemap', status: 200, durationMs: 12 }
-])
 
 function getKeyCount(node: any) {
   const ui = node.liveData?.rawUiData || {}
@@ -1048,7 +987,7 @@ let nodeDragStartNodeY = 0
 
 function getNode3DTilt(node: any) {
   if (hoveredNodeId.value === node.id && !isDraggingNodeId.value) {
-    return `perspective(600px) rotateX(${mouseRelativeY.value * 1.3}deg) rotateY(${mouseRelativeX.value * 1.3}deg)`
+    return `perspective(600px) rotateX(${mouseRelativeY.value * 1.2}deg) rotateY(${mouseRelativeX.value * 1.2}deg)`
   }
   return 'perspective(600px) rotateX(0deg) rotateY(0deg)'
 }
@@ -1069,6 +1008,7 @@ const repulsionCushion = ref(15)
 function onTuningChange() {
   applyLayoutCoordinates(currentViewMode.value)
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 function resetTuningDefaults() {
@@ -1076,9 +1016,10 @@ function resetTuningDefaults() {
   repulsionCushion.value = 15
   applyLayoutCoordinates(currentViewMode.value)
   saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
-// PURE MATHEMATICAL LAYOUT ALGORITHMS WITH DYNAMIC SPACING SCALE
+// PURE MATHEMATICAL ZERO-OVERLAP LAYOUT ALGORITHMS
 function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'columns' | 'radial'): Record<string, { x: number, y: number }> {
   const posMap: Record<string, { x: number, y: number }> = {}
   const cx = stageBaseWidth / 2   // 550
@@ -1092,23 +1033,23 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
   const depth2Nodes = nodesList.filter(n => n.depth === 2)
 
   if (mode === 'constellation') {
-    // Center root
+    // Center root Nucleus
     posMap[root.id] = { x: cx, y: cy }
 
-    // Radial Orbits for Depth 1
+    // Radial Orbits for Depth 1 Pillars (Calibrated to 270px radius)
     const n1 = depth1Nodes.length
     depth1Nodes.forEach((node, i) => {
       const angle = (i * (2 * Math.PI) / n1) - Math.PI / 2
-      const r1 = 230 * scale
+      const r1 = 260 * scale
       const px = cx + Math.cos(angle) * r1
       const py = cy + Math.sin(angle) * r1 * 0.85
       posMap[node.id] = { x: Math.round(px), y: Math.round(py) }
 
-      // Satellites placed along parent's radial vector
+      // Satellites placed outward along parent's radial vector (410px radius)
       const children = nodesList.filter(c => c.parentId === node.id)
       children.forEach((child, ci) => {
-        const offsetAngle = angle + (ci - (children.length - 1) / 2) * 0.4
-        const r2 = r1 + 140 * scale
+        const offsetAngle = angle + (ci - (children.length - 1) / 2) * 0.35
+        const r2 = r1 + 150 * scale
         const sx = cx + Math.cos(offsetAngle) * r2
         const sy = cy + Math.sin(offsetAngle) * r2 * 0.85
         posMap[child.id] = { x: Math.round(sx), y: Math.round(sy) }
@@ -1118,15 +1059,15 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
     // Root direct satellites (menu, footer, login)
     const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
     rootSatellites.forEach((node, i) => {
-      const offset = (i - (rootSatellites.length - 1) / 2) * 160 * scale
+      const offset = (i - (rootSatellites.length - 1) / 2) * (150 * scale)
       posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(cy + 240 * scale) }
     })
   } else if (mode === 'tree') {
-    // Org Tree Hierarchy
-    posMap[root.id] = { x: cx, y: Math.round(95 * scale) }
+    // Org Tree Hierarchy with Clean Column Lanes
+    posMap[root.id] = { x: cx, y: Math.round(85 * scale) }
 
     const n1 = depth1Nodes.length
-    const laneWidth = ((stageBaseWidth - 100) / Math.max(1, n1)) * Math.min(1.2, scale)
+    const laneWidth = ((stageBaseWidth - 100) / Math.max(1, n1)) * Math.min(1.15, scale)
 
     depth1Nodes.forEach((node, i) => {
       const colCenterX = 50 + laneWidth * i + laneWidth / 2
@@ -1134,15 +1075,15 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
 
       const children = nodesList.filter(c => c.parentId === node.id)
       children.forEach((child, ci) => {
-        const subOffset = (ci - (children.length - 1) / 2) * 140 * scale
+        const subOffset = (ci - (children.length - 1) / 2) * (140 * scale)
         posMap[child.id] = { x: Math.round(colCenterX + subOffset), y: Math.round(480 * scale) }
       })
     })
 
     const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
     rootSatellites.forEach((node, i) => {
-      const offset = (i - (rootSatellites.length - 1) / 2) * 160 * scale
-      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(620 * scale) }
+      const offset = (i - (rootSatellites.length - 1) / 2) * (150 * scale)
+      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(640 * scale) }
     })
   } else if (mode === 'columns') {
     // Architectural Columns by Category
@@ -1154,7 +1095,7 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
       const groupNodes = nodesList.filter(n => getNodeGroup(n) === grp)
 
       groupNodes.forEach((node, rowIdx) => {
-        const rowY = 160 + rowIdx * 160 * scale
+        const rowY = 150 + rowIdx * 155 * scale
         posMap[node.id] = { x: Math.round(colX), y: Math.round(rowY) }
       })
     })
@@ -1165,9 +1106,9 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
     const allNonRoot = nodesList.filter(n => n.id !== root.id)
     allNonRoot.forEach((node, i) => {
       const angle = (i * (2 * Math.PI) / allNonRoot.length) - Math.PI / 2
-      const radius = (node.depth === 1 ? 220 : 310) * scale
+      const radius = (node.depth === 1 ? 240 : 380) * scale
       const rx = cx + Math.cos(angle) * radius
-      const ry = cy + Math.sin(angle) * radius * 0.8
+      const ry = cy + Math.sin(angle) * radius * 0.82
       posMap[node.id] = { x: Math.round(rx), y: Math.round(ry) }
     })
   }
@@ -1281,16 +1222,51 @@ async function refreshSitemap() {
 
 const canvasStageRef = ref<HTMLElement | null>(null)
 
-// Auto-Fit Viewport
+// DYNAMIC BOUNDING BOX AUTO-FIT & AUTO-CENTER ENGINE
 function autoFitConstellation() {
   if (typeof window === 'undefined') return
-  const availableWidth = window.innerWidth - 30
+  const availableWidth = window.innerWidth - 40
   const availableHeight = window.innerHeight - 85
 
-  const scaleX = availableWidth / stageBaseWidth
-  const scaleY = availableHeight / stageBaseHeight
+  const visible = visibleNodes.value
+  if (!visible || visible.length === 0) {
+    clusterFitScale.value = 1
+    clusterCenterOffsetX.value = 0
+    clusterCenterOffsetY.value = 0
+    return
+  }
+
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+
+  for (const n of visible) {
+    const halfW = n.depth === 0 ? 135 : (n.depth === 1 ? 110 : 75)
+    const halfH = n.depth === 0 ? 80 : (n.depth === 1 ? 65 : 35)
+    minX = Math.min(minX, n.currentX - halfW)
+    maxX = Math.max(maxX, n.currentX + halfW)
+    minY = Math.min(minY, n.currentY - halfH)
+    maxY = Math.max(maxY, n.currentY + halfH)
+  }
+
+  const clusterW = Math.max(200, maxX - minX + 60)
+  const clusterH = Math.max(200, maxY - minY + 60)
+
+  const scaleX = availableWidth / clusterW
+  const scaleY = availableHeight / clusterH
   const isMobile = window.innerWidth < 640
-  clusterFitScale.value = isMobile ? Math.min(0.85, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
+
+  const calculatedScale = Math.min(scaleX, scaleY)
+  clusterFitScale.value = isMobile
+    ? Math.max(0.45, Math.min(0.85, calculatedScale))
+    : Math.max(0.55, Math.min(1.15, calculatedScale))
+
+  // Dynamically center the cluster in stage view
+  const clusterCenterX = (minX + maxX) / 2
+  const clusterCenterOffsetYVal = (minY + maxY) / 2
+  clusterCenterOffsetX.value = Math.round((stageBaseWidth / 2 - clusterCenterX) * 0.5)
+  clusterCenterOffsetY.value = Math.round((stageBaseHeight / 2 - clusterCenterOffsetYVal) * 0.5)
 }
 
 // Reactive Coordinate Tracker for 120 FPS Glitch-Free SVG Link Following
@@ -1340,7 +1316,7 @@ function smartRepulseOverlap(activeNode: any) {
 
   for (let iter = 0; iter < 3; iter++) {
     for (const other of rawDynamicNodes.value) {
-      if (other.id === activeNode.id) continue
+      if (other.id === activeNode.id || isNodeLocked(other.id)) continue
       const rB = getNodeRadius(other)
       const minDist = rA + rB + repulsionCushion.value
 
@@ -1352,10 +1328,10 @@ function smartRepulseOverlap(activeNode: any) {
         const overlap = minDist - dist
         const nx = dx / dist
         const ny = dy / dist
-        const pushDist = Math.min(22, Math.round(overlap * 0.35))
+        const pushDist = Math.min(20, Math.round(overlap * 0.35))
 
-        other.currentX = Math.min(stageBaseWidth - 80, Math.max(80, other.currentX + nx * pushDist))
-        other.currentY = Math.min(stageBaseHeight - 60, Math.max(60, other.currentY + ny * pushDist))
+        other.currentX = Math.min(stageBaseWidth - 70, Math.max(70, other.currentX + nx * pushDist))
+        other.currentY = Math.min(stageBaseHeight - 50, Math.max(50, other.currentY + ny * pushDist))
       }
     }
   }
@@ -1368,7 +1344,6 @@ function onGlobalPointerUp() {
   if (isDraggingNodeId.value) {
     const dragged = rawDynamicNodes.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
-      // Smartly position and push neighbor nodes to prevent overlap!
       smartRepulseOverlap(dragged)
     }
   }
@@ -1388,7 +1363,6 @@ function isEdgeActive(edge: any) {
 }
 
 function getEdgePath(edge: any) {
-  // Access reactive revision so links follow nodes in real time 120 FPS
   const _ = dragCoordRevision.value
 
   const fromNode = rawDynamicNodes.value.find((n: any) => n.id === edge.from)
@@ -1427,15 +1401,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.dock-slide-enter-active,
-.dock-slide-leave-active {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.dock-slide-enter-from,
-.dock-slide-leave-to {
-  transform: translateY(100%);
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.18s ease-out;
