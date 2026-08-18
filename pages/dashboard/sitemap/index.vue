@@ -2,17 +2,17 @@
 <template>
   <div
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="fixed inset-0 z-50 h-screen w-screen bg-[#F1F5F9] text-slate-900 select-none overflow-hidden font-sans text-xs flex flex-col"
+    class="fixed inset-0 z-50 h-screen w-screen bg-[#F8FAFC] text-slate-900 select-none overflow-hidden font-sans text-xs flex flex-col"
   >
     <!-- Soft Ambient Light Background -->
     <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-      <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-emerald-100/40 blur-[100px]"></div>
-      <div class="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-100/40 blur-[100px]"></div>
-      <div class="absolute top-[30%] left-[40%] w-[40vw] h-[40vw] rounded-full bg-purple-100/30 blur-[120px]"></div>
+      <div class="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-emerald-100/50 blur-[110px]"></div>
+      <div class="absolute -bottom-[15%] -right-[10%] w-[55vw] h-[55vw] rounded-full bg-blue-100/50 blur-[110px]"></div>
+      <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
     </div>
 
-    <!-- Top Minimalist HUD Bar -->
-    <header class="relative z-40 h-12 px-4 flex items-center justify-between pointer-events-auto bg-white/70 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
+    <!-- Top Minimalist HUD Bar with Quick Group Toggles & Auto-Centering -->
+    <header class="relative z-40 h-13 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
       <!-- Left: Exit & Cluster Telemetry -->
       <div class="flex items-center gap-2">
         <NuxtLink
@@ -23,52 +23,61 @@
           <Icon name="mdi:arrow-right" class="w-4 h-4" :class="isRTL ? '' : 'rotate-180'" />
         </NuxtLink>
 
-        <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
+        <!-- Live Node Count -->
+        <div class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
           <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
-          <span>{{ nodes.length }} بلوک زنده</span>
+          <span>{{ visibleNodes.length }} صفحه فعال</span>
         </div>
       </div>
 
-      <!-- Center: Auto-Fit & Lens Filters -->
-      <div class="flex items-center gap-1.5">
+      <!-- Center: 1-Tap Group Filter Chips & Re-Center Button -->
+      <div class="flex items-center gap-1 sm:gap-2">
+        <!-- Smart Re-Center -->
         <button
-          @click="autoFitConstellation"
-          class="px-3 py-1 rounded-xl bg-[#018786] hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-1 active:scale-95"
-          title="تنظیم خودکار کادر به ابعاد صفحه (Fit Viewport)"
+          @click="autoFitAndCenter"
+          class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-1 active:scale-95"
+          title="مرکز چین هوشمند کادر (Center & Fit)"
         >
-          <Icon name="mdi:fit-to-screen-outline" class="w-3.5 h-3.5" />
-          <span>تنظیم کادر</span>
+          <Icon name="mdi:crosshairs-gps" class="w-3.5 h-3.5" />
+          <span class="hidden sm:inline">مرکز چین</span>
         </button>
 
-        <div class="hidden sm:flex items-center bg-slate-200/60 p-0.5 rounded-xl text-[11px] font-bold">
+        <!-- Group Visibility Toggles -->
+        <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
-            v-for="lens in lenses"
-            :key="lens.id"
-            @click="activeLens = lens.id"
-            class="px-2.5 py-0.5 rounded-lg transition cursor-pointer"
-            :class="activeLens === lens.id ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
+            v-for="grp in groupToggles"
+            :key="grp.id"
+            @click="toggleGroup(grp.id)"
+            class="px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            :class="[
+              activeGroups.includes(grp.id)
+                ? 'bg-white text-slate-900 shadow-2xs font-extrabold'
+                : 'text-slate-500 hover:text-slate-800 opacity-60'
+            ]"
+            :title="`تغییر وضعیت نمایش گروه ${grp.label}`"
           >
-            {{ isRTL ? lens.labelFa : lens.labelEn }}
+            <span class="text-[10px]">{{ grp.icon }}</span>
+            <span class="hidden md:inline">{{ grp.label }}</span>
           </button>
         </div>
       </div>
 
-      <!-- Right: Search, Refresh & Console -->
+      <!-- Right: Search, Refresh & Debug -->
       <div class="flex items-center gap-1.5">
-        <div class="relative w-32 sm:w-40">
-          <Icon name="mdi:magnify" class="absolute right-2.5 top-2 w-3.5 h-3.5 text-slate-400" />
+        <div class="relative w-28 sm:w-36">
+          <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
           <input
             v-model="searchQuery"
             type="text"
             placeholder="جستجو..."
-            class="w-full bg-white border border-slate-200 rounded-xl pr-8 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-2xs text-xs"
+            class="w-full bg-white border border-slate-200 rounded-xl pr-7 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-600 shadow-2xs text-xs"
           />
         </div>
 
         <button
           @click="refreshSitemap"
           class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-800 shadow-2xs transition cursor-pointer"
-          title="بروزرسانی داده‌ها"
+          title="بروزرسانی داده‌ها از PocketBase"
         >
           <Icon name="mdi:refresh" class="w-4 h-4" />
         </button>
@@ -88,16 +97,17 @@
       </div>
     </header>
 
-    <!-- FIT-CONTAINED AUTO-RESIZING STAGE (No Infinite Lost Space) -->
+    <!-- FIT-CONTAINED AUTO-RESIZING STAGE -->
     <div
       ref="canvasStageRef"
       class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-default"
       @mousemove="handleGlobalMouseMove"
       @mouseup="stopNodeDrag"
+      @touchend="stopNodeDrag"
     >
-      <!-- Unified Scaled Blob Mosaic Cluster -->
+      <!-- Centered Scaled Cluster Stage -->
       <div
-        class="relative transition-transform duration-300 ease-out"
+        class="relative transition-all duration-300 ease-out"
         :style="{
           width: `${stageBaseWidth}px`,
           height: `${stageBaseHeight}px`,
@@ -105,20 +115,18 @@
           transformOrigin: 'center center'
         }"
       >
-        <!-- VECTOR CONNECTION PATHS -->
+        <!-- VECTOR CONNECTION CURVES -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
-            <!-- Semi-3D Dynamic Ambient Glow Line -->
             <path
               :d="getEdgePath(edge)"
               fill="none"
               :stroke="isEdgeActive(edge) ? edge.color : '#cbd5e1'"
               :stroke-opacity="isEdgeActive(edge) ? 0.9 : 0.4"
-              :stroke-width="isEdgeActive(edge) ? 4 : 2"
+              :stroke-width="isEdgeActive(edge) ? 3.5 : 1.8"
               stroke-linecap="round"
               class="transition-all duration-300"
             />
-            <!-- Animated Particle Glow -->
             <circle
               v-if="isEdgeActive(edge)"
               r="3.5"
@@ -127,7 +135,7 @@
             >
               <animateMotion
                 :path="getEdgePath(edge)"
-                dur="2.4s"
+                dur="2.2s"
                 repeatCount="indefinite"
               />
             </circle>
@@ -139,10 +147,12 @@
           v-for="node in visibleNodes"
           :key="node.id"
           @mousedown="startNodeDrag($event, node)"
+          @touchstart="startNodeTouchDrag($event, node)"
           @click.stop="handleNodeClick(node)"
+          @dblclick.stop="openProJsonStudio(node, 'content-studio')"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute cursor-pointer select-none transition-all duration-200 z-20"
+          class="absolute cursor-pointer select-none transition-all duration-200 z-20 group"
           :style="{
             left: `${node.currentX}px`,
             top: `${node.currentY}px`,
@@ -151,9 +161,9 @@
             transition: isDraggingNodeId === node.id ? 'none' : 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }"
         >
-          <!-- SEMI-3D BLOB CONTAINER (Non-Circle Organic Card with Tactile Depth) -->
+          <!-- TACTILE 3D BLOB CARD -->
           <div
-            class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200"
+            class="relative rounded-[2rem] p-3.5 sm:p-4 flex flex-col justify-between transition-all duration-200"
             :style="{
               width: `${getNodeWidth(node)}px`,
               minHeight: `${getNodeHeight(node)}px`,
@@ -166,43 +176,69 @@
                 : 'hover:-translate-y-1'
             ]"
           >
-            <!-- Top Specular Glass Highlight -->
-            <div class="absolute inset-x-3 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none rounded-t-full"></div>
+            <!-- Top Specular Highlight -->
+            <div class="absolute inset-x-3 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none rounded-t-full"></div>
 
-            <!-- Top Header: Icon & Type Badge -->
-            <div class="flex items-center justify-between gap-2 mb-2">
+            <!-- Card Header: Icon, Badge & 1-CLICK HOVER ACTIONS (Desktop Super Fast Access) -->
+            <div class="flex items-center justify-between gap-2 mb-1.5">
               <div
-                class="w-8 h-8 rounded-2xl flex items-center justify-center text-white shadow-sm shrink-0"
+                class="w-7 h-7 sm:w-8 sm:h-8 rounded-2xl flex items-center justify-center text-white shadow-xs shrink-0"
                 :style="{ backgroundColor: node.accentColor || '#018786' }"
               >
-                <Icon :name="node.icon || 'mdi:layers'" class="w-4 h-4" />
+                <Icon :name="node.icon || 'mdi:layers'" class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
 
-              <div class="flex items-center gap-1">
+              <!-- Desktop 1-Click Hover Actions (Visible on Hover for 0-Friction Access) -->
+              <div class="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                <button
+                  @click.stop="openProJsonStudio(node, 'content-studio')"
+                  class="w-6 h-6 rounded-lg bg-emerald-50 hover:bg-emerald-800 text-emerald-800 hover:text-white flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  title="ویرایش سریع محتوا"
+                >
+                  <Icon name="mdi:pencil-outline" class="w-3 h-3" />
+                </button>
+                <button
+                  @click.stop="openProJsonStudio(node, 'media')"
+                  class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  title="رسانه‌ها و کاور"
+                >
+                  <Icon name="mdi:image-outline" class="w-3 h-3" />
+                </button>
+                <button
+                  @click.stop="openProJsonStudio(node, 'vanilla-editor')"
+                  class="w-6 h-6 rounded-lg bg-blue-50 hover:bg-blue-700 text-blue-700 hover:text-white flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  title="ویرایشگر JSON"
+                >
+                  <Icon name="mdi:code-json" class="w-3 h-3" />
+                </button>
+              </div>
+
+              <!-- Status Badge (When not hovered) -->
+              <div class="flex sm:group-hover:hidden items-center gap-1">
                 <span
                   v-if="isRecentlyUsed(node.id)"
-                  class="px-2 py-0.5 rounded-full bg-amber-500 text-white font-bold text-[9px] shadow-2xs animate-pulse"
+                  class="px-1.5 py-0.2 rounded-full bg-amber-500 text-white font-bold text-[8px] animate-pulse"
                 >
                   فعال
                 </span>
-                <span class="px-2 py-0.5 rounded-full bg-slate-900/5 text-slate-600 font-mono text-[9px] font-bold">
+                <span class="px-1.5 py-0.2 rounded-full bg-slate-900/5 text-slate-600 font-mono text-[9px] font-bold">
                   {{ node.lens?.toUpperCase() || 'PAGE' }}
                 </span>
               </div>
             </div>
 
-            <!-- Center: Title & Subtitle / Key Insights -->
+            <!-- Card Center: Title & Path -->
             <div class="space-y-0.5 my-auto">
-              <h3 class="font-black text-slate-900 text-sm tracking-tight leading-tight">
+              <h3 class="font-black text-slate-900 text-xs sm:text-sm tracking-tight leading-snug">
                 {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
               </h3>
-              <p class="text-[10px] text-slate-500 font-mono truncate" dir="ltr">
+              <p class="text-[9px] sm:text-[10px] text-slate-500 font-mono truncate" dir="ltr">
                 {{ node.path || `/${node.slug}` }}
               </p>
             </div>
 
-            <!-- Bottom: Action Pills / Status Bar -->
-            <div class="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
+            <!-- Card Footer -->
+            <div class="mt-2 pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[9px] sm:text-[10px]">
               <span class="flex items-center gap-1 font-bold text-emerald-800">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>همگام PB</span>
@@ -213,42 +249,29 @@
               </span>
             </div>
 
-            <!-- ORBITAL MICRO-ACTIONS ON SELECT -->
+            <!-- MOBILE / TAP QUICK ACTIONS PILL (On Selected) -->
             <div
               v-if="selectedNode?.id === node.id"
               @click.stop
-              class="absolute -top-3 -right-3 flex items-center gap-1 bg-white/95 backdrop-blur-md p-1 rounded-2xl shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in duration-150"
+              class="absolute -top-3 -right-2 flex sm:hidden items-center gap-1 bg-white/98 backdrop-blur-md p-1 rounded-2xl shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in duration-150"
             >
               <button
                 @click.stop="openProJsonStudio(node, 'content-studio')"
-                class="w-7 h-7 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer"
-                title="ویرایشگر محتوا"
+                class="w-7 h-7 rounded-xl bg-emerald-800 text-white flex items-center justify-center shadow-xs"
               >
                 <Icon name="mdi:pencil-outline" class="w-3.5 h-3.5" />
               </button>
-
               <button
                 @click.stop="openProJsonStudio(node, 'media')"
-                class="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center shadow-xs transition cursor-pointer"
-                title="رسانه‌ها و تصاویر"
+                class="w-7 h-7 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs"
               >
-                <Icon name="mdi:image-multiple-outline" class="w-3.5 h-3.5" />
+                <Icon name="mdi:image-outline" class="w-3.5 h-3.5" />
               </button>
-
               <button
                 @click.stop="openProJsonStudio(node, 'vanilla-editor')"
-                class="w-7 h-7 rounded-xl bg-blue-700 hover:bg-blue-800 text-white flex items-center justify-center shadow-xs transition cursor-pointer"
-                title="ویرایشگر JSON خام"
+                class="w-7 h-7 rounded-xl bg-blue-700 text-white flex items-center justify-center shadow-xs"
               >
                 <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-              </button>
-
-              <button
-                @click.stop="selectedNode = null"
-                class="w-7 h-7 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
-                title="بستن"
-              >
-                <Icon name="mdi:close" class="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -260,27 +283,21 @@
     <transition name="fade">
       <div
         v-if="showJsonStudio"
-        class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 select-text font-sans"
+        class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-2 sm:p-5 select-text font-sans"
       >
-        <div class="bg-white text-slate-800 rounded-3xl border border-slate-200 shadow-2xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden text-xs">
+        <div class="bg-white text-slate-800 rounded-3xl border border-slate-200 shadow-2xl w-full max-w-5xl h-[92vh] sm:h-[88vh] flex flex-col overflow-hidden text-xs">
           <!-- Studio Header Bar -->
-          <div class="h-12 px-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
-            <div class="flex items-center gap-2.5">
+          <div class="h-12 px-3 sm:px-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
+            <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center border border-emerald-200">
                 <Icon name="mdi:layers-outline" class="w-4 h-4" />
               </div>
-              <div class="flex items-center gap-2">
-                <h3 class="font-extrabold text-slate-900 text-xs">
+              <div class="flex items-center gap-1.5">
+                <h3 class="font-extrabold text-slate-900 text-xs truncate max-w-[120px] sm:max-w-none">
                   {{ activeStudioNode?.liveData?.titleFa || activeStudioNode?.titleFa || 'تنظیم صفحه' }}
                 </h3>
                 <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono font-bold" dir="ltr">
                   /{{ activeStudioNode?.slug }}
-                </span>
-                <span
-                  v-if="hasAnyModifications"
-                  class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold"
-                >
-                  ذخیره‌نشده
                 </span>
               </div>
             </div>
@@ -290,7 +307,7 @@
               <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
                 <button
                   @click="studioEngine = 'content-studio'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  class="px-2.5 sm:px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
                   :class="studioEngine === 'content-studio' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:translate" class="w-3.5 h-3.5" />
@@ -299,16 +316,16 @@
 
                 <button
                   @click="studioEngine = 'vanilla-editor'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  class="px-2.5 sm:px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
                   :class="studioEngine === 'vanilla-editor' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-                  <span>JSON خام</span>
+                  <span>JSON</span>
                 </button>
 
                 <button
                   @click="studioEngine = 'visual-rows'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  class="hidden sm:flex px-3 py-1 rounded-lg transition cursor-pointer items-center gap-1"
                   :class="studioEngine === 'visual-rows' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:table" class="w-3.5 h-3.5" />
@@ -321,16 +338,9 @@
                 v-if="hasAnyModifications"
                 @click="undoAllChanges"
                 class="w-7 h-7 flex items-center justify-center rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition cursor-pointer"
-                title="بازگردانی به نسخه اصلی سرور"
+                title="بازگردانی"
               >
                 <Icon name="mdi:undo" class="w-3.5 h-3.5" />
-              </button>
-
-              <button
-                @click="copyStudioJson"
-                class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition cursor-pointer"
-              >
-                {{ studioCopied ? 'کپی شد!' : 'کپی' }}
               </button>
 
               <button
@@ -343,7 +353,7 @@
             </div>
           </div>
 
-          <!-- ENGINE 1: UNIFIED MULTILINGUAL CONTENT STUDIO (FA / EN / AR) -->
+          <!-- Studio Body -->
           <div v-if="studioEngine === 'content-studio'" class="flex-1 overflow-hidden">
             <LocalizedContentStudio
               v-model="currentWorkingSchema"
@@ -351,7 +361,6 @@
             />
           </div>
 
-          <!-- ENGINE 2: vanilla-jsoneditor (Jos de Jong Light Pro) -->
           <div v-else-if="studioEngine === 'vanilla-editor'" class="flex-1 bg-white overflow-hidden">
             <VanillaJsonEditor
               v-model="currentWorkingSchema"
@@ -359,7 +368,6 @@
             />
           </div>
 
-          <!-- ENGINE 3: SMART VISUAL ROWS -->
           <div v-else class="flex-1 p-0 overflow-y-auto bg-white">
             <JsonTreeRow
               v-for="k in schemaKeys"
@@ -373,12 +381,12 @@
             />
           </div>
 
-          <!-- Studio Footer with 1-Click Save to PocketBase -->
+          <!-- Studio Footer -->
           <div class="h-12 px-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0 select-none">
             <div class="flex items-center gap-2">
               <span v-if="hasAnyModifications" class="text-amber-800 text-[11px] font-bold flex items-center gap-1">
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-                <span>تغییرات آماده انتشار در پایگاه داده است</span>
+                <span>تغییرات آماده انتشار</span>
               </span>
               <span v-else class="text-emerald-800 text-[11px] font-bold flex items-center gap-1">
                 <Icon name="mdi:check-circle" class="w-3.5 h-3.5 text-emerald-600" />
@@ -386,23 +394,14 @@
               </span>
             </div>
 
-            <div class="flex items-center gap-2">
-              <button
-                @click="showJsonStudio = false"
-                class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200 text-xs transition cursor-pointer font-bold"
-              >
-                بستن
-              </button>
-
-              <button
-                @click="saveWorkingSchemaToPocketBase"
-                :disabled="isStudioSaving"
-                class="px-4 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
-              >
-                <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3.5 h-3.5" :class="isStudioSaving ? 'animate-spin' : ''" />
-                <span>{{ isStudioSaving ? 'در حال ذخیره...' : 'ذخیره در PocketBase' }}</span>
-              </button>
-            </div>
+            <button
+              @click="saveWorkingSchemaToPocketBase"
+              :disabled="isStudioSaving"
+              class="px-4 py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+            >
+              <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3.5 h-3.5" :class="isStudioSaving ? 'animate-spin' : ''" />
+              <span>{{ isStudioSaving ? 'در حال ذخیره...' : 'ذخیره در PocketBase' }}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -461,16 +460,46 @@ const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 // State
-const activeLens = ref('all')
 const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
 const recentNodeClicks = ref<string[]>([])
 
-// Base Layout Dimension Boundaries for Auto-Fit
-const stageBaseWidth = 1100
-const stageBaseHeight = 720
+// 1-Tap Group Visibility Toggles
+const activeGroups = ref<string[]>(['core', 'products', 'services', 'history', 'system'])
+
+const groupToggles = [
+  { id: 'core', label: 'اصلی', icon: '🌟' },
+  { id: 'products', label: 'محصولات', icon: '📦' },
+  { id: 'services', label: 'خدمات', icon: '⚙️' },
+  { id: 'history', label: 'تاریخچه', icon: '🏛️' },
+  { id: 'system', label: 'سیستم', icon: '🔧' }
+]
+
+function toggleGroup(groupId: string) {
+  if (activeGroups.value.includes(groupId)) {
+    if (activeGroups.value.length > 1) {
+      activeGroups.value = activeGroups.value.filter(id => id !== groupId)
+    }
+  } else {
+    activeGroups.value.push(groupId)
+  }
+  // Smoothly re-center remaining visible nodes
+  setTimeout(autoFitAndCenter, 50)
+}
+
+function getNodeGroup(node: any) {
+  if (node.id === 'pb-home' || node.id === 'pb-about' || node.id === 'pb-contact') return 'core'
+  if (node.id === 'pb-products' || node.id === 'pb-catalog') return 'products'
+  if (node.id === 'pb-services' || node.id === 'pb-faq') return 'services'
+  if (node.id === 'pb-history' || node.id === 'pb-blog') return 'history'
+  return 'system'
+}
+
+// Stage Dimensions & Auto-Fit
+const stageBaseWidth = 1080
+const stageBaseHeight = 700
 const clusterFitScale = ref(1)
 
 // Multi-Package JSON Schema Studio State
@@ -479,7 +508,6 @@ const activeStudioNode = ref<any | null>(null)
 const studioEngine = ref<'content-studio' | 'vanilla-editor' | 'visual-rows'>('content-studio')
 const originalBaselineSchema = ref<Record<string, any>>({})
 const currentWorkingSchema = ref<Record<string, any>>({})
-const studioCopied = ref(false)
 const isStudioSaving = ref(false)
 
 function openProJsonStudio(node: any, engine: 'content-studio' | 'vanilla-editor' | 'visual-rows' | 'media' = 'content-studio') {
@@ -556,12 +584,6 @@ function undoAllChanges() {
   currentWorkingSchema.value = JSON.parse(JSON.stringify(originalBaselineSchema.value))
 }
 
-function copyStudioJson() {
-  navigator.clipboard.writeText(JSON.stringify(currentWorkingSchema.value, null, 2))
-  studioCopied.value = true
-  setTimeout(() => (studioCopied.value = false), 2000)
-}
-
 async function saveWorkingSchemaToPocketBase() {
   if (!activeStudioNode.value) return
   isStudioSaving.value = true
@@ -608,29 +630,39 @@ const waterfallRequests = ref<any[]>([
   { id: '1', method: 'GET', endpoint: '/api/admin/sitemap', status: 200, durationMs: 12 }
 ])
 
-// Sizing & Semi-3D Calculations
+// Sizing & Semi-3D Calculations (Desktop & Mobile Friendly)
 function getKeyCount(node: any) {
   const ui = node.liveData?.rawUiData || {}
   return Object.keys(ui).length || 3
 }
 
 function getNodeWidth(node: any) {
-  if (node.type === 'nucleus') return 210
-  if (node.type === 'pillar') return 185
-  return 165
+  if (typeof window !== 'undefined' && window.innerWidth < 640) {
+    if (node.type === 'nucleus') return 175
+    if (node.type === 'pillar') return 155
+    return 140
+  }
+  if (node.type === 'nucleus') return 205
+  if (node.type === 'pillar') return 180
+  return 160
 }
 
 function getNodeHeight(node: any) {
-  if (node.type === 'nucleus') return 130
-  if (node.type === 'pillar') return 115
-  return 95
+  if (typeof window !== 'undefined' && window.innerWidth < 640) {
+    if (node.type === 'nucleus') return 110
+    if (node.type === 'pillar') return 100
+    return 85
+  }
+  if (node.type === 'nucleus') return 125
+  if (node.type === 'pillar') return 110
+  return 92
 }
 
 function getNodeScale(node: any) {
   let scale = 1.0
-  if (node.type === 'nucleus') scale = 1.12
-  if (selectedNode.value?.id === node.id) scale *= 1.08
-  if (isRecentlyUsed(node.id)) scale *= 1.05
+  if (node.type === 'nucleus') scale = 1.10
+  if (selectedNode.value?.id === node.id) scale *= 1.06
+  if (isRecentlyUsed(node.id)) scale *= 1.04
   return scale
 }
 
@@ -643,15 +675,15 @@ function getNodeBackground(node: any) {
 
 function getNodeShadow(node: any) {
   if (selectedNode.value?.id === node.id) {
-    return '0 24px 48px -12px rgba(1, 135, 134, 0.25), 0 8px 16px -4px rgba(0, 0, 0, 0.08)'
+    return '0 20px 40px -10px rgba(1, 135, 134, 0.22), 0 6px 14px -3px rgba(0, 0, 0, 0.06)'
   }
   if (hoveredNodeId.value === node.id) {
-    return '0 20px 38px -10px rgba(15, 23, 42, 0.15), 0 6px 12px -3px rgba(0, 0, 0, 0.06)'
+    return '0 18px 32px -8px rgba(15, 23, 42, 0.12), 0 5px 10px -2px rgba(0, 0, 0, 0.05)'
   }
-  return '0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04)'
+  return '0 10px 24px -6px rgba(15, 23, 42, 0.06), 0 3px 6px -2px rgba(0, 0, 0, 0.03)'
 }
 
-// Subtle 3D Perspective Tilt on Mouse Movement
+// 3D Perspective Tilt on Mouse Movement
 const mouseRelativeX = ref(0)
 const mouseRelativeY = ref(0)
 
@@ -659,7 +691,7 @@ function handleGlobalMouseMove(e: MouseEvent) {
   mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
-  // Neighbor Magnetic Push Simulation during drag
+  // Neighbor Magnetic Push
   if (isDraggingNodeId.value) {
     const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
@@ -668,9 +700,9 @@ function handleGlobalMouseMove(e: MouseEvent) {
           const dx = other.currentX - dragged.currentX
           const dy = other.currentY - dragged.currentY
           const dist = Math.hypot(dx, dy)
-          const minDist = 180
+          const minDist = 170
           if (dist < minDist && dist > 0) {
-            const push = (minDist - dist) * 0.15
+            const push = (minDist - dist) * 0.12
             other.currentX += (dx / dist) * push
             other.currentY += (dy / dist) * push
           }
@@ -682,7 +714,7 @@ function handleGlobalMouseMove(e: MouseEvent) {
 
 function getNode3DTilt(node: any) {
   if (hoveredNodeId.value === node.id) {
-    return `perspective(600px) rotateX(${mouseRelativeY.value * 1.5}deg) rotateY(${mouseRelativeX.value * 1.5}deg)`
+    return `perspective(600px) rotateX(${mouseRelativeY.value * 1.3}deg) rotateY(${mouseRelativeX.value * 1.3}deg)`
   }
   return 'perspective(600px) rotateX(0deg) rotateY(0deg)'
 }
@@ -695,26 +727,26 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
 
 const dynamicNodesState = ref<any[]>([])
 
-// COMPACT ORGANIC CLUSTER SEED POSITIONS
+// COMPACT CENTROID CLUSTER POSITIONS
 const defaultClusterPositions: Record<string, { x: number, y: number }> = {
-  'pb-home': { x: 550, y: 360 },
-  'pb-about': { x: 330, y: 220 },
-  'pb-products': { x: 770, y: 220 },
-  'pb-services': { x: 770, y: 500 },
-  'pb-history': { x: 330, y: 500 },
-  'pb-contact': { x: 550, y: 150 },
-  'pb-catalog': { x: 960, y: 180 },
-  'pb-faq': { x: 960, y: 540 },
-  'pb-blog': { x: 140, y: 540 },
-  'pb-login': { x: 140, y: 180 },
-  'pb-menu': { x: 550, y: 570 },
-  'pb-footer': { x: 350, y: 640 }
+  'pb-home': { x: 540, y: 350 },
+  'pb-about': { x: 340, y: 220 },
+  'pb-products': { x: 740, y: 220 },
+  'pb-services': { x: 740, y: 480 },
+  'pb-history': { x: 340, y: 480 },
+  'pb-contact': { x: 540, y: 160 },
+  'pb-catalog': { x: 920, y: 190 },
+  'pb-faq': { x: 920, y: 510 },
+  'pb-blog': { x: 160, y: 510 },
+  'pb-login': { x: 160, y: 190 },
+  'pb-menu': { x: 540, y: 540 },
+  'pb-footer': { x: 350, y: 610 }
 }
 
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
     dynamicNodesState.value = sitemapApiData.value.nodes.map((n: any) => {
-      const pos = defaultClusterPositions[n.id] || { x: 550, y: 360 }
+      const pos = defaultClusterPositions[n.id] || { x: 540, y: 350 }
       return {
         ...n,
         currentX: pos.x,
@@ -723,7 +755,7 @@ watchEffect(() => {
         initialY: pos.y
       }
     })
-    autoFitConstellation()
+    autoFitAndCenter()
   }
 })
 
@@ -733,37 +765,31 @@ async function refreshSitemap() {
   await refreshSitemapApi()
 }
 
-// Responsive Viewport Auto-Fit
-function autoFitConstellation() {
+// Smart Auto-Fit & Dynamic Centroid Re-Centering
+function autoFitAndCenter() {
   if (typeof window === 'undefined') return
-  const availableWidth = window.innerWidth - 40
+  const availableWidth = window.innerWidth - 30
   const availableHeight = window.innerHeight - 80
 
   const scaleX = availableWidth / stageBaseWidth
   const scaleY = availableHeight / stageBaseHeight
-  clusterFitScale.value = Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
+  const isMobile = window.innerWidth < 640
+  clusterFitScale.value = isMobile ? Math.min(0.82, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
 }
 
 // Physics Dragging & Neighbor Push
 const isDraggingNodeId = ref<string | null>(null)
-let dragOffsetX = 0
-let dragOffsetY = 0
 
 function startNodeDrag(e: MouseEvent, node: any) {
   isDraggingNodeId.value = node.id
-  dragOffsetX = e.clientX - node.currentX * clusterFitScale.value
-  dragOffsetY = e.clientY - node.currentY * clusterFitScale.value
+}
+
+function startNodeTouchDrag(e: TouchEvent, node: any) {
+  isDraggingNodeId.value = node.id
 }
 
 function stopNodeDrag() {
   if (isDraggingNodeId.value) {
-    // Snap-back smoothly to relaxed cluster position
-    const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
-    if (dragged) {
-      dragged.currentX = dragged.initialX
-      dragged.currentY = dragged.initialY
-    }
-    // Settle all neighbors back
     for (const n of dynamicNodesState.value) {
       n.currentX = n.initialX
       n.currentY = n.initialY
@@ -771,14 +797,6 @@ function stopNodeDrag() {
   }
   isDraggingNodeId.value = null
 }
-
-const lenses = [
-  { id: 'all', labelFa: 'همه', labelEn: 'All' },
-  { id: 'pages', labelFa: 'صفحات', labelEn: 'Pages' },
-  { id: 'products', labelFa: 'محصولات', labelEn: 'Products' },
-  { id: 'services', labelFa: 'خدمات', labelEn: 'Services' },
-  { id: 'knowledge', labelFa: 'دانش', labelEn: 'Knowledge' },
-]
 
 const edges = [
   { from: 'pb-home', to: 'pb-about', color: '#018786' },
@@ -796,7 +814,9 @@ const edges = [
 
 const visibleNodes = computed(() => {
   return nodes.value.filter((n: any) => {
-    if (activeLens.value !== 'all' && n.lens !== activeLens.value && n.type !== 'nucleus') return false
+    const grp = getNodeGroup(n)
+    if (!activeGroups.value.includes(grp)) return false
+
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase()
       const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
@@ -840,15 +860,15 @@ function getEdgePath(edge: any) {
 }
 
 onMounted(() => {
-  autoFitConstellation()
+  autoFitAndCenter()
   if (typeof window !== 'undefined') {
-    window.addEventListener('resize', autoFitConstellation)
+    window.addEventListener('resize', autoFitAndCenter)
   }
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('resize', autoFitConstellation)
+    window.removeEventListener('resize', autoFitAndCenter)
   }
 })
 </script>
