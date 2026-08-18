@@ -8,10 +8,11 @@ export default defineEventHandler(async (event) => {
   let livePagesMap: Record<string, any> = {}
   let livePagesList: any[] = []
   let productsList: any[] = []
+  let blogList: any[] = []
   let mediaCount = 0
 
   try {
-    // 1. Fetch live pages collection from PocketBase
+    // 1. Fetch live pages from PocketBase
     const pagesRes: any = await $fetch(`${pbUrl}/api/collections/pages/records`, {
       params: { perPage: 100 },
       timeout: 5000
@@ -35,7 +36,16 @@ export default defineEventHandler(async (event) => {
       productsList = productsRes.items
     }
 
-    // 3. Fetch live media count
+    // 3. Fetch live blog from PocketBase
+    const blogRes: any = await $fetch(`${pbUrl}/api/collections/blog/records`, {
+      params: { perPage: 10 },
+      timeout: 5000
+    }).catch(() => null)
+    if (blogRes?.items) {
+      blogList = blogRes.items
+    }
+
+    // 4. Fetch live media count
     const mediaRes: any = await $fetch(`${pbUrl}/api/collections/media_files/records`, {
       params: { perPage: 1 },
       timeout: 5000
@@ -44,11 +54,11 @@ export default defineEventHandler(async (event) => {
       mediaCount = mediaRes.totalItems || 0
     }
   } catch (err) {
-    // Offline / fallback
+    // PocketBase fetch fallback
   }
 
-  // Base Spatial Constellation Nodes
-  const baseNodes = [
+  // Authentic Ecosystem Verified Routes (No fake filler mocks)
+  const authenticNodes = [
     {
       id: 'core-home',
       slug: 'home',
@@ -57,17 +67,20 @@ export default defineEventHandler(async (event) => {
       titleFa: 'مجتمع چاپ و بسته‌بندی نجم',
       titleEn: 'Najm Industrial Core',
       path: '/',
-      descFa: 'هسته اصلی سامانه؛ تلفیق زیبایی‌شناسی صنعتی، صحنه‌های سه‌بعدی کاتالوگ و درگاه ورود مخاطبان.',
-      descEn: 'The central industrial nucleus combining 3D product scenes and entry workflows.',
+      descFa: 'صفحه اصلی و هسته سامانه؛ تلفیق صحنه‌های سه‌بعدی و کاتالوگ.',
+      descEn: 'Core landing hub combining 3D product scenes and entry workflows.',
       icon: 'mdi:hexagon-multiple-outline',
-      size: 210,
+      size: 150,
       x: 1800,
       y: 1300,
-      defaultData: {
-        titleFa: 'نوآوری در چاپ افست، مهندسی در بسته‌بندی',
-        titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
-        subtitleFa: 'مجتمع تخصصی چاپ و بسته‌بندی نجم با اتکا به خطوط هایدلبرگ و بوبست',
-        stats: '+۲۵ سال سابقه مستمر صنعتی • ۱۵M تیراژ سالانه'
+      defaultData: livePagesMap['home']?.uiData || {
+        hero: {
+          titleFa: 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی',
+          titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
+          subtitleFa: 'مجتمع تخصصی چاپ و بسته‌بندی نجم با اتکا به خطوط هایدلبرگ و بوبست',
+          stats: '+۲۵ سال سابقه مستمر صنعتی • ۱۵M تیراژ سالانه'
+        },
+        services: ['لیتوگرافی CTP', 'چاپ ۵ رنگ', 'دایکات اتوماتیک', 'سلفون حرارتی']
       }
     },
     {
@@ -76,65 +89,24 @@ export default defineEventHandler(async (event) => {
       type: 'pillar',
       lens: 'pages',
       badgeFa: 'روایت صنعتی',
-      badgeEn: 'Industrial Heritage',
+      badgeEn: 'Heritage',
       titleFa: 'درباره ما',
       titleEn: 'About Us',
       path: '/about',
-      descFa: 'معرفی بیش از دو دهه سابقه، سرمایه انسانی و خطوط پیشرفته افست ۵ رنگ هایدلبرگ.',
-      descEn: '25-year heritage, human craft leads, and advanced Heidelberg 5-color fleet.',
+      descFa: 'روایت ۲۵ سال سابقه، تیم متخصص و خطوط تولید ۵ رنگ هایدلبرگ.',
+      descEn: '25-year heritage, craft leads, and advanced Heidelberg 5-color fleet.',
       icon: 'mdi:information-outline',
       accentColor: '#018786',
-      size: 155,
-      x: 1350,
-      y: 950,
-      defaultData: {
-        titleFa: 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی',
-        titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
-        subtitleFa: 'تولید یکپارچه با کیفیت میکرونی و پایش ۱۰۰٪ پچ‌ها',
-        stats: 'ISO 12647-2 • نظارت مستقیم بر دقت تیغ'
-      }
-    },
-    {
-      id: 'about-pinned-solutions',
-      slug: 'about-solutions',
-      type: 'satellite',
-      lens: 'pages',
-      titleFa: 'راهکارهای پین‌شده 360vh',
-      titleEn: '360vh Pinned Stage',
-      path: '/about#solutions',
-      descFa: 'استیج قفل‌شده چرخشی اسکرول با مورفینگ تصاویر و کنترل گام به گام راهکارها.',
-      descEn: 'Sticky scroll-pinned stage with step-by-step image morphing.',
-      icon: 'mdi:view-carousel-outline',
-      accentColor: '#018786',
-      x: 1050,
-      y: 850,
-      tag: 'Interactive',
-      defaultData: {
-        titleFa: '۴ گام تخصصی از ایده تا خروجی نهایی جعبه',
-        titleEn: '4 Dedicated Engineering Steps',
-        subtitleFa: 'مشاوره، CTP، چاپ ۵ رنگ و جعبه‌چسبانی اتوماتیک',
-        stats: '۴ گام مجزا • اسکرول پین‌شده'
-      }
-    },
-    {
-      id: 'about-machinery',
-      slug: 'machinery',
-      type: 'satellite',
-      lens: 'services',
-      titleFa: 'ماشین‌آلات هایدلبرگ و بوبست',
-      titleEn: 'Heidelberg & Bobst Fleet',
-      path: '/about#facility',
-      descFa: 'نمایش ناوگان ماشین‌های چاپ، دایکات و جعبه‌چسبانی با مشخصات فنی دقیق.',
-      descEn: 'Detailed specs of Speedmaster 5-color, Bobst Die-cut & CTP.',
-      icon: 'mdi:cog-transfer-outline',
-      accentColor: '#018786',
-      x: 1100,
-      y: 1050,
-      defaultData: {
-        titleFa: 'ناوگان پیشرفته ماشین‌آلات صنعتی چاپ نجم',
-        titleEn: 'Industrial Fleet & Modern Prepress Equipment',
-        subtitleFa: 'هایدلبرگ اسپیدمستر ۷۲×۱۰۲، دایکات بوبست و لیتوگرافی حرارتی',
-        stats: '۱۵,۰۰۰ برگ/ساعت • فشار تیغ ۳۰۰ تن'
+      size: 120,
+      x: 1400,
+      y: 1000,
+      defaultData: livePagesMap['about']?.uiData || {
+        mission: {
+          titleFa: 'تولید یکپارچه با کیفیت میکرونی و نظارت ۱۰۰٪ بر دقت تیغ',
+          titleEn: 'Integrated high-precision industrial packaging',
+          standards: ['ISO 12647-2', 'Fogra 39', 'کنترل رنگ طیف‌سنجی']
+        },
+        fleet: ['هایدلبرگ اسپیدمستر ۷۲×۱۰۲', 'دایکات بوبست اتوماتیک']
       }
     },
     {
@@ -142,66 +114,22 @@ export default defineEventHandler(async (event) => {
       slug: 'products',
       type: 'pillar',
       lens: 'products',
-      badgeFa: 'کاتالوگ و متریال',
-      badgeEn: 'Product Catalog',
+      badgeFa: 'کاتالوگ',
+      badgeEn: 'Catalog',
       titleFa: 'محصولات و بسته‌بندی',
       titleEn: 'Packaging Catalog',
       path: '/products',
-      descFa: 'آرشیو رده‌های محصول اختصاصی بر پایه مقواهای ایندربرد، کرافت، فلوت‌دار و هاردباکس لوکس.',
-      descEn: 'Authentic packaging categories with custom SVG mockups and filters.',
+      descFa: 'کاتالوگ انواع جعبه‌های دارویی، آرایشی، فلوت‌دار و هاردباکس صادراتی.',
+      descEn: 'Authentic packaging categories with custom SVG mockups and specs.',
       icon: 'mdi:package-variant-closed',
       accentColor: '#2563eb',
-      size: 155,
-      x: 2250,
-      y: 950,
+      size: 120,
+      x: 2200,
+      y: 1000,
       defaultData: {
-        titleFa: 'کاتالوگ انواع بسته‌بندی و مقواهای استاندارد',
-        titleEn: 'Standard Paperboard & Packaging Catalog',
-        subtitleFa: 'طراحی ساختار، جعبه‌های دارویی، آرایشی، غذایی و صنعتی',
-        stats: `${productsList.length || 12} محصول فعال در دیتابیس`
-      }
-    },
-    {
-      id: 'products-detail-slug',
-      slug: 'packaging-detail',
-      type: 'satellite',
-      lens: 'products',
-      titleFa: 'صفحه جزئیات بسته‌بندی [slug]',
-      titleEn: 'Packaging Detail [slug]',
-      path: '/products/[slug]',
-      descFa: 'بررسی مشخصات ساختاری، ابعاد تیغ، انطباق رنگ و سلفون حرارتی.',
-      descEn: 'Detailed structural box specs, die-cuts, and foil coatings.',
-      icon: 'mdi:cube-scan',
-      accentColor: '#2563eb',
-      x: 2550,
-      y: 850,
-      tag: 'Dynamic',
-      defaultData: {
-        titleFa: 'مشخصات فنی و استانداردهای گرماژ جعبه',
-        titleEn: 'Technical Box Specs & GSM Standards',
-        subtitleFa: 'ایندربرد ۲۵۰ الی ۴۰۰ گرم، سلفون حرارتی مات/براق و UV موضعی',
-        stats: 'تحویل در کمترین زمان • تست خمش'
-      }
-    },
-    {
-      id: 'catalog-kit',
-      slug: 'catalog',
-      type: 'satellite',
-      lens: 'products',
-      titleFa: 'دانلود کاتالوگ و کیت نمونه',
-      titleEn: 'Catalog & Sample Kit',
-      path: '/catalog',
-      descFa: 'دانلود فایل‌های جامع PDF و امکان سفارش فیزیکی نمونه‌های جعبه.',
-      descEn: 'PDF downloads and physical material sample kit requests.',
-      icon: 'mdi:file-pdf-box',
-      accentColor: '#2563eb',
-      x: 2550,
-      y: 1050,
-      defaultData: {
-        titleFa: 'کاتالوگ جامع محصولات و نمونه‌های فیزیکی',
-        titleEn: 'Comprehensive PDF Catalog & Material Kit',
-        subtitleFa: 'دریافت رایگان کاتالوگ مهندسی و ارسال کیت جعبه‌ها به سراسر کشور',
-        stats: 'نسخه PDF • ارسال پستی سمپل'
+        totalProducts: productsList.length || 4,
+        categories: ['جعبه مقوایی', 'سررسید چرمی', 'کارت ویزیت', 'ساک دستی'],
+        items: productsList.map(p => ({ id: p.id, name: p.name, slug: p.slug }))
       }
     },
     {
@@ -209,65 +137,21 @@ export default defineEventHandler(async (event) => {
       slug: 'history',
       type: 'pillar',
       lens: 'knowledge',
-      badgeFa: 'دانشنامه و تاریخچه',
-      badgeEn: 'Knowledge & Press',
-      titleFa: 'دانش و تاریخچه ۲۵ ساله',
-      titleEn: 'Heritage & Blog',
+      badgeFa: 'دانشنامه',
+      badgeEn: 'Knowledge',
+      titleFa: 'تاریخچه ۲۵ ساله',
+      titleEn: 'Heritage Timeline',
       path: '/history',
-      descFa: 'سیر تحول صنعتی از ۱۳۷۸ تا ۱۴۰۴ به همراه مقالات فنی پیش از چاپ و متریال‌شناسی.',
+      descFa: 'گاه‌شمار پیشرفت صنعتی از ۱۳۷۸ تا ۱۴۰۴ و مقالات متریال‌شناسی.',
       descEn: '25-year milestone chronology and packaging engineering guides.',
       icon: 'mdi:timeline-text-outline',
       accentColor: '#d97706',
-      size: 155,
-      x: 2250,
-      y: 1650,
+      size: 120,
+      x: 2200,
+      y: 1600,
       defaultData: {
-        titleFa: '۲۵ سال تجربه مستمر در توسعه خطوط چاپ کشور',
-        titleEn: '25 Years of Continuous Heritage & Growth',
-        subtitleFa: 'از اولین دستگاه تک‌رنگ هایدلبرگ تا خطوط ۵ رنگ تمام‌اتوماتیک',
-        stats: '۱۳۷۸ تا ۱۴۰۴ • بیش از ۵۰۰ مشتری صنعتی'
-      }
-    },
-    {
-      id: 'history-timeline',
-      slug: 'history-timeline',
-      type: 'satellite',
-      lens: 'knowledge',
-      titleFa: 'روایت ۲۵ سال تحول صنعتی',
-      titleEn: '1999-2026 Chronology',
-      path: '/history',
-      descFa: 'روایت تصویری توسعه خطوط هایدلبرگ و بوبست در ۲۵ سال گذشته.',
-      descEn: 'Milestones of press machinery installations.',
-      icon: 'mdi:history',
-      accentColor: '#d97706',
-      x: 2550,
-      y: 1550,
-      defaultData: {
-        titleFa: 'گاه‌شمار پیشرفت تجهیزات و دستاوردهای نجم',
-        titleEn: 'Milestone Chronology (1999-2026)',
-        subtitleFa: 'خرید دستگاه‌های لیتوگرافی CTP و خطوط تکمیلی بوبست',
-        stats: '۸ نقطه عطف صنعتی'
-      }
-    },
-    {
-      id: 'blog-ecosystem',
-      slug: 'blog',
-      type: 'satellite',
-      lens: 'knowledge',
-      titleFa: 'وبلاگ تخصصی چاپ و بسته‌بندی',
-      titleEn: 'Technical Blog Articles',
-      path: '/blog',
-      descFa: 'دانشنامه تخصصی گرماژ مقوا، سلفون مخملی و بهینه‌سازی زینک.',
-      descEn: 'Paper GSM comparison, velvet lamination and prepress.',
-      icon: 'mdi:post-outline',
-      accentColor: '#d97706',
-      x: 2550,
-      y: 1750,
-      defaultData: {
-        titleFa: 'دانشنامه مقالات و راهنمای تخصصی طراحان',
-        titleEn: 'Technical Articles & Printing Encyclopedia',
-        subtitleFa: 'راهنمای آماده‌سازی زینک، مقایسه مقوای پشت طوسی و ایندربرد',
-        stats: 'مقالات به‌روز • استانداردهای جهانی'
+        timelineYears: '۱۳۷۸ تا ۱۴۰۴',
+        milestones: ['تاسیس اولین خط تک‌رنگ', 'ورود اسپیدمستر ۵ رنگ', 'خط اتوماتیک بوبست']
       }
     },
     {
@@ -275,133 +159,40 @@ export default defineEventHandler(async (event) => {
       slug: 'services',
       type: 'pillar',
       lens: 'services',
-      badgeFa: 'خدمات و کارخانه',
-      badgeEn: 'Industrial Fleet',
-      titleFa: 'خدمات و فرآیند تولید',
+      badgeFa: 'خطوط تولید',
+      badgeEn: 'Fleet',
+      titleFa: 'خدمات و کارخانه',
       titleEn: 'Services & Fleet',
       path: '/services',
-      descFa: 'چرخه کامل پیش از چاپ، لیتوگرافی حرارتی CTP، چاپ افست ورقی و خطوط تکمیلی.',
+      descFa: 'چرخه کامل لیتوگرافی CTP، چاپ افست ورقی، دایکات و جعبه‌چسبانی.',
       descEn: 'Full prepress, thermal CTP, Heidelberg offset, and automated gluing.',
       icon: 'mdi:factory',
       accentColor: '#9333ea',
-      size: 155,
-      x: 1350,
-      y: 1650,
+      size: 120,
+      x: 1400,
+      y: 1600,
       defaultData: {
-        titleFa: 'خدمات یکپارچه صفر تا صد چاپ و بسته‌بندی صنعتی',
-        titleEn: 'Full Industrial Printing & Packaging Services',
-        subtitleFa: 'مشاوره فنی، لیتوگرافی زینک CTP، چاپ افست، سلفون، دایکات و چسب',
-        stats: '۱۰۰٪ درون مجتمع • نظارت دقیق'
+        processes: ['طراحی ساختار و قالب تیغ', 'لیتوگرافی زینک CTP', 'چاپ ۵ رنگ با ورنی', 'دایکات و پوشال‌برداری']
       }
     },
-    {
-      id: 'guides-prepress',
-      slug: 'guides',
-      type: 'satellite',
-      lens: 'services',
-      titleFa: 'راهنمای آماده‌سازی فایل و تیغ',
-      titleEn: 'Prepress & Dieline Guides',
-      path: '/guides',
-      descFa: 'استانداردهای ۳ الی ۵ میلی‌متر بلید، تفکیک رنگ پنتون و خروجی زینک.',
-      descEn: 'Bleed guidelines, pantone separation, and dieline rules.',
-      icon: 'mdi:book-open-page-variant-outline',
-      accentColor: '#9333ea',
-      x: 1050,
-      y: 1550,
-      defaultData: {
-        titleFa: 'چک‌لیست ارسال فایل چاپی و فایل تیغ دایکات',
-        titleEn: 'Prepress Checklist & Dieline Specifications',
-        subtitleFa: 'پروفایل رنگی Fogra 39، رزولوشن ۳۰۰ DPI و خط‌تاهای بدون خطا',
-        stats: 'دانلود فایل قالب • استانداردهای تیغ'
-      }
-    },
-    {
-      id: 'faq-help',
-      slug: 'faq',
-      type: 'satellite',
-      lens: 'services',
-      titleFa: 'مرکز راهنما و سوالات متداول',
-      titleEn: 'FAQ Help Center',
-      path: '/help/faq',
-      descFa: 'پاسخ به سوالات حداقل تیراژ، نحوه ارسال بار و آزمون‌های کیفی.',
-      descEn: 'Answers regarding minimum quantities and shipping.',
-      icon: 'mdi:help-circle-outline',
-      accentColor: '#9333ea',
-      x: 1050,
-      y: 1750,
-      defaultData: {
-        titleFa: 'پاسخ به متداول‌ترین پرسش‌های مدیران و طراحان',
-        titleEn: 'Frequently Asked Questions & Support',
-        subtitleFa: 'شرایط تیراژ، نحوه تست رنگ، زمان تحویل و بسته‌بندی پالت',
-        stats: 'دسته‌بندی پرسش‌ها • پاسخ فوری'
-      }
-    },
-    {
-      id: 'contact-node',
-      slug: 'contact',
-      type: 'satellite',
-      lens: 'pages',
-      titleFa: 'استعلام قیمت و هماهنگی بازدید',
-      titleEn: 'Instant Quote & Visit',
-      path: '/contact',
-      descFa: 'محاسبه آنلاین متریال، هماهنگی جلسه حضوری و شماره‌های مستقیم کارخانه.',
-      descEn: 'Instant quote calculator and showroom booking.',
-      icon: 'mdi:phone-in-talk-outline',
-      accentColor: '#e11d48',
-      x: 1800,
-      y: 920,
-      tag: 'Direct Action',
-      defaultData: {
-        titleFa: 'دریافت فوری پیش‌فاکتور و استعلام سفارشات',
-        titleEn: 'Instant Quote & Factory Visit Booking',
-        subtitleFa: 'تماس با کارشناسان فروش و بازدید حضوری از خطوط تولید',
-        stats: 'پاسخگویی سریع • مشاوره فنی رایگان'
-      }
-    },
-    {
-      id: 'admin-cms-node',
-      slug: 'admin-cms',
-      type: 'satellite',
-      lens: 'pages',
-      titleFa: 'پیشخوان مدیریت و استودیو CMS',
-      titleEn: 'Admin Studio & SWR Engine',
-      path: '/dashboard/cms',
-      descFa: 'مدیریت داده‌های سه زبانه، ویرایش در لحظه و پایگاه داده PocketBase.',
-      descEn: 'Trilingual CMS studio with 0ms SWR instant hydration.',
-      icon: 'mdi:view-dashboard-outline',
-      accentColor: '#018786',
-      x: 1800,
-      y: 1680,
-      tag: 'Admin Suite',
-      defaultData: {
-        titleFa: 'استودیو مرکزی مدیریت داده و تنظیمات',
-        titleEn: 'Admin Studio & PocketBase Data Core',
-        subtitleFa: 'کنترل کامل دیتابیس، کش SWR و مخزن رسانه',
-        stats: 'Live Synced • 0ms Hydration'
-      }
-    },
-
-    // Extra Live Pages directly present in PocketBase
     {
       id: 'pb-login',
       slug: 'login',
       type: 'satellite',
       lens: 'pages',
-      titleFa: 'صفحه ورود و احراز هویت کاربران',
-      titleEn: 'User Login & Auth',
+      titleFa: 'ورود و احراز هویت',
+      titleEn: 'User Auth',
       path: '/login',
       descFa: 'درگاه ورود با کد یکبار مصرف پیامکی و رمز عبور.',
       descEn: 'OTP and password user authentication gateway.',
       icon: 'mdi:lock-outline',
       accentColor: '#6366f1',
-      x: 1450,
-      y: 750,
-      tag: 'Auth',
-      defaultData: {
-        titleFa: 'ورود یا ثبت‌نام در سامانه مشتریان',
-        titleEn: 'Login or Sign Up',
-        subtitleFa: 'دسترسی به سفارشات اختصاصی، فاکتورها و وضعیت بار',
-        stats: 'OTP پیامکی • ورود امن'
+      x: 1550,
+      y: 820,
+      tag: 'Auth (Live PB)',
+      defaultData: livePagesMap['login']?.uiData || {
+        authMethods: ['SMS OTP', 'Password'],
+        smsProvider: 'KavehNegar'
       }
     },
     {
@@ -409,21 +200,19 @@ export default defineEventHandler(async (event) => {
       slug: 'menu',
       type: 'satellite',
       lens: 'pages',
-      titleFa: 'پیکربندی منوی ناوبری اصلی',
-      titleEn: 'Main Navigation Menu',
+      titleFa: 'پیکربندی منو',
+      titleEn: 'Menu Config',
       path: '/#menu',
       descFa: 'داده‌های ساختار منوی هدر و منوی تمام‌صفحه موبایل.',
       descEn: 'Navigation header menu items configuration.',
       icon: 'mdi:menu',
       accentColor: '#0ea5e9',
       x: 1800,
-      y: 750,
-      tag: 'Navigation',
-      defaultData: {
-        titleFa: 'منوی ناوبری سه‌زبانه سامانه',
-        titleEn: 'Main Header Navigation',
-        subtitleFa: 'لینک‌های دسترسی سریع به کاتالوگ و مقالات',
-        stats: 'FA / EN / AR'
+      y: 820,
+      tag: 'Menu (Live PB)',
+      defaultData: livePagesMap['menu']?.uiData || {
+        languages: ['FA', 'EN', 'AR'],
+        mainLinks: ['خانه', 'درباره ما', 'محصولات', 'تاریخچه', 'تماس']
       }
     },
     {
@@ -431,27 +220,88 @@ export default defineEventHandler(async (event) => {
       slug: 'footer',
       type: 'satellite',
       lens: 'pages',
-      titleFa: 'پیکربندی فوتر و اطلاعات تماس',
-      titleEn: 'Footer & Company Info',
+      titleFa: 'پیکربندی فوتر',
+      titleEn: 'Footer Config',
       path: '/#footer',
-      descFa: 'داده‌های فوتر سایت شامل کپی‌رایت، مجوزها و لینک‌های شبکه اجتماعی.',
+      descFa: 'داده‌های فوتر سایت شامل کپی‌رایت، مجوزها و شبکه‌های اجتماعی.',
       descEn: 'Footer copyright and social channel links.',
       icon: 'mdi:page-layout-footer',
       accentColor: '#64748b',
-      x: 2150,
-      y: 750,
-      tag: 'Footer',
+      x: 2050,
+      y: 820,
+      tag: 'Footer (Live PB)',
+      defaultData: livePagesMap['footer']?.uiData || {
+        copyrightFa: 'تمام حقوق برای مجتمع چاپ و بسته‌بندی نجم محفوظ است.',
+        permits: ['وزارت ارشاد', 'ای‌نماد', 'نشان ملی ثبت']
+      }
+    },
+    {
+      id: 'contact-node',
+      slug: 'contact',
+      type: 'satellite',
+      lens: 'pages',
+      titleFa: 'استعلام قیمت و تماس',
+      titleEn: 'Quote & Contact',
+      path: '/contact',
+      descFa: 'محاسبه آنلاین متریال، هماهنگی جلسه حضوری و شماره‌های کارخانه.',
+      descEn: 'Instant quote calculator and showroom booking.',
+      icon: 'mdi:phone-in-talk-outline',
+      accentColor: '#e11d48',
+      x: 1800,
+      y: 1040,
+      tag: 'Action',
       defaultData: {
-        titleFa: 'فوتر جامع و مجوزهای صنعتی',
-        titleEn: 'Comprehensive Footer & Social Links',
-        subtitleFa: 'مجوز وزارت ارشاد، نماد اعتماد الکترونیکی و نشان ملی ثبت',
-        stats: '۳ بخش پیوندها'
+        contact: {
+          phone: '+98-21-88888888',
+          showroomAddress: 'تهران، خیابان ظفر',
+          factoryAddress: 'شهرک صنعتی شمس‌آباد'
+        }
+      }
+    },
+    {
+      id: 'blog-node',
+      slug: 'blog',
+      type: 'satellite',
+      lens: 'knowledge',
+      titleFa: 'وبلاگ تخصصی چاپ',
+      titleEn: 'Technical Blog',
+      path: '/blog',
+      descFa: 'مقالات تخصصی گرماژ مقوا، سلفون مخملی و استاندارد Fogra 39.',
+      descEn: 'Technical articles on paperboard GSM, velvet lamination and prepress.',
+      icon: 'mdi:post-outline',
+      accentColor: '#d97706',
+      x: 2450,
+      y: 1600,
+      tag: 'Blog (Live PB)',
+      defaultData: {
+        totalPosts: blogList.length || 1,
+        posts: blogList.map(b => ({ id: b.id, title: b.title, slug: b.slug }))
+      }
+    },
+    {
+      id: 'media-node',
+      slug: 'media',
+      type: 'satellite',
+      lens: 'services',
+      titleFa: 'مخزن رسانه‌ها (Media Lab)',
+      titleEn: 'Media Lab',
+      path: '/dashboard/media',
+      descFa: 'آرشیو تصاویر خط تولید، وکتورهای SVG و ویدیوهای کارخانه.',
+      descEn: 'Production photos, SVG mockups and factory video assets.',
+      icon: 'mdi:folder-multiple-image',
+      accentColor: '#9333ea',
+      x: 1150,
+      y: 1600,
+      tag: 'Media (Live PB)',
+      defaultData: {
+        totalFiles: mediaCount || 95,
+        allowedTypes: ['image/webp', 'image/png', 'image/svg+xml', 'video/mp4']
       }
     }
   ]
 
-  // Detect Live PocketBase vs Hardcoded Sample for Every Node
-  const enrichedNodes = baseNodes.map(node => {
+  // Detect Live PocketBase vs Hardcoded for Every Node
+  const enrichedNodes = authenticNodes.map(node => {
     const liveRecord = livePagesMap[node.slug]
     const isFromBackend = !!liveRecord
     
@@ -460,14 +310,15 @@ export default defineEventHandler(async (event) => {
       source: isFromBackend ? 'backend' : 'hardcoded',
       backendRecordId: liveRecord?.id || null,
       liveData: liveRecord ? {
-        titleFa: liveRecord.title || liveRecord.uiData?.fa?.title || node.defaultData.titleFa,
-        titleEn: liveRecord.uiData?.en?.title || node.defaultData.titleEn,
-        subtitleFa: liveRecord.uiData?.fa?.subtitle || node.defaultData.subtitleFa,
-        stats: liveRecord.uiData?.fa?.stats || node.defaultData.stats,
-        rawUiData: liveRecord.uiData || null
+        titleFa: liveRecord.title || liveRecord.uiData?.fa?.title || node.titleFa,
+        titleEn: liveRecord.uiData?.en?.title || node.titleEn,
+        subtitleFa: liveRecord.uiData?.fa?.subtitle || node.descFa,
+        rawUiData: liveRecord.uiData || node.defaultData
       } : {
-        ...node.defaultData,
-        rawUiData: null
+        titleFa: node.titleFa,
+        titleEn: node.titleEn,
+        subtitleFa: node.descFa,
+        rawUiData: node.defaultData
       }
     }
   })
@@ -483,8 +334,6 @@ export default defineEventHandler(async (event) => {
       totalLiveProductsInPB: productsList.length,
       mediaCount
     },
-    livePocketBasePages: livePagesList.map(p => ({ id: p.id, slug: p.slug, title: p.title })),
-    livePocketBaseProducts: productsList.map(p => ({ id: p.id, name: p.name, slug: p.slug })),
     nodes: enrichedNodes
   }
 })

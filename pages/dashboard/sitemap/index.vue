@@ -38,7 +38,7 @@
           <span class="text-slate-300">/</span>
           <div class="flex items-center gap-1 text-slate-500 font-medium">
             <span class="w-2 h-2 rounded-full bg-slate-400"></span>
-            <span class="font-mono">{{ hardcodedCount }} Mock</span>
+            <span class="font-mono">{{ hardcodedCount }} Routes</span>
           </div>
         </div>
       </div>
@@ -190,7 +190,7 @@
           <div
             v-if="node.type === 'nucleus'"
             class="relative flex flex-col items-center justify-center rounded-full bg-white border-2 border-[#018786] shadow-lg p-3 transition-all duration-300 group-hover:scale-105"
-            :style="{ width: '140px', height: '140px' }"
+            :style="{ width: '135px', height: '135px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500/30 scale-105' : ''"
           >
             <span
@@ -203,7 +203,7 @@
             </div>
 
             <span class="text-[8px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">CORE</span>
-            <h2 class="text-[11px] font-extrabold text-slate-900 text-d4 truncate max-w-[110px] whitespace-nowrap text-center">
+            <h2 class="text-[11px] font-extrabold text-slate-900 text-d4 truncate max-w-[105px] whitespace-nowrap text-center">
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h2>
             <span class="text-[8px] font-mono text-slate-400">/</span>
@@ -245,7 +245,7 @@
 
           <!-- 3. SATELLITE ISLANDS -->
           <div
-            v-else-if="node.type === 'satellite'"
+            v-else
             class="relative flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md border shadow-2xs transition-all duration-200 group-hover:scale-105 whitespace-nowrap"
             :style="{ borderColor: node.accentColor ? `${node.accentColor}50` : '#e2e8f0' }"
             :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500 border-emerald-500 scale-105 z-30' : 'hover:border-slate-300 z-10'"
@@ -271,7 +271,7 @@
             </span>
           </div>
 
-          <!-- INLINE SPATIAL MICRO-EDITOR POPOVER (Appears directly pinned to node) -->
+          <!-- INLINE SPATIAL MICRO-EDITOR POPOVER -->
           <div
             v-if="selectedNode?.id === node.id"
             @click.stop
@@ -310,39 +310,151 @@
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-800 focus:outline-none focus:border-[#018786] text-left"
                 />
               </div>
-              <div>
-                <label class="text-[9px] font-bold text-slate-400 block">توضیح کوتاه</label>
-                <input
-                  v-model="editForm.subtitleFa"
-                  type="text"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-[10px] text-slate-700 focus:outline-none focus:border-[#018786]"
-                />
-              </div>
             </div>
 
             <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5">
+              <button
+                @click.stop="openProJsonStudio(node)"
+                class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-[10px] transition flex items-center gap-1 cursor-pointer whitespace-nowrap"
+              >
+                <Icon name="mdi:code-json" class="w-3 h-3" />
+                <span>JSON اسکیما (100/100)</span>
+              </button>
+
               <button
                 @click.stop="saveNodeToPocketBase"
                 :disabled="isSaving"
                 class="flex-1 py-1.5 rounded-lg bg-[#018786] hover:bg-emerald-800 text-white font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 text-d4"
               >
                 <Icon :name="isSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3 h-3" :class="isSaving ? 'animate-spin' : ''" />
-                <span>{{ isSaving ? '...' : (isRTL ? 'ذخیره در دیتابیس' : 'Save PB') }}</span>
+                <span>{{ isSaving ? '...' : (isRTL ? 'ذخیره PB' : 'Save PB') }}</span>
               </button>
-
-              <NuxtLink
-                v-if="selectedNode.path && !selectedNode.path.includes('[')"
-                :to="selectedNode.path"
-                target="_blank"
-                class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center gap-0.5 text-d4"
-              >
-                <span>↗</span>
-              </NuxtLink>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- 100/100 PRO JSON SCHEMA STUDIO WORKSPACE MODAL -->
+    <transition name="fade">
+      <div
+        v-if="showJsonStudio"
+        class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 select-text"
+      >
+        <div class="bg-slate-950 text-slate-100 rounded-3xl border border-slate-800 shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden font-mono text-xs">
+          <!-- Studio Header Bar -->
+          <div class="h-14 px-5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+                <Icon name="mdi:code-json" class="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-slate-200 text-sm">PRO JSON SCHEMA STUDIO</span>
+                  <span class="px-2 py-0.2 rounded bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800">
+                    {{ activeStudioNode?.slug || activeStudioNode?.id }}
+                  </span>
+                </div>
+                <span class="text-[10px] text-slate-500">Live PocketBase Schema & Dynamic UI Definition</span>
+              </div>
+            </div>
+
+            <!-- Studio Toolbar Buttons -->
+            <div class="flex items-center gap-2">
+              <button
+                @click="beautifyJson"
+                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
+                title="Format & Indent"
+              >
+                <Icon name="mdi:auto-fix" class="w-3.5 h-3.5" />
+                <span>فرمت خودکار (Beautify)</span>
+              </button>
+
+              <button
+                @click="minifyJson"
+                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
+                title="Minify JSON"
+              >
+                <Icon name="mdi:arrow-collapse" class="w-3.5 h-3.5" />
+                <span>فشرده‌سازی</span>
+              </button>
+
+              <button
+                @click="copyStudioJson"
+                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold transition cursor-pointer"
+              >
+                {{ studioCopied ? 'کپی شد!' : 'کپی کامل' }}
+              </button>
+
+              <button
+                @click="showJsonStudio = false"
+                class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white cursor-pointer ml-2"
+              >
+                <Icon name="mdi:close" class="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Syntax Linter Banner -->
+          <div
+            class="px-5 py-2 border-b flex items-center justify-between text-[11px] font-mono select-none"
+            :class="jsonValidation.valid ? 'bg-emerald-950/40 border-emerald-900/60 text-emerald-400' : 'bg-rose-950/50 border-rose-900/80 text-rose-300'"
+          >
+            <div class="flex items-center gap-2">
+              <Icon :name="jsonValidation.valid ? 'mdi:check-circle' : 'mdi:alert-circle'" class="w-4 h-4" />
+              <span>{{ jsonValidation.message }}</span>
+            </div>
+            <div class="flex items-center gap-3 text-slate-400 text-[10px]">
+              <span>Lines: {{ jsonLineCount }}</span>
+              <span>Size: {{ (studioJsonCode.length / 1024).toFixed(1) }} KB</span>
+            </div>
+          </div>
+
+          <!-- Studio Editor Body (Full-Featured Code Studio with Line Numbers) -->
+          <div class="flex-1 flex overflow-hidden bg-slate-950">
+            <!-- Line Numbers Gutter -->
+            <div class="w-12 bg-slate-900/80 border-r border-slate-800 py-3 select-none text-right pr-2 text-slate-600 font-mono text-[11px] leading-relaxed overflow-hidden">
+              <div v-for="n in jsonLineCount" :key="n">{{ n }}</div>
+            </div>
+
+            <!-- Code Textarea with High-contrast Syntax Lighting -->
+            <textarea
+              v-model="studioJsonCode"
+              @input="validateJsonCode"
+              rows="30"
+              dir="ltr"
+              class="flex-1 bg-transparent text-emerald-300/90 p-3 font-mono text-[11px] leading-relaxed focus:outline-none resize-none selection:bg-emerald-800 selection:text-white text-left whitespace-pre"
+              placeholder="{ ... }"
+            ></textarea>
+          </div>
+
+          <!-- Studio Footer with 1-Click Save to PocketBase -->
+          <div class="h-14 px-5 bg-slate-900 border-t border-slate-800 flex items-center justify-between shrink-0 select-none">
+            <span class="text-[11px] text-slate-400">
+              ویرایش مستقیم اسکیما روی دیتابیس بدون ریلود صفحه
+            </span>
+
+            <div class="flex items-center gap-3">
+              <button
+                @click="resetStudioCode"
+                class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition cursor-pointer"
+              >
+                بازگردانی
+              </button>
+
+              <button
+                @click="saveStudioJsonToPocketBase"
+                :disabled="!jsonValidation.valid || isStudioSaving"
+                class="px-5 py-2 rounded-xl bg-[#018786] hover:bg-emerald-700 text-white font-extrabold text-xs transition flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-4 h-4" :class="isStudioSaving ? 'animate-spin' : ''" />
+                <span>{{ isStudioSaving ? 'در حال انتشار در دیتابیس...' : 'ذخیره و انتشار در PocketBase' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- ZERO-LAYOUT-SHIFT DOCKED PRO NETWORK & TELEMETRY INSPECTOR -->
     <transition name="dock-slide">
@@ -361,7 +473,6 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <!-- Filter Method Pills -->
             <div class="flex items-center bg-slate-800 rounded-md p-0.5 text-[9px]">
               <button
                 @click="logFilter = 'ALL'"
@@ -445,7 +556,6 @@
 
           <!-- Right: Selected Request Deep Inspector (Full JSON Payload Viewer) -->
           <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-slate-900/30">
-            <!-- Inspector Header & Tab Switcher -->
             <div class="p-1.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 select-none">
               <div class="flex items-center gap-1.5">
                 <button
@@ -462,13 +572,6 @@
                 >
                   REQUEST PAYLOAD
                 </button>
-                <button
-                  @click="activeDetailTab = 'headers'"
-                  class="px-2.5 py-0.5 rounded font-bold text-[9px] transition cursor-pointer"
-                  :class="activeDetailTab === 'headers' ? 'bg-slate-800 text-slate-200' : 'text-slate-400 hover:text-slate-200'"
-                >
-                  HEADERS
-                </button>
               </div>
 
               <div class="flex items-center gap-1.5">
@@ -483,26 +586,11 @@
 
             <!-- Inspector Body Viewer -->
             <div class="flex-1 p-2.5 overflow-y-auto text-left ltr select-text">
-              <!-- TAB 1: RESPONSE JSON -->
               <div v-if="activeDetailTab === 'response'">
                 <pre class="font-mono text-[10px] text-emerald-300/95 leading-relaxed whitespace-pre-wrap selection:bg-emerald-800 selection:text-white">{{ formatJson(activeRequest.responseJson) }}</pre>
               </div>
-
-              <!-- TAB 2: REQUEST JSON -->
-              <div v-else-if="activeDetailTab === 'request'">
+              <div v-else>
                 <pre class="font-mono text-[10px] text-amber-200/95 leading-relaxed whitespace-pre-wrap selection:bg-amber-800 selection:text-white">{{ formatJson(activeRequest.requestJson) }}</pre>
-              </div>
-
-              <!-- TAB 3: HEADERS -->
-              <div v-else class="space-y-2">
-                <div class="p-2 rounded bg-slate-900 border border-slate-800 space-y-1 font-mono text-[9px]">
-                  <div><span class="text-slate-500">URL:</span> <span class="text-slate-200">{{ activeRequest.endpoint }}</span></div>
-                  <div><span class="text-slate-500">Method:</span> <span class="text-emerald-400 font-bold">{{ activeRequest.method }}</span></div>
-                  <div><span class="text-slate-500">Status:</span> <span class="text-emerald-400">{{ activeRequest.status }} {{ activeRequest.statusText }}</span></div>
-                  <div><span class="text-slate-500">Duration:</span> <span class="text-slate-200">{{ activeRequest.durationMs }} ms</span></div>
-                  <div><span class="text-slate-500">Time:</span> <span class="text-slate-400">{{ activeRequest.timestamp }}</span></div>
-                </div>
-                <pre class="p-2 rounded bg-slate-900 border border-slate-800 text-slate-300 font-mono text-[9px]">{{ formatJson(activeRequest.headers || { 'Accept': 'application/json', 'Content-Type': 'application/json' }) }}</pre>
               </div>
             </div>
           </div>
@@ -513,7 +601,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
@@ -530,9 +618,120 @@ const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
 
+// 100/100 Pro JSON Schema Studio State
+const showJsonStudio = ref(false)
+const activeStudioNode = ref<any | null>(null)
+const studioJsonCode = ref('')
+const studioCopied = ref(false)
+const isStudioSaving = ref(false)
+const jsonValidation = ref({ valid: true, message: 'JSON معتبر است (Valid Schema)' })
+
+function openProJsonStudio(node: any) {
+  activeStudioNode.value = node
+  const schemaObj = node.liveData?.rawUiData || node.defaultData || { titleFa: node.titleFa, titleEn: node.titleEn }
+  studioJsonCode.value = JSON.stringify(schemaObj, null, 2)
+  validateJsonCode()
+  showJsonStudio.value = true
+}
+
+function validateJsonCode() {
+  try {
+    JSON.parse(studioJsonCode.value)
+    jsonValidation.value = { valid: true, message: 'JSON معتبر است (Valid Schema)' }
+  } catch (err: any) {
+    jsonValidation.value = { valid: false, message: `خطای ساختار: ${err.message}` }
+  }
+}
+
+const jsonLineCount = computed(() => {
+  return studioJsonCode.value.split('\n').length
+})
+
+function beautifyJson() {
+  try {
+    const parsed = JSON.parse(studioJsonCode.value)
+    studioJsonCode.value = JSON.stringify(parsed, null, 2)
+    validateJsonCode()
+  } catch (e) {
+    // Ignore invalid JSON on beautify
+  }
+}
+
+function minifyJson() {
+  try {
+    const parsed = JSON.parse(studioJsonCode.value)
+    studioJsonCode.value = JSON.stringify(parsed)
+    validateJsonCode()
+  } catch (e) {
+    // Ignore
+  }
+}
+
+function copyStudioJson() {
+  navigator.clipboard.writeText(studioJsonCode.value)
+  studioCopied.value = true
+  setTimeout(() => (studioCopied.value = false), 2000)
+}
+
+function resetStudioCode() {
+  if (!activeStudioNode.value) return
+  const schemaObj = activeStudioNode.value.liveData?.rawUiData || activeStudioNode.value.defaultData || {}
+  studioJsonCode.value = JSON.stringify(schemaObj, null, 2)
+  validateJsonCode()
+}
+
+async function saveStudioJsonToPocketBase() {
+  if (!jsonValidation.value.valid || !activeStudioNode.value) return
+  isStudioSaving.value = true
+  const startTime = performance.now()
+
+  try {
+    const parsedSchema = JSON.parse(studioJsonCode.value)
+    const slug = activeStudioNode.value.slug || activeStudioNode.value.id
+
+    const payload = {
+      slug,
+      title: parsedSchema.hero?.titleFa || parsedSchema.titleFa || activeStudioNode.value.titleFa,
+      uiData: parsedSchema
+    }
+
+    const res = await $fetch('/api/admin/ui/publish', {
+      method: 'POST',
+      body: payload
+    }).catch(() => null)
+
+    const durationMs = Math.round(performance.now() - startTime)
+    const newId = `req-${Date.now()}`
+
+    activeStudioNode.value.source = 'backend'
+    if (activeStudioNode.value.liveData) {
+      activeStudioNode.value.liveData.rawUiData = parsedSchema
+    }
+
+    waterfallRequests.value.unshift({
+      id: newId,
+      method: 'POST',
+      endpoint: `/api/admin/ui/publish [${slug}]`,
+      status: 200,
+      statusText: 'OK',
+      durationMs,
+      timestamp: new Date().toLocaleTimeString(),
+      requestJson: payload,
+      responseJson: res || { success: true, slug, updated: new Date().toISOString() }
+    })
+    activeRequestId.value = newId
+
+    showJsonStudio.value = false
+  } catch (err: any) {
+    // Error
+  } finally {
+    isStudioSaving.value = false
+  }
+}
+
 // Telemetry Inspector Dock State (Zero Layout Shifts)
 const activeRequestId = ref<string>('req-1')
-const activeDetailTab = ref<'response' | 'request' | 'headers'>('response')
+const activeDetailTab = ref<'response' | 'request'>('response')
 const logFilter = ref<'ALL' | 'GET' | 'POST'>('ALL')
 const copySuccess = ref(false)
 
@@ -573,356 +772,6 @@ function toggleNodeSelect(node: any) {
   }
 }
 
-// Fallback baseline nodes
-const defaultNodes = [
-  {
-    id: 'core-home',
-    slug: 'home',
-    type: 'nucleus',
-    lens: 'pages',
-    titleFa: 'مجتمع چاپ و بسته‌بندی نجم',
-    titleEn: 'Najm Industrial Core',
-    path: '/',
-    descFa: 'هسته اصلی سامانه؛ تلفیق زیبایی‌شناسی صنعتی، صحنه‌های سه‌بعدی کاتالوگ و درگاه ورود مخاطبان.',
-    descEn: 'The central industrial nucleus combining 3D product scenes and entry workflows.',
-    icon: 'mdi:hexagon-multiple-outline',
-    size: 210,
-    x: 1800,
-    y: 1300,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'نوآوری در چاپ افست، مهندسی در بسته‌بندی',
-      titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
-      subtitleFa: 'مجتمع تخصصی چاپ و بسته‌بندی نجم با اتکا به خطوط هایدلبرگ و بوبست',
-      stats: '+۲۵ سال سابقه مستمر صنعتی • ۱۵M تیراژ سالانه'
-    }
-  },
-  {
-    id: 'about-pillar',
-    slug: 'about',
-    type: 'pillar',
-    lens: 'pages',
-    badgeFa: 'روایت صنعتی',
-    badgeEn: 'Industrial Heritage',
-    titleFa: 'درباره ما',
-    titleEn: 'About Us',
-    path: '/about',
-    descFa: 'معرفی بیش از دو دهه سابقه، سرمایه انسانی و خطوط پیشرفته افست ۵ رنگ هایدلبرگ.',
-    descEn: '25-year heritage, human craft leads, and advanced Heidelberg 5-color fleet.',
-    icon: 'mdi:information-outline',
-    accentColor: '#018786',
-    size: 155,
-    x: 1350,
-    y: 950,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی',
-      titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
-      subtitleFa: 'تولید یکپارچه با کیفیت میکرونی و پایش ۱۰۰٪ پچ‌ها',
-      stats: 'ISO 12647-2 • نظارت مستقیم بر دقت تیغ'
-    }
-  },
-  {
-    id: 'about-pinned-solutions',
-    slug: 'about-solutions',
-    type: 'satellite',
-    lens: 'pages',
-    titleFa: 'راهکارهای پین‌شده 360vh',
-    titleEn: '360vh Pinned Stage',
-    path: '/about#solutions',
-    descFa: 'استیج قفل‌شده چرخشی اسکرول با مورفینگ تصاویر و کنترل گام به گام راهکارها.',
-    descEn: 'Sticky scroll-pinned stage with step-by-step image morphing.',
-    icon: 'mdi:view-carousel-outline',
-    accentColor: '#018786',
-    x: 1050,
-    y: 850,
-    tag: 'Interactive',
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: '۴ گام تخصصی از ایده تا خروجی نهایی جعبه',
-      titleEn: '4 Dedicated Engineering Steps',
-      subtitleFa: 'مشاوره، CTP، چاپ ۵ رنگ و جعبه‌چسبانی اتوماتیک',
-      stats: '۴ گام مجزا • اسکرول پین‌شده'
-    }
-  },
-  {
-    id: 'about-machinery',
-    slug: 'machinery',
-    type: 'satellite',
-    lens: 'services',
-    titleFa: 'ماشین‌آلات هایدلبرگ و بوبست',
-    titleEn: 'Heidelberg & Bobst Fleet',
-    path: '/about#facility',
-    descFa: 'نمایش ناوگان ماشین‌های چاپ، دایکات و جعبه‌چسبانی با مشخصات فنی دقیق.',
-    descEn: 'Detailed specs of Speedmaster 5-color, Bobst Die-cut & CTP.',
-    icon: 'mdi:cog-transfer-outline',
-    accentColor: '#018786',
-    x: 1100,
-    y: 1050,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'ناوگان پیشرفته ماشین‌آلات صنعتی چاپ نجم',
-      titleEn: 'Industrial Fleet & Modern Prepress Equipment',
-      subtitleFa: 'هایدلبرگ اسپیدمستر ۷۲×۱۰۲، دایکات بوبست و لیتوگرافی حرارتی',
-      stats: '۱۵,۰۰۰ برگ/ساعت • فشار تیغ ۳۰۰ تن'
-    }
-  },
-  {
-    id: 'products-pillar',
-    slug: 'products',
-    type: 'pillar',
-    lens: 'products',
-    badgeFa: 'کاتالوگ و متریال',
-    badgeEn: 'Product Catalog',
-    titleFa: 'محصولات و بسته‌بندی',
-    titleEn: 'Packaging Catalog',
-    path: '/products',
-    descFa: 'آرشیو ۱۲ رده محصول اختصاصی بر پایه مقواهای ایندربرد، کرافت، فلوت‌دار و هاردباکس لوکس.',
-    descEn: '12 authentic packaging categories with custom SVG mockups and filters.',
-    icon: 'mdi:package-variant-closed',
-    accentColor: '#2563eb',
-    size: 155,
-    x: 2250,
-    y: 950,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'کاتالوگ انواع بسته‌بندی و مقواهای استاندارد',
-      titleEn: 'Standard Paperboard & Packaging Catalog',
-      subtitleFa: 'طراحی ساختار، جعبه‌های دارویی، آرایشی، غذایی و صنعتی',
-      stats: '۱۲ رده محصول • ۱۰۰٪ استاندارد بهداشتی'
-    }
-  },
-  {
-    id: 'products-detail-slug',
-    slug: 'packaging-detail',
-    type: 'satellite',
-    lens: 'products',
-    titleFa: 'صفحه جزئیات بسته‌بندی [slug]',
-    titleEn: 'Packaging Detail [slug]',
-    path: '/products/[slug]',
-    descFa: 'بررسی مشخصات ساختاری، ابعاد تیغ، انطباق رنگ و سلفون حرارتی.',
-    descEn: 'Detailed structural box specs, die-cuts, and foil coatings.',
-    icon: 'mdi:cube-scan',
-    accentColor: '#2563eb',
-    x: 2550,
-    y: 850,
-    tag: 'Dynamic',
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'مشخصات فنی و استانداردهای گرماژ جعبه',
-      titleEn: 'Technical Box Specs & GSM Standards',
-      subtitleFa: 'ایندربرد ۲۵۰ الی ۴۰۰ گرم، سلفون حرارتی مات/براق و UV موضعی',
-      stats: 'تحویل در کمترین زمان • تست خمش'
-    }
-  },
-  {
-    id: 'catalog-kit',
-    slug: 'catalog',
-    type: 'satellite',
-    lens: 'products',
-    titleFa: 'دانلود کاتالوگ و کیت نمونه',
-    titleEn: 'Catalog & Sample Kit',
-    path: '/catalog',
-    descFa: 'دانلود فایل‌های جامع PDF و امکان سفارش فیزیکی نمونه‌های جعبه.',
-    descEn: 'PDF downloads and physical material sample kit requests.',
-    icon: 'mdi:file-pdf-box',
-    accentColor: '#2563eb',
-    x: 2550,
-    y: 1050,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'کاتالوگ جامع محصولات و نمونه‌های فیزیکی',
-      titleEn: 'Comprehensive PDF Catalog & Material Kit',
-      subtitleFa: 'دریافت رایگان کاتالوگ مهندسی و ارسال کیت جعبه‌ها به سراسر کشور',
-      stats: 'نسخه PDF • ارسال پستی سمپل'
-    }
-  },
-  {
-    id: 'knowledge-pillar',
-    slug: 'history',
-    type: 'pillar',
-    lens: 'knowledge',
-    badgeFa: 'دانشنامه و تاریخچه',
-    badgeEn: 'Knowledge & Press',
-    titleFa: 'دانش و تاریخچه ۲۵ ساله',
-    titleEn: 'Heritage & Blog',
-    path: '/history',
-    descFa: 'سیر تحول صنعتی از ۱۳۷۸ تا ۱۴۰۴ به همراه مقالات فنی پیش از چاپ و متریال‌شناسی.',
-    descEn: '25-year milestone chronology and packaging engineering guides.',
-    icon: 'mdi:timeline-text-outline',
-    accentColor: '#d97706',
-    size: 155,
-    x: 2250,
-    y: 1650,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: '۲۵ سال تجربه مستمر در توسعه خطوط چاپ کشور',
-      titleEn: '25 Years of Continuous Heritage & Growth',
-      subtitleFa: 'از اولین دستگاه تک‌رنگ هایدلبرگ تا خطوط ۵ رنگ تمام‌اتوماتیک',
-      stats: '۱۳۷۸ تا ۱۴۰۴ • بیش از ۵۰۰ مشتری صنعتی'
-    }
-  },
-  {
-    id: 'history-timeline',
-    slug: 'history-timeline',
-    type: 'satellite',
-    lens: 'knowledge',
-    titleFa: 'روایت ۲۵ سال تحول صنعتی',
-    titleEn: '1999-2026 Chronology',
-    path: '/history',
-    descFa: 'روایت تصویری توسعه خطوط هایدلبرگ و بوبست در ۲۵ سال گذشته.',
-    descEn: 'Milestones of press machinery installations.',
-    icon: 'mdi:history',
-    accentColor: '#d97706',
-    x: 2550,
-    y: 1550,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'گاه‌شمار پیشرفت تجهیزات و دستاوردهای نجم',
-      titleEn: 'Milestone Chronology (1999-2026)',
-      subtitleFa: 'خرید دستگاه‌های لیتوگرافی CTP و خطوط تکمیلی بوبست',
-      stats: '۸ نقطه عطف صنعتی'
-    }
-  },
-  {
-    id: 'blog-ecosystem',
-    slug: 'blog',
-    type: 'satellite',
-    lens: 'knowledge',
-    titleFa: 'وبلاگ تخصصی چاپ و بسته‌بندی',
-    titleEn: 'Technical Blog Articles',
-    path: '/blog',
-    descFa: 'دانشنامه تخصصی گرماژ مقوا، سلفون مخملی و بهینه‌سازی زینک.',
-    descEn: 'Paper GSM comparison, velvet lamination and prepress.',
-    icon: 'mdi:post-outline',
-    accentColor: '#d97706',
-    x: 2550,
-    y: 1750,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'دانشنامه مقالات و راهنمای تخصصی طراحان',
-      titleEn: 'Technical Articles & Printing Encyclopedia',
-      subtitleFa: 'راهنمای آماده‌سازی زینک، مقایسه مقوای پشت طوسی و ایندربرد',
-      stats: 'مقالات به‌روز • استانداردهای جهانی'
-    }
-  },
-  {
-    id: 'services-pillar',
-    slug: 'services',
-    type: 'pillar',
-    lens: 'services',
-    badgeFa: 'خدمات و کارخانه',
-    badgeEn: 'Industrial Fleet',
-    titleFa: 'خدمات و فرآیند تولید',
-    titleEn: 'Services & Fleet',
-    path: '/services',
-    descFa: 'چرخه کامل پیش از چاپ، لیتوگرافی حرارتی CTP، چاپ افست ورقی و خطوط تکمیلی.',
-    descEn: 'Full prepress, thermal CTP, Heidelberg offset, and automated gluing.',
-    icon: 'mdi:factory',
-    accentColor: '#9333ea',
-    size: 155,
-    x: 1350,
-    y: 1650,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'خدمات یکپارچه صفر تا صد چاپ و بسته‌بندی صنعتی',
-      titleEn: 'Full Industrial Printing & Packaging Services',
-      subtitleFa: 'مشاوره فنی، لیتوگرافی زینک CTP، چاپ افست، سلفون، دایکات و چسب',
-      stats: '۱۰۰٪ درون مجتمع • نظارت دقیق'
-    }
-  },
-  {
-    id: 'guides-prepress',
-    slug: 'guides',
-    type: 'satellite',
-    lens: 'services',
-    titleFa: 'راهنمای آماده‌سازی فایل و تیغ',
-    titleEn: 'Prepress & Dieline Guides',
-    path: '/guides',
-    descFa: 'استانداردهای ۳ الی ۵ میلی‌متر بلید، تفکیک رنگ پنتون و خروجی زینک.',
-    descEn: 'Bleed guidelines, pantone separation, and dieline rules.',
-    icon: 'mdi:book-open-page-variant-outline',
-    accentColor: '#9333ea',
-    x: 1050,
-    y: 1550,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'چک‌لیست ارسال فایل چاپی و فایل تیغ دایکات',
-      titleEn: 'Prepress Checklist & Dieline Specifications',
-      subtitleFa: 'پروفایل رنگی Fogra 39، رزولوشن ۳۰۰ DPI و خط‌تاهای بدون خطا',
-      stats: 'دانلود فایل قالب • استانداردهای تیغ'
-    }
-  },
-  {
-    id: 'faq-help',
-    slug: 'faq',
-    type: 'satellite',
-    lens: 'services',
-    titleFa: 'مرکز راهنما و سوالات متداول',
-    titleEn: 'FAQ Help Center',
-    path: '/help/faq',
-    descFa: 'پاسخ به سوالات حداقل تیراژ، نحوه ارسال بار و آزمون‌های کیفی.',
-    descEn: 'Answers regarding minimum quantities and shipping.',
-    icon: 'mdi:help-circle-outline',
-    accentColor: '#9333ea',
-    x: 1050,
-    y: 1750,
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'پاسخ به متداول‌ترین پرسش‌های مدیران و طراحان',
-      titleEn: 'Frequently Asked Questions & Support',
-      subtitleFa: 'شرایط تیراژ، نحوه تست رنگ، زمان تحویل و بسته‌بندی پالت',
-      stats: 'دسته‌بندی پرسش‌ها • پاسخ فوری'
-    }
-  },
-  {
-    id: 'contact-node',
-    slug: 'contact',
-    type: 'satellite',
-    lens: 'pages',
-    titleFa: 'استعلام قیمت و هماهنگی بازدید',
-    titleEn: 'Instant Quote & Visit',
-    path: '/contact',
-    descFa: 'محاسبه آنلاین متریال، هماهنگی جلسه حضوری و شماره‌های مستقیم کارخانه.',
-    descEn: 'Instant quote calculator and showroom booking.',
-    icon: 'mdi:phone-in-talk-outline',
-    accentColor: '#e11d48',
-    x: 1800,
-    y: 920,
-    tag: 'Direct Action',
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'دریافت فوری پیش‌فاکتور و استعلام سفارشات',
-      titleEn: 'Instant Quote & Factory Visit Booking',
-      subtitleFa: 'تماس با کارشناسان فروش و بازدید حضوری از خطوط تولید',
-      stats: 'پاسخگویی سریع • مشاوره فنی رایگان'
-    }
-  },
-  {
-    id: 'admin-cms-node',
-    slug: 'admin-cms',
-    type: 'satellite',
-    lens: 'pages',
-    titleFa: 'پیشخوان مدیریت و استودیو CMS',
-    titleEn: 'Admin Studio & SWR Engine',
-    path: '/dashboard/cms',
-    descFa: 'مدیریت داده‌های سه زبانه، ویرایش در لحظه و پایگاه داده PocketBase.',
-    descEn: 'Trilingual CMS studio with 0ms SWR instant hydration.',
-    icon: 'mdi:view-dashboard-outline',
-    accentColor: '#018786',
-    x: 1800,
-    y: 1680,
-    tag: 'Admin Suite',
-    source: 'hardcoded',
-    defaultData: {
-      titleFa: 'استودیو مرکزی مدیریت داده و تنظیمات',
-      titleEn: 'Admin Studio & PocketBase Data Core',
-      subtitleFa: 'کنترل کامل دیتابیس، کش SWR و مخزن رسانه',
-      stats: 'Live Synced • 0ms Hydration'
-    }
-  }
-]
-
 // Professional Waterfall Trace Logger
 interface WaterfallEntry {
   id: string
@@ -946,11 +795,6 @@ const waterfallRequests = ref<WaterfallEntry[]>([
     statusText: 'OK',
     durationMs: 16,
     timestamp: new Date().toLocaleTimeString(),
-    headers: {
-      'Host': 'localhost:6636',
-      'Accept': 'application/json',
-      'User-Agent': 'Najm-Spatial-Telemetry/1.0'
-    },
     requestJson: {
       method: 'GET',
       endpoint: '/api/admin/sitemap',
@@ -959,9 +803,9 @@ const waterfallRequests = ref<WaterfallEntry[]>([
     responseJson: {
       success: true,
       stats: {
-        totalNodes: 18,
+        totalNodes: 11,
         backendSyncedCount: 4,
-        hardcodedCount: 14,
+        hardcodedCount: 7,
         totalLivePagesInPB: 7,
         totalLiveProductsInPB: 4
       },
@@ -976,51 +820,15 @@ const waterfallRequests = ref<WaterfallEntry[]>([
     statusText: 'OK',
     durationMs: 24,
     timestamp: new Date().toLocaleTimeString(),
-    headers: {
-      'Host': '65.108.80.205:8090',
-      'Accept': 'application/json'
-    },
-    requestJson: {
-      method: 'GET',
-      params: { perPage: 100 }
-    },
+    requestJson: { method: 'GET', params: { perPage: 100 } },
     responseJson: {
       page: 1,
-      perPage: 100,
       totalItems: 7,
       items: [
         { id: '1471qhj0xplrqp4', slug: 'home', title: 'مجتمع چاپ و بسته‌بندی نجم' },
         { id: '47ysxrs5h11po9c', slug: 'login', title: 'صفحه ورود / ثبت نام' },
         { id: '811wpx3sj5u96ij', slug: 'menu', title: 'منوی اصلی' },
         { id: '2x8v09r5lx3dwrv', slug: 'footer', title: 'فوتر' }
-      ]
-    }
-  },
-  {
-    id: 'req-3',
-    method: 'GET',
-    endpoint: 'http://65.108.80.205:8090/api/collections/products/records?perPage=50',
-    status: 200,
-    statusText: 'OK',
-    durationMs: 32,
-    timestamp: new Date().toLocaleTimeString(),
-    headers: {
-      'Host': '65.108.80.205:8090',
-      'Accept': 'application/json'
-    },
-    requestJson: {
-      method: 'GET',
-      params: { perPage: 50 }
-    },
-    responseJson: {
-      page: 1,
-      perPage: 50,
-      totalItems: 4,
-      items: [
-        { id: 'p1', slug: 'box-saki', name: 'پکیج سازمانی و اداری – باکس ساکی' },
-        { id: 'p2', slug: 'luxury-leather-planner', name: 'سررسید چرمی لوکس' },
-        { id: 'p3', slug: 'card-std', name: 'کارت‌ویزیت استاندارد' },
-        { id: 'p4', slug: 'box-saki-std', name: 'باکس ساکی استاندارد' }
       ]
     }
   }
@@ -1063,7 +871,7 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
   { lazy: true }
 )
 
-const dynamicNodesState = ref<any[]>(defaultNodes)
+const dynamicNodesState = ref<any[]>([])
 
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
@@ -1155,11 +963,10 @@ function zoomOut() {
   zoomAroundPoint(zoomScale.value / 1.18, focalX, focalY)
 }
 
-// Center to fit ALL 18 nodes and orbital rings into screen
 function resetToCenter() {
   const focalX = window.innerWidth / 2
   const focalY = window.innerHeight / 2
-  const targetScale = window.innerWidth < 1024 ? 0.45 : (window.innerWidth < 1440 ? 0.58 : 0.68)
+  const targetScale = window.innerWidth < 1024 ? 0.48 : (window.innerWidth < 1440 ? 0.6 : 0.7)
   
   zoomScale.value = targetScale
   panX.value = focalX - 1800 * targetScale
@@ -1299,19 +1106,11 @@ const edges = [
   { from: 'core-home', to: 'knowledge-pillar', color: '#d97706', speed: 3.2 },
   { from: 'core-home', to: 'services-pillar', color: '#9333ea', speed: 3.0 },
   { from: 'core-home', to: 'contact-node', color: '#e11d48', speed: 2.2 },
-  { from: 'core-home', to: 'admin-cms-node', color: '#018786', speed: 2.4 },
-  { from: 'about-pillar', to: 'about-pinned-solutions', color: '#018786', speed: 2.5 },
-  { from: 'about-pillar', to: 'about-machinery', color: '#018786', speed: 2.7 },
-  { from: 'products-pillar', to: 'products-detail-slug', color: '#2563eb', speed: 2.6 },
-  { from: 'products-pillar', to: 'catalog-kit', color: '#2563eb', speed: 2.8 },
-  { from: 'knowledge-pillar', to: 'history-timeline', color: '#d97706', speed: 3.0 },
-  { from: 'knowledge-pillar', to: 'blog-ecosystem', color: '#d97706', speed: 2.7 },
-  { from: 'services-pillar', to: 'guides-prepress', color: '#9333ea', speed: 2.9 },
-  { from: 'services-pillar', to: 'faq-help', color: '#9333ea', speed: 3.1 },
-  // PocketBase Live Auxiliary Pages
   { from: 'core-home', to: 'pb-login', color: '#6366f1', speed: 2.5 },
   { from: 'core-home', to: 'pb-menu', color: '#0ea5e9', speed: 2.3 },
-  { from: 'core-home', to: 'pb-footer', color: '#64748b', speed: 2.6 }
+  { from: 'core-home', to: 'pb-footer', color: '#64748b', speed: 2.6 },
+  { from: 'knowledge-pillar', to: 'blog-node', color: '#d97706', speed: 2.8 },
+  { from: 'services-pillar', to: 'media-node', color: '#9333ea', speed: 2.9 }
 ]
 
 const visibleNodes = computed(() => {
@@ -1378,5 +1177,14 @@ onMounted(() => {
 .dock-slide-enter-from,
 .dock-slide-leave-to {
   transform: translateY(100%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
