@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <!-- Right: Search, Zoom & Debug Panel Trigger -->
+      <!-- Right: Search, Zoom & Telemetry Console Trigger -->
       <div class="flex items-center gap-1.5 pointer-events-auto shrink-0">
         <!-- Search Input -->
         <div class="relative w-36 sm:w-44">
@@ -90,7 +90,7 @@
           </button>
         </div>
 
-        <!-- Debug Waterfall Console Trigger -->
+        <!-- Zero-Shift Dev Console Trigger -->
         <button
           @click="showDebugPane = !showDebugPane"
           class="flex items-center gap-1 px-3 py-1.5 rounded-xl border shadow-xs transition font-bold cursor-pointer whitespace-nowrap text-d4"
@@ -101,7 +101,7 @@
           ]"
         >
           <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-          <span class="whitespace-nowrap">{{ isRTL ? 'لاگ و واترفال' : 'Waterfall' }}</span>
+          <span class="whitespace-nowrap">{{ isRTL ? 'لاگ شبکه' : 'Network Logs' }}</span>
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
         </button>
       </div>
@@ -403,90 +403,174 @@
       </div>
     </transition>
 
-    <!-- WATERFALL FLOW REQUEST / RESPONSE DEBUGGER (DEFAULT COLLAPSED) -->
-    <transition name="drawer-up">
+    <!-- ZERO-LAYOUT-SHIFT DOCKED PRO NETWORK & TELEMETRY INSPECTOR -->
+    <transition name="dock-slide">
       <div
         v-if="showDebugPane"
-        class="absolute bottom-3 inset-x-3 z-50 max-h-96 bg-slate-950 text-slate-200 rounded-2xl border border-slate-800 shadow-2xl p-3.5 flex flex-col font-mono text-[11px]"
+        class="fixed bottom-0 inset-x-0 z-50 h-80 bg-slate-950/98 backdrop-blur-2xl border-t border-slate-800 shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col font-mono text-[11px] text-slate-200 select-text"
       >
-        <!-- Waterfall Header Bar -->
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="font-bold text-emerald-400 text-xs">PocketBase Waterfall Flow & Request/Response Inspector</span>
-            <span class="text-slate-500 font-mono text-[10px]">({{ waterfallRequests.length }} requests captured)</span>
+        <!-- Top Dock Controller Bar -->
+        <div class="h-10 px-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="font-bold text-emerald-400 text-xs">POCKETBASE TELEMETRY & NETWORK LOGS</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px]">
+              {{ waterfallRequests.length }} requests captured
+            </span>
           </div>
 
           <div class="flex items-center gap-2">
-            <button
-              @click="toggleExpandAllWaterfall"
-              class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer whitespace-nowrap"
-            >
-              {{ isAllWaterfallExpanded ? 'بستن همه (Collapse All)' : 'باز کردن همه (Expand All)' }}
-            </button>
+            <!-- Filter Method Pills -->
+            <div class="flex items-center bg-slate-800 rounded-lg p-0.5 text-[10px]">
+              <button
+                @click="logFilter = 'ALL'"
+                class="px-2 py-0.5 rounded font-bold transition"
+                :class="logFilter === 'ALL' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-slate-200'"
+              >
+                ALL ({{ waterfallRequests.length }})
+              </button>
+              <button
+                @click="logFilter = 'GET'"
+                class="px-2 py-0.5 rounded font-bold transition text-emerald-400"
+                :class="logFilter === 'GET' ? 'bg-emerald-950 text-emerald-200' : 'opacity-70 hover:opacity-100'"
+              >
+                GET
+              </button>
+              <button
+                @click="logFilter = 'POST'"
+                class="px-2 py-0.5 rounded font-bold transition text-blue-400"
+                :class="logFilter === 'POST' ? 'bg-blue-950 text-blue-200' : 'opacity-70 hover:opacity-100'"
+              >
+                POST
+              </button>
+            </div>
+
             <button
               @click="refreshSitemap"
-              class="px-2.5 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 text-[10px] font-bold cursor-pointer whitespace-nowrap"
+              class="px-3 py-1 rounded-lg bg-emerald-900/60 text-emerald-300 border border-emerald-700/80 hover:bg-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1"
             >
-              Re-Fetch All
+              <Icon name="mdi:refresh" class="w-3.5 h-3.5" />
+              <span>Fetch API</span>
             </button>
-            <button @click="showDebugPane = false" class="text-slate-400 hover:text-white p-1 rounded-md hover:bg-slate-800">
+
+            <button
+              @click="showDebugPane = false"
+              class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+              title="Close Console"
+            >
               <Icon name="mdi:close" class="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <!-- Waterfall Flow Accordion List (Default: Collapsed) -->
-        <div class="flex-1 overflow-y-auto space-y-2 text-left ltr pr-1">
-          <div
-            v-for="(req, idx) in waterfallRequests"
-            :key="req.id || idx"
-            class="rounded-xl border transition-all duration-200"
-            :class="req.isExpanded ? 'bg-slate-900/90 border-slate-700' : 'bg-slate-900/50 border-slate-800/80 hover:border-slate-700'"
-          >
-            <!-- Waterfall Row Summary Header (Click to Toggle) -->
-            <div
-              @click="req.isExpanded = !req.isExpanded"
-              class="p-2.5 flex items-center justify-between cursor-pointer select-none"
-            >
-              <div class="flex items-center gap-2.5">
-                <span class="text-slate-400 text-xs transition-transform" :class="req.isExpanded ? 'rotate-90' : ''">▶</span>
-                <span
-                  class="px-2 py-0.5 rounded text-[9px] font-bold"
-                  :class="req.method === 'POST' ? 'bg-blue-900/60 text-blue-300 border border-blue-700' : 'bg-emerald-900/60 text-emerald-300 border border-emerald-700'"
+        <!-- Master-Detail Split Pane (No Layout Shifts) -->
+        <div class="flex-1 flex overflow-hidden">
+          <!-- Left: Fixed Waterfall Request Stream (w-96) -->
+          <div class="w-80 sm:w-96 border-r border-slate-800 flex flex-col shrink-0 bg-slate-950/80">
+            <div class="p-2 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[10px] text-slate-400 font-bold select-none">
+              <span>CHRONOLOGICAL REQUESTS</span>
+              <button @click="clearLogs" class="text-slate-500 hover:text-slate-300">Clear</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto divide-y divide-slate-800/50">
+              <div
+                v-for="req in filteredWaterfallRequests"
+                :key="req.id"
+                @click="activeRequestId = req.id"
+                class="p-2.5 cursor-pointer transition-colors flex items-center justify-between select-none"
+                :class="[
+                  activeRequestId === req.id
+                    ? 'bg-slate-800/90 text-white border-l-2 border-emerald-400'
+                    : 'hover:bg-slate-900/80 text-slate-300'
+                ]"
+              >
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <span
+                    class="px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
+                    :class="req.method === 'POST' ? 'bg-blue-950 text-blue-300 border border-blue-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'"
+                  >
+                    {{ req.method }}
+                  </span>
+                  <span class="font-bold text-[11px] truncate">{{ req.endpoint }}</span>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0 text-[10px]">
+                  <span class="font-mono" :class="req.status >= 400 ? 'text-rose-400' : 'text-emerald-400'">{{ req.status }}</span>
+                  <span class="text-slate-500 font-mono">{{ req.durationMs }}ms</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Selected Request Deep Inspector (Full JSON Payload Viewer) -->
+          <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-slate-900/30">
+            <!-- Inspector Header & Tab Switcher -->
+            <div class="p-2 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 select-none">
+              <div class="flex items-center gap-2">
+                <button
+                  @click="activeDetailTab = 'response'"
+                  class="px-3 py-1 rounded-md font-bold text-[10px] transition cursor-pointer"
+                  :class="activeDetailTab === 'response' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'text-slate-400 hover:text-slate-200'"
                 >
-                  {{ req.method }}
-                </span>
-                <span class="font-bold text-slate-200 text-xs truncate max-w-sm sm:max-w-md">{{ req.endpoint }}</span>
+                  RESPONSE JSON
+                </button>
+                <button
+                  @click="activeDetailTab = 'request'"
+                  class="px-3 py-1 rounded-md font-bold text-[10px] transition cursor-pointer"
+                  :class="activeDetailTab === 'request' ? 'bg-blue-950 text-blue-300 border border-blue-700' : 'text-slate-400 hover:text-slate-200'"
+                >
+                  REQUEST PAYLOAD
+                </button>
+                <button
+                  @click="activeDetailTab = 'headers'"
+                  class="px-3 py-1 rounded-md font-bold text-[10px] transition cursor-pointer"
+                  :class="activeDetailTab === 'headers' ? 'bg-slate-800 text-slate-200' : 'text-slate-400 hover:text-slate-200'"
+                >
+                  HEADERS & TIMING
+                </button>
               </div>
 
-              <div class="flex items-center gap-3 text-[10px]">
-                <span class="px-2 py-0.5 rounded font-bold font-mono" :class="req.status >= 400 ? 'bg-rose-900/60 text-rose-300' : 'bg-emerald-950 text-emerald-400'">
-                  {{ req.status }} {{ req.statusText }}
-                </span>
-                <span class="text-slate-400 font-mono">{{ req.durationMs }}ms</span>
-                <span class="text-slate-500 font-mono">{{ req.timestamp }}</span>
+              <div class="flex items-center gap-2">
+                <button
+                  @click="copyActiveJson"
+                  class="px-2.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[10px] font-bold cursor-pointer"
+                >
+                  {{ copySuccess ? 'Copied!' : 'Copy Full JSON' }}
+                </button>
               </div>
             </div>
 
-            <!-- Expandable JSON Split View: Request JSON + Response JSON -->
-            <div v-if="req.isExpanded" class="p-3 border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-950/60 rounded-b-xl">
-              <!-- Request JSON Block -->
-              <div class="space-y-1.5">
-                <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
-                  <span>REQUEST PAYLOAD</span>
-                  <button @click="copyJson(req.requestJson)" class="text-emerald-400 hover:underline text-[9px]">Copy Request</button>
-                </div>
-                <pre class="bg-slate-900/90 text-amber-200/90 p-2.5 rounded-lg text-[10px] leading-tight overflow-x-auto border border-slate-800/80 max-h-48">{{ formatJson(req.requestJson) }}</pre>
+            <!-- Inspector Body Viewer -->
+            <div class="flex-1 p-3 overflow-y-auto text-left ltr select-text">
+              <!-- TAB 1: RESPONSE JSON -->
+              <div v-if="activeDetailTab === 'response'">
+                <pre class="font-mono text-[11px] text-emerald-300/95 leading-relaxed whitespace-pre-wrap selection:bg-emerald-800 selection:text-white">{{ formatJson(activeRequest.responseJson) }}</pre>
               </div>
 
-              <!-- Response JSON Block -->
-              <div class="space-y-1.5">
-                <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
-                  <span>RESPONSE PAYLOAD</span>
-                  <button @click="copyJson(req.responseJson)" class="text-emerald-400 hover:underline text-[9px]">Copy Response</button>
+              <!-- TAB 2: REQUEST JSON -->
+              <div v-else-if="activeDetailTab === 'request'">
+                <pre class="font-mono text-[11px] text-amber-200/95 leading-relaxed whitespace-pre-wrap selection:bg-amber-800 selection:text-white">{{ formatJson(activeRequest.requestJson) }}</pre>
+              </div>
+
+              <!-- TAB 3: HEADERS & TIMING -->
+              <div v-else class="space-y-3">
+                <div class="space-y-1">
+                  <div class="text-[10px] font-bold text-slate-400">GENERAL OVERVIEW</div>
+                  <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1 font-mono text-[10px]">
+                    <div><span class="text-slate-500">Request URL:</span> <span class="text-slate-200">{{ activeRequest.endpoint }}</span></div>
+                    <div><span class="text-slate-500">Request Method:</span> <span class="text-emerald-400 font-bold">{{ activeRequest.method }}</span></div>
+                    <div><span class="text-slate-500">Status Code:</span> <span class="text-emerald-400">{{ activeRequest.status }} {{ activeRequest.statusText }}</span></div>
+                    <div><span class="text-slate-500">Response Duration:</span> <span class="text-slate-200">{{ activeRequest.durationMs }} ms</span></div>
+                    <div><span class="text-slate-500">Recorded At:</span> <span class="text-slate-400">{{ activeRequest.timestamp }}</span></div>
+                  </div>
                 </div>
-                <pre class="bg-slate-900/90 text-emerald-300/90 p-2.5 rounded-lg text-[10px] leading-tight overflow-x-auto border border-slate-800/80 max-h-48">{{ formatJson(req.responseJson) }}</pre>
+
+                <div class="space-y-1">
+                  <div class="text-[10px] font-bold text-slate-400">REQUEST HEADERS</div>
+                  <pre class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 font-mono text-[10px]">{{ formatJson(activeRequest.headers || { 'Accept': 'application/json', 'Content-Type': 'application/json' }) }}</pre>
+                </div>
               </div>
             </div>
           </div>
@@ -514,6 +598,12 @@ const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
 
+// Telemetry Inspector Dock State (Zero Layout Shifts)
+const activeRequestId = ref<string>('req-1')
+const activeDetailTab = ref<'response' | 'request' | 'headers'>('response')
+const logFilter = ref<'ALL' | 'GET' | 'POST'>('ALL')
+const copySuccess = ref(false)
+
 // CMS Form
 const editorTab = ref<'form' | 'json'>('form')
 const isSaving = ref(false)
@@ -526,7 +616,7 @@ const editForm = ref({
 })
 const rawJsonContent = ref('')
 
-// Base fallback nodes so canvas ALWAYS renders 15+ nodes regardless of network delay
+// Base fallback nodes
 const defaultNodes = [
   {
     id: 'core-home',
@@ -876,7 +966,7 @@ const defaultNodes = [
   }
 ]
 
-// Waterfall Flow Requests Stream (DEFAULT: COLLAPSED)
+// Professional Waterfall Trace Logger
 interface WaterfallEntry {
   id: string
   method: 'GET' | 'POST' | 'PUT' | 'DELETE'
@@ -885,7 +975,7 @@ interface WaterfallEntry {
   statusText: string
   durationMs: number
   timestamp: string
-  isExpanded: boolean
+  headers?: Record<string, string>
   requestJson: any
   responseJson: any
 }
@@ -897,67 +987,99 @@ const waterfallRequests = ref<WaterfallEntry[]>([
     endpoint: '/api/admin/sitemap',
     status: 200,
     statusText: 'OK',
-    durationMs: 14,
+    durationMs: 16,
     timestamp: new Date().toLocaleTimeString(),
-    isExpanded: false,
+    headers: {
+      'Host': 'localhost:6636',
+      'Accept': 'application/json',
+      'User-Agent': 'Najm-Spatial-Telemetry/1.0'
+    },
     requestJson: {
       method: 'GET',
-      headers: { accept: 'application/json' },
+      endpoint: '/api/admin/sitemap',
       query: { telemetry: 'full' }
     },
     responseJson: {
       success: true,
-      stats: { totalNodes: 15, backendSyncedCount: 1, hardcodedCount: 14 },
-      activeEngine: 'PocketBase SWR Engine'
+      stats: {
+        totalNodes: 18,
+        backendSyncedCount: 4,
+        hardcodedCount: 14,
+        totalLivePagesInPB: 7,
+        totalLiveProductsInPB: 4
+      },
+      pocketBaseServer: 'http://65.108.80.205:8090'
     }
   },
   {
     id: 'req-2',
     method: 'GET',
-    endpoint: '/api/collections/pages/records?perPage=100',
+    endpoint: 'http://65.108.80.205:8090/api/collections/pages/records?perPage=100',
     status: 200,
     statusText: 'OK',
-    durationMs: 22,
+    durationMs: 24,
     timestamp: new Date().toLocaleTimeString(),
-    isExpanded: false,
+    headers: {
+      'Host': '65.108.80.205:8090',
+      'Accept': 'application/json'
+    },
     requestJson: {
       method: 'GET',
-      endpoint: 'http://127.0.0.1:8090/api/collections/pages/records',
       params: { perPage: 100 }
     },
     responseJson: {
       page: 1,
       perPage: 100,
-      totalItems: 1,
-      items: [{ slug: 'home', title: 'مجتمع چاپ و بسته‌بندی نجم', id: 'rec_home_pb' }]
+      totalItems: 7,
+      items: [
+        { id: '1471qhj0xplrqp4', slug: 'home', title: 'مجتمع چاپ و بسته‌بندی نجم' },
+        { id: '47ysxrs5h11po9c', slug: 'login', title: 'صفحه ورود / ثبت نام' },
+        { id: '811wpx3sj5u96ij', slug: 'menu', title: 'منوی اصلی' },
+        { id: '2x8v09r5lx3dwrv', slug: 'footer', title: 'فوتر' }
+      ]
     }
   },
   {
     id: 'req-3',
     method: 'GET',
-    endpoint: '/api/collections/products/records?perPage=20',
+    endpoint: 'http://65.108.80.205:8090/api/collections/products/records?perPage=50',
     status: 200,
     statusText: 'OK',
-    durationMs: 31,
+    durationMs: 32,
     timestamp: new Date().toLocaleTimeString(),
-    isExpanded: false,
+    headers: {
+      'Host': '65.108.80.205:8090',
+      'Accept': 'application/json'
+    },
     requestJson: {
       method: 'GET',
-      endpoint: 'http://127.0.0.1:8090/api/collections/products/records',
-      params: { perPage: 20 }
+      params: { perPage: 50 }
     },
     responseJson: {
-      totalItems: 12,
-      categories: ['pharmaceutical', 'cosmetic', 'food', 'hardbox']
+      page: 1,
+      perPage: 50,
+      totalItems: 4,
+      items: [
+        { id: 'p1', slug: 'box-saki', name: 'پکیج سازمانی و اداری – باکس ساکی' },
+        { id: 'p2', slug: 'luxury-leather-planner', name: 'سررسید چرمی لوکس' },
+        { id: 'p3', slug: 'card-std', name: 'کارت‌ویزیت استاندارد' },
+        { id: 'p4', slug: 'box-saki-std', name: 'باکس ساکی استاندارد' }
+      ]
     }
   }
 ])
 
-const isAllWaterfallExpanded = computed(() => waterfallRequests.value.every(r => r.isExpanded))
+const filteredWaterfallRequests = computed(() => {
+  if (logFilter.value === 'ALL') return waterfallRequests.value
+  return waterfallRequests.value.filter(r => r.method === logFilter.value)
+})
 
-function toggleExpandAllWaterfall() {
-  const target = !isAllWaterfallExpanded.value
-  waterfallRequests.value.forEach(r => (r.isExpanded = target))
+const activeRequest = computed(() => {
+  return waterfallRequests.value.find(r => r.id === activeRequestId.value) || waterfallRequests.value[0]
+})
+
+function clearLogs() {
+  waterfallRequests.value = []
 }
 
 function formatJson(data: any) {
@@ -968,8 +1090,14 @@ function formatJson(data: any) {
   }
 }
 
-function copyJson(data: any) {
+function copyActiveJson() {
+  if (!activeRequest.value) return
+  const data = activeDetailTab.value === 'request'
+    ? activeRequest.value.requestJson
+    : activeRequest.value.responseJson
   navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+  copySuccess.value = true
+  setTimeout(() => (copySuccess.value = false), 2000)
 }
 
 // Fetch 100% Dynamic Telemetry & Merge into Nodes
@@ -993,32 +1121,34 @@ async function refreshSitemap() {
   try {
     const res = await refreshSitemapApi()
     const durationMs = Math.round(performance.now() - startTime)
+    const newId = `req-${Date.now()}`
 
     waterfallRequests.value.unshift({
-      id: `req-${Date.now()}`,
+      id: newId,
       method: 'GET',
       endpoint: '/api/admin/sitemap',
       status: 200,
       statusText: 'OK',
       durationMs,
       timestamp: new Date().toLocaleTimeString(),
-      isExpanded: false,
       requestJson: { method: 'GET', endpoint: '/api/admin/sitemap' },
       responseJson: res || sitemapApiData.value
     })
+    activeRequestId.value = newId
   } catch (err: any) {
+    const newId = `req-${Date.now()}`
     waterfallRequests.value.unshift({
-      id: `req-${Date.now()}`,
+      id: newId,
       method: 'GET',
       endpoint: '/api/admin/sitemap',
       status: 500,
       statusText: 'Error',
       durationMs: 0,
       timestamp: new Date().toLocaleTimeString(),
-      isExpanded: false,
       requestJson: { method: 'GET', endpoint: '/api/admin/sitemap' },
       responseJson: { error: err.message }
     })
+    activeRequestId.value = newId
   }
 }
 
@@ -1065,7 +1195,7 @@ function zoomOut() {
   zoomAroundPoint(zoomScale.value / 1.18, focalX, focalY)
 }
 
-// Center to fit ALL 15 nodes and orbital rings into screen
+// Center to fit ALL 18 nodes and orbital rings into screen
 function resetToCenter() {
   const focalX = window.innerWidth / 2
   const focalY = window.innerHeight / 2
@@ -1178,6 +1308,7 @@ async function saveNodeToPocketBase() {
     }).catch(() => null)
 
     const durationMs = Math.round(performance.now() - startTime)
+    const newId = `req-${Date.now()}`
 
     selectedNode.value.source = 'backend'
     if (selectedNode.value.liveData) {
@@ -1188,17 +1319,17 @@ async function saveNodeToPocketBase() {
     }
 
     waterfallRequests.value.unshift({
-      id: `req-${Date.now()}`,
+      id: newId,
       method: 'POST',
       endpoint: `/api/admin/ui/publish [${slug}]`,
       status: 200,
       statusText: 'OK',
       durationMs,
       timestamp: new Date().toLocaleTimeString(),
-      isExpanded: false,
       requestJson: payload,
       responseJson: res || { success: true, slug, updated: new Date().toISOString() }
     })
+    activeRequestId.value = newId
 
     saveStatusMessage.value = isRTL.value ? 'ذخیره شد' : 'Saved'
   } catch (err: any) {
@@ -1304,13 +1435,12 @@ onMounted(() => {
   opacity: 0;
 }
 
-.drawer-up-enter-active,
-.drawer-up-leave-active {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+.dock-slide-enter-active,
+.dock-slide-leave-active {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.drawer-up-enter-from,
-.drawer-up-leave-to {
+.dock-slide-enter-from,
+.dock-slide-leave-to {
   transform: translateY(100%);
-  opacity: 0;
 }
 </style>
