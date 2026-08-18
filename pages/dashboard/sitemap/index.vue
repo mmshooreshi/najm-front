@@ -4,16 +4,16 @@
     :dir="isRTL ? 'rtl' : 'ltr'"
     class="fixed inset-0 z-50 h-screen w-screen bg-[#F8FAFC] text-slate-900 select-none overflow-hidden font-sans text-xs flex flex-col"
   >
-    <!-- Soft Ambient Lighting -->
+    <!-- Ambient Atmospheric Glow -->
     <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-      <div class="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-emerald-100/50 blur-[110px]"></div>
-      <div class="absolute -bottom-[15%] -right-[10%] w-[55vw] h-[55vw] rounded-full bg-blue-100/50 blur-[110px]"></div>
-      <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
+      <div class="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-emerald-100/50 blur-[120px]"></div>
+      <div class="absolute -bottom-[15%] -right-[10%] w-[55vw] h-[55vw] rounded-full bg-blue-100/50 blur-[120px]"></div>
+      <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[140px]"></div>
     </div>
 
     <!-- Top Clean HUD Toolbar -->
     <header class="relative z-40 h-14 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
-      <!-- Left: Navigation & Node Count Badge -->
+      <!-- Left: Navigation, Node Count & Reset Center -->
       <div class="flex items-center gap-2">
         <NuxtLink
           to="/dashboard"
@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <!-- Center: 4 View Modes, Math Layout Re-Center, Cascading Toggles, and Spacing -->
+      <!-- Center: 4 View Modes, Math Layout Re-Center, Cascading Toggles, Zoom & Spacing -->
       <div class="flex items-center gap-1.5 sm:gap-2 py-1">
         <!-- 4 Layout Engines -->
         <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
@@ -49,11 +49,11 @@
 
         <div class="h-5 w-[1px] bg-slate-200 hidden sm:block"></div>
 
-        <!-- Auto-Fit & Re-Center Math Layout -->
+        <!-- Master Re-Center & Reset Camera -->
         <button
-          @click="resetNodePositions"
+          @click="recenterAndResetCamera"
           class="w-8 h-8 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer active:scale-95"
-          title="محاسبه مجدد و تراز خودکار در مرکز"
+          title="تراز مجدد و تمرکز در مرکز صفحه"
         >
           <Icon name="mdi:crosshairs-gps" class="w-4 h-4" />
         </button>
@@ -76,14 +76,24 @@
           <Icon :name="isAnyRecursiveFolded ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4" />
         </button>
 
-        <!-- Lock / Unlock All -->
-        <button
-          @click="toggleLockAll"
-          class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
-          :title="isAllLocked ? 'بازکردن قفل همه' : 'قفل موقعیت همه صفحات'"
-        >
-          <Icon :name="isAllLocked ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3.5 h-3.5" :class="isAllLocked ? 'text-amber-600' : 'text-slate-400'" />
-        </button>
+        <!-- Zoom Controls -->
+        <div class="hidden sm:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
+          <button
+            @click="zoomIn"
+            class="w-6 h-6 rounded-lg bg-white hover:bg-slate-100 text-slate-700 flex items-center justify-center transition cursor-pointer shadow-2xs"
+            title="بزرگنمایی (+)"
+          >
+            <Icon name="mdi:plus" class="w-3.5 h-3.5" />
+          </button>
+          <span class="px-2 font-mono text-[10px] text-slate-700">{{ Math.round(canvasZoomLevel * 100) }}%</span>
+          <button
+            @click="zoomOut"
+            class="w-6 h-6 rounded-lg bg-white hover:bg-slate-100 text-slate-700 flex items-center justify-center transition cursor-pointer shadow-2xs"
+            title="کوچکنمایی (-)"
+          >
+            <Icon name="mdi:minus" class="w-3.5 h-3.5" />
+          </button>
+        </div>
 
         <!-- Spacing & Density Tuner Button -->
         <button
@@ -95,28 +105,6 @@
           <Icon name="mdi:tune-variant" class="w-3.5 h-3.5" />
           <span class="hidden sm:inline">فواصل: {{ Math.round(clusterSpacingScale * 100) }}%</span>
         </button>
-
-        <!-- Category Group Filters -->
-        <div class="hidden lg:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
-          <button
-            @click="selectedGroup = 'all'"
-            class="px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
-            :class="selectedGroup === 'all' ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
-          >
-            <span>همه</span>
-          </button>
-
-          <button
-            v-for="grp in groupToggles"
-            :key="grp.id"
-            @click="selectedGroup = grp.id"
-            class="px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
-            :class="selectedGroup === grp.id ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
-          >
-            <span class="text-[10px]">{{ grp.icon }}</span>
-            <span class="hidden xl:inline">{{ grp.label }}</span>
-          </button>
-        </div>
       </div>
 
       <!-- Right: Live Search & Refresh -->
@@ -141,19 +129,23 @@
       </div>
     </header>
 
-    <!-- AUTO-FIT & AUTO-CENTERED CLUSTER CANVAS STAGE -->
+    <!-- INFINITE PANNING, ZOOMING & DRAGGING CANVAS VIEWPORT -->
     <div
       ref="canvasStageRef"
-      class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-default"
+      class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center"
+      :class="isPanningCanvas ? 'cursor-grabbing' : 'cursor-grab'"
       style="touch-action: none;"
+      @pointerdown="startCanvasPan"
+      @wheel.prevent="onStageWheel"
     >
-      <!-- Scaled & Centered Dynamic Cluster Stage -->
+      <!-- Scaled, Panned & Centered World Stage Container -->
       <div
-        class="relative transition-[transform,left,top] duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+        class="relative"
+        :class="isPanningCanvas || isDraggingNodeId ? 'duration-0 transition-none' : 'transition-transform duration-300 ease-out'"
         :style="{
           width: `${stageBaseWidth}px`,
           height: `${stageBaseHeight}px`,
-          transform: `translate3d(${clusterCenterOffsetX}px, ${clusterCenterOffsetY}px, 0) scale(${clusterFitScale})`,
+          transform: `translate3d(${canvasPanX}px, ${canvasPanY}px, 0) scale(${clusterFitScale * canvasZoomLevel})`,
           transformOrigin: 'center center'
         }"
       >
@@ -195,21 +187,20 @@
           </g>
         </svg>
 
-        <!-- DYNAMIC NODES WITH ZERO OVERLAP GEOMETRY -->
+        <!-- FREE DRAGGABLE NODES (ZERO DELAY 120 FPS) -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
-          @pointerdown="startNodePointerDrag($event, node)"
+          @pointerdown.stop="startNodePointerDrag($event, node)"
           @click.stop="handleNodeClick(node)"
           @dblclick.stop="openProJsonStudio(node, 'content-studio')"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute select-none group"
+          class="absolute select-none group cursor-grab active:cursor-grabbing"
           :class="[
-            isNodeLocked(node.id) ? 'cursor-default' : 'cursor-grab active:cursor-grabbing',
             isDraggingNodeId === node.id
               ? 'z-50 duration-0 transition-none will-change-transform'
-              : 'z-20 transition-[left,top,transform] duration-400 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
+              : 'z-20 transition-[left,top,transform] duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
           ]"
           :style="{
             left: `${node.currentX}px`,
@@ -223,7 +214,7 @@
           <div
             v-if="node.depth === 0"
             class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/70 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
-            :style="{ width: '260px', minHeight: '150px' }"
+            :style="{ width: '260px', minHeight: '150px', touchAction: 'none' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500' : ''"
           >
             <div class="flex items-center justify-between gap-2">
@@ -236,7 +227,7 @@
                 </span>
               </div>
 
-              <!-- Micro-Icons: 1-Arrow, 2-Arrow & Lock -->
+              <!-- Micro-Icons: 1-Arrow, 2-Arrow & Center Focus -->
               <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl">
                 <!-- 1-Arrow -->
                 <button
@@ -256,14 +247,13 @@
                   <Icon :name="isSubtreeFolded(node.id) ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- Lock -->
+                <!-- Focus Center -->
                 <button
-                  @click.stop="toggleLockNode(node.id)"
-                  class="w-6 h-6 rounded-lg hover:bg-white flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-400 hover:text-slate-700'"
-                  :title="isNodeLocked(node.id) ? 'قفل موقعیت باز شود' : 'قفل موقعیت'"
+                  @click.stop="focusCenterOnNode(node)"
+                  class="w-6 h-6 rounded-lg hover:bg-white text-slate-500 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
+                  title="تمرکز دوربین روی این کارت"
                 >
-                  <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+                  <Icon name="mdi:target" class="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -294,7 +284,7 @@
           <div
             v-else-if="node.depth === 1"
             class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200 bg-white border border-slate-200 shadow-[0_16px_36px_-8px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(0,0,0,0.05)]"
-            :style="{ width: '210px', minHeight: '120px' }"
+            :style="{ width: '210px', minHeight: '120px', touchAction: 'none' }"
             :class="selectedNode?.id === node.id ? 'ring-3 ring-emerald-500' : ''"
           >
             <div class="flex items-center justify-between gap-2">
@@ -305,7 +295,7 @@
                 <Icon :name="node.icon || 'mdi:layers'" class="w-4 h-4" />
               </div>
 
-              <!-- 1-Arrow, 2-Arrow & Lock -->
+              <!-- 1-Arrow, 2-Arrow & Focus -->
               <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl">
                 <!-- 1-Arrow -->
                 <button
@@ -327,14 +317,13 @@
                   <Icon :name="isSubtreeFolded(node.id) ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- Lock -->
+                <!-- Focus -->
                 <button
-                  @click.stop="toggleLockNode(node.id)"
-                  class="w-6 h-6 rounded-lg hover:bg-white flex items-center justify-center transition cursor-pointer"
-                  :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-400 hover:text-slate-700'"
-                  :title="isNodeLocked(node.id) ? 'قفل باز شود' : 'قفل موقعیت'"
+                  @click.stop="focusCenterOnNode(node)"
+                  class="w-6 h-6 rounded-lg hover:bg-white text-slate-400 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
+                  title="تمرکز دوربین"
                 >
-                  <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+                  <Icon name="mdi:target" class="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -361,7 +350,7 @@
           <div
             v-else
             class="relative rounded-2xl p-2 flex items-center justify-between gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
-            :style="{ width: '140px', minHeight: '60px' }"
+            :style="{ width: '140px', minHeight: '60px', touchAction: 'none' }"
             :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500' : ''"
           >
             <div class="flex items-center gap-2 overflow-hidden flex-1">
@@ -380,14 +369,13 @@
               </div>
             </div>
 
-            <!-- Lock on Satellite -->
+            <!-- Focus Center -->
             <button
-              @click.stop="toggleLockNode(node.id)"
-              class="w-5 h-5 rounded hover:bg-slate-100 flex items-center justify-center transition cursor-pointer shrink-0"
-              :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-300 hover:text-slate-600'"
-              title="قفل موقعیت"
+              @click.stop="focusCenterOnNode(node)"
+              class="w-5 h-5 rounded hover:bg-slate-100 text-slate-400 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shrink-0"
+              title="تمرکز روی این کارت"
             >
-              <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
+              <Icon name="mdi:target" class="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -453,11 +441,6 @@
               +
             </button>
           </div>
-          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>فشرده (50%)</span>
-            <span>عادی (100%)</span>
-            <span>گسترده (160%)</span>
-          </div>
         </div>
 
         <!-- 2. Repulsion Cushion Slider -->
@@ -488,11 +471,6 @@
             >
               +
             </button>
-          </div>
-          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>چسبیده (0px)</span>
-            <span>متعادل (15px)</span>
-            <span>باز (40px)</span>
           </div>
         </div>
       </div>
@@ -648,6 +626,16 @@ const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 
+// INFINITE PAN & ZOOM STATE
+const canvasPanX = ref(0)
+const canvasPanY = ref(0)
+const canvasZoomLevel = ref(1.0)
+const isPanningCanvas = ref(false)
+let panStartClientX = 0
+let panStartClientY = 0
+let panStartPanX = 0
+let panStartPanY = 0
+
 // 4 VIEW MODES
 const currentViewMode = ref<'constellation' | 'tree' | 'columns' | 'radial'>('constellation')
 const viewModes = [
@@ -661,18 +649,8 @@ function switchViewMode(modeId: 'constellation' | 'tree' | 'columns' | 'radial')
   currentViewMode.value = modeId
   applyLayoutCoordinates(modeId)
   saveStateToLocalStorage()
-  autoFitConstellation()
+  recenterAndResetCamera()
 }
-
-// Group Selection
-const selectedGroup = ref<string>('all')
-const groupToggles = [
-  { id: 'core', label: 'اصلی', icon: '🌟' },
-  { id: 'products', label: 'محصولات', icon: '📦' },
-  { id: 'services', label: 'خدمات', icon: '⚙️' },
-  { id: 'history', label: 'تاریخچه', icon: '🏛️' },
-  { id: 'system', label: 'سیستم', icon: '🔧' }
-]
 
 function getNodeGroup(node: any) {
   if (node.slug === 'home' || node.slug === 'about' || node.slug === 'contact') return 'core'
@@ -684,7 +662,6 @@ function getNodeGroup(node: any) {
 
 // Subtree Branch Folding & LocalStorage Persistence
 const foldedBranches = ref<Set<string>>(new Set())
-const lockedNodes = ref<Set<string>>(new Set())
 
 function isDirectFolded(nodeId: string) {
   return foldedBranches.value.has(nodeId)
@@ -693,34 +670,6 @@ function isDirectFolded(nodeId: string) {
 function isSubtreeFolded(nodeId: string) {
   const allSub = getSubtreeNodeIds(nodeId)
   return allSub.length > 1 && allSub.slice(1).every(id => isDescendantOfFolded(id))
-}
-
-function isNodeLocked(nodeId: string) {
-  return lockedNodes.value.has(nodeId)
-}
-
-function toggleLockNode(nodeId: string) {
-  if (lockedNodes.value.has(nodeId)) {
-    lockedNodes.value.delete(nodeId)
-  } else {
-    lockedNodes.value.add(nodeId)
-  }
-  saveStateToLocalStorage()
-}
-
-const isAllLocked = computed(() => {
-  return rawDynamicNodes.value.length > 0 && rawDynamicNodes.value.every(n => lockedNodes.value.has(n.id))
-})
-
-function toggleLockAll() {
-  if (isAllLocked.value) {
-    lockedNodes.value.clear()
-  } else {
-    for (const n of rawDynamicNodes.value) {
-      lockedNodes.value.add(n.id)
-    }
-  }
-  saveStateToLocalStorage()
 }
 
 // 1-Arrow (Toggle Direct Children)
@@ -809,9 +758,8 @@ function saveStateToLocalStorage() {
     localStorage.setItem('najm_sitemap_spacing', String(clusterSpacingScale.value))
     localStorage.setItem('najm_sitemap_cushion', String(repulsionCushion.value))
     localStorage.setItem('najm_sitemap_folded', JSON.stringify([...foldedBranches.value]))
-    localStorage.setItem('najm_sitemap_locked', JSON.stringify([...lockedNodes.value]))
     
-    // Save custom positions of locked nodes
+    // Save custom positions
     const posMap: Record<string, { x: number, y: number }> = {}
     for (const n of rawDynamicNodes.value) {
       posMap[n.id] = { x: n.currentX, y: n.currentY }
@@ -843,16 +791,11 @@ function loadStateFromLocalStorage() {
       foldedBranches.value = new Set(JSON.parse(folded))
     }
 
-    const locked = localStorage.getItem('najm_sitemap_locked')
-    if (locked) {
-      lockedNodes.value = new Set(JSON.parse(locked))
-    }
-
     const savedPos = localStorage.getItem('najm_sitemap_positions')
     if (savedPos) {
       const posMap = JSON.parse(savedPos)
       for (const n of rawDynamicNodes.value) {
-        if (posMap[n.id] && isNodeLocked(n.id)) {
+        if (posMap[n.id]) {
           n.currentX = posMap[n.id].x
           n.currentY = posMap[n.id].y
         }
@@ -865,8 +808,6 @@ function loadStateFromLocalStorage() {
 const stageBaseWidth = 1400
 const stageBaseHeight = 900
 const clusterFitScale = ref(1)
-const clusterCenterOffsetX = ref(0)
-const clusterCenterOffsetY = ref(0)
 
 // Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
@@ -891,6 +832,67 @@ function handleNodeClick(node: any) {
   } else {
     selectedNode.value = node
   }
+}
+
+// FOCUS CAMERA DIRECTLY ONTO A NODE
+function focusCenterOnNode(node: any) {
+  selectedNode.value = node
+  canvasZoomLevel.value = Math.max(0.9, canvasZoomLevel.value)
+  const currentScale = clusterFitScale.value * canvasZoomLevel.value
+  canvasPanX.value = Math.round((stageBaseWidth / 2 - node.currentX) * currentScale)
+  canvasPanY.value = Math.round((stageBaseHeight / 2 - node.currentY) * currentScale)
+}
+
+function zoomIn() {
+  canvasZoomLevel.value = Math.min(2.5, +(canvasZoomLevel.value + 0.15).toFixed(2))
+}
+
+function zoomOut() {
+  canvasZoomLevel.value = Math.max(0.3, +(canvasZoomLevel.value - 0.15).toFixed(2))
+}
+
+function onStageWheel(e: WheelEvent) {
+  const delta = e.deltaY > 0 ? -0.06 : 0.06
+  canvasZoomLevel.value = Math.max(0.3, Math.min(2.5, +(canvasZoomLevel.value + delta).toFixed(2)))
+}
+
+function startCanvasPan(e: PointerEvent) {
+  if ((e.target as HTMLElement).closest('.group, button, input, a')) return
+  isPanningCanvas.value = true
+  panStartClientX = e.clientX
+  panStartClientY = e.clientY
+  panStartPanX = canvasPanX.value
+  panStartPanY = canvasPanY.value
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pointermove', onGlobalCanvasPanMove, { passive: true })
+    window.addEventListener('pointerup', onGlobalCanvasPanUp)
+    window.addEventListener('pointercancel', onGlobalCanvasPanUp)
+  }
+}
+
+function onGlobalCanvasPanMove(e: PointerEvent) {
+  if (!isPanningCanvas.value) return
+  canvasPanX.value = panStartPanX + (e.clientX - panStartClientX)
+  canvasPanY.value = panStartPanY + (e.clientY - panStartClientY)
+}
+
+function onGlobalCanvasPanUp() {
+  isPanningCanvas.value = false
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('pointermove', onGlobalCanvasPanMove)
+    window.removeEventListener('pointerup', onGlobalCanvasPanUp)
+    window.removeEventListener('pointercancel', onGlobalCanvasPanUp)
+  }
+}
+
+function recenterAndResetCamera() {
+  canvasPanX.value = 0
+  canvasPanY.value = 0
+  canvasZoomLevel.value = 1.0
+  applyLayoutCoordinates(currentViewMode.value)
+  saveStateToLocalStorage()
+  autoFitConstellation()
 }
 
 const schemaKeys = computed(() => {
@@ -976,7 +978,7 @@ function getNodeScale(node: any) {
   return 1.0
 }
 
-// 3D Perspective Tilt & Instant Real-Time Dragging
+// 3D Perspective Tilt
 const mouseRelativeX = ref(0)
 const mouseRelativeY = ref(0)
 
@@ -1128,7 +1130,7 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
 function applyLayoutCoordinates(mode: 'constellation' | 'tree' | 'columns' | 'radial') {
   const posMap = computeLayoutMath(rawDynamicNodes.value, mode)
   for (const n of rawDynamicNodes.value) {
-    if (posMap[n.id] && !isNodeLocked(n.id)) {
+    if (posMap[n.id]) {
       n.currentX = posMap[n.id].x
       n.currentY = posMap[n.id].y
       n.initialX = posMap[n.id].x
@@ -1151,14 +1153,8 @@ const edges = computed(() => {
 // Dynamically Filtered & Visible Nodes
 const visibleNodes = computed(() => {
   return rawDynamicNodes.value.filter((n: any) => {
-    // True recursive ancestry check
     if (isDescendantOfFolded(n.id)) {
       return false
-    }
-
-    if (selectedGroup.value !== 'all') {
-      const grp = getNodeGroup(n)
-      if (grp !== selectedGroup.value && n.depth !== 0) return false
     }
 
     if (searchQuery.value) {
@@ -1178,7 +1174,7 @@ const visibleEdges = computed(() => {
 
 const canvasStageRef = ref<HTMLElement | null>(null)
 
-// DYNAMIC BOUNDING BOX AUTO-FIT & AUTO-CENTER ENGINE
+// DYNAMIC BOUNDING BOX AUTO-FIT ENGINE
 function autoFitConstellation() {
   if (typeof window === 'undefined') return
   const availableWidth = window.innerWidth - 40
@@ -1187,8 +1183,6 @@ function autoFitConstellation() {
   const visible = visibleNodes.value || []
   if (!visible || visible.length === 0) {
     clusterFitScale.value = 1
-    clusterCenterOffsetX.value = 0
-    clusterCenterOffsetY.value = 0
     return
   }
 
@@ -1206,8 +1200,8 @@ function autoFitConstellation() {
     maxY = Math.max(maxY, n.currentY + halfH)
   }
 
-  const clusterW = Math.max(200, maxX - minX + 60)
-  const clusterH = Math.max(200, maxY - minY + 60)
+  const clusterW = Math.max(300, maxX - minX + 80)
+  const clusterH = Math.max(300, maxY - minY + 80)
 
   const scaleX = availableWidth / clusterW
   const scaleY = availableHeight / clusterH
@@ -1215,20 +1209,8 @@ function autoFitConstellation() {
 
   const calculatedScale = Math.min(scaleX, scaleY)
   clusterFitScale.value = isMobile
-    ? Math.max(0.45, Math.min(0.85, calculatedScale))
-    : Math.max(0.55, Math.min(1.15, calculatedScale))
-
-  // Dynamically center the cluster in stage view
-  const clusterCenterX = (minX + maxX) / 2
-  const clusterCenterOffsetYVal = (minY + maxY) / 2
-  clusterCenterOffsetX.value = Math.round((stageBaseWidth / 2 - clusterCenterX) * 0.5)
-  clusterCenterOffsetY.value = Math.round((stageBaseHeight / 2 - clusterCenterOffsetYVal) * 0.5)
-}
-
-function resetNodePositions() {
-  applyLayoutCoordinates(currentViewMode.value)
-  saveStateToLocalStorage()
-  autoFitConstellation()
+    ? Math.max(0.4, Math.min(0.85, calculatedScale))
+    : Math.max(0.5, Math.min(1.1, calculatedScale))
 }
 
 async function refreshSitemap() {
@@ -1264,7 +1246,7 @@ watchEffect(() => {
     const posMap = computeLayoutMath(rawList, currentViewMode.value)
 
     rawDynamicNodes.value = rawList.map((n: any) => {
-      const pos = posMap[n.id] || { x: 550, y: 360 }
+      const pos = posMap[n.id] || { x: 700, y: 450 }
       return {
         ...n,
         currentX: pos.x,
@@ -1282,12 +1264,11 @@ watchEffect(() => {
 // Reactive Coordinate Tracker for 120 FPS Glitch-Free SVG Link Following
 const dragCoordRevision = ref(0)
 
-// 120 FPS INSTANT DRAGGING WITH FAMILY GROUP DRAGGING & MINIMUM DISPLACEMENT
+// 120 FPS FLUID DRAGGING WITH FAMILY GROUP DRAGGING
 const isDraggingNodeId = ref<string | null>(null)
 let draggedFamilyNodeSnapshots: { id: string, startX: number, startY: number }[] = []
 
 function startNodePointerDrag(e: PointerEvent, node: any) {
-  if (isNodeLocked(node.id)) return
   if ((e.target as HTMLElement).closest('button, input, a')) return
 
   isDraggingNodeId.value = node.id
@@ -1296,11 +1277,11 @@ function startNodePointerDrag(e: PointerEvent, node: any) {
   nodeDragStartNodeX = node.currentX
   nodeDragStartNodeY = node.currentY
 
-  // Capture all unlocked children of this parent to drag the whole family together!
+  // Capture all children of this parent to drag the whole family together!
   const familyIds = getSubtreeNodeIds(node.id)
   draggedFamilyNodeSnapshots = familyIds
     .map(id => rawDynamicNodes.value.find(n => n.id === id))
-    .filter(n => n && !isNodeLocked(n.id))
+    .filter(Boolean)
     .map(n => ({ id: n.id, startX: n.currentX, startY: n.currentY }))
 
   if (typeof window !== 'undefined') {
@@ -1316,13 +1297,14 @@ function onGlobalPointerMove(e: PointerEvent) {
 
   if (!isDraggingNodeId.value) return
 
-  const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
-  const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
+  const effectiveScale = clusterFitScale.value * canvasZoomLevel.value
+  const dx = (e.clientX - nodeDragStartClientX) / effectiveScale
+  const dy = (e.clientY - nodeDragStartClientY) / effectiveScale
 
   // Move the dragged node and its family subtree smoothly
   for (const snap of draggedFamilyNodeSnapshots) {
     const item = rawDynamicNodes.value.find(n => n.id === snap.id)
-    if (item && !isNodeLocked(item.id)) {
+    if (item) {
       item.currentX = Math.round(snap.startX + dx)
       item.currentY = Math.round(snap.startY + dy)
     }
@@ -1342,8 +1324,7 @@ function smartPrepositionAllNodes() {
   const visible = visibleNodes.value || []
   if (visible.length < 2) return
 
-  // Multi-pass soft relaxation: resolves overlaps with minimum necessary movement
-  for (let pass = 0; pass < 3; pass++) {
+  for (let pass = 0; pass < 2; pass++) {
     for (let i = 0; i < visible.length; i++) {
       const nodeA = visible[i]
       const rA = getNodeRadius(nodeA)
@@ -1361,23 +1342,12 @@ function smartPrepositionAllNodes() {
           const overlap = minDist - dist
           const nx = dx / dist
           const ny = dy / dist
+          const halfOverlap = overlap * 0.5
 
-          const aLocked = isNodeLocked(nodeA.id)
-          const bLocked = isNodeLocked(nodeB.id)
-
-          if (!aLocked && !bLocked) {
-            const halfOverlap = overlap * 0.5
-            nodeA.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeA.currentX - nx * halfOverlap)))
-            nodeA.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeA.currentY - ny * halfOverlap)))
-            nodeB.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeB.currentX + nx * halfOverlap)))
-            nodeB.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeB.currentY + ny * halfOverlap)))
-          } else if (!aLocked && bLocked) {
-            nodeA.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeA.currentX - nx * overlap)))
-            nodeA.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeA.currentY - ny * overlap)))
-          } else if (aLocked && !bLocked) {
-            nodeB.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeB.currentX + nx * overlap)))
-            nodeB.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeB.currentY + ny * overlap)))
-          }
+          nodeA.currentX = Math.round(nodeA.currentX - nx * halfOverlap)
+          nodeA.currentY = Math.round(nodeA.currentY - ny * halfOverlap)
+          nodeB.currentX = Math.round(nodeB.currentX + nx * halfOverlap)
+          nodeB.currentY = Math.round(nodeB.currentY + ny * halfOverlap)
         }
       }
     }
