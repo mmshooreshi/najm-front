@@ -1,332 +1,254 @@
+<!-- pages/dashboard/sitemap/index.vue -->
 <template>
   <div
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="fixed inset-0 z-50 h-screen w-screen bg-[#F8FAFC] text-slate-900 select-none overflow-hidden font-sans text-xs"
+    class="fixed inset-0 z-50 h-screen w-screen bg-[#F1F5F9] text-slate-900 select-none overflow-hidden font-sans text-xs flex flex-col"
   >
-    <!-- Architectural Dot Grid Canvas Background -->
-    <div class="absolute inset-0 pointer-events-none z-0">
-      <div
-        class="absolute inset-0 opacity-40 transition-all duration-75"
-        :style="{
-          backgroundImage: 'radial-gradient(circle, #cbd5e1 1.2px, transparent 1.2px)',
-          backgroundSize: `${32 * zoomScale}px ${32 * zoomScale}px`,
-          backgroundPosition: `${panX}px ${panY}px`
-        }"
-      ></div>
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.85)_0%,rgba(241,245,249,0.6)_60%,rgba(226,232,240,0.85)_100%)]"></div>
+    <!-- Soft Ambient Light Background -->
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <div class="absolute -top-[20%] -left-[10%] w-[60vw] h-[60vw] rounded-full bg-emerald-100/40 blur-[100px]"></div>
+      <div class="absolute -bottom-[20%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-blue-100/40 blur-[100px]"></div>
+      <div class="absolute top-[30%] left-[40%] w-[40vw] h-[40vw] rounded-full bg-purple-100/30 blur-[120px]"></div>
     </div>
 
-    <!-- Ultra-Compact Icon-Only Top HUD Bar -->
-    <header class="absolute top-3 inset-x-3 z-40 flex items-center justify-between pointer-events-none gap-2">
-      <!-- Left: Exit & Telemetry Pill -->
-      <div class="flex items-center gap-1.5 pointer-events-auto shrink-0">
+    <!-- Top Minimalist HUD Bar -->
+    <header class="relative z-40 h-12 px-4 flex items-center justify-between pointer-events-auto bg-white/70 backdrop-blur-xl border-b border-slate-200/80 shadow-xs">
+      <!-- Left: Exit & Cluster Telemetry -->
+      <div class="flex items-center gap-2">
         <NuxtLink
           to="/dashboard"
-          class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-2xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition cursor-pointer"
+          class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-2xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition cursor-pointer"
           title="بازگشت به پیشخوان"
         >
           <Icon name="mdi:arrow-right" class="w-4 h-4" :class="isRTL ? '' : 'rotate-180'" />
         </NuxtLink>
 
-        <!-- Live Node Count Pill -->
-        <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-2xs text-emerald-800 font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
-          <span class="font-mono">{{ backendSyncedCount }} PB</span>
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
+          <span>{{ nodes.length }} بلوک زنده</span>
         </div>
       </div>
 
-      <!-- Center: GPS Center & Filter Lenses -->
-      <div class="pointer-events-auto flex items-center gap-1.5 shrink-0">
+      <!-- Center: Auto-Fit & Lens Filters -->
+      <div class="flex items-center gap-1.5">
         <button
-          @click="resetToCenter"
-          class="w-8 h-8 flex items-center justify-center rounded-xl bg-[#018786] hover:bg-emerald-800 text-white shadow-2xs transition cursor-pointer active:scale-95"
-          title="مرکز چین نقشه"
+          @click="autoFitConstellation"
+          class="px-3 py-1 rounded-xl bg-[#018786] hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-1 active:scale-95"
+          title="تنظیم خودکار کادر به ابعاد صفحه (Fit Viewport)"
         >
-          <Icon name="mdi:crosshairs-gps" class="w-4 h-4" />
+          <Icon name="mdi:fit-to-screen-outline" class="w-3.5 h-3.5" />
+          <span>تنظیم کادر</span>
         </button>
 
-        <!-- Filter Lens Pills -->
-        <div class="hidden sm:flex items-center gap-0.5 bg-white/95 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-2xs text-[11px] font-bold">
+        <div class="hidden sm:flex items-center bg-slate-200/60 p-0.5 rounded-xl text-[11px] font-bold">
           <button
             v-for="lens in lenses"
             :key="lens.id"
             @click="activeLens = lens.id"
-            class="px-2.5 py-1 rounded-lg transition cursor-pointer"
-            :class="activeLens === lens.id ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-100'"
+            class="px-2.5 py-0.5 rounded-lg transition cursor-pointer"
+            :class="activeLens === lens.id ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
           >
             {{ isRTL ? lens.labelFa : lens.labelEn }}
           </button>
         </div>
       </div>
 
-      <!-- Right: Search, Zoom & Console Trigger -->
-      <div class="flex items-center gap-1.5 pointer-events-auto shrink-0">
-        <!-- Search -->
-        <div class="relative w-28 sm:w-36">
-          <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
+      <!-- Right: Search, Refresh & Console -->
+      <div class="flex items-center gap-1.5">
+        <div class="relative w-32 sm:w-40">
+          <Icon name="mdi:magnify" class="absolute right-2.5 top-2 w-3.5 h-3.5 text-slate-400" />
           <input
             v-model="searchQuery"
             type="text"
             placeholder="جستجو..."
-            class="w-full bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl pr-7 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-2xs text-xs"
+            class="w-full bg-white border border-slate-200 rounded-xl pr-8 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-2xs text-xs"
           />
         </div>
 
-        <!-- Zoom Controls -->
-        <div class="flex items-center gap-0.5 bg-white/95 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-2xs">
-          <button @click="zoomIn" class="w-6 h-6 flex items-center justify-center rounded text-slate-600 hover:bg-slate-100 cursor-pointer" title="بزرگنمایی">
-            <Icon name="mdi:plus" class="w-3.5 h-3.5" />
-          </button>
-          <span class="px-1 font-mono font-bold text-emerald-800 text-[10px]">{{ Math.round(zoomScale * 100) }}%</span>
-          <button @click="zoomOut" class="w-6 h-6 flex items-center justify-center rounded text-slate-600 hover:bg-slate-100 cursor-pointer" title="کوچکنمایی">
-            <Icon name="mdi:minus" class="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <!-- Refresh Live DB Button -->
         <button
           @click="refreshSitemap"
-          class="w-8 h-8 flex items-center justify-center rounded-xl bg-white/95 border border-slate-200 text-slate-700 hover:text-emerald-800 shadow-2xs transition cursor-pointer"
-          title="بروزرسانی داده‌ها از PocketBase"
+          class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-800 shadow-2xs transition cursor-pointer"
+          title="بروزرسانی داده‌ها"
         >
           <Icon name="mdi:refresh" class="w-4 h-4" />
         </button>
 
-        <!-- Network Console Trigger -->
         <button
           @click="showDebugPane = !showDebugPane"
           class="w-8 h-8 flex items-center justify-center rounded-xl border shadow-2xs transition cursor-pointer"
           :class="[
             showDebugPane
               ? 'bg-emerald-800 text-white border-emerald-800'
-              : 'bg-white/95 text-slate-700 border-slate-200 hover:bg-slate-100'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
           ]"
-          title="کنسول لاگ و تله‌متری شبکه"
+          title="کنسول شبکه"
         >
           <Icon name="mdi:code-json" class="w-4 h-4" />
         </button>
       </div>
     </header>
 
-    <!-- Infinite Spatial Canvas Stage with Physics Spring Nodes -->
+    <!-- FIT-CONTAINED AUTO-RESIZING STAGE (No Infinite Lost Space) -->
     <div
       ref="canvasStageRef"
-      class="relative w-full h-full cursor-grab active:cursor-grabbing"
-      @mousedown="startDrag"
-      @mousemove="onDrag"
-      @mouseup="stopDrag"
-      @mouseleave="stopDrag"
-      @touchstart="startTouchDrag"
-      @touchmove="onTouchDrag"
-      @touchend="stopDrag"
-      @wheel.prevent="onWheelZoom"
-      @dblclick="onCanvasDblClick"
+      class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-default"
+      @mousemove="handleGlobalMouseMove"
+      @mouseup="stopNodeDrag"
     >
-      <!-- Single Unified Transform Plane -->
+      <!-- Unified Scaled Blob Mosaic Cluster -->
       <div
-        class="absolute inset-0 w-full h-full origin-top-left z-10 transition-transform duration-75 ease-out"
+        class="relative transition-transform duration-300 ease-out"
         :style="{
-          transform: `translate3d(${panX}px, ${panY}px, 0px) scale(${zoomScale})`,
-          willChange: 'transform'
+          width: `${stageBaseWidth}px`,
+          height: `${stageBaseHeight}px`,
+          transform: `scale(${clusterFitScale})`,
+          transformOrigin: 'center center'
         }"
       >
-        <!-- VECTOR SVG CONNECTION PATHS -->
-        <svg class="absolute inset-0 w-[4200px] h-[3000px] pointer-events-none z-10 overflow-visible">
-          <!-- Orbital Concentric Reference Rings -->
-          <g opacity="0.12">
-            <circle cx="1800" cy="1300" r="320" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 6" />
-            <circle cx="1800" cy="1300" r="620" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="8 8" />
-            <circle cx="1800" cy="1300" r="950" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="10 10" />
-          </g>
-
-          <!-- Dynamic Connecting Bezier Curves -->
+        <!-- VECTOR CONNECTION PATHS -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
-            <!-- Glow background path when active -->
+            <!-- Semi-3D Dynamic Ambient Glow Line -->
             <path
               :d="getEdgePath(edge)"
               fill="none"
-              :stroke="isEdgeActive(edge) ? edgeColor(edge.color, 0.25) : 'rgba(203, 213, 225, 0.5)'"
-              :stroke-width="isEdgeActive(edge) ? 6 : 1.5"
+              :stroke="isEdgeActive(edge) ? edge.color : '#cbd5e1'"
+              :stroke-opacity="isEdgeActive(edge) ? 0.9 : 0.4"
+              :stroke-width="isEdgeActive(edge) ? 4 : 2"
               stroke-linecap="round"
-              class="transition-all duration-200"
+              class="transition-all duration-300"
             />
-            <!-- Main Vector Line -->
-            <path
-              :d="getEdgePath(edge)"
-              fill="none"
-              :stroke="isEdgeActive(edge) ? edgeColor(edge.color, 1) : '#94a3b8'"
-              :stroke-width="isEdgeActive(edge) ? 2.5 : 1.2"
-              stroke-linecap="round"
-              class="transition-all duration-200"
-            />
-            <!-- Animated Flowing Light Pulse -->
+            <!-- Animated Particle Glow -->
             <circle
               v-if="isEdgeActive(edge)"
               r="3.5"
-              :fill="edgeColor(edge.color, 1)"
+              :fill="edge.color"
+              filter="drop-shadow(0 0 4px rgba(0,0,0,0.2))"
             >
               <animateMotion
                 :path="getEdgePath(edge)"
-                :dur="`${edge.speed || 2.5}s`"
+                dur="2.4s"
                 repeatCount="indefinite"
               />
             </circle>
           </g>
         </svg>
 
-        <!-- PUNCHY, BIGGER, 100% LIVE POCKETBASE NODES -->
+        <!-- ORGANIC SEMI-3D MAGNETIC BLOBS -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
-          @mousedown.stop="startNodeDrag($event, node)"
-          @click.stop="toggleNodeSelect(node)"
+          @mousedown="startNodeDrag($event, node)"
+          @click.stop="handleNodeClick(node)"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute transition-transform duration-200 cursor-pointer group z-20 select-none"
+          class="absolute cursor-pointer select-none transition-all duration-200 z-20"
           :style="{
-            left: `${node.x}px`,
-            top: `${node.y}px`,
-            transform: 'translate(-50%, -50%)',
-            transition: isSpringingNode === node.id ? 'left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none'
+            left: `${node.currentX}px`,
+            top: `${node.currentY}px`,
+            transform: `translate(-50%, -50%) scale(${getNodeScale(node)}) ${getNode3DTilt(node)}`,
+            transformOrigin: 'center center',
+            transition: isDraggingNodeId === node.id ? 'none' : 'all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }"
         >
-          <!-- 1. BIGGER SOLAR NUCLEUS NODE (Home Hub) -->
+          <!-- SEMI-3D BLOB CONTAINER (Non-Circle Organic Card with Tactile Depth) -->
           <div
-            v-if="node.type === 'nucleus'"
-            class="relative flex flex-col items-center justify-center rounded-full bg-white border-3 border-[#018786] shadow-xl p-4 transition-all duration-300 group-hover:scale-105"
-            :style="{ width: '155px', height: '155px' }"
-            :class="selectedNode?.id === node.id ? 'ring-6 ring-emerald-500/25 scale-105' : ''"
-          >
-            <span class="absolute top-2.5 right-2.5 w-3 h-3 rounded-full border-2 border-white bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)] animate-pulse"></span>
-
-            <div class="w-10 h-10 rounded-full bg-[#018786] text-white flex items-center justify-center shadow-md mb-1.5">
-              <Icon :name="node.icon" class="w-5 h-5" />
-            </div>
-
-            <span class="text-[9px] font-extrabold text-[#018786] font-mono whitespace-nowrap uppercase tracking-wider">LIVE PB HUB</span>
-            <h2 class="text-xs font-extrabold text-slate-900 truncate max-w-[125px] whitespace-nowrap text-center">
-              {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
-            </h2>
-            <span class="text-[9px] font-mono text-slate-400">/</span>
-
-            <!-- Branch Fold Toggle -->
-            <button
-              @click.stop="toggleBranchFold(node.id)"
-              class="absolute -bottom-2.5 px-2 py-0.2 rounded-full bg-slate-900 text-white font-mono text-[9px] font-bold shadow-xs hover:bg-emerald-800 transition"
-              :title="isBranchFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'بستن زیرشاخه‌ها'"
-            >
-              {{ isBranchFolded(node.id) ? '+ بازکردن' : '- بستن' }}
-            </button>
-          </div>
-
-          <!-- 2. BIGGER PRIMARY PILLAR NODES -->
-          <div
-            v-else-if="node.type === 'pillar'"
-            class="relative flex flex-col items-center justify-center rounded-full bg-white/98 backdrop-blur-md border-2 shadow-md p-3.5 transition-all duration-200 group-hover:scale-105 text-center"
-            :style="{ width: '130px', height: '130px', borderColor: node.accentColor }"
+            class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200"
+            :style="{
+              width: `${getNodeWidth(node)}px`,
+              minHeight: `${getNodeHeight(node)}px`,
+              background: getNodeBackground(node),
+              boxShadow: getNodeShadow(node)
+            }"
             :class="[
               selectedNode?.id === node.id
-                ? 'ring-4 ring-emerald-500/25 scale-105 z-30 shadow-xl'
-                : hoveredNodeId === node.id
-                  ? 'scale-102 z-20 shadow-lg'
-                  : 'z-10'
+                ? 'ring-3 ring-emerald-500/80 -translate-y-1'
+                : 'hover:-translate-y-1'
             ]"
           >
-            <span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full border border-white bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
+            <!-- Top Specular Glass Highlight -->
+            <div class="absolute inset-x-3 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none rounded-t-full"></div>
 
-            <div
-              class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs mb-1.5"
-              :style="{ backgroundColor: node.accentColor }"
-            >
-              <Icon :name="node.icon" class="w-4 h-4" />
+            <!-- Top Header: Icon & Type Badge -->
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div
+                class="w-8 h-8 rounded-2xl flex items-center justify-center text-white shadow-sm shrink-0"
+                :style="{ backgroundColor: node.accentColor || '#018786' }"
+              >
+                <Icon :name="node.icon || 'mdi:layers'" class="w-4 h-4" />
+              </div>
+
+              <div class="flex items-center gap-1">
+                <span
+                  v-if="isRecentlyUsed(node.id)"
+                  class="px-2 py-0.5 rounded-full bg-amber-500 text-white font-bold text-[9px] shadow-2xs animate-pulse"
+                >
+                  فعال
+                </span>
+                <span class="px-2 py-0.5 rounded-full bg-slate-900/5 text-slate-600 font-mono text-[9px] font-bold">
+                  {{ node.lens?.toUpperCase() || 'PAGE' }}
+                </span>
+              </div>
             </div>
 
-            <h3 class="text-[11px] font-extrabold text-slate-900 truncate max-w-[105px] whitespace-nowrap">
-              {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
-            </h3>
-
-            <span class="text-[9px] font-mono text-slate-400 truncate max-w-[95px] whitespace-nowrap">
-              {{ node.path }}
-            </span>
-
-            <!-- Branch Fold Toggle -->
-            <button
-              v-if="hasChildren(node.id)"
-              @click.stop="toggleBranchFold(node.id)"
-              class="absolute -bottom-2 px-1.5 py-0.2 rounded-full bg-slate-800 text-white font-mono text-[8px] font-bold shadow-xs hover:bg-emerald-800 transition"
-            >
-              {{ isBranchFolded(node.id) ? '+' : '-' }}
-            </button>
-          </div>
-
-          <!-- 3. SATELLITE ISLAND NODES -->
-          <div
-            v-else
-            class="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/98 backdrop-blur-md border shadow-xs transition-all duration-200 group-hover:scale-105 whitespace-nowrap"
-            :style="{ borderColor: node.accentColor ? `${node.accentColor}70` : '#cbd5e1' }"
-            :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500 border-emerald-500 scale-105 z-30 shadow-md' : 'hover:border-slate-400 z-10'"
-          >
-            <span class="w-2 h-2 rounded-full border border-white bg-emerald-500 animate-pulse shrink-0"></span>
-
-            <div
-              class="w-5 h-5 rounded-lg flex items-center justify-center text-white text-[10px] shadow-2xs shrink-0"
-              :style="{ backgroundColor: node.accentColor || '#64748b' }"
-            >
-              <Icon :name="node.icon" class="w-3 h-3" />
+            <!-- Center: Title & Subtitle / Key Insights -->
+            <div class="space-y-0.5 my-auto">
+              <h3 class="font-black text-slate-900 text-sm tracking-tight leading-tight">
+                {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
+              </h3>
+              <p class="text-[10px] text-slate-500 font-mono truncate" dir="ltr">
+                {{ node.path || `/${node.slug}` }}
+              </p>
             </div>
 
-            <span class="text-xs font-bold text-slate-900 whitespace-nowrap">
-              {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
-            </span>
+            <!-- Bottom: Action Pills / Status Bar -->
+            <div class="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
+              <span class="flex items-center gap-1 font-bold text-emerald-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>همگام PB</span>
+              </span>
 
-            <span class="text-[8px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 whitespace-nowrap">
-              PB
-            </span>
-          </div>
+              <span class="font-mono text-slate-400 font-bold">
+                {{ getKeyCount(node) }} فیلد
+              </span>
+            </div>
 
-          <!-- ORBITAL MICRO-ACTION ICONS AROUND SELECTED NODE -->
-          <div
-            v-if="selectedNode?.id === node.id"
-            @click.stop
-            @mousedown.stop
-            class="absolute inset-0 pointer-events-none z-50 flex items-center justify-center"
-          >
-            <!-- Orbit Ring -->
-            <div class="relative w-full h-full">
-              <!-- Action 1: Open Content Studio (Top) -->
+            <!-- ORBITAL MICRO-ACTIONS ON SELECT -->
+            <div
+              v-if="selectedNode?.id === node.id"
+              @click.stop
+              class="absolute -top-3 -right-3 flex items-center gap-1 bg-white/95 backdrop-blur-md p-1 rounded-2xl shadow-xl border border-slate-200 z-50 animate-in fade-in zoom-in duration-150"
+            >
               <button
                 @click.stop="openProJsonStudio(node, 'content-studio')"
-                class="pointer-events-auto absolute -top-8 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white shadow-lg flex items-center justify-center transition-all duration-150 hover:scale-110 cursor-pointer"
-                title="ویرایشگر محتوای صفحه"
+                class="w-7 h-7 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer"
+                title="ویرایشگر محتوا"
               >
-                <Icon name="mdi:pencil-outline" class="w-4 h-4" />
+                <Icon name="mdi:pencil-outline" class="w-3.5 h-3.5" />
               </button>
 
-              <!-- Action 2: Open Media Hub (Right) -->
               <button
-                @click.stop="openProJsonStudio(node, 'media-hub')"
-                class="pointer-events-auto absolute top-1/2 -right-8 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-900 hover:bg-slate-800 text-white shadow-lg flex items-center justify-center transition-all duration-150 hover:scale-110 cursor-pointer"
+                @click.stop="openProJsonStudio(node, 'media')"
+                class="w-7 h-7 rounded-xl bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center shadow-xs transition cursor-pointer"
                 title="رسانه‌ها و تصاویر"
               >
-                <Icon name="mdi:image-multiple-outline" class="w-4 h-4" />
+                <Icon name="mdi:image-multiple-outline" class="w-3.5 h-3.5" />
               </button>
 
-              <!-- Action 3: Open Raw JSON (Bottom) -->
               <button
                 @click.stop="openProJsonStudio(node, 'vanilla-editor')"
-                class="pointer-events-auto absolute -bottom-8 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-blue-700 hover:bg-blue-800 text-white shadow-lg flex items-center justify-center transition-all duration-150 hover:scale-110 cursor-pointer"
+                class="w-7 h-7 rounded-xl bg-blue-700 hover:bg-blue-800 text-white flex items-center justify-center shadow-xs transition cursor-pointer"
                 title="ویرایشگر JSON خام"
               >
-                <Icon name="mdi:code-json" class="w-4 h-4" />
+                <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
               </button>
 
-              <!-- Action 4: Close Selection (Left) -->
               <button
                 @click.stop="selectedNode = null"
-                class="pointer-events-auto absolute top-1/2 -left-8 -translate-y-1/2 w-8 h-8 rounded-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-lg flex items-center justify-center transition-all duration-150 hover:scale-110 cursor-pointer"
+                class="w-7 h-7 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition cursor-pointer"
                 title="بستن"
               >
-                <Icon name="mdi:close" class="w-4 h-4" />
+                <Icon name="mdi:close" class="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -437,7 +359,7 @@
             />
           </div>
 
-          <!-- ENGINE 3: SMART VISUAL ROWS (100% Flush Rectangular Sheet) -->
+          <!-- ENGINE 3: SMART VISUAL ROWS -->
           <div v-else class="flex-1 p-0 overflow-y-auto bg-white">
             <JsonTreeRow
               v-for="k in schemaKeys"
@@ -486,131 +408,37 @@
       </div>
     </transition>
 
-    <!-- BRIGHT LIGHT THEME TELEMETRY INSPECTOR DOCK -->
+    <!-- NETWORK TELEMETRY DOCK -->
     <transition name="dock-slide">
       <div
         v-if="showDebugPane"
-        class="fixed bottom-0 inset-x-0 z-50 h-80 bg-white/98 backdrop-blur-2xl border-t border-slate-200 shadow-[0_-15px_40px_rgba(0,0,0,0.12)] flex flex-col font-sans text-xs text-slate-800 select-text"
+        class="fixed bottom-0 inset-x-0 z-50 h-72 bg-white/98 backdrop-blur-2xl border-t border-slate-200 shadow-2xl flex flex-col font-sans text-xs text-slate-800 select-text"
       >
         <div class="h-8 px-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span class="font-bold text-emerald-800 text-xs">POCKETBASE NETWORK TELEMETRY</span>
-            <span class="px-2 py-0.2 rounded-md bg-slate-200/80 text-slate-600 text-[10px] font-mono font-bold">
-              {{ waterfallRequests.length }} requests
-            </span>
           </div>
 
-          <div class="flex items-center gap-2">
-            <div class="flex items-center bg-slate-200/80 rounded-lg p-0.5 text-[10px] font-bold">
-              <button
-                @click="logFilter = 'ALL'"
-                class="px-2 py-0.5 rounded transition"
-                :class="logFilter === 'ALL' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
-              >
-                ALL
-              </button>
-              <button
-                @click="logFilter = 'GET'"
-                class="px-2 py-0.5 rounded transition text-emerald-800"
-                :class="logFilter === 'GET' ? 'bg-emerald-100 text-emerald-900 shadow-xs' : 'opacity-70 hover:opacity-100'"
-              >
-                GET
-              </button>
-              <button
-                @click="logFilter = 'POST'"
-                class="px-2 py-0.5 rounded transition text-blue-800"
-                :class="logFilter === 'POST' ? 'bg-blue-100 text-blue-900 shadow-xs' : 'opacity-70 hover:opacity-100'"
-              >
-                POST
-              </button>
-            </div>
-
-            <button
-              @click="refreshSitemap"
-              class="w-6 h-6 flex items-center justify-center rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition cursor-pointer"
-              title="Fetch"
-            >
-              <Icon name="mdi:refresh" class="w-3.5 h-3.5" />
-            </button>
-
-            <button
-              @click="showDebugPane = false"
-              class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-800 hover:bg-slate-200 transition cursor-pointer"
-              title="Close"
-            >
-              <Icon name="mdi:close" class="w-3.5 h-3.5" />
-            </button>
-          </div>
+          <button
+            @click="showDebugPane = false"
+            class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-800 hover:bg-slate-200 transition cursor-pointer"
+          >
+            <Icon name="mdi:close" class="w-3.5 h-3.5" />
+          </button>
         </div>
 
-        <div class="flex-1 flex overflow-hidden">
-          <div class="w-72 sm:w-80 border-r border-slate-200 flex flex-col shrink-0 bg-slate-50/60">
-            <div class="p-1.5 border-b border-slate-200 bg-white flex items-center justify-between text-[10px] text-slate-500 font-bold select-none">
-              <span>REQUESTS</span>
-              <button @click="clearLogs" class="text-slate-400 hover:text-slate-700">Clear</button>
+        <div class="flex-1 p-3 overflow-y-auto divide-y divide-slate-100">
+          <div
+            v-for="req in waterfallRequests"
+            :key="req.id"
+            class="py-1.5 flex items-center justify-between font-mono text-[11px]"
+          >
+            <div class="flex items-center gap-2">
+              <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 font-bold">{{ req.method }}</span>
+              <span class="text-slate-700 font-medium">{{ req.endpoint }}</span>
             </div>
-
-            <div class="flex-1 overflow-y-auto divide-y divide-slate-100">
-              <div
-                v-for="req in filteredWaterfallRequests"
-                :key="req.id"
-                @click="activeRequestId = req.id"
-                class="p-2 cursor-pointer transition-colors flex items-center justify-between select-none"
-                :class="[
-                  activeRequestId === req.id
-                    ? 'bg-white text-slate-900 border-l-3 border-emerald-500 shadow-2xs font-bold'
-                    : 'hover:bg-white text-slate-600'
-                ]"
-              >
-                <div class="flex items-center gap-1.5 overflow-hidden">
-                  <span
-                    class="px-1.5 py-0.2 rounded text-[8px] font-bold shrink-0 font-mono"
-                    :class="req.method === 'POST' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'"
-                  >
-                    {{ req.method }}
-                  </span>
-                  <span class="text-[11px] truncate font-medium">{{ req.endpoint }}</span>
-                </div>
-
-                <div class="flex items-center gap-1.5 shrink-0 text-[10px] font-mono">
-                  <span :class="req.status >= 400 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'">{{ req.status }}</span>
-                  <span class="text-slate-400">{{ req.durationMs }}ms</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-white">
-            <div class="h-8 px-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 select-none">
-              <div class="flex items-center gap-2">
-                <button
-                  @click="activeDetailTab = 'response'"
-                  class="px-2.5 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer"
-                  :class="activeDetailTab === 'response' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'text-slate-600 hover:text-slate-900'"
-                >
-                  RESPONSE JSON
-                </button>
-                <button
-                  @click="activeDetailTab = 'request'"
-                  class="px-2.5 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer"
-                  :class="activeDetailTab === 'request' ? 'bg-blue-100 text-blue-900 border border-blue-300' : 'text-slate-600 hover:text-slate-900'"
-                >
-                  REQUEST PAYLOAD
-                </button>
-              </div>
-            </div>
-
-            <div class="flex-1 overflow-hidden">
-              <JsonLogViewer
-                v-if="activeDetailTab === 'response'"
-                :data="activeRequest.responseJson"
-              />
-              <JsonLogViewer
-                v-else
-                :data="activeRequest.requestJson"
-              />
-            </div>
+            <span class="text-emerald-700 font-bold">{{ req.durationMs }}ms • {{ req.status }}</span>
           </div>
         </div>
       </div>
@@ -619,11 +447,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watchEffect } from 'vue'
+import { ref, computed, onMounted, watchEffect, onUnmounted } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 import JsonTreeRow from '~/components/dashboard/JsonTreeRow.vue'
 import VanillaJsonEditor from '~/components/dashboard/VanillaJsonEditor.vue'
-import JsonLogViewer from '~/components/dashboard/JsonLogViewer.vue'
 import LocalizedContentStudio from '~/components/dashboard/LocalizedContentStudio.vue'
 
 definePageMeta({
@@ -639,21 +466,12 @@ const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
+const recentNodeClicks = ref<string[]>([])
 
-// Branch Folding State
-const foldedBranches = ref<Set<string>>(new Set())
-
-function isBranchFolded(nodeId: string) {
-  return foldedBranches.value.has(nodeId)
-}
-
-function toggleBranchFold(nodeId: string) {
-  if (foldedBranches.value.has(nodeId)) {
-    foldedBranches.value.delete(nodeId)
-  } else {
-    foldedBranches.value.add(nodeId)
-  }
-}
+// Base Layout Dimension Boundaries for Auto-Fit
+const stageBaseWidth = 1100
+const stageBaseHeight = 720
+const clusterFitScale = ref(1)
 
 // Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
@@ -664,14 +482,32 @@ const currentWorkingSchema = ref<Record<string, any>>({})
 const studioCopied = ref(false)
 const isStudioSaving = ref(false)
 
-function openProJsonStudio(node: any, engine: 'content-studio' | 'vanilla-editor' | 'visual-rows' | 'media-hub' = 'content-studio') {
+function openProJsonStudio(node: any, engine: 'content-studio' | 'vanilla-editor' | 'visual-rows' | 'media' = 'content-studio') {
   activeStudioNode.value = node
+  recordNodeUsage(node.id)
+
   const schemaSnapshot = JSON.parse(JSON.stringify(node.liveData?.rawUiData || { titleFa: node.titleFa, titleEn: node.titleEn }))
-  
   originalBaselineSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
   currentWorkingSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
-  studioEngine.value = engine === 'media-hub' ? 'content-studio' : engine
+  studioEngine.value = engine === 'media' ? 'content-studio' : engine
   showJsonStudio.value = true
+}
+
+function handleNodeClick(node: any) {
+  if (selectedNode.value?.id === node.id) {
+    selectedNode.value = null
+  } else {
+    selectedNode.value = node
+    recordNodeUsage(node.id)
+  }
+}
+
+function recordNodeUsage(nodeId: string) {
+  recentNodeClicks.value = [nodeId, ...recentNodeClicks.value.filter(id => id !== nodeId)].slice(0, 5)
+}
+
+function isRecentlyUsed(nodeId: string) {
+  return recentNodeClicks.value.includes(nodeId)
 }
 
 const schemaKeys = computed(() => {
@@ -745,8 +581,6 @@ async function saveWorkingSchemaToPocketBase() {
     }).catch(() => null)
 
     const durationMs = Math.round(performance.now() - startTime)
-    const newId = `req-${Date.now()}`
-
     activeStudioNode.value.source = 'backend'
     if (activeStudioNode.value.liveData) {
       activeStudioNode.value.liveData.rawUiData = currentWorkingSchema.value
@@ -755,97 +589,105 @@ async function saveWorkingSchemaToPocketBase() {
     originalBaselineSchema.value = JSON.parse(JSON.stringify(currentWorkingSchema.value))
 
     waterfallRequests.value.unshift({
-      id: newId,
+      id: `req-${Date.now()}`,
       method: 'POST',
       endpoint: `/api/admin/ui/publish [${slug}]`,
       status: 200,
-      statusText: 'OK',
-      durationMs,
-      timestamp: new Date().toLocaleTimeString(),
-      requestJson: payload,
-      responseJson: res || { success: true, slug, updated: new Date().toISOString() }
+      durationMs
     })
-    activeRequestId.value = newId
 
     showJsonStudio.value = false
-  } catch (err: any) {
-    // Error
+  } catch (err) {
+    //
   } finally {
     isStudioSaving.value = false
   }
 }
 
-// Telemetry Inspector State
-const activeRequestId = ref<string>('req-1')
-const activeDetailTab = ref<'response' | 'request'>('response')
-const logFilter = ref<'ALL' | 'GET' | 'POST'>('ALL')
-
-// Physics Spring Snap-Back Node Dragging State
-let draggedNode: any = null
-let nodeDragStartX = 0
-let nodeDragStartY = 0
-let nodeInitialX = 0
-let nodeInitialY = 0
-const isSpringingNode = ref<string | null>(null)
-
-function startNodeDrag(e: MouseEvent, node: any) {
-  draggedNode = node
-  nodeDragStartX = e.clientX
-  nodeDragStartY = e.clientY
-  nodeInitialX = node.initialAnchorX || node.x
-  nodeInitialY = node.initialAnchorY || node.y
-  node.initialAnchorX = nodeInitialX
-  node.initialAnchorY = nodeInitialY
-}
-
-function toggleNodeSelect(node: any) {
-  if (selectedNode.value?.id === node.id) {
-    selectedNode.value = null
-    return
-  }
-  selectedNode.value = node
-}
-
-interface WaterfallEntry {
-  id: string
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
-  endpoint: string
-  status: number
-  statusText: string
-  durationMs: number
-  timestamp: string
-  requestJson: any
-  responseJson: any
-}
-
-const waterfallRequests = ref<WaterfallEntry[]>([
-  {
-    id: 'req-1',
-    method: 'GET',
-    endpoint: '/api/admin/sitemap',
-    status: 200,
-    statusText: 'OK',
-    durationMs: 16,
-    timestamp: new Date().toLocaleTimeString(),
-    requestJson: { method: 'GET', endpoint: '/api/admin/sitemap' },
-    responseJson: { success: true, stats: { totalNodes: 12, backendSyncedCount: 12, hardcodedCount: 0 } }
-  }
+const waterfallRequests = ref<any[]>([
+  { id: '1', method: 'GET', endpoint: '/api/admin/sitemap', status: 200, durationMs: 12 }
 ])
 
-const filteredWaterfallRequests = computed(() => {
-  if (logFilter.value === 'ALL') return waterfallRequests.value
-  return waterfallRequests.value.filter(r => r.method === logFilter.value)
-})
-
-const activeRequest = computed(() => {
-  return waterfallRequests.value.find(r => r.id === activeRequestId.value) || waterfallRequests.value[0]
-})
-
-function clearLogs() {
-  waterfallRequests.value = []
+// Sizing & Semi-3D Calculations
+function getKeyCount(node: any) {
+  const ui = node.liveData?.rawUiData || {}
+  return Object.keys(ui).length || 3
 }
 
-// Fetch 100% Dynamic Telemetry & Merge into Nodes
+function getNodeWidth(node: any) {
+  if (node.type === 'nucleus') return 210
+  if (node.type === 'pillar') return 185
+  return 165
+}
+
+function getNodeHeight(node: any) {
+  if (node.type === 'nucleus') return 130
+  if (node.type === 'pillar') return 115
+  return 95
+}
+
+function getNodeScale(node: any) {
+  let scale = 1.0
+  if (node.type === 'nucleus') scale = 1.12
+  if (selectedNode.value?.id === node.id) scale *= 1.08
+  if (isRecentlyUsed(node.id)) scale *= 1.05
+  return scale
+}
+
+function getNodeBackground(node: any) {
+  if (node.type === 'nucleus') {
+    return 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)'
+  }
+  return 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+}
+
+function getNodeShadow(node: any) {
+  if (selectedNode.value?.id === node.id) {
+    return '0 24px 48px -12px rgba(1, 135, 134, 0.25), 0 8px 16px -4px rgba(0, 0, 0, 0.08)'
+  }
+  if (hoveredNodeId.value === node.id) {
+    return '0 20px 38px -10px rgba(15, 23, 42, 0.15), 0 6px 12px -3px rgba(0, 0, 0, 0.06)'
+  }
+  return '0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(0, 0, 0, 0.04)'
+}
+
+// Subtle 3D Perspective Tilt on Mouse Movement
+const mouseRelativeX = ref(0)
+const mouseRelativeY = ref(0)
+
+function handleGlobalMouseMove(e: MouseEvent) {
+  mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
+  mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
+
+  // Neighbor Magnetic Push Simulation during drag
+  if (isDraggingNodeId.value) {
+    const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
+    if (dragged) {
+      for (const other of dynamicNodesState.value) {
+        if (other.id !== dragged.id) {
+          const dx = other.currentX - dragged.currentX
+          const dy = other.currentY - dragged.currentY
+          const dist = Math.hypot(dx, dy)
+          const minDist = 180
+          if (dist < minDist && dist > 0) {
+            const push = (minDist - dist) * 0.15
+            other.currentX += (dx / dist) * push
+            other.currentY += (dy / dist) * push
+          }
+        }
+      }
+    }
+  }
+}
+
+function getNode3DTilt(node: any) {
+  if (hoveredNodeId.value === node.id) {
+    return `perspective(600px) rotateX(${mouseRelativeY.value * 1.5}deg) rotateY(${mouseRelativeX.value * 1.5}deg)`
+  }
+  return 'perspective(600px) rotateX(0deg) rotateY(0deg)'
+}
+
+// Fetch Dynamic PocketBase Telemetry
 const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData('sitemap-dynamic-telemetry', () =>
   $fetch<any>('/api/admin/sitemap'),
   { lazy: true }
@@ -853,167 +695,81 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
 
 const dynamicNodesState = ref<any[]>([])
 
+// COMPACT ORGANIC CLUSTER SEED POSITIONS
+const defaultClusterPositions: Record<string, { x: number, y: number }> = {
+  'pb-home': { x: 550, y: 360 },
+  'pb-about': { x: 330, y: 220 },
+  'pb-products': { x: 770, y: 220 },
+  'pb-services': { x: 770, y: 500 },
+  'pb-history': { x: 330, y: 500 },
+  'pb-contact': { x: 550, y: 150 },
+  'pb-catalog': { x: 960, y: 180 },
+  'pb-faq': { x: 960, y: 540 },
+  'pb-blog': { x: 140, y: 540 },
+  'pb-login': { x: 140, y: 180 },
+  'pb-menu': { x: 550, y: 570 },
+  'pb-footer': { x: 350, y: 640 }
+}
+
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
-    dynamicNodesState.value = sitemapApiData.value.nodes.map((n: any) => ({
-      ...n,
-      initialAnchorX: n.x,
-      initialAnchorY: n.y
-    }))
+    dynamicNodesState.value = sitemapApiData.value.nodes.map((n: any) => {
+      const pos = defaultClusterPositions[n.id] || { x: 550, y: 360 }
+      return {
+        ...n,
+        currentX: pos.x,
+        currentY: pos.y,
+        initialX: pos.x,
+        initialY: pos.y
+      }
+    })
+    autoFitConstellation()
   }
 })
 
 const nodes = computed(() => dynamicNodesState.value)
-const backendSyncedCount = computed(() => nodes.value.length)
 
 async function refreshSitemap() {
-  const startTime = performance.now()
-  try {
-    const res = await refreshSitemapApi()
-    const durationMs = Math.round(performance.now() - startTime)
-    const newId = `req-${Date.now()}`
+  await refreshSitemapApi()
+}
 
-    waterfallRequests.value.unshift({
-      id: newId,
-      method: 'GET',
-      endpoint: '/api/admin/sitemap',
-      status: 200,
-      statusText: 'OK',
-      durationMs,
-      timestamp: new Date().toLocaleTimeString(),
-      requestJson: { method: 'GET', endpoint: '/api/admin/sitemap' },
-      responseJson: res || sitemapApiData.value
-    })
-    activeRequestId.value = newId
-  } catch (err: any) {
-    // Error
+// Responsive Viewport Auto-Fit
+function autoFitConstellation() {
+  if (typeof window === 'undefined') return
+  const availableWidth = window.innerWidth - 40
+  const availableHeight = window.innerHeight - 80
+
+  const scaleX = availableWidth / stageBaseWidth
+  const scaleY = availableHeight / stageBaseHeight
+  clusterFitScale.value = Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
+}
+
+// Physics Dragging & Neighbor Push
+const isDraggingNodeId = ref<string | null>(null)
+let dragOffsetX = 0
+let dragOffsetY = 0
+
+function startNodeDrag(e: MouseEvent, node: any) {
+  isDraggingNodeId.value = node.id
+  dragOffsetX = e.clientX - node.currentX * clusterFitScale.value
+  dragOffsetY = e.clientY - node.currentY * clusterFitScale.value
+}
+
+function stopNodeDrag() {
+  if (isDraggingNodeId.value) {
+    // Snap-back smoothly to relaxed cluster position
+    const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
+    if (dragged) {
+      dragged.currentX = dragged.initialX
+      dragged.currentY = dragged.initialY
+    }
+    // Settle all neighbors back
+    for (const n of dynamicNodesState.value) {
+      n.currentX = n.initialX
+      n.currentY = n.initialY
+    }
   }
-}
-
-// 60-120 FPS Pan & Zoom Engine
-const panX = ref(0)
-const panY = ref(0)
-const zoomScale = ref(0.6)
-const isDragging = ref(false)
-let dragStartX = 0
-let dragStartY = 0
-let initialPinchDistance = 0
-let initialPinchScale = 1
-
-function zoomAroundPoint(newScale: number, focalX: number, focalY: number) {
-  const oldScale = zoomScale.value
-  const clampedScale = Math.max(0.25, Math.min(2.5, newScale))
-  if (Math.abs(clampedScale - oldScale) < 0.0001) return
-
-  const worldX = (focalX - panX.value) / oldScale
-  const worldY = (focalY - panY.value) / oldScale
-
-  zoomScale.value = clampedScale
-  panX.value = focalX - worldX * clampedScale
-  panY.value = focalY - worldY * clampedScale
-}
-
-function onWheelZoom(e: WheelEvent) {
-  const focalX = e.clientX
-  const focalY = e.clientY
-  const zoomFactor = Math.exp(-e.deltaY * 0.0012)
-  const clampedFactor = Math.max(0.92, Math.min(1.08, zoomFactor))
-  zoomAroundPoint(zoomScale.value * clampedFactor, focalX, focalY)
-}
-
-function zoomIn() {
-  const focalX = window.innerWidth / 2
-  const focalY = window.innerHeight / 2
-  zoomAroundPoint(zoomScale.value * 1.18, focalX, focalY)
-}
-
-function zoomOut() {
-  const focalX = window.innerWidth / 2
-  const focalY = window.innerHeight / 2
-  zoomAroundPoint(zoomScale.value / 1.18, focalX, focalY)
-}
-
-function resetToCenter() {
-  const focalX = window.innerWidth / 2
-  const focalY = window.innerHeight / 2
-  const targetScale = window.innerWidth < 1024 ? 0.48 : (window.innerWidth < 1440 ? 0.6 : 0.7)
-  
-  zoomScale.value = targetScale
-  panX.value = focalX - 1800 * targetScale
-  panY.value = focalY - 1300 * targetScale
-  activeLens.value = 'all'
-}
-
-function startDrag(e: MouseEvent) {
-  isDragging.value = true
-  dragStartX = e.clientX - panX.value
-  dragStartY = e.clientY - panY.value
-}
-
-function onDrag(e: MouseEvent) {
-  if (draggedNode) {
-    const dx = (e.clientX - nodeDragStartX) / zoomScale.value
-    const dy = (e.clientY - nodeDragStartY) / zoomScale.value
-    draggedNode.x = nodeInitialX + dx
-    draggedNode.y = nodeInitialY + dy
-    return
-  }
-
-  if (!isDragging.value) return
-  panX.value = e.clientX - dragStartX
-  panY.value = e.clientY - dragStartY
-}
-
-function startTouchDrag(e: TouchEvent) {
-  if (e.touches.length === 1) {
-    isDragging.value = true
-    dragStartX = e.touches[0].clientX - panX.value
-    dragStartY = e.touches[0].clientY - panY.value
-  } else if (e.touches.length === 2) {
-    isDragging.value = false
-    const dx = e.touches[0].clientX - e.touches[1].clientX
-    const dy = e.touches[0].clientY - e.touches[1].clientY
-    initialPinchDistance = Math.hypot(dx, dy)
-    initialPinchScale = zoomScale.value
-  }
-}
-
-function onTouchDrag(e: TouchEvent) {
-  if (e.touches.length === 1 && isDragging.value) {
-    panX.value = e.touches[0].clientX - dragStartX
-    panY.value = e.touches[0].clientY - dragStartY
-  } else if (e.touches.length === 2 && initialPinchDistance > 0) {
-    const dx = e.touches[0].clientX - e.touches[1].clientX
-    const dy = e.touches[0].clientY - e.touches[1].clientY
-    const currentDistance = Math.hypot(dx, dy)
-    const focalX = (e.touches[0].clientX + e.touches[1].clientX) / 2
-    const focalY = (e.touches[0].clientY + e.touches[1].clientY) / 2
-    const targetScale = initialPinchScale * (currentDistance / initialPinchDistance)
-    zoomAroundPoint(targetScale, focalX, focalY)
-  }
-}
-
-// Physics Spring Snap-Back on Release
-function stopDrag() {
-  if (draggedNode) {
-    const target = draggedNode
-    isSpringingNode.value = target.id
-    target.x = target.initialAnchorX || target.x
-    target.y = target.initialAnchorY || target.y
-    setTimeout(() => {
-      isSpringingNode.value = null
-    }, 450)
-  }
-
-  isDragging.value = false
-  draggedNode = null
-  initialPinchDistance = 0
-}
-
-function onCanvasDblClick(e: MouseEvent) {
-  if ((e.target as HTMLElement).classList.contains('cursor-grab')) {
-    resetToCenter()
-  }
+  isDraggingNodeId.value = null
 }
 
 const lenses = [
@@ -1025,38 +781,27 @@ const lenses = [
 ]
 
 const edges = [
-  { from: 'pb-home', to: 'pb-about', color: '#018786', speed: 3.0 },
-  { from: 'pb-home', to: 'pb-products', color: '#2563eb', speed: 2.8 },
-  { from: 'pb-home', to: 'pb-services', color: '#9333ea', speed: 3.0 },
-  { from: 'pb-home', to: 'pb-history', color: '#d97706', speed: 3.2 },
-  { from: 'pb-home', to: 'pb-contact', color: '#e11d48', speed: 2.2 },
-  { from: 'pb-home', to: 'pb-login', color: '#6366f1', speed: 2.5 },
-  { from: 'pb-home', to: 'pb-menu', color: '#0ea5e9', speed: 2.3 },
-  { from: 'pb-home', to: 'pb-footer', color: '#64748b', speed: 2.6 },
-  { from: 'pb-products', to: 'pb-catalog', color: '#2563eb', speed: 2.8 },
-  { from: 'pb-services', to: 'pb-faq', color: '#9333ea', speed: 2.9 },
-  { from: 'pb-history', to: 'pb-blog', color: '#d97706', speed: 3.0 }
+  { from: 'pb-home', to: 'pb-about', color: '#018786' },
+  { from: 'pb-home', to: 'pb-products', color: '#2563eb' },
+  { from: 'pb-home', to: 'pb-services', color: '#9333ea' },
+  { from: 'pb-home', to: 'pb-history', color: '#d97706' },
+  { from: 'pb-home', to: 'pb-contact', color: '#e11d48' },
+  { from: 'pb-home', to: 'pb-login', color: '#6366f1' },
+  { from: 'pb-home', to: 'pb-menu', color: '#0ea5e9' },
+  { from: 'pb-home', to: 'pb-footer', color: '#64748b' },
+  { from: 'pb-products', to: 'pb-catalog', color: '#2563eb' },
+  { from: 'pb-services', to: 'pb-faq', color: '#9333ea' },
+  { from: 'pb-history', to: 'pb-blog', color: '#d97706' }
 ]
-
-function hasChildren(nodeId: string) {
-  return edges.some(e => e.from === nodeId)
-}
 
 const visibleNodes = computed(() => {
   return nodes.value.filter((n: any) => {
-    // Check if folded by parent
-    for (const parentId of foldedBranches.value) {
-      const isChild = edges.some(e => e.from === parentId && e.to === n.id)
-      if (isChild) return false
-    }
-
     if (activeLens.value !== 'all' && n.lens !== activeLens.value && n.type !== 'nucleus') return false
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase()
       const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
       const matchEn = (n.liveData?.titleEn || n.titleEn || '').toLowerCase().includes(q)
-      const matchPath = n.path?.toLowerCase().includes(q) || false
-      if (!matchFa && !matchEn && !matchPath) return false
+      if (!matchFa && !matchEn) return false
     }
     return true
   })
@@ -1073,34 +818,38 @@ function isEdgeActive(edge: any) {
   return edge.from === activeId || edge.to === activeId
 }
 
-function edgeColor(color: string, alpha: number) {
-  if (alpha === 1) return color
-  return `${color}${Math.round(alpha * 255).toString(16).padStart(2, '0')}`
-}
-
 function getEdgePath(edge: any) {
   const fromNode = nodes.value.find((n: any) => n.id === edge.from)
   const toNode = nodes.value.find((n: any) => n.id === edge.to)
   if (!fromNode || !toNode) return ''
 
-  const x1 = fromNode.x
-  const y1 = fromNode.y
-  const x2 = toNode.x
-  const y2 = toNode.y
+  const x1 = fromNode.currentX
+  const y1 = fromNode.currentY
+  const x2 = toNode.currentX
+  const y2 = toNode.currentY
 
   const dx = (x2 - x1) * 0.5
   const dy = (y2 - y1) * 0.5
 
-  const cx1 = x1 + dx * 0.85
+  const cx1 = x1 + dx * 0.6
   const cy1 = y1
-  const cx2 = x2 - dx * 0.85
+  const cx2 = x2 - dx * 0.6
   const cy2 = y2
 
   return `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`
 }
 
 onMounted(() => {
-  resetToCenter()
+  autoFitConstellation()
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', autoFitConstellation)
+  }
+})
+
+onUnmounted(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', autoFitConstellation)
+  }
 })
 </script>
 
