@@ -4,13 +4,13 @@
     :dir="isRTL ? 'rtl' : 'ltr'"
     class="fixed inset-0 z-50 h-screen w-screen bg-[#f8fafc] text-slate-800 select-none overflow-hidden font-sans"
   >
-    <!-- Light Theme Subtle Dot Grid Background -->
+    <!-- Light Dot Grid Background -->
     <div class="absolute inset-0 pointer-events-none z-0">
       <div
         class="absolute inset-0 opacity-40 transition-all duration-75"
         :style="{
           backgroundImage: 'radial-gradient(circle, #94a3b8 1.2px, transparent 1.2px)',
-          backgroundSize: `${28 * zoomScale}px ${28 * zoomScale}px`,
+          backgroundSize: `${30 * zoomScale}px ${30 * zoomScale}px`,
           backgroundPosition: `${panX}px ${panY}px`
         }"
       ></div>
@@ -19,19 +19,19 @@
 
     <!-- Top Minimalist Floating Control Bar -->
     <header class="absolute top-4 inset-x-4 z-40 flex items-center justify-between pointer-events-none">
-      <!-- Left: Back to Dashboard & Title -->
+      <!-- Left: Back to Dashboard -->
       <div class="flex items-center gap-3 pointer-events-auto">
         <NuxtLink
           to="/dashboard"
-          class="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200/90 shadow-md text-slate-700 hover:text-emerald-700 hover:bg-slate-50 transition text-xs font-bold text-d4 cursor-pointer"
+          class="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-lg text-slate-700 hover:text-emerald-700 hover:bg-slate-50 transition text-xs font-bold text-d4 cursor-pointer"
         >
           <Icon name="mdi:arrow-right" class="w-4 h-4" :class="isRTL ? '' : 'rotate-180'" />
           <span>{{ isRTL ? 'بازگشت به پیشخوان' : 'Back to Dashboard' }}</span>
         </NuxtLink>
 
-        <div class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200/90 shadow-md">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-xs font-extrabold text-slate-800 text-d4">{{ isRTL ? 'نقشه جامع اکوسیستم' : 'Ecosystem Map' }}</span>
+        <div class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-lg">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-xs font-extrabold text-slate-800 text-d4">{{ isRTL ? 'نقشه فضایی ۶۰ فریم اکوسیستم' : 'Spatial Ecosystem Map' }}</span>
         </div>
       </div>
 
@@ -39,47 +39,47 @@
       <div class="pointer-events-auto">
         <button
           @click="resetToCenter"
-          class="px-4 py-2 rounded-2xl bg-[#018786] hover:bg-emerald-800 text-white font-bold text-xs shadow-lg transition-all flex items-center gap-2 cursor-pointer text-d4 active:scale-95"
+          class="px-5 py-2.5 rounded-2xl bg-[#018786] hover:bg-emerald-800 text-white font-bold text-xs shadow-xl transition-all flex items-center gap-2 cursor-pointer text-d4 active:scale-95"
         >
           <Icon name="mdi:crosshairs-gps" class="w-4 h-4 text-emerald-200" />
-          <span>{{ isRTL ? 'تمرکز در مرکز (Auto-Center)' : 'Auto-Center' }}</span>
+          <span>{{ isRTL ? 'تمرکز در مرکز (Auto-Center)' : 'Auto-Center View' }}</span>
         </button>
       </div>
 
       <!-- Right: Controls & Zoom -->
       <div class="flex items-center gap-2 pointer-events-auto">
-        <div class="flex items-center gap-1 bg-white/90 backdrop-blur-xl p-1 rounded-2xl border border-slate-200/90 shadow-md">
-          <button @click="zoomIn" class="p-1.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Zoom In">
+        <div class="flex items-center gap-1 bg-white/90 backdrop-blur-xl p-1 rounded-2xl border border-slate-200 shadow-lg">
+          <button @click="zoomIn" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Zoom In">
             <Icon name="mdi:plus" class="w-4 h-4" />
           </button>
           <span class="px-2 font-mono text-xs text-emerald-700 font-bold">{{ Math.round(zoomScale * 100) }}%</span>
-          <button @click="zoomOut" class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Zoom Out">
+          <button @click="zoomOut" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer" title="Zoom Out">
             <Icon name="mdi:minus" class="w-4 h-4" />
           </button>
         </div>
 
         <button
           @click="showAnnotations = !showAnnotations"
-          class="p-2 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200/90 shadow-md text-xs font-bold transition cursor-pointer text-d4"
-          :class="showAnnotations ? 'text-emerald-700 font-bold border-emerald-300' : 'text-slate-600 hover:text-slate-900'"
-          :title="isRTL ? 'نمایش توضیحات' : 'Toggle Details'"
+          class="p-2.5 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-lg text-xs font-bold transition cursor-pointer text-d4"
+          :class="showAnnotations ? 'text-emerald-700 border-emerald-400 font-bold' : 'text-slate-600 hover:text-slate-900'"
+          :title="isRTL ? 'نمایش جزئیات' : 'Toggle Details'"
         >
           <Icon name="mdi:text-box-outline" class="w-4.5 h-4.5" />
         </button>
       </div>
     </header>
 
-    <!-- Category Filter Bar (Bottom Floating Capsule) -->
+    <!-- Bottom Category Floating Pills -->
     <div class="absolute bottom-5 inset-x-0 z-40 flex justify-center pointer-events-none">
-      <div class="pointer-events-auto bg-white/90 backdrop-blur-xl border border-slate-200/90 shadow-xl rounded-full px-2.5 py-1.5 flex items-center gap-1.5 overflow-x-auto max-w-[95vw] no-scrollbar">
+      <div class="pointer-events-auto bg-white/90 backdrop-blur-xl border border-slate-200/90 shadow-2xl rounded-full px-3 py-2 flex items-center gap-1.5 overflow-x-auto max-w-[95vw] no-scrollbar">
         <button
           v-for="cat in categories"
           :key="cat.id"
           @click="activeCategory = cat.id"
-          class="px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer whitespace-nowrap text-d4"
+          class="px-4 py-1.5 rounded-full text-xs font-bold transition cursor-pointer whitespace-nowrap text-d4"
           :class="[
             activeCategory === cat.id
-              ? 'bg-[#018786] text-white shadow-xs'
+              ? 'bg-[#018786] text-white shadow-md'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           ]"
         >
@@ -89,7 +89,7 @@
       </div>
     </div>
 
-    <!-- Truly Infinite Canvas Board (0 scrollbars, double click auto-center) -->
+    <!-- Unified Hardware-Accelerated 60 FPS Canvas Stage -->
     <div
       ref="canvasStageRef"
       class="relative w-full h-full cursor-grab active:cursor-grabbing"
@@ -103,159 +103,169 @@
       @wheel.prevent="onWheelZoom"
       @dblclick="onCanvasDblClick"
     >
-      <!-- Connected SVG Edge Lines (Translucent Light Clean Curves) -->
-      <svg
-        class="absolute inset-0 w-full h-full pointer-events-none z-10"
-        :style="{
-          transform: `translate(${panX}px, ${panY}px) scale(${zoomScale})`,
-          transformOrigin: '0 0'
-        }"
-      >
-        <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
-          <path
-            :d="getEdgePath(edge)"
-            fill="none"
-            :stroke="isEdgeHighlighted(edge) ? '#018786' : '#cbd5e1'"
-            :stroke-width="isEdgeHighlighted(edge) ? 3 : 1.5"
-            class="transition-all duration-300"
-          />
-          <!-- Light Mode Flow Particle -->
-          <circle
-            v-if="isEdgeHighlighted(edge)"
-            r="4"
-            fill="#018786"
-          >
-            <animateMotion
-              :path="getEdgePath(edge)"
-              dur="2.5s"
-              repeatCount="indefinite"
-            />
-          </circle>
-        </g>
-      </svg>
-
-      <!-- Spatial Nodes Layer with DISTINCT SHAPES PER CATEGORY & IMPORTANCE SIZING -->
+      <!-- Single Unified Transform Wrapper for Both Lines and Nodes (Guarantees Pixel-Perfect Anchoring) -->
       <div
-        class="absolute inset-0 w-full h-full transition-transform duration-100 origin-top-left z-20"
+        class="absolute inset-0 w-full h-full origin-top-left z-10 transition-transform duration-75 ease-out"
         :style="{
-          transform: `translate(${panX}px, ${panY}px) scale(${zoomScale})`
+          transform: `translate3d(${panX}px, ${panY}px, 0px) scale(${zoomScale})`,
+          willChange: 'transform'
         }"
       >
+        <!-- Connected SVG Edge Bezier Curves (Anchored to Exact Cell Midpoints) -->
+        <svg class="absolute inset-0 w-[3000px] h-[2000px] pointer-events-none z-10 overflow-visible">
+          <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
+            <!-- Curve Background Path -->
+            <path
+              :d="getEdgePath(edge)"
+              fill="none"
+              :stroke="isEdgeHighlighted(edge) ? '#018786' : '#cbd5e1'"
+              :stroke-width="isEdgeHighlighted(edge) ? 3.5 : 1.75"
+              stroke-linecap="round"
+              class="transition-all duration-200"
+            />
+            <!-- Flowing Particle on Highlight -->
+            <circle
+              v-if="isEdgeHighlighted(edge)"
+              r="4.5"
+              fill="#018786"
+              class="filter drop-shadow-md"
+            >
+              <animateMotion
+                :path="getEdgePath(edge)"
+                dur="2.2s"
+                repeatCount="indefinite"
+              />
+            </circle>
+          </g>
+        </svg>
+
+        <!-- Spatial Node Cells Layer -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
           @click.stop="selectNode(node)"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute transition-all duration-300 cursor-pointer group"
+          class="absolute transition-all duration-300 cursor-pointer group z-20"
           :style="{
             left: `${node.x}px`,
             top: `${node.y}px`
           }"
         >
-          <!-- TYPE 1: CORE PAGES (SITEMAP) -> Elegant Rounded Glass Card -->
+          <!-- TYPE 1: PAGES (SITEMAP) -> Glass Card -->
           <div
             v-if="node.category === 'pages'"
-            class="rounded-3xl bg-white border shadow-lg transition-all duration-300 relative overflow-hidden"
+            class="rounded-3xl bg-white/95 border shadow-xl transition-all duration-300 relative overflow-hidden"
+            :style="{ width: `${node.width}px`, height: `${node.height}px` }"
             :class="[
-              getNodeImportanceSizeClass(node.importance),
               selectedNode?.id === node.id
-                ? 'border-emerald-500 ring-4 ring-emerald-500/20 shadow-xl scale-105 z-30'
+                ? 'border-emerald-500 ring-4 ring-emerald-500/20 shadow-2xl scale-105 z-30'
                 : hoveredNodeId === node.id
-                  ? 'border-emerald-400 shadow-md scale-102 z-20'
+                  ? 'border-emerald-400 shadow-lg scale-102 z-20'
                   : 'border-slate-200 hover:border-slate-300 z-10'
             ]"
           >
-            <!-- Top Accent Stripe -->
             <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#018786] via-teal-400 to-[#018786]"></div>
 
-            <div class="flex items-center justify-between mb-2">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-[#018786] border border-teal-200 text-d4">
-                {{ isRTL ? 'صفحه وبسایت' : 'Page' }}
-              </span>
-              <Icon :name="node.icon" class="text-slate-500 group-hover:text-[#018786] transition" :class="node.importance === 1 ? 'w-6 h-6' : 'w-5 h-5'" />
-            </div>
+            <div class="p-4 flex flex-col justify-between h-full">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-50 text-[#018786] border border-teal-200 text-d4">
+                    {{ isRTL ? 'صفحه وبسایت' : 'Page' }}
+                  </span>
+                  <Icon :name="node.icon" class="text-slate-500 group-hover:text-[#018786] transition" :class="node.importance === 1 ? 'w-6 h-6' : 'w-5 h-5'" />
+                </div>
 
-            <h3
-              class="font-extrabold text-slate-900 text-d4 group-hover:text-[#018786] transition truncate mb-1"
-              :class="node.importance === 1 ? 'text-lg sm:text-xl' : 'text-sm'"
-            >
-              {{ isRTL ? node.titleFa : node.titleEn }}
-            </h3>
+                <h3
+                  class="font-extrabold text-slate-900 text-d4 group-hover:text-[#018786] transition truncate mb-1"
+                  :class="node.importance === 1 ? 'text-lg sm:text-xl' : 'text-sm'"
+                >
+                  {{ isRTL ? node.titleFa : node.titleEn }}
+                </h3>
 
-            <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr mb-2">
-              {{ node.path }}
-            </p>
+                <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr mb-2">
+                  {{ node.path }}
+                </p>
+              </div>
 
-            <div v-if="showAnnotations" class="pt-2 border-t border-slate-100 flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>Route: {{ node.specs.Route }}</span>
-              <span class="text-emerald-600 font-bold">200 OK</span>
+              <div v-if="showAnnotations" class="pt-2 border-t border-slate-100 flex justify-between text-[10px] text-slate-500 font-mono">
+                <span>Route: {{ node.specs.Route }}</span>
+                <span class="text-emerald-600 font-bold">200 OK</span>
+              </div>
             </div>
           </div>
 
-          <!-- TYPE 2: COMPONENTS (UI MODALS/SECTIONS) -> Chamfered Tech Badge -->
+          <!-- TYPE 2: UI COMPONENTS -> Chamfered Tech Badge -->
           <div
             v-else-if="node.category === 'components'"
-            class="w-60 p-4 rounded-2xl bg-white border-l-4 border-l-purple-500 border-y border-r border-slate-200 shadow-md transition-all duration-300"
+            class="rounded-2xl bg-white border-l-4 border-l-purple-500 border-y border-r border-slate-200 shadow-md p-3.5 transition-all duration-300 flex flex-col justify-between"
+            :style="{ width: `${node.width}px`, height: `${node.height}px` }"
             :class="[
               selectedNode?.id === node.id ? 'ring-2 ring-purple-400 scale-105' : 'hover:border-purple-300'
             ]"
           >
-            <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center justify-between mb-1">
               <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 text-d4">
                 {{ isRTL ? 'کامپوننت UI' : 'UI Component' }}
               </span>
               <Icon :name="node.icon" class="w-4.5 h-4.5 text-purple-600" />
             </div>
-            <h3 class="text-xs font-bold text-slate-800 text-d4 truncate mb-0.5">
-              {{ isRTL ? node.titleFa : node.titleEn }}
-            </h3>
-            <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr">
-              {{ node.path }}
-            </p>
+            <div>
+              <h3 class="text-xs font-bold text-slate-800 text-d4 truncate mb-0.5">
+                {{ isRTL ? node.titleFa : node.titleEn }}
+              </h3>
+              <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr">
+                {{ node.path }}
+              </p>
+            </div>
           </div>
 
-          <!-- TYPE 3: COMPOSABLES (SWR & LOGIC) -> Sleek Pill Capsule -->
+          <!-- TYPE 3: COMPOSABLES -> Sleek Amber Pill Capsule -->
           <div
             v-else-if="node.category === 'composables'"
-            class="px-5 py-2.5 rounded-full bg-amber-50/90 border border-amber-300 shadow-md flex items-center gap-3 transition-all duration-300"
+            class="rounded-full bg-amber-50/90 border border-amber-300 shadow-md px-5 py-2.5 flex items-center gap-3 transition-all duration-300"
+            :style="{ width: `${node.width}px`, height: `${node.height}px` }"
             :class="[
               selectedNode?.id === node.id ? 'ring-2 ring-amber-400 scale-105' : 'hover:bg-amber-100'
             ]"
           >
             <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-            <Icon :name="node.icon" class="w-4.5 h-4.5 text-amber-700" />
-            <span class="text-xs font-bold text-amber-900 text-d4 whitespace-nowrap">
+            <Icon :name="node.icon" class="w-4.5 h-4.5 text-amber-700 shrink-0" />
+            <span class="text-xs font-bold text-amber-900 text-d4 truncate">
               {{ isRTL ? node.titleFa : node.titleEn }}
             </span>
           </div>
 
-          <!-- TYPE 4: POCKETBASE DATABASE -> Cylinder / Stacked Database Card -->
+          <!-- TYPE 4: DATABASE -> Cylinder Card -->
           <div
             v-else-if="node.category === 'pb'"
-            class="w-60 p-4 rounded-2xl bg-white border-t-4 border-t-emerald-500 border-x border-b border-slate-200 shadow-md transition-all duration-300"
+            class="rounded-2xl bg-white border-t-4 border-t-emerald-500 border-x border-b border-slate-200 shadow-md p-3.5 transition-all duration-300 flex flex-col justify-between"
+            :style="{ width: `${node.width}px`, height: `${node.height}px` }"
             :class="[
               selectedNode?.id === node.id ? 'ring-2 ring-emerald-400 scale-105' : 'hover:border-emerald-300'
             ]"
           >
-            <div class="flex items-center justify-between mb-1.5">
+            <div class="flex items-center justify-between mb-1">
               <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 text-d4">
-                {{ isRTL ? 'کالکشن PocketBase' : 'PB Database' }}
+                {{ isRTL ? 'کالکشن PocketBase' : 'PB Collection' }}
               </span>
               <Icon :name="node.icon" class="w-4.5 h-4.5 text-emerald-600" />
             </div>
-            <h3 class="text-xs font-bold text-slate-800 text-d4 truncate mb-0.5">
-              {{ isRTL ? node.titleFa : node.titleEn }}
-            </h3>
-            <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr">
-              {{ node.path }}
-            </p>
+            <div>
+              <h3 class="text-xs font-bold text-slate-800 text-d4 truncate mb-0.5">
+                {{ isRTL ? node.titleFa : node.titleEn }}
+              </h3>
+              <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr">
+                {{ node.path }}
+              </p>
+            </div>
           </div>
 
-          <!-- TYPE 5: SERVER APIS -> Octagon / Sharp Tech Badge -->
+          <!-- TYPE 5: SERVER APIS -> Sharp Octagon Badge -->
           <div
             v-else
-            class="w-56 p-3.5 rounded-2xl bg-white border-l-4 border-l-rose-500 border-y border-r border-slate-200 shadow-md transition-all duration-300"
+            class="rounded-2xl bg-white border-l-4 border-l-rose-500 border-y border-r border-slate-200 shadow-md p-3.5 transition-all duration-300 flex flex-col justify-between"
+            :style="{ width: `${node.width}px`, height: `${node.height}px` }"
             :class="[
               selectedNode?.id === node.id ? 'ring-2 ring-rose-400 scale-105' : 'hover:border-rose-300'
             ]"
@@ -266,12 +276,14 @@
               </span>
               <Icon :name="node.icon" class="w-4 h-4 text-rose-600" />
             </div>
-            <h3 class="text-xs font-bold text-slate-800 text-d4 truncate mb-0.5">
-              {{ isRTL ? node.titleFa : node.titleEn }}
-            </h3>
-            <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr">
-              {{ node.path }}
-            </p>
+            <div>
+              <h3 class="text-xs font-bold text-slate-800 text-d4 truncate mb-0.5">
+                {{ isRTL ? node.titleFa : node.titleEn }}
+              </h3>
+              <p class="text-[10px] font-mono text-slate-400 truncate text-left ltr">
+                {{ node.path }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -350,22 +362,21 @@ import { ref, computed } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
-  layout: false // Completely bypass layout wrappers for 100% full-screen stage
+  layout: false
 })
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-// Canvas Options
+// Canvas State
 const showAnnotations = ref(true)
 const activeCategory = ref('all')
-const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<SpatialNode | null>(null)
 
-// Infinite Canvas Drag/Pan/Zoom State
-const panX = ref(120)
-const panY = ref(100)
+// 60 FPS Pan & Zoom
+const panX = ref(140)
+const panY = ref(120)
 const zoomScale = ref(0.95)
 const isDragging = ref(false)
 let dragStartX = 0
@@ -413,8 +424,8 @@ function zoomOut() {
 }
 
 function resetToCenter() {
-  panX.value = 120
-  panY.value = 100
+  panX.value = 140
+  panY.value = 120
   zoomScale.value = 0.95
 }
 
@@ -436,7 +447,7 @@ const categories = [
 interface SpatialNode {
   id: string
   category: 'pages' | 'components' | 'composables' | 'pb' | 'api'
-  importance: number // 1: Core Hub, 2: Large, 3: Medium
+  importance: number // 1: Core, 2: Large, 3: Medium
   titleFa: string
   titleEn: string
   path: string
@@ -445,6 +456,8 @@ interface SpatialNode {
   icon: string
   x: number
   y: number
+  width: number
+  height: number
   specs: Record<string, string>
   actionUrl?: string
 }
@@ -454,9 +467,9 @@ interface Edge {
   to: string
 }
 
-// Nodes Organized by Clear Hierarchical Columns
+// Exact Spatial Node Matrix with Pixel Heights & Widths for Anchor Precision
 const allNodes: SpatialNode[] = [
-  // COL 1: CORE ENTRANCES (Importance 1: Huge Cards)
+  // COLUMN 1: CORE HUBS
   {
     id: 'home',
     category: 'pages',
@@ -467,8 +480,10 @@ const allNodes: SpatialNode[] = [
     descFa: 'هسته اصلی فرانت‌اند با صحنه‌های سه بعدی و کاتالوگ.',
     descEn: 'Main frontend hub with 3D scenes and quote calculator.',
     icon: 'mdi:home-outline',
-    x: 100,
+    x: 80,
     y: 80,
+    width: 300,
+    height: 160,
     specs: { Route: '/', Importance: 'Core Hub' },
     actionUrl: '/'
   },
@@ -482,13 +497,15 @@ const allNodes: SpatialNode[] = [
     descFa: 'مرکز مدیریت دیتابیس، فایل‌ها و CMS.',
     descEn: 'Master administrative suite for database and CMS.',
     icon: 'mdi:view-dashboard-outline',
-    x: 100,
+    x: 80,
     y: 380,
+    width: 300,
+    height: 160,
     specs: { Route: '/dashboard', Importance: 'Core Hub' },
     actionUrl: '/dashboard'
   },
 
-  // COL 2: MAIN PAGES (Importance 2: Medium Cards)
+  // COLUMN 2: MAIN PAGES
   {
     id: 'about',
     category: 'pages',
@@ -501,6 +518,8 @@ const allNodes: SpatialNode[] = [
     icon: 'mdi:information-outline',
     x: 480,
     y: 80,
+    width: 250,
+    height: 140,
     specs: { Route: '/about' },
     actionUrl: '/about'
   },
@@ -516,11 +535,13 @@ const allNodes: SpatialNode[] = [
     icon: 'mdi:package-variant-closed',
     x: 480,
     y: 280,
+    width: 250,
+    height: 140,
     specs: { Route: '/products' },
     actionUrl: '/products'
   },
 
-  // COL 3: COMPONENTS (Chamfered Tech Badges)
+  // COLUMN 3: COMPONENTS
   {
     id: 'gsap-pinned',
     category: 'components',
@@ -531,12 +552,14 @@ const allNodes: SpatialNode[] = [
     descFa: 'استیج قفل‌شده 360vh با گام‌بندی.',
     descEn: 'Sticky 360vh pinned stage.',
     icon: 'mdi:view-carousel-outline',
-    x: 820,
+    x: 830,
     y: 80,
+    width: 240,
+    height: 110,
     specs: { Mode: 'Sticky 360vh' }
   },
 
-  // COL 4: COMPOSABLES & DATABASE (Pills & Cylinders)
+  // COLUMN 4: COMPOSABLES & DATABASE
   {
     id: 'use-page-ui',
     category: 'composables',
@@ -547,8 +570,10 @@ const allNodes: SpatialNode[] = [
     descFa: 'لود ۰ms با اسکیماهای محلی.',
     descEn: '0ms instant hydration.',
     icon: 'mdi:flash-outline',
-    x: 1140,
+    x: 1150,
     y: 180,
+    width: 240,
+    height: 52,
     specs: { Strategy: 'SWR 0ms' }
   },
   {
@@ -561,12 +586,14 @@ const allNodes: SpatialNode[] = [
     descFa: 'داده‌های سه زبانه uiData.',
     descEn: 'Trilingual UI schemas.',
     icon: 'mdi:database-outline',
-    x: 1140,
+    x: 1150,
     y: 380,
+    width: 240,
+    height: 110,
     specs: { Type: 'PB Record' }
   },
 
-  // COL 5: SERVER APIS (Octagon Tech Badges)
+  // COLUMN 5: SERVER APIS
   {
     id: 'api-publish',
     category: 'api',
@@ -577,8 +604,10 @@ const allNodes: SpatialNode[] = [
     descFa: 'انتشار پیش‌نویس‌های CMS.',
     descEn: 'Publish CMS draft schemas.',
     icon: 'mdi:cloud-upload-outline',
-    x: 1460,
+    x: 1470,
     y: 280,
+    width: 220,
+    height: 105,
     specs: { Method: 'POST' }
   }
 ]
@@ -595,13 +624,6 @@ const allEdges: Edge[] = [
 const visibleNodes = computed(() => {
   return allNodes.filter(n => {
     if (activeCategory.value !== 'all' && n.category !== activeCategory.value) return false
-    if (searchQuery.value) {
-      const q = searchQuery.value.toLowerCase()
-      const matchFa = n.titleFa.toLowerCase().includes(q)
-      const matchEn = n.titleEn.toLowerCase().includes(q)
-      const matchPath = n.path.toLowerCase().includes(q)
-      if (!matchFa && !matchEn && !matchPath) return false
-    }
     return true
   })
 })
@@ -621,32 +643,25 @@ function isEdgeHighlighted(edge: Edge) {
   return edge.from === activeId || edge.to === activeId
 }
 
+// Calculate Cubic Bezier Paths from Exact Cell Anchor Centers
 function getEdgePath(edge: Edge) {
   const fromNode = allNodes.find(n => n.id === edge.from)
   const toNode = allNodes.find(n => n.id === edge.to)
   if (!fromNode || !toNode) return ''
 
-  const x1 = fromNode.x + 120
-  const y1 = fromNode.y + 40
-  const x2 = toNode.x + 120
-  const y2 = toNode.y + 40
+  // Anchor points at center-right of source node, center-left of target node
+  const x1 = fromNode.x + fromNode.width
+  const y1 = fromNode.y + fromNode.height / 2
+  const x2 = toNode.x
+  const y2 = toNode.y + toNode.height / 2
 
-  const dx = x2 - x1
-  const dy = y2 - y1
-  const cx1 = x1 + dx * 0.5
+  const dx = Math.abs(x2 - x1) * 0.55
+  const cx1 = x1 + dx
   const cy1 = y1
-  const cx2 = x1 + dx * 0.5
+  const cx2 = x2 - dx
   const cy2 = y2
 
   return `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`
-}
-
-function getNodeImportanceSizeClass(importance: number) {
-  switch (importance) {
-    case 1: return 'w-80 p-5 text-base border-2 shadow-xl'
-    case 2: return 'w-64 p-4 text-sm shadow-md'
-    default: return 'w-56 p-3.5 text-xs shadow-sm'
-  }
 }
 
 function getCategoryCount(catId: string) {
