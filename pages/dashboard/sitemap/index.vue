@@ -271,7 +271,7 @@
             </span>
           </div>
 
-          <!-- INLINE SPATIAL MICRO-EDITOR POPOVER -->
+          <!-- INLINE SPATIAL MICRO-POPOVER -->
           <div
             v-if="selectedNode?.id === node.id"
             @click.stop
@@ -281,7 +281,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2">
               <div class="flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full" :class="selectedNode.source === 'backend' ? 'bg-emerald-500' : 'bg-slate-400'"></span>
-                <span class="font-bold text-[10px] text-slate-800 text-d4">{{ isRTL ? 'تنظیم گره' : 'Tune Node' }}</span>
+                <span class="font-bold text-[10px] text-slate-800 text-d4">{{ isRTL ? 'تنظیم سریع' : 'Quick Tune' }}</span>
               </div>
               <button
                 @click.stop="selectedNode = null"
@@ -315,19 +315,19 @@
             <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5">
               <button
                 @click.stop="openProJsonStudio(node)"
-                class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-[10px] transition flex items-center gap-1 cursor-pointer whitespace-nowrap"
+                class="flex-1 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-emerald-400 font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap"
               >
-                <Icon name="mdi:code-json" class="w-3 h-3" />
-                <span>JSON اسکیما (100/100)</span>
+                <Icon name="mdi:code-json" class="w-3.5 h-3.5 text-emerald-400" />
+                <span>استودیو اسکیما UI</span>
               </button>
 
               <button
                 @click.stop="saveNodeToPocketBase"
                 :disabled="isSaving"
-                class="flex-1 py-1.5 rounded-lg bg-[#018786] hover:bg-emerald-800 text-white font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 text-d4"
+                class="px-3 py-1.5 rounded-lg bg-[#018786] hover:bg-emerald-800 text-white font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 text-d4"
               >
                 <Icon :name="isSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3 h-3" :class="isSaving ? 'animate-spin' : ''" />
-                <span>{{ isSaving ? '...' : (isRTL ? 'ذخیره PB' : 'Save PB') }}</span>
+                <span>{{ isSaving ? '...' : 'ذخیره' }}</span>
               </button>
             </div>
           </div>
@@ -335,120 +335,160 @@
       </div>
     </div>
 
-    <!-- 100/100 PRO JSON SCHEMA STUDIO WORKSPACE MODAL -->
+    <!-- 100/100 INTERACTIVE VISUAL ROW-BASED SCHEMA STUDIO -->
     <transition name="fade">
       <div
         v-if="showJsonStudio"
-        class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 select-text"
+        class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 select-text"
       >
-        <div class="bg-slate-950 text-slate-100 rounded-3xl border border-slate-800 shadow-2xl w-full max-w-4xl h-[85vh] flex flex-col overflow-hidden font-mono text-xs">
+        <div class="bg-slate-950 text-slate-100 rounded-3xl border border-slate-800 shadow-2xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden font-mono text-xs">
           <!-- Studio Header Bar -->
           <div class="h-14 px-5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
-                <Icon name="mdi:code-json" class="w-4.5 h-4.5" />
+                <Icon name="mdi:layers-triple-outline" class="w-4.5 h-4.5" />
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-200 text-sm">PRO JSON SCHEMA STUDIO</span>
+                  <span class="font-bold text-slate-200 text-sm">VISUAL SCHEMA STUDIO</span>
                   <span class="px-2 py-0.2 rounded bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800">
                     {{ activeStudioNode?.slug || activeStudioNode?.id }}
                   </span>
+                  <!-- Unsaved Changes Badge -->
+                  <span
+                    v-if="hasAnyModifications"
+                    class="px-2 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/60 text-[10px] font-bold animate-pulse"
+                  >
+                    ⚠️ تغییرات ذخیره‌نشده زرد
+                  </span>
                 </div>
-                <span class="text-[10px] text-slate-500">Live PocketBase Schema & Dynamic UI Definition</span>
+                <span class="text-[10px] text-slate-500">Live PocketBase Interactive Schema Row Editor</span>
               </div>
             </div>
 
-            <!-- Studio Toolbar Buttons -->
+            <!-- View Switcher & Action Tools -->
             <div class="flex items-center gap-2">
-              <button
-                @click="beautifyJson"
-                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-                title="Format & Indent"
-              >
-                <Icon name="mdi:auto-fix" class="w-3.5 h-3.5" />
-                <span>فرمت خودکار (Beautify)</span>
-              </button>
+              <!-- Switcher: Visual Rows vs Raw Code -->
+              <div class="flex items-center bg-slate-800 p-0.5 rounded-xl text-[11px] font-bold">
+                <button
+                  @click="studioViewMode = 'rows'"
+                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  :class="studioViewMode === 'rows' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
+                >
+                  <Icon name="mdi:format-list-bulleted" class="w-3.5 h-3.5" />
+                  <span>ردیف‌های بصری (Visual)</span>
+                </button>
+                <button
+                  @click="studioViewMode = 'code'"
+                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  :class="studioViewMode === 'code' ? 'bg-slate-950 text-emerald-400 shadow-xs' : 'text-slate-400 hover:text-slate-200'"
+                >
+                  <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
+                  <span>کد خام (Raw JSON)</span>
+                </button>
+              </div>
 
+              <!-- Undo All Button (Active when modified) -->
               <button
-                @click="minifyJson"
-                class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-                title="Minify JSON"
+                v-if="hasAnyModifications"
+                @click="undoAllChanges"
+                class="px-3 py-1.5 rounded-xl bg-amber-950/60 hover:bg-amber-900 text-amber-300 border border-amber-700/80 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
+                title="بازگردانی تمام مقادیر زرد به نسخه اصلی سرور"
               >
-                <Icon name="mdi:arrow-collapse" class="w-3.5 h-3.5" />
-                <span>فشرده‌سازی</span>
+                <span>↩️ بازگردانی همه</span>
               </button>
 
               <button
                 @click="copyStudioJson"
                 class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold transition cursor-pointer"
               >
-                {{ studioCopied ? 'کپی شد!' : 'کپی کامل' }}
+                {{ studioCopied ? 'کپی شد!' : 'کپی JSON' }}
               </button>
 
               <button
                 @click="showJsonStudio = false"
-                class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white cursor-pointer ml-2"
+                class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white cursor-pointer ml-1"
               >
                 <Icon name="mdi:close" class="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <!-- Live Syntax Linter Banner -->
-          <div
-            class="px-5 py-2 border-b flex items-center justify-between text-[11px] font-mono select-none"
-            :class="jsonValidation.valid ? 'bg-emerald-950/40 border-emerald-900/60 text-emerald-400' : 'bg-rose-950/50 border-rose-900/80 text-rose-300'"
-          >
+          <!-- Diff & Yellow Alert Info Bar -->
+          <div class="px-5 py-2 bg-slate-900/60 border-b border-slate-800 flex items-center justify-between text-[11px] select-none">
             <div class="flex items-center gap-2">
-              <Icon :name="jsonValidation.valid ? 'mdi:check-circle' : 'mdi:alert-circle'" class="w-4 h-4" />
-              <span>{{ jsonValidation.message }}</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <span class="text-slate-300">
+                هر مقداری که ویرایش شود با <strong class="text-amber-300 font-bold">رنگ زرد و کادر درخشان</strong> مشخص می‌شود و دارای دکمه بازگردانی اختصاصی است.
+              </span>
             </div>
-            <div class="flex items-center gap-3 text-slate-400 text-[10px]">
-              <span>Lines: {{ jsonLineCount }}</span>
-              <span>Size: {{ (studioJsonCode.length / 1024).toFixed(1) }} KB</span>
+            <div class="flex items-center gap-2 text-slate-500 text-[10px]">
+              <span>Collection: pages</span>
+              <span>•</span>
+              <span class="font-mono">Server: 65.108.80.205:8090</span>
             </div>
           </div>
 
-          <!-- Studio Editor Body (Full-Featured Code Studio with Line Numbers) -->
-          <div class="flex-1 flex overflow-hidden bg-slate-950">
-            <!-- Line Numbers Gutter -->
-            <div class="w-12 bg-slate-900/80 border-r border-slate-800 py-3 select-none text-right pr-2 text-slate-600 font-mono text-[11px] leading-relaxed overflow-hidden">
-              <div v-for="n in jsonLineCount" :key="n">{{ n }}</div>
+          <!-- STUDIO BODY: TAB 1 - VISUAL ROWS (100/100 Interactive Rows) -->
+          <div v-if="studioViewMode === 'rows'" class="flex-1 p-4 overflow-y-auto space-y-2 bg-slate-950">
+            <div v-if="schemaKeys.length === 0" class="p-8 text-center text-slate-500">
+              هیچ فیلدی در این اسکیما تعریف نشده است.
             </div>
 
-            <!-- Code Textarea with High-contrast Syntax Lighting -->
+            <JsonTreeRow
+              v-for="k in schemaKeys"
+              :key="k"
+              :key-name="k"
+              :current-val="currentWorkingSchema[k]"
+              :original-val="originalBaselineSchema[k]"
+              :path="[k]"
+              @update-field="handleFieldUpdate"
+              @undo-field="handleFieldUndo"
+            />
+          </div>
+
+          <!-- STUDIO BODY: TAB 2 - RAW CODE EDITOR -->
+          <div v-else class="flex-1 flex overflow-hidden bg-slate-950">
+            <div class="w-12 bg-slate-900/80 border-r border-slate-800 py-3 select-none text-right pr-2 text-slate-600 font-mono text-[11px] leading-relaxed overflow-hidden">
+              <div v-for="n in rawCodeLines" :key="n">{{ n }}</div>
+            </div>
             <textarea
-              v-model="studioJsonCode"
-              @input="validateJsonCode"
+              v-model="rawJsonCode"
+              @input="handleRawCodeInput"
               rows="30"
               dir="ltr"
-              class="flex-1 bg-transparent text-emerald-300/90 p-3 font-mono text-[11px] leading-relaxed focus:outline-none resize-none selection:bg-emerald-800 selection:text-white text-left whitespace-pre"
-              placeholder="{ ... }"
+              class="flex-1 bg-transparent text-emerald-300/90 p-3 font-mono text-[11px] leading-relaxed focus:outline-none resize-none text-left whitespace-pre selection:bg-emerald-800 selection:text-white"
             ></textarea>
           </div>
 
-          <!-- Studio Footer with 1-Click Save to PocketBase -->
+          <!-- Studio Footer with Save to PocketBase -->
           <div class="h-14 px-5 bg-slate-900 border-t border-slate-800 flex items-center justify-between shrink-0 select-none">
-            <span class="text-[11px] text-slate-400">
-              ویرایش مستقیم اسکیما روی دیتابیس بدون ریلود صفحه
-            </span>
+            <div class="flex items-center gap-2">
+              <span v-if="hasAnyModifications" class="text-amber-400 text-xs font-bold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span>تغییرات اعمال‌شده آماده انتشار است</span>
+              </span>
+              <span v-else class="text-emerald-400 text-xs font-bold flex items-center gap-1">
+                <Icon name="mdi:check-circle" class="w-3.5 h-3.5" />
+                <span>داده‌ها همگام با دیتابیس PocketBase هستند</span>
+              </span>
+            </div>
 
             <div class="flex items-center gap-3">
               <button
-                @click="resetStudioCode"
+                @click="showJsonStudio = false"
                 class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition cursor-pointer"
               >
-                بازگردانی
+                بستن
               </button>
 
               <button
-                @click="saveStudioJsonToPocketBase"
-                :disabled="!jsonValidation.valid || isStudioSaving"
-                class="px-5 py-2 rounded-xl bg-[#018786] hover:bg-emerald-700 text-white font-extrabold text-xs transition flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                @click="saveWorkingSchemaToPocketBase"
+                :disabled="isStudioSaving"
+                class="px-6 py-2 rounded-xl bg-[#018786] hover:bg-emerald-700 text-white font-extrabold text-xs transition flex items-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
               >
                 <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-4 h-4" :class="isStudioSaving ? 'animate-spin' : ''" />
-                <span>{{ isStudioSaving ? 'در حال انتشار در دیتابیس...' : 'ذخیره و انتشار در PocketBase' }}</span>
+                <span>{{ isStudioSaving ? 'در حال ذخیره در دیتابیس...' : 'ذخیره و انتشار در PocketBase' }}</span>
               </button>
             </div>
           </div>
@@ -515,9 +555,9 @@
           </div>
         </div>
 
-        <!-- Master-Detail Split Pane (No Layout Shifts) -->
+        <!-- Master-Detail Split Pane -->
         <div class="flex-1 flex overflow-hidden">
-          <!-- Left: Fixed Waterfall Request Stream (w-80) -->
+          <!-- Left: Fixed Waterfall Request Stream -->
           <div class="w-72 sm:w-80 border-r border-slate-800 flex flex-col shrink-0 bg-slate-950/80">
             <div class="p-1.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[9px] text-slate-400 font-bold select-none">
               <span>REQUEST TRACES</span>
@@ -554,7 +594,7 @@
             </div>
           </div>
 
-          <!-- Right: Selected Request Deep Inspector (Full JSON Payload Viewer) -->
+          <!-- Right: Selected Request Deep Inspector -->
           <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-slate-900/30">
             <div class="p-1.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 select-none">
               <div class="flex items-center gap-1.5">
@@ -603,6 +643,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useLocale } from '~/composables/useLocale'
+import JsonTreeRow from '~/components/dashboard/JsonTreeRow.vue'
 
 definePageMeta({
   layout: false
@@ -618,81 +659,99 @@ const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
 
-// 100/100 Pro JSON Schema Studio State
+// 100/100 Interactive Visual Schema Studio State
 const showJsonStudio = ref(false)
 const activeStudioNode = ref<any | null>(null)
-const studioJsonCode = ref('')
+const studioViewMode = ref<'rows' | 'code'>('rows')
+const originalBaselineSchema = ref<Record<string, any>>({})
+const currentWorkingSchema = ref<Record<string, any>>({})
+const rawJsonCode = ref('')
 const studioCopied = ref(false)
 const isStudioSaving = ref(false)
-const jsonValidation = ref({ valid: true, message: 'JSON معتبر است (Valid Schema)' })
 
 function openProJsonStudio(node: any) {
   activeStudioNode.value = node
-  const schemaObj = node.liveData?.rawUiData || node.defaultData || { titleFa: node.titleFa, titleEn: node.titleEn }
-  studioJsonCode.value = JSON.stringify(schemaObj, null, 2)
-  validateJsonCode()
+  const schemaSnapshot = JSON.parse(JSON.stringify(node.liveData?.rawUiData || node.defaultData || { titleFa: node.titleFa, titleEn: node.titleEn }))
+  
+  originalBaselineSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
+  currentWorkingSchema.value = JSON.parse(JSON.stringify(schemaSnapshot))
+  rawJsonCode.value = JSON.stringify(schemaSnapshot, null, 2)
   showJsonStudio.value = true
 }
 
-function validateJsonCode() {
-  try {
-    JSON.parse(studioJsonCode.value)
-    jsonValidation.value = { valid: true, message: 'JSON معتبر است (Valid Schema)' }
-  } catch (err: any) {
-    jsonValidation.value = { valid: false, message: `خطای ساختار: ${err.message}` }
-  }
-}
-
-const jsonLineCount = computed(() => {
-  return studioJsonCode.value.split('\n').length
+const schemaKeys = computed(() => {
+  return Object.keys(currentWorkingSchema.value || {})
 })
 
-function beautifyJson() {
-  try {
-    const parsed = JSON.parse(studioJsonCode.value)
-    studioJsonCode.value = JSON.stringify(parsed, null, 2)
-    validateJsonCode()
-  } catch (e) {
-    // Ignore invalid JSON on beautify
+const hasAnyModifications = computed(() => {
+  return JSON.stringify(currentWorkingSchema.value) !== JSON.stringify(originalBaselineSchema.value)
+})
+
+const rawCodeLines = computed(() => {
+  return rawJsonCode.value.split('\n').length
+})
+
+// Helper to set nested value by path
+function setNestedValue(obj: any, path: (string | number)[], value: any) {
+  let current = obj
+  for (let i = 0; i < path.length - 1; i++) {
+    current = current[path[i]]
   }
+  current[path[path.length - 1]] = value
 }
 
-function minifyJson() {
+// Helper to get nested value by path
+function getNestedValue(obj: any, path: (string | number)[]) {
+  let current = obj
+  for (let i = 0; i < path.length; i++) {
+    if (current === undefined || current === null) return undefined
+    current = current[path[i]]
+  }
+  return current
+}
+
+function handleFieldUpdate(path: (string | number)[], newVal: any) {
+  setNestedValue(currentWorkingSchema.value, path, newVal)
+  rawJsonCode.value = JSON.stringify(currentWorkingSchema.value, null, 2)
+}
+
+function handleFieldUndo(path: (string | number)[]) {
+  const originalVal = getNestedValue(originalBaselineSchema.value, path)
+  setNestedValue(currentWorkingSchema.value, path, JSON.parse(JSON.stringify(originalVal)))
+  rawJsonCode.value = JSON.stringify(currentWorkingSchema.value, null, 2)
+}
+
+function undoAllChanges() {
+  currentWorkingSchema.value = JSON.parse(JSON.stringify(originalBaselineSchema.value))
+  rawJsonCode.value = JSON.stringify(originalBaselineSchema.value, null, 2)
+}
+
+function handleRawCodeInput() {
   try {
-    const parsed = JSON.parse(studioJsonCode.value)
-    studioJsonCode.value = JSON.stringify(parsed)
-    validateJsonCode()
+    const parsed = JSON.parse(rawJsonCode.value)
+    currentWorkingSchema.value = parsed
   } catch (e) {
-    // Ignore
+    // Ignore partial edits
   }
 }
 
 function copyStudioJson() {
-  navigator.clipboard.writeText(studioJsonCode.value)
+  navigator.clipboard.writeText(JSON.stringify(currentWorkingSchema.value, null, 2))
   studioCopied.value = true
   setTimeout(() => (studioCopied.value = false), 2000)
 }
 
-function resetStudioCode() {
+async function saveWorkingSchemaToPocketBase() {
   if (!activeStudioNode.value) return
-  const schemaObj = activeStudioNode.value.liveData?.rawUiData || activeStudioNode.value.defaultData || {}
-  studioJsonCode.value = JSON.stringify(schemaObj, null, 2)
-  validateJsonCode()
-}
-
-async function saveStudioJsonToPocketBase() {
-  if (!jsonValidation.value.valid || !activeStudioNode.value) return
   isStudioSaving.value = true
   const startTime = performance.now()
 
   try {
-    const parsedSchema = JSON.parse(studioJsonCode.value)
     const slug = activeStudioNode.value.slug || activeStudioNode.value.id
-
     const payload = {
       slug,
-      title: parsedSchema.hero?.titleFa || parsedSchema.titleFa || activeStudioNode.value.titleFa,
-      uiData: parsedSchema
+      title: currentWorkingSchema.value.hero?.titleFa || currentWorkingSchema.value.titleFa || activeStudioNode.value.titleFa,
+      uiData: currentWorkingSchema.value
     }
 
     const res = await $fetch('/api/admin/ui/publish', {
@@ -705,8 +764,11 @@ async function saveStudioJsonToPocketBase() {
 
     activeStudioNode.value.source = 'backend'
     if (activeStudioNode.value.liveData) {
-      activeStudioNode.value.liveData.rawUiData = parsedSchema
+      activeStudioNode.value.liveData.rawUiData = currentWorkingSchema.value
     }
+
+    // Update baseline to clear yellow highlights
+    originalBaselineSchema.value = JSON.parse(JSON.stringify(currentWorkingSchema.value))
 
     waterfallRequests.value.unshift({
       id: newId,
