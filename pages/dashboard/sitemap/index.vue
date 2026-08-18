@@ -861,9 +861,9 @@ function loadStateFromLocalStorage() {
   } catch (e) {}
 }
 
-// Stage Dimensions & Auto-Fit
-const stageBaseWidth = 1100
-const stageBaseHeight = 720
+// Stage Dimensions & Auto-Fit (Spacious 1400x900 Coordinate System with Zero Collisions)
+const stageBaseWidth = 1400
+const stageBaseHeight = 900
 const clusterFitScale = ref(1)
 const clusterCenterOffsetX = ref(0)
 const clusterCenterOffsetY = ref(0)
@@ -1019,11 +1019,11 @@ function resetTuningDefaults() {
   autoFitConstellation()
 }
 
-// PURE MATHEMATICAL ZERO-OVERLAP LAYOUT ALGORITHMS
+// PURE MATHEMATICAL ZERO-OVERLAP GEOMETRIC LAYOUT ALGORITHMS
 function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'columns' | 'radial'): Record<string, { x: number, y: number }> {
   const posMap: Record<string, { x: number, y: number }> = {}
-  const cx = stageBaseWidth / 2   // 550
-  const cy = stageBaseHeight / 2  // 360
+  const cx = stageBaseWidth / 2   // 700
+  const cy = stageBaseHeight / 2  // 450
   const scale = clusterSpacingScale.value
 
   const root = nodesList.find(n => n.depth === 0) || nodesList[0]
@@ -1033,69 +1033,78 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
   const depth2Nodes = nodesList.filter(n => n.depth === 2)
 
   if (mode === 'constellation') {
-    // Center root Nucleus
+    // Center Nucleus
     posMap[root.id] = { x: cx, y: cy }
 
-    // Radial Orbits for Depth 1 Pillars (Calibrated to 270px radius)
+    // 5 Primary Pillar Orbits (about, products, services, history, contact)
     const n1 = depth1Nodes.length
     depth1Nodes.forEach((node, i) => {
       const angle = (i * (2 * Math.PI) / n1) - Math.PI / 2
-      const r1 = 260 * scale
+      const r1 = 310 * scale
       const px = cx + Math.cos(angle) * r1
       const py = cy + Math.sin(angle) * r1 * 0.85
       posMap[node.id] = { x: Math.round(px), y: Math.round(py) }
 
-      // Satellites placed outward along parent's radial vector (410px radius)
+      // Satellites placed along parent's outward angle at radius 480px
       const children = nodesList.filter(c => c.parentId === node.id)
       children.forEach((child, ci) => {
         const offsetAngle = angle + (ci - (children.length - 1) / 2) * 0.35
-        const r2 = r1 + 150 * scale
+        const r2 = r1 + 170 * scale
         const sx = cx + Math.cos(offsetAngle) * r2
         const sy = cy + Math.sin(offsetAngle) * r2 * 0.85
         posMap[child.id] = { x: Math.round(sx), y: Math.round(sy) }
       })
     })
 
-    // Root direct satellites (menu, footer, login)
+    // Root direct utility satellites (menu, footer, login) placed in dedicated orbital clearance zones
     const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
     rootSatellites.forEach((node, i) => {
-      const offset = (i - (rootSatellites.length - 1) / 2) * (150 * scale)
-      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(cy + 240 * scale) }
+      if (node.slug === 'menu') {
+        posMap[node.id] = { x: Math.round(cx - 380 * scale), y: Math.round(cy - 220 * scale) }
+      } else if (node.slug === 'footer') {
+        posMap[node.id] = { x: Math.round(cx + 380 * scale), y: Math.round(cy - 220 * scale) }
+      } else if (node.slug === 'login') {
+        posMap[node.id] = { x: Math.round(cx), y: Math.round(cy + 360 * scale) }
+      } else {
+        const offset = (i - (rootSatellites.length - 1) / 2) * (180 * scale)
+        posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(cy + 360 * scale) }
+      }
     })
   } else if (mode === 'tree') {
-    // Org Tree Hierarchy with Clean Column Lanes
-    posMap[root.id] = { x: cx, y: Math.round(85 * scale) }
+    // Org Tree Hierarchy with 5 Dedicated Columns
+    posMap[root.id] = { x: cx, y: Math.round(100 * scale) }
 
     const n1 = depth1Nodes.length
-    const laneWidth = ((stageBaseWidth - 100) / Math.max(1, n1)) * Math.min(1.15, scale)
+    const laneWidth = (stageBaseWidth - 100) / Math.max(1, n1)
 
     depth1Nodes.forEach((node, i) => {
       const colCenterX = 50 + laneWidth * i + laneWidth / 2
-      posMap[node.id] = { x: Math.round(colCenterX), y: Math.round(270 * scale) }
+      posMap[node.id] = { x: Math.round(colCenterX), y: Math.round(300 * scale) }
 
       const children = nodesList.filter(c => c.parentId === node.id)
       children.forEach((child, ci) => {
-        const subOffset = (ci - (children.length - 1) / 2) * (140 * scale)
-        posMap[child.id] = { x: Math.round(colCenterX + subOffset), y: Math.round(480 * scale) }
+        const subOffset = (ci - (children.length - 1) / 2) * (160 * scale)
+        posMap[child.id] = { x: Math.round(colCenterX + subOffset), y: Math.round(540 * scale) }
       })
     })
 
     const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
     rootSatellites.forEach((node, i) => {
-      const offset = (i - (rootSatellites.length - 1) / 2) * (150 * scale)
-      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(640 * scale) }
+      const offset = (i - (rootSatellites.length - 1) / 2) * (180 * scale)
+      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(760 * scale) }
     })
   } else if (mode === 'columns') {
-    // Architectural Columns by Category
+    // Architectural Category Columns
     const groups = ['core', 'products', 'services', 'history', 'system']
     const colWidth = (stageBaseWidth - 60) / groups.length
 
     groups.forEach((grp, colIdx) => {
       const colX = 30 + colIdx * colWidth + colWidth / 2
       const groupNodes = nodesList.filter(n => getNodeGroup(n) === grp)
+      groupNodes.sort((a, b) => a.depth - b.depth)
 
       groupNodes.forEach((node, rowIdx) => {
-        const rowY = 150 + rowIdx * 155 * scale
+        const rowY = 160 + rowIdx * 175 * scale
         posMap[node.id] = { x: Math.round(colX), y: Math.round(rowY) }
       })
     })
@@ -1106,9 +1115,9 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
     const allNonRoot = nodesList.filter(n => n.id !== root.id)
     allNonRoot.forEach((node, i) => {
       const angle = (i * (2 * Math.PI) / allNonRoot.length) - Math.PI / 2
-      const radius = (node.depth === 1 ? 240 : 380) * scale
+      const radius = (node.depth === 1 ? 290 : 440) * scale
       const rx = cx + Math.cos(angle) * radius
-      const ry = cy + Math.sin(angle) * radius * 0.82
+      const ry = cy + Math.sin(angle) * radius * 0.85
       posMap[node.id] = { x: Math.round(rx), y: Math.round(ry) }
     })
   }
@@ -1294,12 +1303,8 @@ function startNodePointerDrag(e: PointerEvent, node: any) {
     .filter(n => n && !isNodeLocked(n.id))
     .map(n => ({ id: n.id, startX: n.currentX, startY: n.currentY }))
 
-  try {
-    ;(e.currentTarget as HTMLElement)?.setPointerCapture?.(e.pointerId)
-  } catch (err) {}
-
   if (typeof window !== 'undefined') {
-    window.addEventListener('pointermove', onGlobalPointerMove, { passive: false })
+    window.addEventListener('pointermove', onGlobalPointerMove, { passive: true })
     window.addEventListener('pointerup', onGlobalPointerUp)
     window.addEventListener('pointercancel', onGlobalPointerUp)
   }
@@ -1310,7 +1315,6 @@ function onGlobalPointerMove(e: PointerEvent) {
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
   if (!isDraggingNodeId.value) return
-  if (e.cancelable) e.preventDefault()
 
   const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
   const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
@@ -1339,7 +1343,7 @@ function smartPrepositionAllNodes() {
   if (visible.length < 2) return
 
   // Multi-pass soft relaxation: resolves overlaps with minimum necessary movement
-  for (let pass = 0; pass < 5; pass++) {
+  for (let pass = 0; pass < 3; pass++) {
     for (let i = 0; i < visible.length; i++) {
       const nodeA = visible[i]
       const rA = getNodeRadius(nodeA)
@@ -1362,18 +1366,15 @@ function smartPrepositionAllNodes() {
           const bLocked = isNodeLocked(nodeB.id)
 
           if (!aLocked && !bLocked) {
-            // Push both away symmetrically with minimal displacement
             const halfOverlap = overlap * 0.5
             nodeA.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeA.currentX - nx * halfOverlap)))
             nodeA.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeA.currentY - ny * halfOverlap)))
             nodeB.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeB.currentX + nx * halfOverlap)))
             nodeB.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeB.currentY + ny * halfOverlap)))
           } else if (!aLocked && bLocked) {
-            // Only push A
             nodeA.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeA.currentX - nx * overlap)))
             nodeA.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeA.currentY - ny * overlap)))
           } else if (aLocked && !bLocked) {
-            // Only push B
             nodeB.currentX = Math.round(Math.min(stageBaseWidth - 70, Math.max(70, nodeB.currentX + nx * overlap)))
             nodeB.currentY = Math.round(Math.min(stageBaseHeight - 50, Math.max(50, nodeB.currentY + ny * overlap)))
           }
@@ -1384,12 +1385,12 @@ function smartPrepositionAllNodes() {
 
   saveStateToLocalStorage()
   dragCoordRevision.value++
-  autoFitConstellation()
 }
 
 function onGlobalPointerUp() {
   if (isDraggingNodeId.value) {
-    // Settle layout with minimal displacement anti-overlap solver
+    saveStateToLocalStorage()
+    dragCoordRevision.value++
     smartPrepositionAllNodes()
   }
   isDraggingNodeId.value = null
