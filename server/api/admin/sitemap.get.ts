@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
 
   const runtimeConfig = useRuntimeConfig()
   const pbUrl = runtimeConfig.public?.pbUrl || process.env.PB_URL || 'http://65.108.80.205:8090'
+  const PB_SUPERUSER_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc4NzE0NjU0MSwiaWQiOiJha3ZrOTZnNDMyODk4bDEiLCJyZWZyZXNoYWJsZSI6dHJ1ZSwidHlwZSI6ImF1dGgifQ.auLVQl1bXPsuGHbXWaqtohXZeI0wYfu-cdp-UBXmV_0'
 
   let livePagesList: any[] = []
   let productsList: any[] = []
@@ -14,9 +15,10 @@ export default defineEventHandler(async (event) => {
   let mediaCount = 0
 
   try {
-    // 1. Fetch live pages from PocketBase
+    // 1. Fetch live pages from PocketBase with superuser authorization
     const pagesRes: any = await $fetch(`${pbUrl}/api/collections/pages/records`, {
-      params: { perPage: 100 },
+      headers: { Authorization: PB_SUPERUSER_TOKEN },
+      params: { perPage: 100, sort: 'created' },
       timeout: 5000
     }).catch(() => null)
     if (pagesRes?.items) {
@@ -25,6 +27,7 @@ export default defineEventHandler(async (event) => {
 
     // 2. Fetch live products from PocketBase
     const productsRes: any = await $fetch(`${pbUrl}/api/collections/products/records`, {
+      headers: { Authorization: PB_SUPERUSER_TOKEN },
       params: { perPage: 50 },
       timeout: 5000
     }).catch(() => null)
@@ -32,8 +35,9 @@ export default defineEventHandler(async (event) => {
       productsList = productsRes.items
     }
 
-    // 3. Fetch live blog from PocketBase
+    // 3. Fetch live blog posts from PocketBase
     const blogRes: any = await $fetch(`${pbUrl}/api/collections/blog/records`, {
+      headers: { Authorization: PB_SUPERUSER_TOKEN },
       params: { perPage: 10 },
       timeout: 5000
     }).catch(() => null)
@@ -43,6 +47,7 @@ export default defineEventHandler(async (event) => {
 
     // 4. Fetch live media count
     const mediaRes: any = await $fetch(`${pbUrl}/api/collections/media_files/records`, {
+      headers: { Authorization: PB_SUPERUSER_TOKEN },
       params: { perPage: 1 },
       timeout: 5000
     }).catch(() => null)
@@ -50,36 +55,35 @@ export default defineEventHandler(async (event) => {
       mediaCount = mediaRes.totalItems || 0
     }
   } catch (err) {
-    // Network fallback
+    // Fallback
   }
 
-  // Spatial Constellation Spatial Meta Mapping
-  const spatialMeta: Record<string, { type: string, lens: string, x: number, y: number, icon: string, accentColor?: string, path: string }> = {
-    'home': { type: 'nucleus', lens: 'pages', x: 1800, y: 1300, icon: 'mdi:hexagon-multiple-outline', path: '/' },
-    'about': { type: 'pillar', lens: 'pages', x: 1400, y: 1000, icon: 'mdi:information-outline', accentColor: '#018786', path: '/about' },
-    'products': { type: 'pillar', lens: 'products', x: 2200, y: 1000, icon: 'mdi:package-variant-closed', accentColor: '#2563eb', path: '/products' },
-    'services': { type: 'pillar', lens: 'services', x: 1400, y: 1600, icon: 'mdi:factory', accentColor: '#9333ea', path: '/services' },
-    'history': { type: 'pillar', lens: 'knowledge', x: 2200, y: 1600, icon: 'mdi:timeline-text-outline', accentColor: '#d97706', path: '/history' },
-    'contact': { type: 'satellite', lens: 'pages', x: 1800, y: 1040, icon: 'mdi:phone-in-talk-outline', accentColor: '#e11d48', path: '/contact' },
-    'catalog': { type: 'satellite', lens: 'products', x: 2500, y: 1000, icon: 'mdi:file-pdf-box', accentColor: '#2563eb', path: '/catalog' },
-    'faq': { type: 'satellite', lens: 'services', x: 1100, y: 1600, icon: 'mdi:help-circle-outline', accentColor: '#9333ea', path: '/help/faq' },
-    'login': { type: 'satellite', lens: 'pages', x: 1550, y: 820, icon: 'mdi:lock-outline', accentColor: '#6366f1', path: '/login' },
-    'menu': { type: 'satellite', lens: 'pages', x: 1800, y: 820, icon: 'mdi:menu', accentColor: '#0ea5e9', path: '/#menu' },
-    'footer': { type: 'satellite', lens: 'pages', x: 2050, y: 820, icon: 'mdi:page-layout-footer', accentColor: '#64748b', path: '/#footer' }
+  // Known Page Semantic Archetypes (Icon + Color + Lens)
+  const archetypeMap: Record<string, { icon: string, accentColor: string, lens: string, defaultPath: string, parentSlug?: string }> = {
+    'home': { icon: 'mdi:home-variant-outline', accentColor: '#018786', lens: 'pages', defaultPath: '/' },
+    'about': { icon: 'mdi:information-outline', accentColor: '#018786', lens: 'pages', defaultPath: '/about', parentSlug: 'home' },
+    'products': { icon: 'mdi:package-variant-closed', accentColor: '#2563eb', lens: 'products', defaultPath: '/products', parentSlug: 'home' },
+    'catalog': { icon: 'mdi:file-pdf-box', accentColor: '#2563eb', lens: 'products', defaultPath: '/catalog', parentSlug: 'products' },
+    'services': { icon: 'mdi:factory', accentColor: '#9333ea', lens: 'services', defaultPath: '/services', parentSlug: 'home' },
+    'faq': { icon: 'mdi:help-circle-outline', accentColor: '#9333ea', lens: 'services', defaultPath: '/help/faq', parentSlug: 'services' },
+    'history': { icon: 'mdi:timeline-text-outline', accentColor: '#d97706', lens: 'knowledge', defaultPath: '/history', parentSlug: 'home' },
+    'blog': { icon: 'mdi:post-outline', accentColor: '#d97706', lens: 'knowledge', defaultPath: '/blog', parentSlug: 'history' },
+    'contact': { icon: 'mdi:phone-in-talk-outline', accentColor: '#e11d48', lens: 'pages', defaultPath: '/contact', parentSlug: 'home' },
+    'login': { icon: 'mdi:lock-outline', accentColor: '#6366f1', lens: 'pages', defaultPath: '/login', parentSlug: 'home' },
+    'menu': { icon: 'mdi:menu', accentColor: '#0ea5e9', lens: 'pages', defaultPath: '/#menu', parentSlug: 'home' },
+    'footer': { icon: 'mdi:page-layout-footer', accentColor: '#64748b', lens: 'pages', defaultPath: '/#footer', parentSlug: 'home' }
   }
 
-  // 100% PURE POCKETBASE RECORD NODES WITH DYNAMIC TRILINGUAL EXTRACTION
+  // 100% PURE DYNAMIC GRAPH NODES INGESTION FROM POCKETBASE
   const nodes = livePagesList
     .filter(p => p.slug && !['loginPrev', 'loginEn', 'loginAr'].includes(p.slug))
     .map(p => {
-      const meta = spatialMeta[p.slug] || {
-        type: 'satellite',
-        lens: 'pages',
-        x: 1800,
-        y: 1300,
+      const arch = archetypeMap[p.slug] || {
         icon: 'mdi:file-document-outline',
         accentColor: '#018786',
-        path: `/${p.slug}`
+        lens: 'pages',
+        defaultPath: `/${p.slug}`,
+        parentSlug: 'home'
       }
 
       // Dynamic Trilingual Extraction from PocketBase uiData
@@ -99,20 +103,18 @@ export default defineEventHandler(async (event) => {
       return {
         id: `pb-${p.slug}`,
         slug: p.slug,
-        type: meta.type,
-        lens: meta.lens,
+        parentSlug: p.slug === 'home' ? null : (arch.parentSlug || 'home'),
+        lens: arch.lens,
         titleFa,
         titleEn,
         titleAr,
         descFa,
         descEn,
         descAr,
-        path: meta.path,
-        icon: meta.icon,
-        accentColor: meta.accentColor || '#018786',
-        x: meta.x,
-        y: meta.y,
-        source: 'backend', // 100% Live PocketBase Database Row
+        path: arch.defaultPath,
+        icon: arch.icon,
+        accentColor: arch.accentColor,
+        source: 'backend',
         backendRecordId: p.id,
         layoutType: p.layoutType,
         liveData: {
@@ -127,25 +129,23 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-  // Dynamic Blog Node from PocketBase
-  if (blogList.length > 0) {
+  // Append Blog Node dynamically if not already present
+  if (!nodes.some(n => n.slug === 'blog') && blogList.length > 0) {
     const mainPost = blogList[0]
     nodes.push({
       id: 'pb-blog',
       slug: 'blog',
-      type: 'satellite',
+      parentSlug: 'history',
       lens: 'knowledge',
       titleFa: 'وبلاگ تخصصی چاپ',
       titleEn: 'Technical Blog',
       titleAr: 'المدونة التقنية',
-      descFa: 'دانشنامه مقالات، متریال‌شناسی و استانداردهای چاپی',
-      descEn: 'Technical printing articles and material encyclopedia',
-      descAr: 'مقالات تقنية وموسوعة مواد الطباعة والتغليف',
+      descFa: 'دانشنامه مقالات و استانداردهای چاپی',
+      descEn: 'Technical printing articles and encyclopedia',
+      descAr: 'مقالات تقنية وموسوعة مواد الطباعة',
       path: '/blog',
       icon: 'mdi:post-outline',
       accentColor: '#d97706',
-      x: 2500,
-      y: 1600,
       source: 'backend',
       backendRecordId: mainPost.id,
       layoutType: 'custom',
@@ -170,8 +170,7 @@ export default defineEventHandler(async (event) => {
     locale,
     stats: {
       totalNodes: nodes.length,
-      backendSyncedCount: nodes.length, // 100% Live Sync
-      hardcodedCount: 0,                // 0 Hardcoded Content
+      backendSyncedCount: nodes.length,
       totalLivePagesInPB: livePagesList.length,
       totalLiveProductsInPB: productsList.length,
       totalLiveBlogPostsInPB: blogList.length,

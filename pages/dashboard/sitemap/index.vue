@@ -4,16 +4,16 @@
     :dir="isRTL ? 'rtl' : 'ltr'"
     class="fixed inset-0 z-50 h-screen w-screen bg-[#F8FAFC] text-slate-900 select-none overflow-hidden font-sans text-xs flex flex-col"
   >
-    <!-- Ambient Light Background -->
+    <!-- Soft Ambient Lighting -->
     <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
       <div class="absolute -top-[15%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-emerald-100/50 blur-[110px]"></div>
       <div class="absolute -bottom-[15%] -right-[10%] w-[55vw] h-[55vw] rounded-full bg-blue-100/50 blur-[110px]"></div>
       <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
     </div>
 
-    <!-- Top HUD Bar with 4 View Modes, Recursive Toggles & Groups -->
+    <!-- Top HUD Toolbar with 4 Dynamic Layout Engines & Global Controls -->
     <header class="relative z-40 h-14 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
-      <!-- Left: Exit & Live Node Telemetry -->
+      <!-- Left: Navigation & Graph Telemetry -->
       <div class="flex items-center gap-2">
         <NuxtLink
           to="/dashboard"
@@ -23,16 +23,16 @@
           <Icon name="mdi:arrow-right" class="w-4 h-4" :class="isRTL ? '' : 'rotate-180'" />
         </NuxtLink>
 
-        <!-- Live Count -->
+        <!-- Live Graph Count -->
         <div class="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
           <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
-          <span>{{ visibleNodes.length }} صفحه متصل</span>
+          <span>{{ visibleNodes.length }} صفحه در نقشه</span>
         </div>
       </div>
 
-      <!-- Center: 4 VIEW MODES & MASTER RECURSIVE TOGGLES -->
+      <!-- Center: 4 DYNAMIC VIEW MODES & RECURSIVE SUBTREE TOGGLES -->
       <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1">
-        <!-- 4 VIEW MODES SWITCHER -->
+        <!-- 4 Layout Engines -->
         <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
             v-for="mode in viewModes"
@@ -49,6 +49,15 @@
 
         <div class="h-5 w-[1px] bg-slate-200 hidden sm:block"></div>
 
+        <!-- Re-Center / Re-Calculate Math Layout -->
+        <button
+          @click="resetNodePositions"
+          class="w-8 h-8 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer active:scale-95"
+          title="محاسبه مجدد موقعیت‌های هندسی"
+        >
+          <Icon name="mdi:crosshairs-gps" class="w-4 h-4" />
+        </button>
+
         <!-- Master 1-Arrow (Toggle Direct) -->
         <button
           @click="toggleDirectChildrenOfAll"
@@ -58,11 +67,11 @@
           <Icon :name="isAnyDirectFolded ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-4 h-4" />
         </button>
 
-        <!-- Master 2-Arrow (Recursive Deep Fold/Unfold Children of Children) -->
+        <!-- Master 2-Arrow (Recursive Subtree Deep Fold) -->
         <button
           @click="toggleRecursiveChildrenOfAll"
           class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-emerald-800 flex items-center justify-center shadow-2xs transition cursor-pointer"
-          :title="isAnyRecursiveFolded ? 'بازکردن تمام زیرشاخه‌ها و فرزندان' : 'بستن تمام زیرشاخه‌ها و فرزندان فرزندان'"
+          :title="isAnyRecursiveFolded ? 'بازکردن تمام زیرشاخه‌ها به صورت آبشاری' : 'بستن تمام زیرشاخه‌ها و فرزندان'"
         >
           <Icon :name="isAnyRecursiveFolded ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4" />
         </button>
@@ -99,7 +108,7 @@
         </div>
       </div>
 
-      <!-- Right: Search, Refresh & Console -->
+      <!-- Right: Search, Refresh & Debug -->
       <div class="flex items-center gap-1.5">
         <div class="relative w-24 sm:w-32">
           <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
@@ -150,7 +159,7 @@
           transformOrigin: 'center center'
         }"
       >
-        <!-- VECTOR CONNECTION PATHS (Default Thin 1.2px, Active Routes Bold 3.5px) -->
+        <!-- DYNAMIC TOPOLOGICAL VECTOR PATHS -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <!-- Background Glow for Active Route -->
@@ -188,7 +197,7 @@
           </g>
         </svg>
 
-        <!-- EXAGGERATED SIZE SEMI-3D MAGNETIC BLOBS -->
+        <!-- DYNAMIC MATHEMATICALLY POSITIONED NODES -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
@@ -214,7 +223,7 @@
         >
           <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px) -->
           <div
-            v-if="node.type === 'nucleus'"
+            v-if="node.depth === 0"
             class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/70 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
             :style="{ width: '270px', minHeight: '155px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500' : ''"
@@ -222,7 +231,6 @@
             <!-- Top Glass Highlight -->
             <div class="absolute inset-x-4 top-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400 to-transparent pointer-events-none"></div>
 
-            <!-- Header with 1-Arrow, 2-Arrow & Lock Icons -->
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
                 <div class="w-10 h-10 rounded-2xl bg-emerald-800 text-white flex items-center justify-center shadow-sm">
@@ -235,7 +243,7 @@
 
               <!-- Micro-Icons: 1-Arrow, 2-Arrow & Lock -->
               <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl">
-                <!-- 1-Arrow (Direct Children) -->
+                <!-- 1-Arrow -->
                 <button
                   @click.stop="toggleDirectChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
@@ -244,21 +252,21 @@
                   <Icon :name="isDirectFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- 2-Arrow (Recursive Deep Fold/Unfold Children of Children) -->
+                <!-- 2-Arrow (Recursive Subtree) -->
                 <button
                   @click.stop="toggleRecursiveChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  title="بستن/بازکردن خود و تمام فرزندان به صورت آبشاری"
+                  title="بستن/بازکردن تمام فرزندان به صورت آبشاری"
                 >
                   <Icon :name="isSubtreeFolded(node.id) ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- Lock Position -->
+                <!-- Lock -->
                 <button
                   @click.stop="toggleLockNode(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white flex items-center justify-center transition cursor-pointer shadow-2xs"
                   :class="isNodeLocked(node.id) ? 'text-amber-600' : 'text-slate-400 hover:text-slate-700'"
-                  :title="isNodeLocked(node.id) ? 'قفل موقعیت باز شود' : 'قفل موقعیت این صفحه'"
+                  :title="isNodeLocked(node.id) ? 'قفل موقعیت باز شود' : 'قفل موقعیت'"
                 >
                   <Icon :name="isNodeLocked(node.id) ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3 h-3" />
                 </button>
@@ -275,7 +283,7 @@
             <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
               <span class="font-bold text-emerald-800 flex items-center gap-1">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>هسته مرکزی</span>
+                <span>هسته مرکزی ({{ node.childrenIds?.length || 0 }} شاخه)</span>
               </span>
 
               <button
@@ -289,7 +297,7 @@
 
           <!-- 2. PRIMARY PILLAR NODE (215px × 125px) -->
           <div
-            v-else-if="node.type === 'pillar'"
+            v-else-if="node.depth === 1"
             class="relative rounded-[2rem] p-4 flex flex-col justify-between transition-all duration-200 bg-white border border-slate-200 shadow-[0_16px_36px_-8px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(0,0,0,0.05)]"
             :style="{ width: '215px', minHeight: '125px' }"
             :class="selectedNode?.id === node.id ? 'ring-3 ring-emerald-500' : ''"
@@ -306,7 +314,7 @@
               <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl">
                 <!-- 1-Arrow -->
                 <button
-                  v-if="hasConnectedChildren(node.id)"
+                  v-if="node.childrenIds?.length"
                   @click.stop="toggleDirectChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
                   :title="isDirectFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'بستن زیرشاخه‌ها'"
@@ -314,9 +322,9 @@
                   <Icon :name="isDirectFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- 2-Arrow (Recursive Children of Children) -->
+                <!-- 2-Arrow -->
                 <button
-                  v-if="hasConnectedChildren(node.id)"
+                  v-if="node.childrenIds?.length"
                   @click.stop="toggleRecursiveChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
                   title="بستن/بازکردن تمام فرزندان به صورت آبشاری"
@@ -604,14 +612,14 @@ const groupToggles = [
 ]
 
 function getNodeGroup(node: any) {
-  if (node.id === 'pb-home' || node.id === 'pb-about' || node.id === 'pb-contact') return 'core'
-  if (node.id === 'pb-products' || node.id === 'pb-catalog') return 'products'
-  if (node.id === 'pb-services' || node.id === 'pb-faq') return 'services'
-  if (node.id === 'pb-history' || node.id === 'pb-blog') return 'history'
+  if (node.slug === 'home' || node.slug === 'about' || node.slug === 'contact') return 'core'
+  if (node.slug === 'products' || node.slug === 'catalog') return 'products'
+  if (node.slug === 'services' || node.slug === 'faq') return 'services'
+  if (node.slug === 'history' || node.slug === 'blog') return 'history'
   return 'system'
 }
 
-// Subtree Branch Folding & Recursive Children-of-Children Hiding
+// Subtree Branch Folding & LocalStorage Persistence
 const foldedBranches = ref<Set<string>>(new Set())
 const lockedNodes = ref<Set<string>>(new Set())
 
@@ -638,14 +646,14 @@ function toggleLockNode(nodeId: string) {
 }
 
 const isAllLocked = computed(() => {
-  return nodes.value.length > 0 && nodes.value.every(n => lockedNodes.value.has(n.id))
+  return rawDynamicNodes.value.length > 0 && rawDynamicNodes.value.every(n => lockedNodes.value.has(n.id))
 })
 
 function toggleLockAll() {
   if (isAllLocked.value) {
     lockedNodes.value.clear()
   } else {
-    for (const n of nodes.value) {
+    for (const n of rawDynamicNodes.value) {
       lockedNodes.value.add(n.id)
     }
   }
@@ -662,7 +670,7 @@ function toggleDirectChildren(nodeId: string) {
   saveStateToLocalStorage()
 }
 
-// 2-Arrow (Recursive Deep Fold/Unfold Children of Children)
+// 2-Arrow (Recursive Subtree Deep Fold)
 function toggleRecursiveChildren(nodeId: string) {
   const isFolded = foldedBranches.value.has(nodeId)
   const allSubtreeIds = getSubtreeNodeIds(nodeId)
@@ -679,29 +687,23 @@ function toggleRecursiveChildren(nodeId: string) {
 
 function getSubtreeNodeIds(parentId: string): string[] {
   const result: string[] = [parentId]
-  const children = edges.filter(e => e.from === parentId).map(e => e.to)
+  const children = edges.value.filter(e => e.from === parentId).map(e => e.to)
   for (const childId of children) {
     result.push(...getSubtreeNodeIds(childId))
   }
   return result
 }
 
-// Recursive Check: Is child a descendant of any folded parent?
+// True Recursive Check: Tracing up the parent chain
 function isDescendantOfFolded(nodeId: string): boolean {
-  if (nodeId === 'pb-home') return false
-  for (const foldedId of foldedBranches.value) {
-    if (isDescendantOf(nodeId, foldedId)) {
-      return true
-    }
-  }
-  return false
-}
+  const node = rawDynamicNodes.value.find(n => n.id === nodeId)
+  if (!node || !node.parentId) return false
 
-function isDescendantOf(childId: string, ancestorId: string): boolean {
-  const directParents = edges.filter(e => e.to === childId).map(e => e.from)
-  for (const p of directParents) {
-    if (p === ancestorId) return true
-    if (isDescendantOf(p, ancestorId)) return true
+  let currentParentId: string | null = node.parentId
+  while (currentParentId) {
+    if (foldedBranches.value.has(currentParentId)) return true
+    const parentNode = rawDynamicNodes.value.find(n => n.id === currentParentId)
+    currentParentId = parentNode?.parentId || null
   }
   return false
 }
@@ -713,8 +715,8 @@ function toggleDirectChildrenOfAll() {
   if (foldedBranches.value.size > 0) {
     foldedBranches.value.clear()
   } else {
-    for (const n of nodes.value) {
-      if (hasConnectedChildren(n.id)) {
+    for (const n of rawDynamicNodes.value) {
+      if (n.childrenIds?.length) {
         foldedBranches.value.add(n.id)
       }
     }
@@ -726,15 +728,11 @@ function toggleRecursiveChildrenOfAll() {
   if (foldedBranches.value.size > 0) {
     foldedBranches.value.clear()
   } else {
-    for (const n of nodes.value) {
+    for (const n of rawDynamicNodes.value) {
       foldedBranches.value.add(n.id)
     }
   }
   saveStateToLocalStorage()
-}
-
-function hasConnectedChildren(nodeId: string) {
-  return edges.some(e => e.from === nodeId)
 }
 
 function saveStateToLocalStorage() {
@@ -746,7 +744,7 @@ function saveStateToLocalStorage() {
     
     // Save custom positions
     const posMap: Record<string, { x: number, y: number }> = {}
-    for (const n of dynamicNodesState.value) {
+    for (const n of rawDynamicNodes.value) {
       posMap[n.id] = { x: n.currentX, y: n.currentY }
     }
     localStorage.setItem('najm_sitemap_positions', JSON.stringify(posMap))
@@ -774,7 +772,7 @@ function loadStateFromLocalStorage() {
     const savedPos = localStorage.getItem('najm_sitemap_positions')
     if (savedPos) {
       const posMap = JSON.parse(savedPos)
-      for (const n of dynamicNodesState.value) {
+      for (const n of rawDynamicNodes.value) {
         if (posMap[n.id] && isNodeLocked(n.id)) {
           n.currentX = posMap[n.id].x
           n.currentY = posMap[n.id].y
@@ -934,85 +932,146 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
   { lazy: true }
 )
 
-const dynamicNodesState = ref<any[]>([])
+const rawDynamicNodes = ref<any[]>([])
 
-// 4 DISTINCT LAYOUT COORDINATE MATRICES
-const layoutMatrices: Record<string, Record<string, { x: number, y: number }>> = {
-  constellation: {
-    'pb-home': { x: 550, y: 360 },
-    'pb-about': { x: 310, y: 200 },
-    'pb-products': { x: 790, y: 200 },
-    'pb-services': { x: 790, y: 520 },
-    'pb-history': { x: 310, y: 520 },
-    'pb-contact': { x: 550, y: 130 },
-    'pb-catalog': { x: 990, y: 160 },
-    'pb-faq': { x: 990, y: 560 },
-    'pb-blog': { x: 110, y: 560 },
-    'pb-login': { x: 110, y: 160 },
-    'pb-menu': { x: 550, y: 590 },
-    'pb-footer': { x: 320, y: 660 }
-  },
-  tree: {
-    'pb-home': { x: 550, y: 100 },
-    'pb-about': { x: 170, y: 270 },
-    'pb-products': { x: 420, y: 270 },
-    'pb-services': { x: 680, y: 270 },
-    'pb-history': { x: 930, y: 270 },
-    'pb-contact': { x: 170, y: 480 },
-    'pb-login': { x: 170, y: 630 },
-    'pb-catalog': { x: 420, y: 480 },
-    'pb-menu': { x: 420, y: 630 },
-    'pb-faq': { x: 680, y: 480 },
-    'pb-footer': { x: 680, y: 630 },
-    'pb-blog': { x: 930, y: 480 }
-  },
-  columns: {
-    'pb-home': { x: 160, y: 170 },
-    'pb-about': { x: 160, y: 380 },
-    'pb-contact': { x: 160, y: 580 },
-    'pb-products': { x: 420, y: 220 },
-    'pb-catalog': { x: 420, y: 460 },
-    'pb-services': { x: 680, y: 220 },
-    'pb-faq': { x: 680, y: 460 },
-    'pb-history': { x: 940, y: 160 },
-    'pb-blog': { x: 940, y: 320 },
-    'pb-menu': { x: 940, y: 480 },
-    'pb-footer': { x: 940, y: 620 },
-    'pb-login': { x: 420, y: 640 }
-  },
-  radial: {
-    'pb-home': { x: 550, y: 360 },
-    'pb-products': { x: 860, y: 360 },
-    'pb-catalog': { x: 1010, y: 240 },
-    'pb-services': { x: 740, y: 590 },
-    'pb-faq': { x: 910, y: 630 },
-    'pb-history': { x: 360, y: 590 },
-    'pb-blog': { x: 190, y: 630 },
-    'pb-about': { x: 240, y: 360 },
-    'pb-contact': { x: 360, y: 130 },
-    'pb-login': { x: 180, y: 190 },
-    'pb-menu': { x: 550, y: 620 },
-    'pb-footer': { x: 740, y: 130 }
+// PURE MATHEMATICAL LAYOUT ALGORITHMS (100% DYNAMIC GENERATION)
+function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'columns' | 'radial'): Record<string, { x: number, y: number }> {
+  const posMap: Record<string, { x: number, y: number }> = {}
+  const cx = stageBaseWidth / 2   // 550
+  const cy = stageBaseHeight / 2  // 360
+
+  const root = nodesList.find(n => n.depth === 0) || nodesList[0]
+  if (!root) return posMap
+
+  const depth1Nodes = nodesList.filter(n => n.depth === 1)
+  const depth2Nodes = nodesList.filter(n => n.depth === 2)
+
+  if (mode === 'constellation') {
+    // Center root
+    posMap[root.id] = { x: cx, y: cy }
+
+    // Radial Orbits for Depth 1
+    const n1 = depth1Nodes.length
+    depth1Nodes.forEach((node, i) => {
+      const angle = (i * (2 * Math.PI) / n1) - Math.PI / 2
+      const r1 = 230
+      const px = cx + Math.cos(angle) * r1
+      const py = cy + Math.sin(angle) * r1 * 0.85
+      posMap[node.id] = { x: Math.round(px), y: Math.round(py) }
+
+      // Satellites placed along parent's radial vector
+      const children = nodesList.filter(c => c.parentId === node.id)
+      children.forEach((child, ci) => {
+        const offsetAngle = angle + (ci - (children.length - 1) / 2) * 0.4
+        const r2 = r1 + 140
+        const sx = cx + Math.cos(offsetAngle) * r2
+        const sy = cy + Math.sin(offsetAngle) * r2 * 0.85
+        posMap[child.id] = { x: Math.round(sx), y: Math.round(sy) }
+      })
+    })
+
+    // Root direct satellites (menu, footer, login)
+    const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
+    rootSatellites.forEach((node, i) => {
+      const offset = (i - (rootSatellites.length - 1) / 2) * 160
+      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(cy + 240) }
+    })
+  } else if (mode === 'tree') {
+    // Org Tree Hierarchy
+    posMap[root.id] = { x: cx, y: 95 }
+
+    const n1 = depth1Nodes.length
+    const laneWidth = (stageBaseWidth - 100) / Math.max(1, n1)
+
+    depth1Nodes.forEach((node, i) => {
+      const colCenterX = 50 + laneWidth * i + laneWidth / 2
+      posMap[node.id] = { x: Math.round(colCenterX), y: 270 }
+
+      const children = nodesList.filter(c => c.parentId === node.id)
+      children.forEach((child, ci) => {
+        const subOffset = (ci - (children.length - 1) / 2) * 140
+        posMap[child.id] = { x: Math.round(colCenterX + subOffset), y: 480 }
+      })
+    })
+
+    const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
+    rootSatellites.forEach((node, i) => {
+      const offset = (i - (rootSatellites.length - 1) / 2) * 160
+      posMap[node.id] = { x: Math.round(cx + offset), y: 620 }
+    })
+  } else if (mode === 'columns') {
+    // Architectural Columns by Category
+    const groups = ['core', 'products', 'services', 'history', 'system']
+    const colWidth = (stageBaseWidth - 60) / groups.length
+
+    groups.forEach((grp, colIdx) => {
+      const colX = 30 + colIdx * colWidth + colWidth / 2
+      const groupNodes = nodesList.filter(n => getNodeGroup(n) === grp)
+
+      groupNodes.forEach((node, rowIdx) => {
+        const rowY = 160 + rowIdx * 160
+        posMap[node.id] = { x: Math.round(colX), y: Math.round(rowY) }
+      })
+    })
+  } else if (mode === 'radial') {
+    // Concentric Polar Radar
+    posMap[root.id] = { x: cx, y: cy }
+
+    const allNonRoot = nodesList.filter(n => n.id !== root.id)
+    allNonRoot.forEach((node, i) => {
+      const angle = (i * (2 * Math.PI) / allNonRoot.length) - Math.PI / 2
+      const radius = node.depth === 1 ? 220 : 310
+      const rx = cx + Math.cos(angle) * radius
+      const ry = cy + Math.sin(angle) * radius * 0.8
+      posMap[node.id] = { x: Math.round(rx), y: Math.round(ry) }
+    })
   }
+
+  return posMap
 }
 
-function applyLayoutCoordinates(mode: string) {
-  const matrix = layoutMatrices[mode] || layoutMatrices.constellation
-  for (const n of dynamicNodesState.value) {
-    if (matrix[n.id] && !isNodeLocked(n.id)) {
-      n.currentX = matrix[n.id].x
-      n.currentY = matrix[n.id].y
-      n.initialX = matrix[n.id].x
-      n.initialY = matrix[n.id].y
+function applyLayoutCoordinates(mode: 'constellation' | 'tree' | 'columns' | 'radial') {
+  const posMap = computeLayoutMath(rawDynamicNodes.value, mode)
+  for (const n of rawDynamicNodes.value) {
+    if (posMap[n.id] && !isNodeLocked(n.id)) {
+      n.currentX = posMap[n.id].x
+      n.currentY = posMap[n.id].y
+      n.initialX = posMap[n.id].x
+      n.initialY = posMap[n.id].y
     }
   }
 }
 
+// Ingest Dynamic Nodes from PocketBase API
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
-    const matrix = layoutMatrices[currentViewMode.value] || layoutMatrices.constellation
-    dynamicNodesState.value = sitemapApiData.value.nodes.map((n: any) => {
-      const pos = matrix[n.id] || { x: 550, y: 360 }
+    const rawList = sitemapApiData.value.nodes.map((n: any) => {
+      const isRoot = n.slug === 'home'
+      const parentId = isRoot ? null : `pb-${n.parentSlug || 'home'}`
+      const depth = isRoot ? 0 : (n.parentSlug === 'home' && ['about', 'products', 'services', 'history', 'contact'].includes(n.slug) ? 1 : 2)
+
+      return {
+        ...n,
+        parentId,
+        depth,
+        childrenIds: [] as string[]
+      }
+    })
+
+    // Populate childrenIds dynamically
+    for (const node of rawList) {
+      if (node.parentId) {
+        const parent = rawList.find((p: any) => p.id === node.parentId)
+        if (parent && !parent.childrenIds.includes(node.id)) {
+          parent.childrenIds.push(node.id)
+        }
+      }
+    }
+
+    const posMap = computeLayoutMath(rawList, currentViewMode.value)
+
+    rawDynamicNodes.value = rawList.map((n: any) => {
+      const pos = posMap[n.id] || { x: 550, y: 360 }
       return {
         ...n,
         currentX: pos.x,
@@ -1021,12 +1080,49 @@ watchEffect(() => {
         initialY: pos.y
       }
     })
+
     loadStateFromLocalStorage()
     autoFitConstellation()
   }
 })
 
-const nodes = computed(() => dynamicNodesState.value)
+// Dynamic Graph Edges
+const edges = computed(() => {
+  return rawDynamicNodes.value
+    .filter(n => n.parentId)
+    .map(n => ({
+      from: n.parentId,
+      to: n.id,
+      color: n.accentColor || '#018786'
+    }))
+})
+
+const visibleNodes = computed(() => {
+  return rawDynamicNodes.value.filter((n: any) => {
+    // True recursive ancestry check
+    if (isDescendantOfFolded(n.id)) {
+      return false
+    }
+
+    if (selectedGroup.value !== 'all') {
+      const grp = getNodeGroup(n)
+      if (grp !== selectedGroup.value && n.depth !== 0) return false
+    }
+
+    if (searchQuery.value) {
+      const q = searchQuery.value.toLowerCase()
+      const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
+      const matchEn = (n.liveData?.titleEn || n.titleEn || '').toLowerCase().includes(q)
+      if (!matchFa && !matchEn) return false
+    }
+    return true
+  })
+})
+
+const visibleEdges = computed(() => {
+  const visibleIds = new Set(visibleNodes.value.map((n: any) => n.id))
+  return edges.value.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
+})
 
 function resetNodePositions() {
   applyLayoutCoordinates(currentViewMode.value)
@@ -1052,7 +1148,7 @@ function autoFitConstellation() {
   clusterFitScale.value = isMobile ? Math.min(0.85, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
 }
 
-// 120 FPS INSTANT DRAGGING WITH REAL-TIME DISPATCH
+// 120 FPS INSTANT DRAGGING WITH ZERO LATENCY
 const isDraggingNodeId = ref<string | null>(null)
 
 function startNodePointerDrag(e: PointerEvent, node: any) {
@@ -1075,7 +1171,7 @@ function onGlobalPointerMove(e: PointerEvent) {
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
   if (!isDraggingNodeId.value) return
-  const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
+  const dragged = rawDynamicNodes.value.find(n => n.id === isDraggingNodeId.value)
   if (dragged && !isNodeLocked(dragged.id)) {
     const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
     const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
@@ -1086,7 +1182,7 @@ function onGlobalPointerMove(e: PointerEvent) {
 
 function onGlobalPointerUp() {
   if (isDraggingNodeId.value) {
-    const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
+    const dragged = rawDynamicNodes.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
       if (!isNodeLocked(dragged.id)) {
         dragged.currentX = dragged.initialX
@@ -1105,48 +1201,6 @@ function onGlobalPointerUp() {
   }
 }
 
-// 100% COMPLETE TOPOLOGICAL CONNECTIONS (ALL 12 NODES CONNECTED)
-const edges = [
-  { from: 'pb-home', to: 'pb-about', color: '#018786' },
-  { from: 'pb-home', to: 'pb-products', color: '#2563eb' },
-  { from: 'pb-home', to: 'pb-services', color: '#9333ea' },
-  { from: 'pb-home', to: 'pb-history', color: '#d97706' },
-  { from: 'pb-home', to: 'pb-contact', color: '#e11d48' },
-  { from: 'pb-home', to: 'pb-login', color: '#6366f1' },
-  { from: 'pb-home', to: 'pb-menu', color: '#0ea5e9' },
-  { from: 'pb-home', to: 'pb-footer', color: '#64748b' },
-  { from: 'pb-products', to: 'pb-catalog', color: '#2563eb' },
-  { from: 'pb-services', to: 'pb-faq', color: '#9333ea' },
-  { from: 'pb-history', to: 'pb-blog', color: '#d97706' }
-]
-
-const visibleNodes = computed(() => {
-  return nodes.value.filter((n: any) => {
-    // Recursive check: If any ancestor in the chain is folded, hide this node!
-    if (isDescendantOfFolded(n.id)) {
-      return false
-    }
-
-    if (selectedGroup.value !== 'all') {
-      const grp = getNodeGroup(n)
-      if (grp !== selectedGroup.value && n.type !== 'nucleus') return false
-    }
-
-    if (searchQuery.value) {
-      const q = searchQuery.value.toLowerCase()
-      const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
-      const matchEn = (n.liveData?.titleEn || n.titleEn || '').toLowerCase().includes(q)
-      if (!matchFa && !matchEn) return false
-    }
-    return true
-  })
-})
-
-const visibleEdges = computed(() => {
-  const visibleIds = new Set(visibleNodes.value.map((n: any) => n.id))
-  return edges.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
-})
-
 function isEdgeActive(edge: any) {
   if (!hoveredNodeId.value && !selectedNode.value) return false
   const activeId = hoveredNodeId.value || selectedNode.value?.id
@@ -1154,8 +1208,8 @@ function isEdgeActive(edge: any) {
 }
 
 function getEdgePath(edge: any) {
-  const fromNode = nodes.value.find((n: any) => n.id === edge.from)
-  const toNode = nodes.value.find((n: any) => n.id === edge.to)
+  const fromNode = rawDynamicNodes.value.find((n: any) => n.id === edge.from)
+  const toNode = rawDynamicNodes.value.find((n: any) => n.id === edge.to)
   if (!fromNode || !toNode) return ''
 
   const x1 = fromNode.currentX
