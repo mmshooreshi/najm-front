@@ -20,7 +20,7 @@
 
         <!-- Preview when collapsed -->
         <span v-if="!isOpen" class="text-slate-500 text-[10px]">
-          {{ isArray ? `[... ${childKeys.length}]` : `{... ${childKeys.length}}` }}
+          {{ collapsedLabel }}
         </span>
         <span v-else class="text-slate-500 font-bold">
           {{ isArray ? '[' : '{' }}
@@ -113,5 +113,12 @@ const childKeys = computed(() => {
     return props.val.map((_, i) => i)
   }
   return Object.keys(props.val)
+})
+
+const collapsedLabel = computed(() => {
+  if (isArray.value) {
+    return '[... ' + childKeys.value.length + ']'
+  }
+  return '{... ' + childKeys.value.length + '}'
 })
 </script>

@@ -110,7 +110,7 @@
           <span class="font-medium text-[11px] text-purple-300">{{ keyName }}</span>
 
           <span class="text-[10px] text-slate-500 font-sans">
-            {{ valueType === 'array' ? `[${childKeys.length}]` : `{${childKeys.length}}` }}
+            {{ containerCountLabel }}
           </span>
         </div>
 
@@ -173,6 +173,13 @@ const childKeys = computed(() => {
     return props.currentVal.map((_, i) => i)
   }
   return Object.keys(props.currentVal)
+})
+
+const containerCountLabel = computed(() => {
+  if (valueType.value === 'array') {
+    return '[' + childKeys.value.length + ']'
+  }
+  return '{' + childKeys.value.length + '}'
 })
 
 const isModified = computed(() => {

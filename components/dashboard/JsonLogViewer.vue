@@ -5,7 +5,7 @@
     <div class="h-8 px-3 bg-[#0d121f] border-b border-white/[0.05] flex items-center justify-between shrink-0 select-none text-[11px]">
       <div class="flex items-center gap-2">
         <span class="text-slate-400 text-[10px]">
-          {{ isArray ? `Array [${rootKeys.length}]` : `Object {${rootKeys.length}}` }}
+          {{ payloadLabel }}
         </span>
         <span class="text-slate-600 text-[10px]">•</span>
         <span class="text-slate-500 text-[10px]">{{ jsonSize }}</span>
@@ -69,6 +69,13 @@ const rootKeys = computed(() => {
   if (!props.data || typeof props.data !== 'object') return []
   if (Array.isArray(props.data)) return props.data.map((_, i) => i)
   return Object.keys(props.data)
+})
+
+const payloadLabel = computed(() => {
+  if (isArray.value) {
+    return 'Array [' + rootKeys.value.length + ']'
+  }
+  return 'Object {' + rootKeys.value.length + '}'
 })
 
 const jsonSize = computed(() => {

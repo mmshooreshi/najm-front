@@ -1,4 +1,3 @@
-<!-- pages/dashboard/sitemap/index.vue -->
 <template>
   <div
     :dir="isRTL ? 'rtl' : 'ltr'"
