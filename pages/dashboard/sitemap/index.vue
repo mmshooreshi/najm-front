@@ -11,9 +11,9 @@
       <div class="absolute top-[35%] left-[35%] w-[40vw] h-[40vw] rounded-full bg-purple-100/35 blur-[130px]"></div>
     </div>
 
-    <!-- Top HUD Bar with Group Selectors & Master Recursive Toggles -->
-    <header class="relative z-40 h-13 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/80 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
-      <!-- Left: Exit & Live Status -->
+    <!-- Top HUD Bar with 4 View Modes, Recursive Toggles & Groups -->
+    <header class="relative z-40 h-14 px-3 sm:px-5 flex items-center justify-between pointer-events-auto bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-2xs">
+      <!-- Left: Exit & Live Node Telemetry -->
       <div class="flex items-center gap-2">
         <NuxtLink
           to="/dashboard"
@@ -23,23 +23,31 @@
           <Icon name="mdi:arrow-right" class="w-4 h-4" :class="isRTL ? '' : 'rotate-180'" />
         </NuxtLink>
 
-        <!-- Live Node Count -->
-        <div class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
+        <!-- Live Count -->
+        <div class="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white border border-slate-200/80 shadow-2xs font-bold text-[11px] text-slate-700">
           <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
-          <span>{{ visibleNodes.length }} صفحه فعال</span>
+          <span>{{ visibleNodes.length }} صفحه متصل</span>
         </div>
       </div>
 
-      <!-- Center: Master Recursive Fold/Unfold Icons, Lock & Group Selectors -->
-      <div class="flex items-center gap-1 sm:gap-2">
-        <!-- Re-Center Reset -->
-        <button
-          @click="resetNodePositions"
-          class="w-8 h-8 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white flex items-center justify-center shadow-xs transition cursor-pointer active:scale-95"
-          title="بازنشانی موقعیت‌ها به چیدمان اصلی"
-        >
-          <Icon name="mdi:crosshairs-gps" class="w-4 h-4" />
-        </button>
+      <!-- Center: 4 VIEW MODES & MASTER RECURSIVE TOGGLES -->
+      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1">
+        <!-- 4 VIEW MODES SWITCHER -->
+        <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
+          <button
+            v-for="mode in viewModes"
+            :key="mode.id"
+            @click="switchViewMode(mode.id)"
+            class="px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            :class="currentViewMode === mode.id ? 'bg-white text-emerald-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
+            :title="mode.desc"
+          >
+            <Icon :name="mode.icon" class="w-3.5 h-3.5" />
+            <span class="hidden md:inline">{{ mode.label }}</span>
+          </button>
+        </div>
+
+        <div class="h-5 w-[1px] bg-slate-200 hidden sm:block"></div>
 
         <!-- Master 1-Arrow (Toggle Direct) -->
         <button
@@ -50,13 +58,13 @@
           <Icon :name="isAnyDirectFolded ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-4 h-4" />
         </button>
 
-        <!-- Master 2-Arrow (Recursive Deep Fold/Unfold) -->
+        <!-- Master 2-Arrow (Recursive Deep Fold/Unfold Children of Children) -->
         <button
           @click="toggleRecursiveChildrenOfAll"
-          class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 flex items-center justify-center shadow-2xs transition cursor-pointer"
-          :title="isAnyRecursiveFolded ? 'بازکردن تمام زیرشاخه‌ها به صورت آبشاری' : 'بستن تمام زیرشاخه‌ها به صورت آبشاری'"
+          class="w-8 h-8 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-emerald-800 flex items-center justify-center shadow-2xs transition cursor-pointer"
+          :title="isAnyRecursiveFolded ? 'بازکردن تمام زیرشاخه‌ها و فرزندان' : 'بستن تمام زیرشاخه‌ها و فرزندان فرزندان'"
         >
-          <Icon :name="isAnyRecursiveFolded ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4 text-emerald-800" />
+          <Icon :name="isAnyRecursiveFolded ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-4 h-4" />
         </button>
 
         <!-- Unlock / Lock All -->
@@ -69,10 +77,10 @@
         </button>
 
         <!-- Group Selector Chips -->
-        <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
+        <div class="hidden sm:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
             @click="selectedGroup = 'all'"
-            class="px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            class="px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
             :class="selectedGroup === 'all' ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
           >
             <span>همه</span>
@@ -82,18 +90,18 @@
             v-for="grp in groupToggles"
             :key="grp.id"
             @click="selectedGroup = grp.id"
-            class="px-2 sm:px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
+            class="px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
             :class="selectedGroup === grp.id ? 'bg-white text-slate-900 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'"
           >
             <span class="text-[10px]">{{ grp.icon }}</span>
-            <span class="hidden md:inline">{{ grp.label }}</span>
+            <span class="hidden xl:inline">{{ grp.label }}</span>
           </button>
         </div>
       </div>
 
       <!-- Right: Search, Refresh & Console -->
       <div class="flex items-center gap-1.5">
-        <div class="relative w-28 sm:w-36">
+        <div class="relative w-24 sm:w-32">
           <Icon name="mdi:magnify" class="absolute right-2 top-2 w-3.5 h-3.5 text-slate-400" />
           <input
             v-model="searchQuery"
@@ -126,17 +134,15 @@
       </div>
     </header>
 
-    <!-- FIT-CONTAINED AUTO-RESIZING STAGE WITH FREE DRAGGING -->
+    <!-- FIT-CONTAINED AUTO-RESIZING STAGE -->
     <div
       ref="canvasStageRef"
       class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center cursor-default"
-      @mousemove="handleGlobalMouseMove"
-      @mouseup="stopNodeDrag"
-      @touchend="stopNodeDrag"
+      style="touch-action: none;"
     >
       <!-- Centered Scaled Cluster Stage -->
       <div
-        class="relative transition-transform duration-200 ease-out"
+        class="relative transition-transform duration-300 ease-out"
         :style="{
           width: `${stageBaseWidth}px`,
           height: `${stageBaseHeight}px`,
@@ -144,26 +150,38 @@
           transformOrigin: 'center center'
         }"
       >
-        <!-- VECTOR CONNECTION PATHS (Instant Zero-Lag Rendering) -->
+        <!-- VECTOR CONNECTION PATHS (Default Thin 1.2px, Active Routes Bold 3.5px) -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-10 overflow-visible">
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
+            <!-- Background Glow for Active Route -->
+            <path
+              v-if="isEdgeActive(edge)"
+              :d="getEdgePath(edge)"
+              fill="none"
+              :stroke="edge.color"
+              stroke-opacity="0.25"
+              stroke-width="8"
+              stroke-linecap="round"
+            />
+            <!-- Main Vector Path (Thinner 1.2px by default, bold 3.5px when active) -->
             <path
               :d="getEdgePath(edge)"
               fill="none"
-              :stroke="isEdgeActive(edge) ? edge.color : '#cbd5e1'"
-              :stroke-opacity="isEdgeActive(edge) ? 0.9 : 0.4"
-              :stroke-width="isEdgeActive(edge) ? 3.5 : 1.8"
+              :stroke="isEdgeActive(edge) ? edge.color : '#94a3b8'"
+              :stroke-opacity="isEdgeActive(edge) ? 1.0 : 0.45"
+              :stroke-width="isEdgeActive(edge) ? 3.5 : 1.3"
               stroke-linecap="round"
             />
+            <!-- Animated Flow Particle on Active Route -->
             <circle
               v-if="isEdgeActive(edge)"
-              r="3.5"
+              r="4"
               :fill="edge.color"
-              filter="drop-shadow(0 0 4px rgba(0,0,0,0.2))"
+              filter="drop-shadow(0 0 5px rgba(0,0,0,0.3))"
             >
               <animateMotion
                 :path="getEdgePath(edge)"
-                dur="2.2s"
+                dur="1.8s"
                 repeatCount="indefinite"
               />
             </circle>
@@ -197,7 +215,7 @@
           <!-- 1. MASTER COMMANDING NUCLEUS NODE (270px × 155px) -->
           <div
             v-if="node.type === 'nucleus'"
-            class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/60 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
+            class="relative rounded-[2.5rem] p-5 flex flex-col justify-between transition-all duration-200 bg-white border-2 border-emerald-500/70 shadow-[0_24px_50px_-12px_rgba(1,135,134,0.3),0_8px_20px_-4px_rgba(0,0,0,0.08)]"
             :style="{ width: '270px', minHeight: '155px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500' : ''"
           >
@@ -221,18 +239,18 @@
                 <button
                   @click.stop="toggleDirectChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  :title="isChildrenFolded(node.id) ? 'نمایش شاخه‌های مستقیم' : 'بستن شاخه‌های مستقیم'"
+                  :title="isDirectFolded(node.id) ? 'نمایش شاخه‌های مستقیم' : 'بستن شاخه‌های مستقیم'"
                 >
-                  <Icon :name="isChildrenFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
+                  <Icon :name="isDirectFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- 2-Arrow (Recursive Deep Fold) -->
+                <!-- 2-Arrow (Recursive Deep Fold/Unfold Children of Children) -->
                 <button
                   @click.stop="toggleRecursiveChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer shadow-2xs"
-                  title="بستن/بازکردن تمام زیرشاخه‌ها به صورت آبشاری"
+                  title="بستن/بازکردن خود و تمام فرزندان به صورت آبشاری"
                 >
-                  <Icon name="mdi:chevron-double-up" class="w-3.5 h-3.5" />
+                  <Icon :name="isSubtreeFolded(node.id) ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-3.5 h-3.5" />
                 </button>
 
                 <!-- Lock Position -->
@@ -291,19 +309,19 @@
                   v-if="hasConnectedChildren(node.id)"
                   @click.stop="toggleDirectChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
-                  :title="isChildrenFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'بستن زیرشاخه‌ها'"
+                  :title="isDirectFolded(node.id) ? 'نمایش زیرشاخه‌ها' : 'بستن زیرشاخه‌ها'"
                 >
-                  <Icon :name="isChildrenFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
+                  <Icon :name="isDirectFolded(node.id) ? 'mdi:chevron-down' : 'mdi:chevron-up'" class="w-3.5 h-3.5" />
                 </button>
 
-                <!-- 2-Arrow -->
+                <!-- 2-Arrow (Recursive Children of Children) -->
                 <button
                   v-if="hasConnectedChildren(node.id)"
                   @click.stop="toggleRecursiveChildren(node.id)"
                   class="w-6 h-6 rounded-lg hover:bg-white text-slate-600 hover:text-emerald-800 flex items-center justify-center transition cursor-pointer"
-                  title="بستن/بازکردن تمام زیرشاخه‌ها به صورت آبشاری"
+                  title="بستن/بازکردن تمام فرزندان به صورت آبشاری"
                 >
-                  <Icon name="mdi:chevron-double-up" class="w-3.5 h-3.5" />
+                  <Icon :name="isSubtreeFolded(node.id) ? 'mdi:chevron-double-down' : 'mdi:chevron-double-up'" class="w-3.5 h-3.5" />
                 </button>
 
                 <!-- Lock -->
@@ -455,7 +473,7 @@
             />
           </div>
 
-          <!-- New Pro Vue JSON Studio -->
+          <!-- Pro Vue JSON Studio -->
           <div v-else-if="studioEngine === 'vue-json-studio'" class="flex-1 bg-white overflow-hidden">
             <VueJsonStudio
               v-model="currentWorkingSchema"
@@ -560,6 +578,21 @@ const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
 
+// 4 VIEW MODES
+const currentViewMode = ref<'constellation' | 'tree' | 'columns' | 'radial'>('constellation')
+const viewModes = [
+  { id: 'constellation', label: 'کهکشانی', icon: 'mdi:orbit', desc: 'نمای کهکشانی مدور پیرامون هسته' },
+  { id: 'tree', label: 'درختی', icon: 'mdi:file-tree', desc: 'ساختار سلسله‌مراتبی سازمانی' },
+  { id: 'columns', label: 'ستونی', icon: 'mdi:view-column', desc: 'ستون‌های ساختاریافته بر اساس بخش‌ها' },
+  { id: 'radial', label: 'رادار', icon: 'mdi:radar', desc: 'نمای راداری هم‌مرکز فشرده' }
+]
+
+function switchViewMode(modeId: 'constellation' | 'tree' | 'columns' | 'radial') {
+  currentViewMode.value = modeId
+  applyLayoutCoordinates(modeId)
+  saveStateToLocalStorage()
+}
+
 // Group Selection
 const selectedGroup = ref<string>('all')
 const groupToggles = [
@@ -578,12 +611,17 @@ function getNodeGroup(node: any) {
   return 'system'
 }
 
-// Subtree Branch Folding & LocalStorage Persistence
+// Subtree Branch Folding & Recursive Children-of-Children Hiding
 const foldedBranches = ref<Set<string>>(new Set())
 const lockedNodes = ref<Set<string>>(new Set())
 
-function isChildrenFolded(nodeId: string) {
+function isDirectFolded(nodeId: string) {
   return foldedBranches.value.has(nodeId)
+}
+
+function isSubtreeFolded(nodeId: string) {
+  const allSub = getSubtreeNodeIds(nodeId)
+  return allSub.length > 1 && allSub.slice(1).every(id => isDescendantOfFolded(id))
 }
 
 function isNodeLocked(nodeId: string) {
@@ -624,7 +662,7 @@ function toggleDirectChildren(nodeId: string) {
   saveStateToLocalStorage()
 }
 
-// 2-Arrow (Toggle Recursive Children)
+// 2-Arrow (Recursive Deep Fold/Unfold Children of Children)
 function toggleRecursiveChildren(nodeId: string) {
   const isFolded = foldedBranches.value.has(nodeId)
   const allSubtreeIds = getSubtreeNodeIds(nodeId)
@@ -646,6 +684,26 @@ function getSubtreeNodeIds(parentId: string): string[] {
     result.push(...getSubtreeNodeIds(childId))
   }
   return result
+}
+
+// Recursive Check: Is child a descendant of any folded parent?
+function isDescendantOfFolded(nodeId: string): boolean {
+  if (nodeId === 'pb-home') return false
+  for (const foldedId of foldedBranches.value) {
+    if (isDescendantOf(nodeId, foldedId)) {
+      return true
+    }
+  }
+  return false
+}
+
+function isDescendantOf(childId: string, ancestorId: string): boolean {
+  const directParents = edges.filter(e => e.to === childId).map(e => e.from)
+  for (const p of directParents) {
+    if (p === ancestorId) return true
+    if (isDescendantOf(p, ancestorId)) return true
+  }
+  return false
 }
 
 const isAnyDirectFolded = computed(() => foldedBranches.value.size > 0)
@@ -682,6 +740,7 @@ function hasConnectedChildren(nodeId: string) {
 function saveStateToLocalStorage() {
   if (typeof window === 'undefined') return
   try {
+    localStorage.setItem('najm_sitemap_view_mode', currentViewMode.value)
     localStorage.setItem('najm_sitemap_folded', JSON.stringify([...foldedBranches.value]))
     localStorage.setItem('najm_sitemap_locked', JSON.stringify([...lockedNodes.value]))
     
@@ -697,6 +756,11 @@ function saveStateToLocalStorage() {
 function loadStateFromLocalStorage() {
   if (typeof window === 'undefined') return
   try {
+    const savedMode = localStorage.getItem('najm_sitemap_view_mode')
+    if (savedMode && ['constellation', 'tree', 'columns', 'radial'].includes(savedMode)) {
+      currentViewMode.value = savedMode as any
+    }
+
     const folded = localStorage.getItem('najm_sitemap_folded')
     if (folded) {
       foldedBranches.value = new Set(JSON.parse(folded))
@@ -711,7 +775,7 @@ function loadStateFromLocalStorage() {
     if (savedPos) {
       const posMap = JSON.parse(savedPos)
       for (const n of dynamicNodesState.value) {
-        if (posMap[n.id]) {
+        if (posMap[n.id] && isNodeLocked(n.id)) {
           n.currentX = posMap[n.id].x
           n.currentY = posMap[n.id].y
         }
@@ -848,7 +912,7 @@ function getNodeScale(node: any) {
   return 1.0
 }
 
-// 3D Perspective Tilt & Ultra-Smooth Dragging
+// 3D Perspective Tilt & Instant Real-Time Dragging
 const mouseRelativeX = ref(0)
 const mouseRelativeY = ref(0)
 
@@ -856,9 +920,6 @@ let nodeDragStartClientX = 0
 let nodeDragStartClientY = 0
 let nodeDragStartNodeX = 0
 let nodeDragStartNodeY = 0
-let pendingClientX = 0
-let pendingClientY = 0
-let dragRafId: number | null = null
 
 function getNode3DTilt(node: any) {
   if (hoveredNodeId.value === node.id && !isDraggingNodeId.value) {
@@ -875,26 +936,83 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
 
 const dynamicNodesState = ref<any[]>([])
 
-// COMPACT CENTROID CLUSTER POSITIONS
-const defaultClusterPositions: Record<string, { x: number, y: number }> = {
-  'pb-home': { x: 550, y: 360 },
-  'pb-about': { x: 310, y: 200 },
-  'pb-products': { x: 790, y: 200 },
-  'pb-services': { x: 790, y: 520 },
-  'pb-history': { x: 310, y: 520 },
-  'pb-contact': { x: 550, y: 130 },
-  'pb-catalog': { x: 990, y: 160 },
-  'pb-faq': { x: 990, y: 560 },
-  'pb-blog': { x: 110, y: 560 },
-  'pb-login': { x: 110, y: 160 },
-  'pb-menu': { x: 550, y: 590 },
-  'pb-footer': { x: 320, y: 660 }
+// 4 DISTINCT LAYOUT COORDINATE MATRICES
+const layoutMatrices: Record<string, Record<string, { x: number, y: number }>> = {
+  constellation: {
+    'pb-home': { x: 550, y: 360 },
+    'pb-about': { x: 310, y: 200 },
+    'pb-products': { x: 790, y: 200 },
+    'pb-services': { x: 790, y: 520 },
+    'pb-history': { x: 310, y: 520 },
+    'pb-contact': { x: 550, y: 130 },
+    'pb-catalog': { x: 990, y: 160 },
+    'pb-faq': { x: 990, y: 560 },
+    'pb-blog': { x: 110, y: 560 },
+    'pb-login': { x: 110, y: 160 },
+    'pb-menu': { x: 550, y: 590 },
+    'pb-footer': { x: 320, y: 660 }
+  },
+  tree: {
+    'pb-home': { x: 550, y: 100 },
+    'pb-about': { x: 170, y: 270 },
+    'pb-products': { x: 420, y: 270 },
+    'pb-services': { x: 680, y: 270 },
+    'pb-history': { x: 930, y: 270 },
+    'pb-contact': { x: 170, y: 480 },
+    'pb-login': { x: 170, y: 630 },
+    'pb-catalog': { x: 420, y: 480 },
+    'pb-menu': { x: 420, y: 630 },
+    'pb-faq': { x: 680, y: 480 },
+    'pb-footer': { x: 680, y: 630 },
+    'pb-blog': { x: 930, y: 480 }
+  },
+  columns: {
+    'pb-home': { x: 160, y: 170 },
+    'pb-about': { x: 160, y: 380 },
+    'pb-contact': { x: 160, y: 580 },
+    'pb-products': { x: 420, y: 220 },
+    'pb-catalog': { x: 420, y: 460 },
+    'pb-services': { x: 680, y: 220 },
+    'pb-faq': { x: 680, y: 460 },
+    'pb-history': { x: 940, y: 160 },
+    'pb-blog': { x: 940, y: 320 },
+    'pb-menu': { x: 940, y: 480 },
+    'pb-footer': { x: 940, y: 620 },
+    'pb-login': { x: 420, y: 640 }
+  },
+  radial: {
+    'pb-home': { x: 550, y: 360 },
+    'pb-products': { x: 860, y: 360 },
+    'pb-catalog': { x: 1010, y: 240 },
+    'pb-services': { x: 740, y: 590 },
+    'pb-faq': { x: 910, y: 630 },
+    'pb-history': { x: 360, y: 590 },
+    'pb-blog': { x: 190, y: 630 },
+    'pb-about': { x: 240, y: 360 },
+    'pb-contact': { x: 360, y: 130 },
+    'pb-login': { x: 180, y: 190 },
+    'pb-menu': { x: 550, y: 620 },
+    'pb-footer': { x: 740, y: 130 }
+  }
+}
+
+function applyLayoutCoordinates(mode: string) {
+  const matrix = layoutMatrices[mode] || layoutMatrices.constellation
+  for (const n of dynamicNodesState.value) {
+    if (matrix[n.id] && !isNodeLocked(n.id)) {
+      n.currentX = matrix[n.id].x
+      n.currentY = matrix[n.id].y
+      n.initialX = matrix[n.id].x
+      n.initialY = matrix[n.id].y
+    }
+  }
 }
 
 watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
+    const matrix = layoutMatrices[currentViewMode.value] || layoutMatrices.constellation
     dynamicNodesState.value = sitemapApiData.value.nodes.map((n: any) => {
-      const pos = defaultClusterPositions[n.id] || { x: 550, y: 360 }
+      const pos = matrix[n.id] || { x: 550, y: 360 }
       return {
         ...n,
         currentX: pos.x,
@@ -911,12 +1029,7 @@ watchEffect(() => {
 const nodes = computed(() => dynamicNodesState.value)
 
 function resetNodePositions() {
-  for (const n of dynamicNodesState.value) {
-    if (!isNodeLocked(n.id)) {
-      n.currentX = n.initialX
-      n.currentY = n.initialY
-    }
-  }
+  applyLayoutCoordinates(currentViewMode.value)
   saveStateToLocalStorage()
   autoFitConstellation()
 }
@@ -931,7 +1044,7 @@ const canvasStageRef = ref<HTMLElement | null>(null)
 function autoFitConstellation() {
   if (typeof window === 'undefined') return
   const availableWidth = window.innerWidth - 30
-  const availableHeight = window.innerHeight - 80
+  const availableHeight = window.innerHeight - 85
 
   const scaleX = availableWidth / stageBaseWidth
   const scaleY = availableHeight / stageBaseHeight
@@ -939,7 +1052,7 @@ function autoFitConstellation() {
   clusterFitScale.value = isMobile ? Math.min(0.85, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
 }
 
-// 120 FPS HARDWARE ACCELERATED DRAGGING WITH POINTER CAPTURE
+// 120 FPS INSTANT DRAGGING WITH REAL-TIME DISPATCH
 const isDraggingNodeId = ref<string | null>(null)
 
 function startNodePointerDrag(e: PointerEvent, node: any) {
@@ -949,8 +1062,6 @@ function startNodePointerDrag(e: PointerEvent, node: any) {
   nodeDragStartClientY = e.clientY
   nodeDragStartNodeX = node.currentX
   nodeDragStartNodeY = node.currentY
-  pendingClientX = e.clientX
-  pendingClientY = e.clientY
 
   if (typeof window !== 'undefined') {
     window.addEventListener('pointermove', onGlobalPointerMove, { passive: true })
@@ -964,41 +1075,23 @@ function onGlobalPointerMove(e: PointerEvent) {
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
   if (!isDraggingNodeId.value) return
-  pendingClientX = e.clientX
-  pendingClientY = e.clientY
-
-  if (!dragRafId) {
-    dragRafId = requestAnimationFrame(applyNodePositionFrame)
-  }
-}
-
-function applyNodePositionFrame() {
-  dragRafId = null
-  if (!isDraggingNodeId.value) return
-
   const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
   if (dragged && !isNodeLocked(dragged.id)) {
-    const dx = (pendingClientX - nodeDragStartClientX) / clusterFitScale.value
-    const dy = (pendingClientY - nodeDragStartClientY) / clusterFitScale.value
-    dragged.currentX = nodeDragStartNodeX + dx
-    dragged.currentY = nodeDragStartNodeY + dy
+    const dx = (e.clientX - nodeDragStartClientX) / clusterFitScale.value
+    const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
+    dragged.currentX = Math.round(nodeDragStartNodeX + dx)
+    dragged.currentY = Math.round(nodeDragStartNodeY + dy)
   }
 }
 
 function onGlobalPointerUp() {
-  if (dragRafId) {
-    cancelAnimationFrame(dragRafId)
-    dragRafId = null
-  }
   if (isDraggingNodeId.value) {
     const dragged = dynamicNodesState.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
       if (!isNodeLocked(dragged.id)) {
-        // Elastic magnetic snap-back to original place
         dragged.currentX = dragged.initialX
         dragged.currentY = dragged.initialY
       } else {
-        // Keep custom position if pinned/locked
         saveStateToLocalStorage()
       }
     }
@@ -1012,6 +1105,7 @@ function onGlobalPointerUp() {
   }
 }
 
+// 100% COMPLETE TOPOLOGICAL CONNECTIONS (ALL 12 NODES CONNECTED)
 const edges = [
   { from: 'pb-home', to: 'pb-about', color: '#018786' },
   { from: 'pb-home', to: 'pb-products', color: '#2563eb' },
@@ -1028,10 +1122,9 @@ const edges = [
 
 const visibleNodes = computed(() => {
   return nodes.value.filter((n: any) => {
-    // Check if folded by parent
-    for (const parentId of foldedBranches.value) {
-      const isChild = edges.some(e => e.from === parentId && e.to === n.id)
-      if (isChild) return false
+    // Recursive check: If any ancestor in the chain is folded, hide this node!
+    if (isDescendantOfFolded(n.id)) {
+      return false
     }
 
     if (selectedGroup.value !== 'all') {
