@@ -329,56 +329,55 @@
           <div class="h-14 px-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center border border-emerald-200">
-                <Icon name="mdi:layers-triple-outline" class="w-4.5 h-4.5" />
+                <Icon name="mdi:layers-outline" class="w-4.5 h-4.5" />
               </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="font-extrabold text-slate-900 text-sm">استودیو ویرایش ساختار JSON</h3>
-                  <span class="px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold font-mono">
-                    {{ activeStudioNode?.slug }}
-                  </span>
-                  <span
-                    v-if="hasAnyModifications"
-                    class="px-2 py-0.2 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold"
-                  >
-                    تغییرات زرد (ذخیره‌نشده)
-                  </span>
-                </div>
-                <p class="text-[10px] text-slate-500">پشتیبانی از پالت‌های رنگ، پیش‌نمایش و تعویض رسانه‌ها، و حالت‌های Tree/Table/Code</p>
+              <div class="flex items-center gap-2">
+                <h3 class="font-extrabold text-slate-900 text-sm">
+                  {{ activeStudioNode?.liveData?.titleFa || activeStudioNode?.titleFa || 'تنظیم صفحه' }}
+                </h3>
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono font-bold" dir="ltr">
+                  /{{ activeStudioNode?.slug }}
+                </span>
+                <span
+                  v-if="hasAnyModifications"
+                  class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold"
+                >
+                  ذخیره‌نشده
+                </span>
               </div>
             </div>
 
             <!-- Multi-Engine Switcher -->
             <div class="flex items-center gap-2">
-              <div class="flex items-center bg-slate-200/80 p-0.5 rounded-xl text-[11px] font-bold">
+              <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
                 <!-- Engine 1: Unified Multilingual Content Studio (Default) -->
                 <button
                   @click="studioEngine = 'content-studio'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1"
                   :class="studioEngine === 'content-studio' ? 'bg-white text-emerald-800 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
-                  <Icon name="mdi:translate" class="w-3.5 h-3.5 text-emerald-800" />
-                  <span>استودیو محتوای چندزبانه (FA / EN / AR)</span>
+                  <Icon name="mdi:translate" class="w-3.5 h-3.5" />
+                  <span>محتوا</span>
                 </button>
 
                 <!-- Engine 2: Vanilla JSON Editor (Jos de Jong) -->
                 <button
                   @click="studioEngine = 'vanilla-editor'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1"
                   :class="studioEngine === 'vanilla-editor' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-                  <span>Vanilla Editor</span>
+                  <span>JSON خام</span>
                 </button>
 
                 <!-- Engine 3: Smart Spreadsheet Rows -->
                 <button
                   @click="studioEngine = 'visual-rows'"
-                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  class="px-3 py-1.5 rounded-lg transition cursor-pointer flex items-center gap-1"
                   :class="studioEngine === 'visual-rows' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
                   <Icon name="mdi:table" class="w-3.5 h-3.5" />
-                  <span>جدول ردیف‌ها</span>
+                  <span>جدول</span>
                 </button>
               </div>
 
@@ -386,17 +385,17 @@
               <button
                 v-if="hasAnyModifications"
                 @click="undoAllChanges"
-                class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
-                title="بازگردانی به نسخه اصلی سرور"
+                class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold transition cursor-pointer"
+                title="بازگردانی"
               >
-                <span>↩ بازگردانی همه</span>
+                <span>↩ بازگردانی</span>
               </button>
 
               <button
                 @click="copyStudioJson"
                 class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition cursor-pointer"
               >
-                {{ studioCopied ? 'کپی شد!' : 'کپی JSON' }}
+                {{ studioCopied ? 'کپی شد!' : 'کپی' }}
               </button>
 
               <button
