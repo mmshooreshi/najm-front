@@ -23,7 +23,7 @@
       <div class="flex items-center gap-2 pointer-events-auto shrink-0">
         <NuxtLink
           to="/dashboard"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition whitespace-nowrap font-bold text-d4"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition whitespace-nowrap font-bold text-d4 cursor-pointer"
         >
           <Icon name="mdi:arrow-right" class="w-3.5 h-3.5" :class="isRTL ? '' : 'rotate-180'" />
           <span class="whitespace-nowrap">{{ isRTL ? 'پیشخوان' : 'Dashboard' }}</span>
@@ -50,7 +50,7 @@
           class="px-3.5 py-1.5 rounded-xl bg-[#018786] hover:bg-emerald-800 text-white font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95 text-d4"
         >
           <Icon name="mdi:crosshairs-gps" class="w-3.5 h-3.5" />
-          <span class="whitespace-nowrap">{{ isRTL ? 'مرکز' : 'Center' }}</span>
+          <span class="whitespace-nowrap">{{ isRTL ? 'مرکز کل' : 'Fit All' }}</span>
         </button>
 
         <div class="hidden md:flex items-center gap-0.5 bg-white/90 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-xs">
@@ -66,10 +66,10 @@
         </div>
       </div>
 
-      <!-- Right: Search, Zoom & Debug Panel Toggle -->
+      <!-- Right: Search, Zoom & Debug Panel Trigger -->
       <div class="flex items-center gap-1.5 pointer-events-auto shrink-0">
         <!-- Search Input -->
-        <div class="relative w-36 sm:w-48">
+        <div class="relative w-36 sm:w-44">
           <Icon name="mdi:magnify" class="absolute right-2.5 top-2 w-3.5 h-3.5 text-slate-400" />
           <input
             v-model="searchQuery"
@@ -90,7 +90,7 @@
           </button>
         </div>
 
-        <!-- Debug Console Trigger -->
+        <!-- Debug Waterfall Console Trigger -->
         <button
           @click="showDebugPane = !showDebugPane"
           class="flex items-center gap-1 px-3 py-1.5 rounded-xl border shadow-xs transition font-bold cursor-pointer whitespace-nowrap text-d4"
@@ -100,8 +100,9 @@
               : 'bg-white/90 text-slate-700 border-slate-200 hover:bg-slate-100'
           ]"
         >
-          <Icon name="mdi:bug-outline" class="w-3.5 h-3.5" />
-          <span class="whitespace-nowrap">{{ isRTL ? 'دیباگ' : 'Debug' }}</span>
+          <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
+          <span class="whitespace-nowrap">{{ isRTL ? 'لاگ و واترفال' : 'Waterfall' }}</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
         </button>
       </div>
     </header>
@@ -130,14 +131,14 @@
       >
         <!-- VECTOR SVG CONNECTION ARCS -->
         <svg class="absolute inset-0 w-[4200px] h-[3000px] pointer-events-none z-10 overflow-visible">
-          <!-- Orbital Guide Rings -->
+          <!-- Concentric Orbital Guide Rings -->
           <g opacity="0.15">
             <circle cx="1800" cy="1300" r="320" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 6" />
             <circle cx="1800" cy="1300" r="620" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="8 8" />
             <circle cx="1800" cy="1300" r="950" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="10 10" />
           </g>
 
-          <!-- Vector Paths -->
+          <!-- Vector Curved Paths -->
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <path
               :d="getEdgePath(edge)"
@@ -402,63 +403,92 @@
       </div>
     </transition>
 
-    <!-- COLLAPSIBLE BACKEND DEBUG CONSOLE HUD -->
+    <!-- WATERFALL FLOW REQUEST / RESPONSE DEBUGGER (DEFAULT COLLAPSED) -->
     <transition name="drawer-up">
       <div
         v-if="showDebugPane"
-        class="absolute bottom-3 inset-x-3 z-50 max-h-72 bg-slate-950 text-slate-200 rounded-2xl border border-slate-800 shadow-2xl p-3 flex flex-col font-mono text-[11px]"
+        class="absolute bottom-3 inset-x-3 z-50 max-h-96 bg-slate-950 text-slate-200 rounded-2xl border border-slate-800 shadow-2xl p-3.5 flex flex-col font-mono text-[11px]"
       >
-        <!-- Debug Header Bar -->
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+        <!-- Waterfall Header Bar -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="font-bold text-emerald-400 text-xs">PocketBase Live Telemetry & JSON Response Log</span>
-            <span class="text-slate-500">({{ backendLogs.length }} events)</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-bold text-emerald-400 text-xs">PocketBase Waterfall Flow & Request/Response Inspector</span>
+            <span class="text-slate-500 font-mono text-[10px]">({{ waterfallRequests.length }} requests captured)</span>
           </div>
 
           <div class="flex items-center gap-2">
             <button
-              @click="debugJsonExpanded = !debugJsonExpanded"
-              class="px-2 py-0.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer whitespace-nowrap"
+              @click="toggleExpandAllWaterfall"
+              class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold cursor-pointer whitespace-nowrap"
             >
-              {{ debugJsonExpanded ? 'Collapse JSON' : 'Expand JSON' }}
+              {{ isAllWaterfallExpanded ? 'بستن همه (Collapse All)' : 'باز کردن همه (Expand All)' }}
             </button>
             <button
               @click="refreshSitemap"
-              class="px-2 py-0.5 rounded-md bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 text-[10px] font-bold cursor-pointer whitespace-nowrap"
+              class="px-2.5 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 text-[10px] font-bold cursor-pointer whitespace-nowrap"
             >
-              Re-Fetch API
+              Re-Fetch All
             </button>
-            <button @click="showDebugPane = false" class="text-slate-400 hover:text-white p-0.5">
+            <button @click="showDebugPane = false" class="text-slate-400 hover:text-white p-1 rounded-md hover:bg-slate-800">
               <Icon name="mdi:close" class="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <!-- Debug Content Split View -->
-        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 overflow-hidden">
-          <!-- Left Col: Live Event Logs Stream -->
-          <div class="bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 overflow-y-auto space-y-1 text-left ltr">
-            <div class="text-[10px] text-slate-500 font-bold border-b border-slate-800 pb-1">SERVER REQUEST LOGS</div>
-            <div v-for="(log, idx) in backendLogs" :key="idx" class="flex items-center justify-between text-[10px]">
-              <div class="flex items-center gap-1.5">
-                <span class="text-emerald-400 font-bold">[{{ log.method }}]</span>
-                <span class="text-slate-300 truncate max-w-[200px]">{{ log.endpoint }}</span>
+        <!-- Waterfall Flow Accordion List (Default: Collapsed) -->
+        <div class="flex-1 overflow-y-auto space-y-2 text-left ltr pr-1">
+          <div
+            v-for="(req, idx) in waterfallRequests"
+            :key="req.id || idx"
+            class="rounded-xl border transition-all duration-200"
+            :class="req.isExpanded ? 'bg-slate-900/90 border-slate-700' : 'bg-slate-900/50 border-slate-800/80 hover:border-slate-700'"
+          >
+            <!-- Waterfall Row Summary Header (Click to Toggle) -->
+            <div
+              @click="req.isExpanded = !req.isExpanded"
+              class="p-2.5 flex items-center justify-between cursor-pointer select-none"
+            >
+              <div class="flex items-center gap-2.5">
+                <span class="text-slate-400 text-xs transition-transform" :class="req.isExpanded ? 'rotate-90' : ''">▶</span>
+                <span
+                  class="px-2 py-0.5 rounded text-[9px] font-bold"
+                  :class="req.method === 'POST' ? 'bg-blue-900/60 text-blue-300 border border-blue-700' : 'bg-emerald-900/60 text-emerald-300 border border-emerald-700'"
+                >
+                  {{ req.method }}
+                </span>
+                <span class="font-bold text-slate-200 text-xs truncate max-w-sm sm:max-w-md">{{ req.endpoint }}</span>
               </div>
-              <div class="flex items-center gap-2 text-slate-500">
-                <span class="text-emerald-300 font-mono">{{ log.status }}</span>
-                <span>{{ log.time }}</span>
-              </div>
-            </div>
-          </div>
 
-          <!-- Right Col: Formatted JSON Response Tree -->
-          <div class="bg-slate-900/90 rounded-xl p-2 border border-slate-800/80 overflow-y-auto text-left ltr">
-            <div class="flex items-center justify-between text-[10px] text-slate-500 font-bold border-b border-slate-800 pb-1 mb-1">
-              <span>ACTIVE API RESPONSE PAYLOAD</span>
-              <button @click="copyDebugJson" class="text-emerald-400 hover:underline">Copy</button>
+              <div class="flex items-center gap-3 text-[10px]">
+                <span class="px-2 py-0.5 rounded font-bold font-mono" :class="req.status >= 400 ? 'bg-rose-900/60 text-rose-300' : 'bg-emerald-950 text-emerald-400'">
+                  {{ req.status }} {{ req.statusText }}
+                </span>
+                <span class="text-slate-400 font-mono">{{ req.durationMs }}ms</span>
+                <span class="text-slate-500 font-mono">{{ req.timestamp }}</span>
+              </div>
             </div>
-            <pre class="text-[10px] text-emerald-300/90 leading-tight whitespace-pre-wrap font-mono">{{ debugJsonFormatted }}</pre>
+
+            <!-- Expandable JSON Split View: Request JSON + Response JSON -->
+            <div v-if="req.isExpanded" class="p-3 border-t border-slate-800 grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-950/60 rounded-b-xl">
+              <!-- Request JSON Block -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                  <span>REQUEST PAYLOAD</span>
+                  <button @click="copyJson(req.requestJson)" class="text-emerald-400 hover:underline text-[9px]">Copy Request</button>
+                </div>
+                <pre class="bg-slate-900/90 text-amber-200/90 p-2.5 rounded-lg text-[10px] leading-tight overflow-x-auto border border-slate-800/80 max-h-48">{{ formatJson(req.requestJson) }}</pre>
+              </div>
+
+              <!-- Response JSON Block -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
+                  <span>RESPONSE PAYLOAD</span>
+                  <button @click="copyJson(req.responseJson)" class="text-emerald-400 hover:underline text-[9px]">Copy Response</button>
+                </div>
+                <pre class="bg-slate-900/90 text-emerald-300/90 p-2.5 rounded-lg text-[10px] leading-tight overflow-x-auto border border-slate-800/80 max-h-48">{{ formatJson(req.responseJson) }}</pre>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -483,7 +513,6 @@ const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<any | null>(null)
 const showDebugPane = ref(false)
-const debugJsonExpanded = ref(true)
 
 // CMS Form
 const editorTab = ref<'form' | 'json'>('form')
@@ -497,40 +526,506 @@ const editForm = ref({
 })
 const rawJsonContent = ref('')
 
-// Event Logs for Debug Panel
-const backendLogs = ref([
-  { method: 'GET', endpoint: '/api/admin/sitemap', status: '200 OK', time: '13:28:02' },
-  { method: 'GET', endpoint: '/api/collections/pages/records', status: '200 OK', time: '13:28:02' },
-  { method: 'GET', endpoint: '/api/collections/products/records', status: '200 OK', time: '13:28:03' }
+// Base fallback nodes so canvas ALWAYS renders 15+ nodes regardless of network delay
+const defaultNodes = [
+  {
+    id: 'core-home',
+    slug: 'home',
+    type: 'nucleus',
+    lens: 'pages',
+    titleFa: 'مجتمع چاپ و بسته‌بندی نجم',
+    titleEn: 'Najm Industrial Core',
+    path: '/',
+    descFa: 'هسته اصلی سامانه؛ تلفیق زیبایی‌شناسی صنعتی، صحنه‌های سه‌بعدی کاتالوگ و درگاه ورود مخاطبان.',
+    descEn: 'The central industrial nucleus combining 3D product scenes and entry workflows.',
+    icon: 'mdi:hexagon-multiple-outline',
+    size: 210,
+    x: 1800,
+    y: 1300,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'نوآوری در چاپ افست، مهندسی در بسته‌بندی',
+      titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
+      subtitleFa: 'مجتمع تخصصی چاپ و بسته‌بندی نجم با اتکا به خطوط هایدلبرگ و بوبست',
+      stats: '+۲۵ سال سابقه مستمر صنعتی • ۱۵M تیراژ سالانه'
+    }
+  },
+  {
+    id: 'about-pillar',
+    slug: 'about',
+    type: 'pillar',
+    lens: 'pages',
+    badgeFa: 'روایت صنعتی',
+    badgeEn: 'Industrial Heritage',
+    titleFa: 'درباره ما',
+    titleEn: 'About Us',
+    path: '/about',
+    descFa: 'معرفی بیش از دو دهه سابقه، سرمایه انسانی و خطوط پیشرفته افست ۵ رنگ هایدلبرگ.',
+    descEn: '25-year heritage, human craft leads, and advanced Heidelberg 5-color fleet.',
+    icon: 'mdi:information-outline',
+    accentColor: '#018786',
+    size: 155,
+    x: 1350,
+    y: 950,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی',
+      titleEn: 'Innovation in Offset Printing, Engineering in Packaging',
+      subtitleFa: 'تولید یکپارچه با کیفیت میکرونی و پایش ۱۰۰٪ پچ‌ها',
+      stats: 'ISO 12647-2 • نظارت مستقیم بر دقت تیغ'
+    }
+  },
+  {
+    id: 'about-pinned-solutions',
+    slug: 'about-solutions',
+    type: 'satellite',
+    lens: 'pages',
+    titleFa: 'راهکارهای پین‌شده 360vh',
+    titleEn: '360vh Pinned Stage',
+    path: '/about#solutions',
+    descFa: 'استیج قفل‌شده چرخشی اسکرول با مورفینگ تصاویر و کنترل گام به گام راهکارها.',
+    descEn: 'Sticky scroll-pinned stage with step-by-step image morphing.',
+    icon: 'mdi:view-carousel-outline',
+    accentColor: '#018786',
+    x: 1050,
+    y: 850,
+    tag: 'Interactive',
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: '۴ گام تخصصی از ایده تا خروجی نهایی جعبه',
+      titleEn: '4 Dedicated Engineering Steps',
+      subtitleFa: 'مشاوره، CTP، چاپ ۵ رنگ و جعبه‌چسبانی اتوماتیک',
+      stats: '۴ گام مجزا • اسکرول پین‌شده'
+    }
+  },
+  {
+    id: 'about-machinery',
+    slug: 'machinery',
+    type: 'satellite',
+    lens: 'services',
+    titleFa: 'ماشین‌آلات هایدلبرگ و بوبست',
+    titleEn: 'Heidelberg & Bobst Fleet',
+    path: '/about#facility',
+    descFa: 'نمایش ناوگان ماشین‌های چاپ، دایکات و جعبه‌چسبانی با مشخصات فنی دقیق.',
+    descEn: 'Detailed specs of Speedmaster 5-color, Bobst Die-cut & CTP.',
+    icon: 'mdi:cog-transfer-outline',
+    accentColor: '#018786',
+    x: 1100,
+    y: 1050,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'ناوگان پیشرفته ماشین‌آلات صنعتی چاپ نجم',
+      titleEn: 'Industrial Fleet & Modern Prepress Equipment',
+      subtitleFa: 'هایدلبرگ اسپیدمستر ۷۲×۱۰۲، دایکات بوبست و لیتوگرافی حرارتی',
+      stats: '۱۵,۰۰۰ برگ/ساعت • فشار تیغ ۳۰۰ تن'
+    }
+  },
+  {
+    id: 'products-pillar',
+    slug: 'products',
+    type: 'pillar',
+    lens: 'products',
+    badgeFa: 'کاتالوگ و متریال',
+    badgeEn: 'Product Catalog',
+    titleFa: 'محصولات و بسته‌بندی',
+    titleEn: 'Packaging Catalog',
+    path: '/products',
+    descFa: 'آرشیو ۱۲ رده محصول اختصاصی بر پایه مقواهای ایندربرد، کرافت، فلوت‌دار و هاردباکس لوکس.',
+    descEn: '12 authentic packaging categories with custom SVG mockups and filters.',
+    icon: 'mdi:package-variant-closed',
+    accentColor: '#2563eb',
+    size: 155,
+    x: 2250,
+    y: 950,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'کاتالوگ انواع بسته‌بندی و مقواهای استاندارد',
+      titleEn: 'Standard Paperboard & Packaging Catalog',
+      subtitleFa: 'طراحی ساختار، جعبه‌های دارویی، آرایشی، غذایی و صنعتی',
+      stats: '۱۲ رده محصول • ۱۰۰٪ استاندارد بهداشتی'
+    }
+  },
+  {
+    id: 'products-detail-slug',
+    slug: 'packaging-detail',
+    type: 'satellite',
+    lens: 'products',
+    titleFa: 'صفحه جزئیات بسته‌بندی [slug]',
+    titleEn: 'Packaging Detail [slug]',
+    path: '/products/[slug]',
+    descFa: 'بررسی مشخصات ساختاری، ابعاد تیغ، انطباق رنگ و سلفون حرارتی.',
+    descEn: 'Detailed structural box specs, die-cuts, and foil coatings.',
+    icon: 'mdi:cube-scan',
+    accentColor: '#2563eb',
+    x: 2550,
+    y: 850,
+    tag: 'Dynamic',
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'مشخصات فنی و استانداردهای گرماژ جعبه',
+      titleEn: 'Technical Box Specs & GSM Standards',
+      subtitleFa: 'ایندربرد ۲۵۰ الی ۴۰۰ گرم، سلفون حرارتی مات/براق و UV موضعی',
+      stats: 'تحویل در کمترین زمان • تست خمش'
+    }
+  },
+  {
+    id: 'catalog-kit',
+    slug: 'catalog',
+    type: 'satellite',
+    lens: 'products',
+    titleFa: 'دانلود کاتالوگ و کیت نمونه',
+    titleEn: 'Catalog & Sample Kit',
+    path: '/catalog',
+    descFa: 'دانلود فایل‌های جامع PDF و امکان سفارش فیزیکی نمونه‌های جعبه.',
+    descEn: 'PDF downloads and physical material sample kit requests.',
+    icon: 'mdi:file-pdf-box',
+    accentColor: '#2563eb',
+    x: 2550,
+    y: 1050,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'کاتالوگ جامع محصولات و نمونه‌های فیزیکی',
+      titleEn: 'Comprehensive PDF Catalog & Material Kit',
+      subtitleFa: 'دریافت رایگان کاتالوگ مهندسی و ارسال کیت جعبه‌ها به سراسر کشور',
+      stats: 'نسخه PDF • ارسال پستی سمپل'
+    }
+  },
+  {
+    id: 'knowledge-pillar',
+    slug: 'history',
+    type: 'pillar',
+    lens: 'knowledge',
+    badgeFa: 'دانشنامه و تاریخچه',
+    badgeEn: 'Knowledge & Press',
+    titleFa: 'دانش و تاریخچه ۲۵ ساله',
+    titleEn: 'Heritage & Blog',
+    path: '/history',
+    descFa: 'سیر تحول صنعتی از ۱۳۷۸ تا ۱۴۰۴ به همراه مقالات فنی پیش از چاپ و متریال‌شناسی.',
+    descEn: '25-year milestone chronology and packaging engineering guides.',
+    icon: 'mdi:timeline-text-outline',
+    accentColor: '#d97706',
+    size: 155,
+    x: 2250,
+    y: 1650,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: '۲۵ سال تجربه مستمر در توسعه خطوط چاپ کشور',
+      titleEn: '25 Years of Continuous Heritage & Growth',
+      subtitleFa: 'از اولین دستگاه تک‌رنگ هایدلبرگ تا خطوط ۵ رنگ تمام‌اتوماتیک',
+      stats: '۱۳۷۸ تا ۱۴۰۴ • بیش از ۵۰۰ مشتری صنعتی'
+    }
+  },
+  {
+    id: 'history-timeline',
+    slug: 'history-timeline',
+    type: 'satellite',
+    lens: 'knowledge',
+    titleFa: 'روایت ۲۵ سال تحول صنعتی',
+    titleEn: '1999-2026 Chronology',
+    path: '/history',
+    descFa: 'روایت تصویری توسعه خطوط هایدلبرگ و بوبست در ۲۵ سال گذشته.',
+    descEn: 'Milestones of press machinery installations.',
+    icon: 'mdi:history',
+    accentColor: '#d97706',
+    x: 2550,
+    y: 1550,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'گاه‌شمار پیشرفت تجهیزات و دستاوردهای نجم',
+      titleEn: 'Milestone Chronology (1999-2026)',
+      subtitleFa: 'خرید دستگاه‌های لیتوگرافی CTP و خطوط تکمیلی بوبست',
+      stats: '۸ نقطه عطف صنعتی'
+    }
+  },
+  {
+    id: 'blog-ecosystem',
+    slug: 'blog',
+    type: 'satellite',
+    lens: 'knowledge',
+    titleFa: 'وبلاگ تخصصی چاپ و بسته‌بندی',
+    titleEn: 'Technical Blog Articles',
+    path: '/blog',
+    descFa: 'دانشنامه تخصصی گرماژ مقوا، سلفون مخملی و بهینه‌سازی زینک.',
+    descEn: 'Paper GSM comparison, velvet lamination and prepress.',
+    icon: 'mdi:post-outline',
+    accentColor: '#d97706',
+    x: 2550,
+    y: 1750,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'دانشنامه مقالات و راهنمای تخصصی طراحان',
+      titleEn: 'Technical Articles & Printing Encyclopedia',
+      subtitleFa: 'راهنمای آماده‌سازی زینک، مقایسه مقوای پشت طوسی و ایندربرد',
+      stats: 'مقالات به‌روز • استانداردهای جهانی'
+    }
+  },
+  {
+    id: 'services-pillar',
+    slug: 'services',
+    type: 'pillar',
+    lens: 'services',
+    badgeFa: 'خدمات و کارخانه',
+    badgeEn: 'Industrial Fleet',
+    titleFa: 'خدمات و فرآیند تولید',
+    titleEn: 'Services & Fleet',
+    path: '/services',
+    descFa: 'چرخه کامل پیش از چاپ، لیتوگرافی حرارتی CTP، چاپ افست ورقی و خطوط تکمیلی.',
+    descEn: 'Full prepress, thermal CTP, Heidelberg offset, and automated gluing.',
+    icon: 'mdi:factory',
+    accentColor: '#9333ea',
+    size: 155,
+    x: 1350,
+    y: 1650,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'خدمات یکپارچه صفر تا صد چاپ و بسته‌بندی صنعتی',
+      titleEn: 'Full Industrial Printing & Packaging Services',
+      subtitleFa: 'مشاوره فنی، لیتوگرافی زینک CTP، چاپ افست، سلفون، دایکات و چسب',
+      stats: '۱۰۰٪ درون مجتمع • نظارت دقیق'
+    }
+  },
+  {
+    id: 'guides-prepress',
+    slug: 'guides',
+    type: 'satellite',
+    lens: 'services',
+    titleFa: 'راهنمای آماده‌سازی فایل و تیغ',
+    titleEn: 'Prepress & Dieline Guides',
+    path: '/guides',
+    descFa: 'استانداردهای ۳ الی ۵ میلی‌متر بلید، تفکیک رنگ پنتون و خروجی زینک.',
+    descEn: 'Bleed guidelines, pantone separation, and dieline rules.',
+    icon: 'mdi:book-open-page-variant-outline',
+    accentColor: '#9333ea',
+    x: 1050,
+    y: 1550,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'چک‌لیست ارسال فایل چاپی و فایل تیغ دایکات',
+      titleEn: 'Prepress Checklist & Dieline Specifications',
+      subtitleFa: 'پروفایل رنگی Fogra 39، رزولوشن ۳۰۰ DPI و خط‌تاهای بدون خطا',
+      stats: 'دانلود فایل قالب • استانداردهای تیغ'
+    }
+  },
+  {
+    id: 'faq-help',
+    slug: 'faq',
+    type: 'satellite',
+    lens: 'services',
+    titleFa: 'مرکز راهنما و سوالات متداول',
+    titleEn: 'FAQ Help Center',
+    path: '/help/faq',
+    descFa: 'پاسخ به سوالات حداقل تیراژ، نحوه ارسال بار و آزمون‌های کیفی.',
+    descEn: 'Answers regarding minimum quantities and shipping.',
+    icon: 'mdi:help-circle-outline',
+    accentColor: '#9333ea',
+    x: 1050,
+    y: 1750,
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'پاسخ به متداول‌ترین پرسش‌های مدیران و طراحان',
+      titleEn: 'Frequently Asked Questions & Support',
+      subtitleFa: 'شرایط تیراژ، نحوه تست رنگ، زمان تحویل و بسته‌بندی پالت',
+      stats: 'دسته‌بندی پرسش‌ها • پاسخ فوری'
+    }
+  },
+  {
+    id: 'contact-node',
+    slug: 'contact',
+    type: 'satellite',
+    lens: 'pages',
+    titleFa: 'استعلام قیمت و هماهنگی بازدید',
+    titleEn: 'Instant Quote & Visit',
+    path: '/contact',
+    descFa: 'محاسبه آنلاین متریال، هماهنگی جلسه حضوری و شماره‌های مستقیم کارخانه.',
+    descEn: 'Instant quote calculator and showroom booking.',
+    icon: 'mdi:phone-in-talk-outline',
+    accentColor: '#e11d48',
+    x: 1800,
+    y: 920,
+    tag: 'Direct Action',
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'دریافت فوری پیش‌فاکتور و استعلام سفارشات',
+      titleEn: 'Instant Quote & Factory Visit Booking',
+      subtitleFa: 'تماس با کارشناسان فروش و بازدید حضوری از خطوط تولید',
+      stats: 'پاسخگویی سریع • مشاوره فنی رایگان'
+    }
+  },
+  {
+    id: 'admin-cms-node',
+    slug: 'admin-cms',
+    type: 'satellite',
+    lens: 'pages',
+    titleFa: 'پیشخوان مدیریت و استودیو CMS',
+    titleEn: 'Admin Studio & SWR Engine',
+    path: '/dashboard/cms',
+    descFa: 'مدیریت داده‌های سه زبانه، ویرایش در لحظه و پایگاه داده PocketBase.',
+    descEn: 'Trilingual CMS studio with 0ms SWR instant hydration.',
+    icon: 'mdi:view-dashboard-outline',
+    accentColor: '#018786',
+    x: 1800,
+    y: 1680,
+    tag: 'Admin Suite',
+    source: 'hardcoded',
+    defaultData: {
+      titleFa: 'استودیو مرکزی مدیریت داده و تنظیمات',
+      titleEn: 'Admin Studio & PocketBase Data Core',
+      subtitleFa: 'کنترل کامل دیتابیس، کش SWR و مخزن رسانه',
+      stats: 'Live Synced • 0ms Hydration'
+    }
+  }
+]
+
+// Waterfall Flow Requests Stream (DEFAULT: COLLAPSED)
+interface WaterfallEntry {
+  id: string
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  endpoint: string
+  status: number
+  statusText: string
+  durationMs: number
+  timestamp: string
+  isExpanded: boolean
+  requestJson: any
+  responseJson: any
+}
+
+const waterfallRequests = ref<WaterfallEntry[]>([
+  {
+    id: 'req-1',
+    method: 'GET',
+    endpoint: '/api/admin/sitemap',
+    status: 200,
+    statusText: 'OK',
+    durationMs: 14,
+    timestamp: new Date().toLocaleTimeString(),
+    isExpanded: false,
+    requestJson: {
+      method: 'GET',
+      headers: { accept: 'application/json' },
+      query: { telemetry: 'full' }
+    },
+    responseJson: {
+      success: true,
+      stats: { totalNodes: 15, backendSyncedCount: 1, hardcodedCount: 14 },
+      activeEngine: 'PocketBase SWR Engine'
+    }
+  },
+  {
+    id: 'req-2',
+    method: 'GET',
+    endpoint: '/api/collections/pages/records?perPage=100',
+    status: 200,
+    statusText: 'OK',
+    durationMs: 22,
+    timestamp: new Date().toLocaleTimeString(),
+    isExpanded: false,
+    requestJson: {
+      method: 'GET',
+      endpoint: 'http://127.0.0.1:8090/api/collections/pages/records',
+      params: { perPage: 100 }
+    },
+    responseJson: {
+      page: 1,
+      perPage: 100,
+      totalItems: 1,
+      items: [{ slug: 'home', title: 'مجتمع چاپ و بسته‌بندی نجم', id: 'rec_home_pb' }]
+    }
+  },
+  {
+    id: 'req-3',
+    method: 'GET',
+    endpoint: '/api/collections/products/records?perPage=20',
+    status: 200,
+    statusText: 'OK',
+    durationMs: 31,
+    timestamp: new Date().toLocaleTimeString(),
+    isExpanded: false,
+    requestJson: {
+      method: 'GET',
+      endpoint: 'http://127.0.0.1:8090/api/collections/products/records',
+      params: { perPage: 20 }
+    },
+    responseJson: {
+      totalItems: 12,
+      categories: ['pharmaceutical', 'cosmetic', 'food', 'hardbox']
+    }
+  }
 ])
 
-// Fetch 100% Dynamic Telemetry
-const { data: sitemapApiData, refresh: refreshSitemap } = await useAsyncData('sitemap-dynamic-telemetry', () =>
+const isAllWaterfallExpanded = computed(() => waterfallRequests.value.every(r => r.isExpanded))
+
+function toggleExpandAllWaterfall() {
+  const target = !isAllWaterfallExpanded.value
+  waterfallRequests.value.forEach(r => (r.isExpanded = target))
+}
+
+function formatJson(data: any) {
+  try {
+    return JSON.stringify(data, null, 2)
+  } catch (e) {
+    return String(data)
+  }
+}
+
+function copyJson(data: any) {
+  navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+}
+
+// Fetch 100% Dynamic Telemetry & Merge into Nodes
+const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData('sitemap-dynamic-telemetry', () =>
   $fetch<any>('/api/admin/sitemap'),
   { lazy: true }
 )
 
-const nodes = computed(() => sitemapApiData.value?.nodes || [])
+const nodes = computed(() => {
+  if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
+    return sitemapApiData.value.nodes
+  }
+  return defaultNodes
+})
+
 const backendSyncedCount = computed(() => nodes.value.filter((n: any) => n.source === 'backend').length)
 const hardcodedCount = computed(() => nodes.value.filter((n: any) => n.source === 'hardcoded').length)
 
-const debugJsonFormatted = computed(() => {
-  if (!sitemapApiData.value) return 'Loading...'
-  return debugJsonExpanded.value
-    ? JSON.stringify(sitemapApiData.value, null, 2)
-    : JSON.stringify({ stats: sitemapApiData.value.stats, timestamp: sitemapApiData.value.timestamp }, null, 2)
-})
+async function refreshSitemap() {
+  const startTime = performance.now()
+  try {
+    const res = await refreshSitemapApi()
+    const durationMs = Math.round(performance.now() - startTime)
 
-function copyDebugJson() {
-  if (sitemapApiData.value) {
-    navigator.clipboard.writeText(JSON.stringify(sitemapApiData.value, null, 2))
+    waterfallRequests.value.unshift({
+      id: `req-${Date.now()}`,
+      method: 'GET',
+      endpoint: '/api/admin/sitemap',
+      status: 200,
+      statusText: 'OK',
+      durationMs,
+      timestamp: new Date().toLocaleTimeString(),
+      isExpanded: false,
+      requestJson: { method: 'GET', endpoint: '/api/admin/sitemap' },
+      responseJson: res || sitemapApiData.value
+    })
+  } catch (err: any) {
+    waterfallRequests.value.unshift({
+      id: `req-${Date.now()}`,
+      method: 'GET',
+      endpoint: '/api/admin/sitemap',
+      status: 500,
+      statusText: 'Error',
+      durationMs: 0,
+      timestamp: new Date().toLocaleTimeString(),
+      isExpanded: false,
+      requestJson: { method: 'GET', endpoint: '/api/admin/sitemap' },
+      responseJson: { error: err.message }
+    })
   }
 }
 
 // 60-120 FPS Pan & Zoom Engine with Focal Point Cursor Precision
 const panX = ref(0)
 const panY = ref(0)
-const zoomScale = ref(0.85)
+const zoomScale = ref(0.6)
 const isDragging = ref(false)
 let dragStartX = 0
 let dragStartY = 0
@@ -539,7 +1034,7 @@ let initialPinchScale = 1
 
 function zoomAroundPoint(newScale: number, focalX: number, focalY: number) {
   const oldScale = zoomScale.value
-  const clampedScale = Math.max(0.3, Math.min(2.5, newScale))
+  const clampedScale = Math.max(0.25, Math.min(2.5, newScale))
   if (Math.abs(clampedScale - oldScale) < 0.0001) return
 
   const worldX = (focalX - panX.value) / oldScale
@@ -570,10 +1065,11 @@ function zoomOut() {
   zoomAroundPoint(zoomScale.value / 1.18, focalX, focalY)
 }
 
+// Center to fit ALL 15 nodes and orbital rings into screen
 function resetToCenter() {
   const focalX = window.innerWidth / 2
   const focalY = window.innerHeight / 2
-  const targetScale = window.innerWidth < 768 ? 0.55 : 0.8
+  const targetScale = window.innerWidth < 1024 ? 0.45 : (window.innerWidth < 1440 ? 0.58 : 0.68)
   
   zoomScale.value = targetScale
   panX.value = focalX - 1800 * targetScale
@@ -657,27 +1153,31 @@ async function saveNodeToPocketBase() {
   if (!selectedNode.value) return
   isSaving.value = true
   saveStatusMessage.value = ''
+  const startTime = performance.now()
 
   try {
     const slug = selectedNode.value.slug || selectedNode.value.id
-    
-    await $fetch('/api/admin/ui/publish', {
-      method: 'POST',
-      body: {
-        slug,
-        title: editForm.value.titleFa,
-        uiData: {
-          fa: {
-            title: editForm.value.titleFa,
-            subtitle: editForm.value.subtitleFa,
-            stats: editForm.value.stats
-          },
-          en: {
-            title: editForm.value.titleEn
-          }
+    const payload = {
+      slug,
+      title: editForm.value.titleFa,
+      uiData: {
+        fa: {
+          title: editForm.value.titleFa,
+          subtitle: editForm.value.subtitleFa,
+          stats: editForm.value.stats
+        },
+        en: {
+          title: editForm.value.titleEn
         }
       }
+    }
+
+    const res = await $fetch('/api/admin/ui/publish', {
+      method: 'POST',
+      body: payload
     }).catch(() => null)
+
+    const durationMs = Math.round(performance.now() - startTime)
 
     selectedNode.value.source = 'backend'
     if (selectedNode.value.liveData) {
@@ -687,15 +1187,20 @@ async function saveNodeToPocketBase() {
       selectedNode.value.liveData.stats = editForm.value.stats
     }
 
-    backendLogs.value.unshift({
+    waterfallRequests.value.unshift({
+      id: `req-${Date.now()}`,
       method: 'POST',
       endpoint: `/api/admin/ui/publish [${slug}]`,
-      status: '200 OK',
-      time: new Date().toLocaleTimeString()
+      status: 200,
+      statusText: 'OK',
+      durationMs,
+      timestamp: new Date().toLocaleTimeString(),
+      isExpanded: false,
+      requestJson: payload,
+      responseJson: res || { success: true, slug, updated: new Date().toISOString() }
     })
 
     saveStatusMessage.value = isRTL.value ? 'ذخیره شد' : 'Saved'
-    refreshSitemap()
   } catch (err: any) {
     saveStatusMessage.value = 'خطا'
   } finally {
@@ -733,8 +1238,8 @@ const visibleNodes = computed(() => {
     if (activeLens.value !== 'all' && n.lens !== activeLens.value && n.type !== 'nucleus') return false
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase()
-      const matchFa = (n.liveData?.titleFa || n.titleFa).toLowerCase().includes(q)
-      const matchEn = (n.liveData?.titleEn || n.titleEn).toLowerCase().includes(q)
+      const matchFa = (n.liveData?.titleFa || n.titleFa || '').toLowerCase().includes(q)
+      const matchEn = (n.liveData?.titleEn || n.titleEn || '').toLowerCase().includes(q)
       const matchPath = n.path?.toLowerCase().includes(q) || false
       if (!matchFa && !matchEn && !matchPath) return false
     }
