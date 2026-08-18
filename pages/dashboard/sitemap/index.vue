@@ -85,6 +85,82 @@
           <Icon :name="isAllLocked ? 'mdi:lock' : 'mdi:lock-open-variant-outline'" class="w-3.5 h-3.5" :class="isAllLocked ? 'text-amber-600' : 'text-slate-400'" />
         </button>
 
+        <!-- Spacing & Density Physics Tuner Button -->
+        <div class="relative">
+          <button
+            @click="showTuningPopover = !showTuningPopover"
+            class="w-8 h-8 rounded-xl border flex items-center justify-center shadow-2xs transition cursor-pointer"
+            :class="showTuningPopover ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'"
+            title="تنظیم فواصل و حریم دفع برخورد"
+          >
+            <Icon name="mdi:tune-variant" class="w-4 h-4" />
+          </button>
+
+          <!-- Tuning Glass Popover Panel -->
+          <transition name="fade">
+            <div
+              v-if="showTuningPopover"
+              class="absolute top-11 right-0 z-50 w-64 p-3.5 bg-white/95 backdrop-blur-xl rounded-2xl border border-slate-200 shadow-xl space-y-3 select-none text-slate-800 font-sans text-xs"
+              @click.stop
+            >
+              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                <span class="font-extrabold text-xs text-slate-900 flex items-center gap-1">
+                  <Icon name="mdi:tune" class="w-3.5 h-3.5 text-emerald-800" />
+                  <span>تنظیم فواصل و تراکم</span>
+                </span>
+                <button
+                  @click="resetTuningDefaults"
+                  class="text-[10px] text-emerald-800 hover:underline font-bold cursor-pointer"
+                >
+                  پیش‌فرض
+                </button>
+              </div>
+
+              <!-- 1. Spacing Multiplier Slider -->
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-[11px] font-bold">
+                  <span>گستردگی و فاصله (Spacing)</span>
+                  <span class="font-mono text-emerald-800">{{ Math.round(clusterSpacingScale * 100) }}%</span>
+                </div>
+                <input
+                  v-model.number="clusterSpacingScale"
+                  @input="onTuningChange"
+                  type="range"
+                  min="0.6"
+                  max="1.4"
+                  step="0.05"
+                  class="w-full accent-emerald-800 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
+                />
+                <div class="flex justify-between text-[9px] text-slate-400 font-mono">
+                  <span>فشرده (60%)</span>
+                  <span>گسترده (140%)</span>
+                </div>
+              </div>
+
+              <!-- 2. Repulsion Cushion Slider -->
+              <div class="space-y-1 pt-1 border-t border-slate-100">
+                <div class="flex items-center justify-between text-[11px] font-bold">
+                  <span>حریم دفع برخورد (Cushion)</span>
+                  <span class="font-mono text-emerald-800">{{ repulsionCushion }}px</span>
+                </div>
+                <input
+                  v-model.number="repulsionCushion"
+                  @input="onTuningChange"
+                  type="range"
+                  min="5"
+                  max="35"
+                  step="1"
+                  class="w-full accent-emerald-800 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
+                />
+                <div class="flex justify-between text-[9px] text-slate-400 font-mono">
+                  <span>نزدیک (5px)</span>
+                  <span>آرام (35px)</span>
+                </div>
+              </div>
+            </div>
+          </transition>
+        </div>
+
         <!-- Group Selector Chips -->
         <div class="hidden sm:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
@@ -739,6 +815,8 @@ function saveStateToLocalStorage() {
   if (typeof window === 'undefined') return
   try {
     localStorage.setItem('najm_sitemap_view_mode', currentViewMode.value)
+    localStorage.setItem('najm_sitemap_spacing', String(clusterSpacingScale.value))
+    localStorage.setItem('najm_sitemap_cushion', String(repulsionCushion.value))
     localStorage.setItem('najm_sitemap_folded', JSON.stringify([...foldedBranches.value]))
     localStorage.setItem('najm_sitemap_locked', JSON.stringify([...lockedNodes.value]))
     
@@ -757,6 +835,16 @@ function loadStateFromLocalStorage() {
     const savedMode = localStorage.getItem('najm_sitemap_view_mode')
     if (savedMode && ['constellation', 'tree', 'columns', 'radial'].includes(savedMode)) {
       currentViewMode.value = savedMode as any
+    }
+
+    const savedSpacing = localStorage.getItem('najm_sitemap_spacing')
+    if (savedSpacing) {
+      clusterSpacingScale.value = parseFloat(savedSpacing) || 1.0
+    }
+
+    const savedCushion = localStorage.getItem('najm_sitemap_cushion')
+    if (savedCushion) {
+      repulsionCushion.value = parseInt(savedCushion, 10) || 15
     }
 
     const folded = localStorage.getItem('najm_sitemap_folded')
@@ -934,11 +1022,29 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
 
 const rawDynamicNodes = ref<any[]>([])
 
-// PURE MATHEMATICAL LAYOUT ALGORITHMS (100% DYNAMIC GENERATION)
+// Physics & Spacing Tuner State
+const showTuningPopover = ref(false)
+const clusterSpacingScale = ref(1.0)
+const repulsionCushion = ref(15)
+
+function onTuningChange() {
+  applyLayoutCoordinates(currentViewMode.value)
+  saveStateToLocalStorage()
+}
+
+function resetTuningDefaults() {
+  clusterSpacingScale.value = 1.0
+  repulsionCushion.value = 15
+  applyLayoutCoordinates(currentViewMode.value)
+  saveStateToLocalStorage()
+}
+
+// PURE MATHEMATICAL LAYOUT ALGORITHMS WITH DYNAMIC SPACING SCALE
 function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'columns' | 'radial'): Record<string, { x: number, y: number }> {
   const posMap: Record<string, { x: number, y: number }> = {}
   const cx = stageBaseWidth / 2   // 550
   const cy = stageBaseHeight / 2  // 360
+  const scale = clusterSpacingScale.value
 
   const root = nodesList.find(n => n.depth === 0) || nodesList[0]
   if (!root) return posMap
@@ -954,7 +1060,7 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
     const n1 = depth1Nodes.length
     depth1Nodes.forEach((node, i) => {
       const angle = (i * (2 * Math.PI) / n1) - Math.PI / 2
-      const r1 = 230
+      const r1 = 230 * scale
       const px = cx + Math.cos(angle) * r1
       const py = cy + Math.sin(angle) * r1 * 0.85
       posMap[node.id] = { x: Math.round(px), y: Math.round(py) }
@@ -963,7 +1069,7 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
       const children = nodesList.filter(c => c.parentId === node.id)
       children.forEach((child, ci) => {
         const offsetAngle = angle + (ci - (children.length - 1) / 2) * 0.4
-        const r2 = r1 + 140
+        const r2 = r1 + 140 * scale
         const sx = cx + Math.cos(offsetAngle) * r2
         const sy = cy + Math.sin(offsetAngle) * r2 * 0.85
         posMap[child.id] = { x: Math.round(sx), y: Math.round(sy) }
@@ -973,31 +1079,31 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
     // Root direct satellites (menu, footer, login)
     const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
     rootSatellites.forEach((node, i) => {
-      const offset = (i - (rootSatellites.length - 1) / 2) * 160
-      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(cy + 240) }
+      const offset = (i - (rootSatellites.length - 1) / 2) * 160 * scale
+      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(cy + 240 * scale) }
     })
   } else if (mode === 'tree') {
     // Org Tree Hierarchy
-    posMap[root.id] = { x: cx, y: 95 }
+    posMap[root.id] = { x: cx, y: Math.round(95 * scale) }
 
     const n1 = depth1Nodes.length
-    const laneWidth = (stageBaseWidth - 100) / Math.max(1, n1)
+    const laneWidth = ((stageBaseWidth - 100) / Math.max(1, n1)) * Math.min(1.2, scale)
 
     depth1Nodes.forEach((node, i) => {
       const colCenterX = 50 + laneWidth * i + laneWidth / 2
-      posMap[node.id] = { x: Math.round(colCenterX), y: 270 }
+      posMap[node.id] = { x: Math.round(colCenterX), y: Math.round(270 * scale) }
 
       const children = nodesList.filter(c => c.parentId === node.id)
       children.forEach((child, ci) => {
-        const subOffset = (ci - (children.length - 1) / 2) * 140
-        posMap[child.id] = { x: Math.round(colCenterX + subOffset), y: 480 }
+        const subOffset = (ci - (children.length - 1) / 2) * 140 * scale
+        posMap[child.id] = { x: Math.round(colCenterX + subOffset), y: Math.round(480 * scale) }
       })
     })
 
     const rootSatellites = depth2Nodes.filter(n => n.parentId === root.id)
     rootSatellites.forEach((node, i) => {
-      const offset = (i - (rootSatellites.length - 1) / 2) * 160
-      posMap[node.id] = { x: Math.round(cx + offset), y: 620 }
+      const offset = (i - (rootSatellites.length - 1) / 2) * 160 * scale
+      posMap[node.id] = { x: Math.round(cx + offset), y: Math.round(620 * scale) }
     })
   } else if (mode === 'columns') {
     // Architectural Columns by Category
@@ -1009,7 +1115,7 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
       const groupNodes = nodesList.filter(n => getNodeGroup(n) === grp)
 
       groupNodes.forEach((node, rowIdx) => {
-        const rowY = 160 + rowIdx * 160
+        const rowY = 160 + rowIdx * 160 * scale
         posMap[node.id] = { x: Math.round(colX), y: Math.round(rowY) }
       })
     })
@@ -1020,7 +1126,7 @@ function computeLayoutMath(nodesList: any[], mode: 'constellation' | 'tree' | 'c
     const allNonRoot = nodesList.filter(n => n.id !== root.id)
     allNonRoot.forEach((node, i) => {
       const angle = (i * (2 * Math.PI) / allNonRoot.length) - Math.PI / 2
-      const radius = node.depth === 1 ? 220 : 310
+      const radius = (node.depth === 1 ? 220 : 310) * scale
       const rx = cx + Math.cos(angle) * radius
       const ry = cy + Math.sin(angle) * radius * 0.8
       posMap[node.id] = { x: Math.round(rx), y: Math.round(ry) }
@@ -1193,11 +1299,11 @@ function getNodeRadius(node: any): number {
 function smartRepulseOverlap(activeNode: any) {
   const rA = getNodeRadius(activeNode)
 
-  for (let iter = 0; iter < 4; iter++) {
+  for (let iter = 0; iter < 3; iter++) {
     for (const other of rawDynamicNodes.value) {
       if (other.id === activeNode.id) continue
       const rB = getNodeRadius(other)
-      const minDist = rA + rB + 20
+      const minDist = rA + rB + repulsionCushion.value
 
       const dx = other.currentX - activeNode.currentX
       const dy = other.currentY - activeNode.currentY
@@ -1207,9 +1313,10 @@ function smartRepulseOverlap(activeNode: any) {
         const overlap = minDist - dist
         const nx = dx / dist
         const ny = dy / dist
+        const pushDist = Math.min(22, Math.round(overlap * 0.35))
 
-        other.currentX = Math.round(Math.min(stageBaseWidth - 80, Math.max(80, other.currentX + nx * overlap * 0.75)))
-        other.currentY = Math.round(Math.min(stageBaseHeight - 60, Math.max(60, other.currentY + ny * overlap * 0.75)))
+        other.currentX = Math.min(stageBaseWidth - 80, Math.max(80, other.currentX + nx * pushDist))
+        other.currentY = Math.min(stageBaseHeight - 60, Math.max(60, other.currentY + ny * pushDist))
       }
     }
   }
