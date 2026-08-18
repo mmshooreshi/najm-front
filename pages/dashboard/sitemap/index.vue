@@ -396,8 +396,8 @@
             </div>
           </div>
 
-          <!-- ENGINE 1: SMART VISUAL ROWS WITH COLOR & MEDIA PICKERS -->
-          <div v-if="studioEngine === 'visual-rows'" class="flex-1 p-4 overflow-y-auto space-y-2 bg-slate-50/50">
+          <!-- ENGINE 1: SMART VISUAL ROWS WITH COLOR & MEDIA PICKERS (100% Flush Rectangular Sheet) -->
+          <div v-if="studioEngine === 'visual-rows'" class="flex-1 p-0 overflow-y-auto bg-white">
             <JsonTreeRow
               v-for="k in schemaKeys"
               :key="k"

@@ -1,97 +1,85 @@
 <!-- components/dashboard/JsonTreeRow.vue -->
 <template>
-  <div class="font-sans text-xs select-text">
-    <!-- 1. PRIMITIVE VALUE ROW (Color, Media, String, Number, Boolean) -->
+  <div class="w-full font-sans text-xs select-text border-b border-slate-200/90 last:border-b-0">
+    <!-- 1. PRIMITIVE VALUE ROW (Full-Width Flush Rectangle) -->
     <div
       v-if="!isContainer"
-      class="group flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 px-3 py-2 rounded-xl transition-all duration-150 border"
+      class="w-full flex items-center justify-between px-4 py-2 transition-colors duration-100"
       :class="[
         isModified
-          ? 'bg-amber-50/80 border-amber-300 ring-1 ring-amber-300/50 text-amber-950 shadow-xs'
-          : 'bg-white hover:bg-slate-50/80 border-slate-200/80 text-slate-800 shadow-2xs'
+          ? 'bg-amber-50/90 text-amber-950 border-r-4 border-r-amber-500'
+          : 'bg-white hover:bg-slate-50/90 text-slate-800'
       ]"
     >
-      <!-- Left: Key Label & Type Pill -->
-      <div class="flex items-center gap-2 shrink-0 min-w-[140px] max-w-[240px] overflow-hidden">
+      <!-- Key Column -->
+      <div class="w-48 sm:w-60 shrink-0 flex items-center gap-2 overflow-hidden">
         <span
-          class="w-2 h-2 rounded-full shrink-0"
-          :class="isModified ? 'bg-amber-500 animate-pulse' : 'bg-slate-300'"
+          class="w-1.5 h-1.5 rounded-full shrink-0"
+          :class="isModified ? 'bg-amber-500' : 'bg-slate-300'"
         ></span>
 
         <span
-          class="font-bold text-xs truncate"
-          :class="isModified ? 'text-amber-900 font-extrabold' : 'text-slate-800'"
+          class="font-mono text-xs font-bold truncate text-slate-800"
+          :class="isModified ? 'text-amber-900 font-extrabold' : ''"
           :title="keyName"
         >
           {{ keyName }}
         </span>
 
-        <span class="px-1.5 py-0.2 rounded-md bg-slate-100 text-slate-500 text-[9px] font-mono uppercase font-bold shrink-0">
+        <span class="px-1.5 py-0.2 rounded bg-slate-100 text-slate-400 text-[9px] font-mono uppercase font-bold shrink-0">
           {{ valueType }}
         </span>
       </div>
 
-      <!-- Center: Smart Interactive Controls (Color, Media, Text, Number, Bool) -->
-      <div class="flex-1 flex items-center gap-2 min-w-[200px]">
+      <!-- Value Column (Flush Edge-to-Edge Input Controls) -->
+      <div class="flex-1 flex items-center gap-3 px-3 min-w-[200px]">
         <!-- A. SMART COLOR PICKER -->
-        <div v-if="isColorField" class="flex items-center gap-2 w-full max-w-xs">
-          <!-- Color Swatch & Native Color Input -->
-          <div class="relative w-7 h-7 rounded-lg overflow-hidden border border-slate-300 shadow-2xs shrink-0 cursor-pointer">
+        <div v-if="isColorField" class="flex items-center gap-2 w-full max-w-sm">
+          <div class="relative w-6 h-6 rounded-md overflow-hidden border border-slate-300 shadow-2xs shrink-0 cursor-pointer">
             <input
               type="color"
               :value="currentVal"
               @input="updateValue(($event.target as HTMLInputElement).value)"
               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <div
-              class="w-full h-full"
-              :style="{ backgroundColor: currentVal }"
-            ></div>
+            <div class="w-full h-full" :style="{ backgroundColor: currentVal }"></div>
           </div>
-
-          <!-- Hex Input -->
           <input
             type="text"
             :value="currentVal"
             @input="updateValue(($event.target as HTMLInputElement).value)"
-            class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg px-2.5 py-1 font-mono text-xs text-slate-800 focus:outline-none focus:border-emerald-500 transition shadow-2xs"
+            class="w-32 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-md px-2 py-1 font-mono text-xs text-slate-800 focus:outline-none focus:border-emerald-600 transition"
             placeholder="#000000"
           />
         </div>
 
-        <!-- B. SMART MEDIA & THUMBNAIL INSPECTOR -->
+        <!-- B. SMART MEDIA & THUMBNAIL -->
         <div v-else-if="isMediaField" class="flex items-center gap-2.5 w-full">
-          <!-- Interactive Thumbnail -->
           <div
             @click="openMediaPicker"
-            class="relative w-9 h-9 rounded-xl border border-slate-300 overflow-hidden bg-slate-100 shrink-0 cursor-pointer group/thumb shadow-2xs hover:border-emerald-500 transition"
-            title="کلیک برای پیش‌نمایش بزرگ و انتخاب رسانه"
+            class="relative w-8 h-8 rounded-md border border-slate-300 overflow-hidden bg-slate-100 shrink-0 cursor-pointer group/thumb hover:border-emerald-600 transition"
+            title="انتخاب و پیش‌نمایش رسانه"
           >
             <img
               :src="currentVal"
               alt="preview"
-              class="w-full h-full object-cover group-hover/thumb:scale-110 transition-transform duration-200"
+              class="w-full h-full object-cover group-hover/thumb:scale-110 transition-transform duration-150"
               @error="onImageError"
             />
-            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover/thumb:opacity-100 flex items-center justify-center text-white transition-opacity">
-              <Icon name="mdi:eye" class="w-4 h-4" />
-            </div>
           </div>
 
-          <!-- URL Input -->
           <input
             type="text"
             :value="currentVal"
             @input="updateValue(($event.target as HTMLInputElement).value)"
-            class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg px-2.5 py-1 font-mono text-xs text-slate-800 focus:outline-none focus:border-emerald-500 transition shadow-2xs truncate"
+            class="flex-1 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-md px-2.5 py-1 font-mono text-xs text-slate-800 focus:outline-none focus:border-emerald-600 transition truncate"
             placeholder="https://..."
           />
 
-          <!-- 1-Click Replace from Media Gallery -->
           <button
             type="button"
             @click="openMediaPicker"
-            class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs"
+            class="px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
           >
             <Icon name="mdi:image-multiple" class="w-3.5 h-3.5" />
             <span class="hidden sm:inline">گالری رسانه</span>
@@ -103,7 +91,7 @@
           v-else-if="valueType === 'boolean'"
           type="button"
           @click="updateValue(!currentVal)"
-          class="px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-2xs select-none border"
+          class="px-3 py-1 rounded-md text-xs font-bold transition flex items-center gap-2 cursor-pointer select-none border"
           :class="[
             currentVal
               ? 'bg-emerald-800 text-white border-emerald-700'
@@ -120,16 +108,16 @@
           type="number"
           :value="currentVal"
           @input="updateValue(Number(($event.target as HTMLInputElement).value))"
-          class="w-32 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg px-2.5 py-1 font-mono text-xs text-slate-800 focus:outline-none focus:border-emerald-500 transition shadow-2xs"
+          class="w-36 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-md px-2 py-1 font-mono text-xs text-slate-800 focus:outline-none focus:border-emerald-600 transition"
         />
 
-        <!-- E. MULTI-LINE TEXTAREA (For long content) -->
+        <!-- E. MULTI-LINE TEXTAREA -->
         <textarea
-          v-else-if="valueType === 'string' && String(currentVal).length > 50"
+          v-else-if="valueType === 'string' && String(currentVal).length > 60"
           :value="currentVal"
           @input="updateValue(($event.target as HTMLTextAreaElement).value)"
           rows="2"
-          class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg p-2 text-xs text-slate-800 focus:outline-none focus:border-emerald-500 transition shadow-2xs leading-relaxed"
+          class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-md p-1.5 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 transition leading-relaxed font-sans"
         ></textarea>
 
         <!-- F. STANDARD TEXT INPUT -->
@@ -138,21 +126,21 @@
           type="text"
           :value="currentVal"
           @input="updateValue(($event.target as HTMLInputElement).value)"
-          class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-800 focus:outline-none focus:border-emerald-500 transition shadow-2xs"
+          class="w-full bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-md px-2.5 py-1 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 transition font-sans"
         />
       </div>
 
-      <!-- Right: Modified Diff Indicator & 1-Click Undo -->
-      <div class="flex items-center gap-1.5 shrink-0">
+      <!-- Action Column (Undo & Modified Pill) -->
+      <div class="flex items-center gap-2 shrink-0">
         <div v-if="isModified" class="flex items-center gap-1.5">
-          <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-300">
-            تغییر یافته
+          <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold border border-amber-300">
+            تغییر
           </span>
           <button
             type="button"
             @click="undoValue"
-            class="px-2 py-0.5 rounded-md bg-white hover:bg-slate-100 text-amber-800 border border-amber-300 text-[10px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs"
-            title="بازگردانی به نسخه اصلی"
+            class="px-2 py-0.5 rounded bg-white hover:bg-slate-100 text-amber-900 border border-amber-300 text-[10px] font-bold transition flex items-center gap-1 cursor-pointer"
+            title="بازگردانی"
           >
             <span>↩ بازگردانی</span>
           </button>
@@ -160,30 +148,29 @@
       </div>
     </div>
 
-    <!-- 2. CONTAINER CARD (Object or Array) -->
-    <div v-else class="space-y-1.5 rounded-2xl bg-slate-50/60 p-2 border border-slate-200/80">
-      <!-- Container Header -->
+    <!-- 2. CONTAINER SECTION (Full-Width Flush Block) -->
+    <div v-else class="w-full flex flex-col">
+      <!-- Container Header Row -->
       <div
         @click="isOpen = !isOpen"
-        class="flex items-center justify-between px-3 py-2 rounded-xl transition-all duration-150 cursor-pointer select-none border"
+        class="w-full flex items-center justify-between px-4 py-2.5 transition-colors cursor-pointer select-none border-b border-slate-200/80"
         :class="[
           hasModifiedChildren
-            ? 'bg-amber-50 border-amber-300 text-amber-900 shadow-2xs'
-            : 'bg-white hover:bg-slate-100/70 border-slate-200 text-slate-800 shadow-2xs'
+            ? 'bg-amber-100/70 text-amber-950 font-bold border-r-4 border-r-amber-500'
+            : 'bg-slate-100 hover:bg-slate-200/70 text-slate-900'
         ]"
       >
-        <div class="flex items-center gap-2.5">
-          <!-- Chevron Indicator -->
+        <div class="flex items-center gap-2">
           <span
-            class="w-4 h-4 flex items-center justify-center rounded-md bg-slate-100 text-slate-600 transition-transform duration-150 text-[10px] font-bold"
-            :class="isOpen ? 'rotate-90 bg-emerald-100 text-emerald-800' : ''"
+            class="w-4 h-4 flex items-center justify-center text-slate-500 transition-transform duration-100 text-[9px] font-bold"
+            :class="isOpen ? 'rotate-90 text-emerald-800' : ''"
           >
             ▶
           </span>
 
-          <span class="font-extrabold text-xs text-slate-900">{{ keyName }}</span>
+          <span class="font-mono text-xs font-extrabold text-slate-900">{{ keyName }}</span>
 
-          <span class="px-2 py-0.2 rounded-md bg-slate-100 text-slate-600 text-[10px] font-bold font-mono">
+          <span class="px-1.5 py-0.2 rounded bg-white/80 border border-slate-300/80 text-slate-600 text-[10px] font-mono font-bold">
             {{ containerCountLabel }}
           </span>
         </div>
@@ -191,18 +178,18 @@
         <div class="flex items-center gap-2">
           <span
             v-if="hasModifiedChildren"
-            class="px-2 py-0.2 rounded-full bg-amber-100 text-amber-800 text-[9px] font-bold border border-amber-300"
+            class="px-2 py-0.2 rounded bg-amber-200 text-amber-900 text-[9px] font-bold"
           >
             دارای تغییرات
           </span>
-          <span class="text-slate-400 text-[11px] font-bold">{{ isOpen ? 'بستن' : 'نمایش' }}</span>
+          <span class="text-slate-500 text-[10px] font-bold">{{ isOpen ? 'بستن' : 'نمایش' }}</span>
         </div>
       </div>
 
-      <!-- Nested Container Children -->
+      <!-- Nested Children Stream (Full Width, Left Line Indentation) -->
       <div
         v-if="isOpen"
-        class="pl-4 pr-1 space-y-1.5 py-1"
+        class="w-full border-l-2 border-l-slate-200 pl-3 bg-white"
       >
         <JsonTreeRow
           v-for="childKey in childKeys"
@@ -217,7 +204,7 @@
       </div>
     </div>
 
-    <!-- Media Asset Picker & Editor Lightbox Modal -->
+    <!-- Media Asset Picker Lightbox Modal -->
     <MediaAssetModal
       :is-open="isMediaModalOpen"
       :initial-url="String(currentVal)"
@@ -271,7 +258,7 @@ const containerCountLabel = computed(() => {
   return '{' + childKeys.value.length + '}'
 })
 
-// Smart Field Type Detectors
+// Smart Field Detectors
 const isColorField = computed(() => {
   if (typeof props.currentVal !== 'string') return false
   const keyLower = props.keyName.toLowerCase()
@@ -327,6 +314,6 @@ function handleMediaSelect(newUrl: string) {
 
 function onImageError(e: Event) {
   const target = e.target as HTMLImageElement
-  target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f1f5f9"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="8" fill="%2394a3b8">Img</text></svg>'
+  target.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><rect width="24" height="24" fill="%23f1f5f9"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="8" fill="%2394a3b8">Img</text></svg>'
 }
 </script>
