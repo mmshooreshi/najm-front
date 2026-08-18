@@ -31,7 +31,7 @@
       </div>
 
       <!-- Center: 4 DYNAMIC VIEW MODES & RECURSIVE SUBTREE TOGGLES -->
-      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-1">
+      <div class="flex items-center gap-1.5 sm:gap-2 py-1">
         <!-- 4 Layout Engines -->
         <div class="flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
@@ -86,83 +86,18 @@
         </button>
 
         <!-- Spacing & Density Physics Tuner Button -->
-        <div class="relative">
-          <button
-            @click="showTuningPopover = !showTuningPopover"
-            class="w-8 h-8 rounded-xl border flex items-center justify-center shadow-2xs transition cursor-pointer"
-            :class="showTuningPopover ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'"
-            title="تنظیم فواصل و حریم دفع برخورد"
-          >
-            <Icon name="mdi:tune-variant" class="w-4 h-4" />
-          </button>
-
-          <!-- Tuning Glass Popover Panel -->
-          <transition name="fade">
-            <div
-              v-if="showTuningPopover"
-              class="absolute top-11 right-0 z-50 w-64 p-3.5 bg-white/95 backdrop-blur-xl rounded-2xl border border-slate-200 shadow-xl space-y-3 select-none text-slate-800 font-sans text-xs"
-              @click.stop
-            >
-              <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                <span class="font-extrabold text-xs text-slate-900 flex items-center gap-1">
-                  <Icon name="mdi:tune" class="w-3.5 h-3.5 text-emerald-800" />
-                  <span>تنظیم فواصل و تراکم</span>
-                </span>
-                <button
-                  @click="resetTuningDefaults"
-                  class="text-[10px] text-emerald-800 hover:underline font-bold cursor-pointer"
-                >
-                  پیش‌فرض
-                </button>
-              </div>
-
-              <!-- 1. Spacing Multiplier Slider -->
-              <div class="space-y-1">
-                <div class="flex items-center justify-between text-[11px] font-bold">
-                  <span>گستردگی و فاصله (Spacing)</span>
-                  <span class="font-mono text-emerald-800">{{ Math.round(clusterSpacingScale * 100) }}%</span>
-                </div>
-                <input
-                  v-model.number="clusterSpacingScale"
-                  @input="onTuningChange"
-                  type="range"
-                  min="0.6"
-                  max="1.4"
-                  step="0.05"
-                  class="w-full accent-emerald-800 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
-                />
-                <div class="flex justify-between text-[9px] text-slate-400 font-mono">
-                  <span>فشرده (60%)</span>
-                  <span>گسترده (140%)</span>
-                </div>
-              </div>
-
-              <!-- 2. Repulsion Cushion Slider -->
-              <div class="space-y-1 pt-1 border-t border-slate-100">
-                <div class="flex items-center justify-between text-[11px] font-bold">
-                  <span>حریم دفع برخورد (Cushion)</span>
-                  <span class="font-mono text-emerald-800">{{ repulsionCushion }}px</span>
-                </div>
-                <input
-                  v-model.number="repulsionCushion"
-                  @input="onTuningChange"
-                  type="range"
-                  min="5"
-                  max="35"
-                  step="1"
-                  class="w-full accent-emerald-800 cursor-pointer h-1.5 bg-slate-200 rounded-lg"
-                />
-                <div class="flex justify-between text-[9px] text-slate-400 font-mono">
-                  <span>نزدیک (5px)</span>
-                  <span>آرام (35px)</span>
-                </div>
-              </div>
-            </div>
-          </transition>
-        </div>
+        <button
+          @click="showTuningPanel = !showTuningPanel"
+          class="px-2.5 py-1 rounded-xl border flex items-center gap-1.5 shadow-2xs transition cursor-pointer font-bold text-xs"
+          :class="showTuningPanel ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'"
+          title="تنظیم فواصل و حریم دفع برخورد"
+        >
+          <Icon name="mdi:tune-variant" class="w-3.5 h-3.5" />
+          <span class="hidden sm:inline">فواصل: {{ Math.round(clusterSpacingScale * 100) }}%</span>
+        </button>
 
         <!-- Group Selector Chips -->
-        <div class="hidden sm:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
+        <div class="hidden lg:flex items-center bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold">
           <button
             @click="selectedGroup = 'all'"
             class="px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1"
@@ -474,6 +409,110 @@
         </div>
       </div>
     </div>
+
+    <!-- ALWAYS-VISIBLE FLOATING PHYSICS & SPACING TUNING DOCK -->
+    <transition name="fade">
+      <div
+        v-if="showTuningPanel"
+        class="fixed bottom-5 right-5 z-40 w-72 sm:w-80 p-4 bg-white/95 backdrop-blur-2xl rounded-3xl border border-slate-200/90 shadow-2xl space-y-3.5 text-slate-800 font-sans text-xs select-none"
+      >
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center">
+              <Icon name="mdi:tune-variant" class="w-3.5 h-3.5" />
+            </div>
+            <span class="font-extrabold text-xs text-slate-900">تنظیم فواصل و حریم دفع</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button
+              @click="resetTuningDefaults"
+              class="px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-[10px] cursor-pointer transition"
+            >
+              پیش‌فرض
+            </button>
+            <button
+              @click="showTuningPanel = false"
+              class="w-6 h-6 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center cursor-pointer transition"
+            >
+              <Icon name="mdi:close" class="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Spacing Multiplier Slider -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between font-bold text-xs">
+            <span class="text-slate-700">فاصله و گستردگی خوشه‌ها (Spacing)</span>
+            <span class="font-mono px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 font-extrabold">{{ Math.round(clusterSpacingScale * 100) }}%</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              @click="clusterSpacingScale = Math.max(0.5, +(clusterSpacingScale - 0.1).toFixed(2)); onTuningChange()"
+              class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center cursor-pointer"
+            >
+              -
+            </button>
+            <input
+              v-model.number="clusterSpacingScale"
+              @input="onTuningChange"
+              type="range"
+              min="0.5"
+              max="1.6"
+              step="0.05"
+              class="flex-1 accent-emerald-800 cursor-pointer h-2 bg-slate-200 rounded-lg"
+            />
+            <button
+              @click="clusterSpacingScale = Math.min(1.6, +(clusterSpacingScale + 0.1).toFixed(2)); onTuningChange()"
+              class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center cursor-pointer"
+            >
+              +
+            </button>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>فشرده (50%)</span>
+            <span>عادی (100%)</span>
+            <span>گسترده (160%)</span>
+          </div>
+        </div>
+
+        <!-- 2. Repulsion Cushion Slider -->
+        <div class="space-y-1.5 pt-2 border-t border-slate-100">
+          <div class="flex items-center justify-between font-bold text-xs">
+            <span class="text-slate-700">حریم دفع برخورد (Repulsion Cushion)</span>
+            <span class="font-mono px-2 py-0.5 rounded-md bg-blue-50 text-blue-800 font-extrabold">{{ repulsionCushion }}px</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              @click="repulsionCushion = Math.max(0, repulsionCushion - 5); onTuningChange()"
+              class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center cursor-pointer"
+            >
+              -
+            </button>
+            <input
+              v-model.number="repulsionCushion"
+              @input="onTuningChange"
+              type="range"
+              min="0"
+              max="40"
+              step="1"
+              class="flex-1 accent-emerald-800 cursor-pointer h-2 bg-slate-200 rounded-lg"
+            />
+            <button
+              @click="repulsionCushion = Math.min(40, repulsionCushion + 5); onTuningChange()"
+              class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center cursor-pointer"
+            >
+              +
+            </button>
+          </div>
+          <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+            <span>چسبیده (0px)</span>
+            <span>متعادل (15px)</span>
+            <span>باز (40px)</span>
+          </div>
+        </div>
+      </div>
+    </transition>
 
     <!-- 100/100 LIGHT MULTI-ENGINE STUDIO -->
     <transition name="fade">
@@ -1023,7 +1062,7 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
 const rawDynamicNodes = ref<any[]>([])
 
 // Physics & Spacing Tuner State
-const showTuningPopover = ref(false)
+const showTuningPanel = ref(false)
 const clusterSpacingScale = ref(1.0)
 const repulsionCushion = ref(15)
 
