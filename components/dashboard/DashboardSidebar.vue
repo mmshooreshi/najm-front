@@ -89,6 +89,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { labelFa: 'پیشخوان و آمار', labelEn: 'Dashboard', to: '/dashboard', icon: 'mdi:view-dashboard-outline' },
+  { labelFa: 'نقشه تعاملی اکوسیستم', labelEn: 'System Architecture Map', to: '/dashboard/map', icon: 'mdi:sitemap' },
   { labelFa: 'دیتابیس و رکوردها', labelEn: 'Database', to: '/dashboard/collections', icon: 'mdi:database-outline' },
   { labelFa: 'مخزن رسانه و فایل‌ها', labelEn: 'Media Lab', to: '/dashboard/media', icon: 'mdi:folder-multiple-image' },
   { labelFa: 'مدیریت محتوای صفحات', labelEn: 'Page CMS', to: '/dashboard/cms', icon: 'mdi:file-document-edit-outline' },
