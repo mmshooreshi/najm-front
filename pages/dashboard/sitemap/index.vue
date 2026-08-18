@@ -22,14 +22,14 @@
       <div class="flex items-center gap-2 pointer-events-auto shrink-0">
         <NuxtLink
           to="/dashboard"
-          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition whitespace-nowrap font-bold text-d4 cursor-pointer"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition whitespace-nowrap font-bold text-d4 cursor-pointer"
         >
           <Icon name="mdi:arrow-right" class="w-3.5 h-3.5" :class="isRTL ? '' : 'rotate-180'" />
           <span class="whitespace-nowrap">{{ isRTL ? 'پیشخوان' : 'Dashboard' }}</span>
         </NuxtLink>
 
         <!-- Compact Telemetry Status -->
-        <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-xs whitespace-nowrap">
+        <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-xs whitespace-nowrap">
           <div class="flex items-center gap-1.5 text-emerald-800 font-bold">
             <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse"></span>
             <span class="font-mono">{{ backendSyncedCount }} PB</span>
@@ -48,7 +48,7 @@
         </button>
 
         <!-- Quick Filter Pills -->
-        <div class="hidden md:flex items-center gap-0.5 bg-white/90 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-xs">
+        <div class="hidden md:flex items-center gap-0.5 bg-white/95 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-xs">
           <button
             v-for="lens in lenses"
             :key="lens.id"
@@ -70,12 +70,12 @@
             v-model="searchQuery"
             type="text"
             :placeholder="isRTL ? 'جستجو...' : 'Search...'"
-            class="w-full bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl pr-8 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-xs transition text-xs whitespace-nowrap"
+            class="w-full bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl pr-8 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-xs transition text-xs whitespace-nowrap"
           />
         </div>
 
         <!-- Zoom Stepper -->
-        <div class="flex items-center gap-0.5 bg-white/90 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-0.5 bg-white/95 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-xs">
           <button @click="zoomIn" class="p-1 rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
             <Icon name="mdi:plus" class="w-3.5 h-3.5" />
           </button>
@@ -85,14 +85,14 @@
           </button>
         </div>
 
-        <!-- Zero-Shift Dev Console Trigger -->
+        <!-- Dev Console Trigger -->
         <button
           @click="showDebugPane = !showDebugPane"
           class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border shadow-xs transition font-bold cursor-pointer whitespace-nowrap text-d4"
           :class="[
             showDebugPane
-              ? 'bg-slate-900 text-emerald-400 border-slate-900 shadow-md'
-              : 'bg-white/90 text-slate-700 border-slate-200 hover:bg-slate-100'
+              ? 'bg-emerald-800 text-white border-emerald-800 shadow-md'
+              : 'bg-white/95 text-slate-700 border-slate-200 hover:bg-slate-100'
           ]"
         >
           <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
@@ -318,46 +318,55 @@
       </div>
     </div>
 
-    <!-- BUTTER-SMOOTH MONOLITHIC JSON STUDIO -->
+    <!-- BRIGHT & CRISP LIGHT THEME JSON STUDIO -->
     <transition name="fade">
       <div
         v-if="showJsonStudio"
-        class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xl flex items-center justify-center p-2 sm:p-4 select-text"
+        class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 select-text font-sans"
       >
-        <div class="bg-[#070a12] text-slate-100 rounded-2xl border border-white/[0.08] shadow-[0_30px_90px_rgba(0,0,0,0.8)] w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden font-mono text-xs">
-          <!-- Studio Header Bar (Whisper-thin divider) -->
-          <div class="h-12 px-4 bg-[#0d121f] border-b border-white/[0.05] flex items-center justify-between shrink-0 select-none">
-            <div class="flex items-center gap-2.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="font-bold text-slate-200 text-xs">JSON SCHEMA STUDIO</span>
-              <span class="text-slate-600">•</span>
-              <span class="text-emerald-400 font-mono text-[11px] font-bold">
-                {{ activeStudioNode?.slug }}
-              </span>
-              <span
-                v-if="hasAnyModifications"
-                class="text-amber-400 text-[10px] font-bold"
-              >
-                (تغییرات زرد)
-              </span>
+        <div class="bg-white text-slate-800 rounded-3xl border border-slate-200 shadow-2xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden text-xs">
+          <!-- Studio Header Bar (Light Theme) -->
+          <div class="h-14 px-5 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center border border-emerald-200">
+                <Icon name="mdi:layers-triple-outline" class="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-slate-900 text-sm">استودیو ویرایش ساختار JSON</h3>
+                  <span class="px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold font-mono">
+                    {{ activeStudioNode?.slug }}
+                  </span>
+                  <span
+                    v-if="hasAnyModifications"
+                    class="px-2 py-0.2 rounded-full bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold"
+                  >
+                    تغییرات زرد (ذخیره‌نشده)
+                  </span>
+                </div>
+                <p class="text-[10px] text-slate-500">پشتیبانی از پالت‌های رنگ، پیش‌نمایش و تعویض رسانه‌ها، و حالت‌های Tree/Table/Code</p>
+              </div>
             </div>
 
             <!-- Multi-Engine & Actions -->
             <div class="flex items-center gap-2">
-              <div class="flex items-center bg-white/[0.04] p-0.5 rounded-lg text-[11px]">
-                <button
-                  @click="studioEngine = 'vanilla-editor'"
-                  class="px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1"
-                  :class="studioEngine === 'vanilla-editor' ? 'bg-white/[0.08] text-emerald-400' : 'text-slate-400 hover:text-slate-200'"
-                >
-                  <span>Vanilla Editor</span>
-                </button>
+              <div class="flex items-center bg-slate-200/80 p-0.5 rounded-xl text-[11px] font-bold">
                 <button
                   @click="studioEngine = 'visual-rows'"
-                  class="px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1"
-                  :class="studioEngine === 'visual-rows' ? 'bg-white/[0.08] text-emerald-400' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  :class="studioEngine === 'visual-rows' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
                 >
-                  <span>ردیف‌های هوشمند</span>
+                  <Icon name="mdi:palette-swatch" class="w-3.5 h-3.5 text-emerald-800" />
+                  <span>ردیف‌های هوشمند (رنگ و رسانه)</span>
+                </button>
+
+                <button
+                  @click="studioEngine = 'vanilla-editor'"
+                  class="px-3 py-1 rounded-lg transition cursor-pointer flex items-center gap-1"
+                  :class="studioEngine === 'vanilla-editor' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
+                >
+                  <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
+                  <span>Vanilla JSON Editor</span>
                 </button>
               </div>
 
@@ -365,38 +374,30 @@
               <button
                 v-if="hasAnyModifications"
                 @click="undoAllChanges"
-                class="px-2.5 py-1 rounded-lg text-amber-300 hover:bg-white/[0.04] text-[11px] transition cursor-pointer"
-                title="بازگردانی به نسخه اصلی"
+                class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer"
+                title="بازگردانی به نسخه اصلی سرور"
               >
-                ↩ بازگردانی
+                <span>↩ بازگردانی همه</span>
               </button>
 
               <button
                 @click="copyStudioJson"
-                class="px-2.5 py-1 rounded-lg text-slate-300 hover:bg-white/[0.04] text-[11px] transition cursor-pointer"
+                class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition cursor-pointer"
               >
-                {{ studioCopied ? 'کپی شد' : 'کپی' }}
+                {{ studioCopied ? 'کپی شد!' : 'کپی JSON' }}
               </button>
 
               <button
                 @click="showJsonStudio = false"
-                class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] cursor-pointer"
+                class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 cursor-pointer ml-1 transition"
               >
                 <Icon name="mdi:close" class="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          <!-- ENGINE 1: vanilla-jsoneditor (Jos de Jong) -->
-          <div v-if="studioEngine === 'vanilla-editor'" class="flex-1 bg-[#070a12] overflow-hidden">
-            <VanillaJsonEditor
-              v-model="currentWorkingSchema"
-              @change="onVanillaEditorChange"
-            />
-          </div>
-
-          <!-- ENGINE 2: BUTTERY SMOOTH STREAMLINE ROWS -->
-          <div v-else class="flex-1 p-3 overflow-y-auto space-y-0.5 bg-[#070a12]">
+          <!-- ENGINE 1: SMART VISUAL ROWS WITH COLOR & MEDIA PICKERS -->
+          <div v-if="studioEngine === 'visual-rows'" class="flex-1 p-4 overflow-y-auto space-y-2 bg-slate-50/50">
             <JsonTreeRow
               v-for="k in schemaKeys"
               :key="k"
@@ -409,21 +410,31 @@
             />
           </div>
 
+          <!-- ENGINE 2: vanilla-jsoneditor (Jos de Jong Light Pro) -->
+          <div v-else class="flex-1 bg-white overflow-hidden">
+            <VanillaJsonEditor
+              v-model="currentWorkingSchema"
+              @change="onVanillaEditorChange"
+            />
+          </div>
+
           <!-- Studio Footer with 1-Click Save to PocketBase -->
-          <div class="h-12 px-4 bg-[#0d121f] border-t border-white/[0.05] flex items-center justify-between shrink-0 select-none">
+          <div class="h-14 px-5 bg-slate-50 border-t border-slate-200 flex items-center justify-between shrink-0 select-none">
             <div class="flex items-center gap-2">
-              <span v-if="hasAnyModifications" class="text-amber-400 text-[11px]">
-                تغییرات ذخیره‌نشده در دیتابیس
+              <span v-if="hasAnyModifications" class="text-amber-800 text-xs font-bold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                <span>تغییرات آماده انتشار در پایگاه داده است</span>
               </span>
-              <span v-else class="text-emerald-400 text-[11px]">
-                همگام با PocketBase (65.108.80.205)
+              <span v-else class="text-emerald-800 text-xs font-bold flex items-center gap-1.5">
+                <Icon name="mdi:check-circle" class="w-4 h-4 text-emerald-600" />
+                <span>داده‌ها همگام با دیتابیس PocketBase هستند</span>
               </span>
             </div>
 
             <div class="flex items-center gap-2">
               <button
                 @click="showJsonStudio = false"
-                class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.04] text-xs transition cursor-pointer"
+                class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition cursor-pointer"
               >
                 بستن
               </button>
@@ -431,10 +442,10 @@
               <button
                 @click="saveWorkingSchemaToPocketBase"
                 :disabled="isStudioSaving"
-                class="px-4 py-1.5 rounded-lg bg-[#018786] hover:bg-emerald-600 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-md"
+                class="px-6 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-extrabold text-xs transition flex items-center gap-2 cursor-pointer shadow-xs disabled:opacity-50"
               >
-                <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3.5 h-3.5" :class="isStudioSaving ? 'animate-spin' : ''" />
-                <span>{{ isStudioSaving ? '...' : 'ذخیره در PocketBase' }}</span>
+                <Icon :name="isStudioSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-4 h-4" :class="isStudioSaving ? 'animate-spin' : ''" />
+                <span>{{ isStudioSaving ? 'در حال ذخیره...' : 'ذخیره و انتشار در PocketBase' }}</span>
               </button>
             </div>
           </div>
@@ -442,42 +453,42 @@
       </div>
     </transition>
 
-    <!-- ZERO-LAYOUT-SHIFT DOCKED PRO NETWORK & TELEMETRY INSPECTOR -->
+    <!-- BRIGHT LIGHT THEME TELEMETRY INSPECTOR DOCK -->
     <transition name="dock-slide">
       <div
         v-if="showDebugPane"
-        class="fixed bottom-0 inset-x-0 z-50 h-80 bg-[#070a12]/98 backdrop-blur-2xl border-t border-white/[0.06] shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col font-mono text-[11px] text-slate-200 select-text"
+        class="fixed bottom-0 inset-x-0 z-50 h-80 bg-white/98 backdrop-blur-2xl border-t border-slate-200 shadow-[0_-15px_40px_rgba(0,0,0,0.12)] flex flex-col font-sans text-xs text-slate-800 select-text"
       >
         <!-- Top Dock Bar -->
-        <div class="h-8 px-3 bg-[#0d121f] border-b border-white/[0.05] flex items-center justify-between shrink-0 select-none">
+        <div class="h-9 px-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0 select-none">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="font-bold text-emerald-400 text-xs">POCKETBASE NETWORK TELEMETRY</span>
-            <span class="text-slate-500 text-[10px]">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="font-bold text-emerald-800 text-xs">POCKETBASE NETWORK TELEMETRY</span>
+            <span class="px-2 py-0.2 rounded-full bg-slate-200/80 text-slate-600 text-[10px] font-mono font-bold">
               {{ waterfallRequests.length }} requests
             </span>
           </div>
 
           <div class="flex items-center gap-2">
-            <div class="flex items-center bg-white/[0.04] rounded-md p-0.5 text-[9px]">
+            <div class="flex items-center bg-slate-200/80 rounded-lg p-0.5 text-[10px] font-bold">
               <button
                 @click="logFilter = 'ALL'"
                 class="px-2 py-0.5 rounded transition"
-                :class="logFilter === 'ALL' ? 'bg-white/[0.08] text-white' : 'text-slate-400 hover:text-slate-200'"
+                :class="logFilter === 'ALL' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'"
               >
                 ALL
               </button>
               <button
                 @click="logFilter = 'GET'"
-                class="px-2 py-0.5 rounded transition text-emerald-400"
-                :class="logFilter === 'GET' ? 'bg-emerald-950/60 text-emerald-200' : 'opacity-70 hover:opacity-100'"
+                class="px-2 py-0.5 rounded transition text-emerald-800"
+                :class="logFilter === 'GET' ? 'bg-emerald-100 text-emerald-900 shadow-xs' : 'opacity-70 hover:opacity-100'"
               >
                 GET
               </button>
               <button
                 @click="logFilter = 'POST'"
-                class="px-2 py-0.5 rounded transition text-blue-400"
-                :class="logFilter === 'POST' ? 'bg-blue-950/60 text-blue-200' : 'opacity-70 hover:opacity-100'"
+                class="px-2 py-0.5 rounded transition text-blue-800"
+                :class="logFilter === 'POST' ? 'bg-blue-100 text-blue-900 shadow-xs' : 'opacity-70 hover:opacity-100'"
               >
                 POST
               </button>
@@ -485,7 +496,7 @@
 
             <button
               @click="refreshSitemap"
-              class="px-2.5 py-0.5 rounded bg-emerald-900/40 text-emerald-300 hover:bg-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1"
+              class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1 transition"
             >
               <Icon name="mdi:refresh" class="w-3 h-3" />
               <span>Fetch</span>
@@ -493,7 +504,7 @@
 
             <button
               @click="showDebugPane = false"
-              class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-white hover:bg-white/[0.04] cursor-pointer"
+              class="w-6 h-6 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-200 transition cursor-pointer"
               title="Close"
             >
               <Icon name="mdi:close" class="w-3.5 h-3.5" />
@@ -504,13 +515,13 @@
         <!-- Master-Detail Split Pane -->
         <div class="flex-1 flex overflow-hidden">
           <!-- Left: Waterfall Stream -->
-          <div class="w-72 sm:w-80 border-r border-white/[0.05] flex flex-col shrink-0 bg-[#070a12]">
-            <div class="p-1.5 border-b border-white/[0.04] bg-white/[0.01] flex items-center justify-between text-[9px] text-slate-400 select-none">
+          <div class="w-72 sm:w-80 border-r border-slate-200 flex flex-col shrink-0 bg-slate-50/60">
+            <div class="p-1.5 border-b border-slate-200 bg-white flex items-center justify-between text-[10px] text-slate-500 font-bold select-none">
               <span>REQUESTS</span>
-              <button @click="clearLogs" class="text-slate-500 hover:text-slate-300">Clear</button>
+              <button @click="clearLogs" class="text-slate-400 hover:text-slate-700">Clear</button>
             </div>
 
-            <div class="flex-1 overflow-y-auto divide-y divide-white/[0.03]">
+            <div class="flex-1 overflow-y-auto divide-y divide-slate-100">
               <div
                 v-for="req in filteredWaterfallRequests"
                 :key="req.id"
@@ -518,50 +529,50 @@
                 class="p-2 cursor-pointer transition-colors flex items-center justify-between select-none"
                 :class="[
                   activeRequestId === req.id
-                    ? 'bg-white/[0.06] text-white border-l-2 border-emerald-400'
-                    : 'hover:bg-white/[0.02] text-slate-400'
+                    ? 'bg-white text-slate-900 border-l-3 border-emerald-500 shadow-2xs font-bold'
+                    : 'hover:bg-white text-slate-600'
                 ]"
               >
                 <div class="flex items-center gap-1.5 overflow-hidden">
                   <span
-                    class="px-1 py-0.2 rounded text-[8px] font-bold shrink-0"
-                    :class="req.method === 'POST' ? 'bg-blue-950/60 text-blue-300' : 'bg-emerald-950/60 text-emerald-300'"
+                    class="px-1.5 py-0.2 rounded text-[8px] font-bold shrink-0 font-mono"
+                    :class="req.method === 'POST' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'"
                   >
                     {{ req.method }}
                   </span>
-                  <span class="text-[10px] truncate font-medium">{{ req.endpoint }}</span>
+                  <span class="text-[11px] truncate font-medium">{{ req.endpoint }}</span>
                 </div>
 
-                <div class="flex items-center gap-1.5 shrink-0 text-[9px]">
-                  <span :class="req.status >= 400 ? 'text-rose-400' : 'text-emerald-400'">{{ req.status }}</span>
-                  <span class="text-slate-600 font-mono">{{ req.durationMs }}ms</span>
+                <div class="flex items-center gap-1.5 shrink-0 text-[10px] font-mono">
+                  <span :class="req.status >= 400 ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'">{{ req.status }}</span>
+                  <span class="text-slate-400">{{ req.durationMs }}ms</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Right: Deep Tree Inspector (JsonLogViewer) -->
-          <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-[#070a12]">
-            <div class="h-8 px-3 border-b border-white/[0.05] flex items-center justify-between bg-[#0d121f] select-none">
+          <!-- Right: Deep Tree Inspector (JsonLogViewer Light) -->
+          <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-white">
+            <div class="h-8 px-3 border-b border-slate-200 flex items-center justify-between bg-slate-50 select-none">
               <div class="flex items-center gap-2">
                 <button
                   @click="activeDetailTab = 'response'"
-                  class="px-2 py-0.5 rounded text-[10px] transition cursor-pointer"
-                  :class="activeDetailTab === 'response' ? 'bg-white/[0.08] text-emerald-300' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-2.5 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer"
+                  :class="activeDetailTab === 'response' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'text-slate-600 hover:text-slate-900'"
                 >
-                  RESPONSE
+                  RESPONSE JSON
                 </button>
                 <button
                   @click="activeDetailTab = 'request'"
-                  class="px-2 py-0.5 rounded text-[10px] transition cursor-pointer"
-                  :class="activeDetailTab === 'request' ? 'bg-white/[0.08] text-blue-300' : 'text-slate-400 hover:text-slate-200'"
+                  class="px-2.5 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer"
+                  :class="activeDetailTab === 'request' ? 'bg-blue-100 text-blue-900 border border-blue-300' : 'text-slate-600 hover:text-slate-900'"
                 >
-                  REQUEST
+                  REQUEST PAYLOAD
                 </button>
               </div>
             </div>
 
-            <!-- Butter JSON Tree Log Viewer -->
+            <!-- Light JSON Tree Log Viewer -->
             <div class="flex-1 overflow-hidden">
               <JsonLogViewer
                 v-if="activeDetailTab === 'response'"
@@ -603,7 +614,7 @@ const showDebugPane = ref(false)
 // Multi-Package JSON Schema Studio State
 const showJsonStudio = ref(false)
 const activeStudioNode = ref<any | null>(null)
-const studioEngine = ref<'vanilla-editor' | 'visual-rows'>('vanilla-editor')
+const studioEngine = ref<'visual-rows' | 'vanilla-editor'>('visual-rows')
 const originalBaselineSchema = ref<Record<string, any>>({})
 const currentWorkingSchema = ref<Record<string, any>>({})
 const studioCopied = ref(false)

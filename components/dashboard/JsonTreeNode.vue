@@ -1,25 +1,25 @@
 <!-- components/dashboard/JsonTreeNode.vue -->
 <template>
-  <div class="font-mono text-[11px] leading-relaxed select-text">
+  <div class="font-mono text-xs leading-relaxed select-text">
     <!-- 1. CONTAINER NODE (Object or Array) -->
     <div v-if="isContainer" class="space-y-0.5">
       <!-- Container Header -->
       <div
         @click="isOpen = !isOpen"
-        class="inline-flex items-center gap-1.5 py-0.5 px-1 rounded hover:bg-white/[0.04] cursor-pointer group select-none transition-colors"
+        class="inline-flex items-center gap-1.5 py-0.5 px-1.5 rounded-lg hover:bg-slate-100 cursor-pointer group select-none transition-colors"
       >
         <span
-          class="w-3.5 h-3.5 flex items-center justify-center text-slate-500 group-hover:text-emerald-400 transition-transform duration-100 text-[9px]"
-          :class="isOpen ? 'rotate-90 text-slate-400' : ''"
+          class="w-3.5 h-3.5 flex items-center justify-center text-slate-400 group-hover:text-emerald-800 transition-transform duration-100 text-[9px]"
+          :class="isOpen ? 'rotate-90 text-slate-700' : ''"
         >
           ▶
         </span>
 
         <!-- Key Name -->
-        <span class="text-sky-300/90 font-medium group-hover:text-sky-200">{{ keyName }}:</span>
+        <span class="text-sky-700 font-bold group-hover:text-sky-900">{{ keyName }}:</span>
 
         <!-- Preview when collapsed -->
-        <span v-if="!isOpen" class="text-slate-500 text-[10px]">
+        <span v-if="!isOpen" class="text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200 text-[10px]">
           {{ collapsedLabel }}
         </span>
         <span v-else class="text-slate-500 font-bold">
@@ -30,7 +30,7 @@
       <!-- Nested Children -->
       <div
         v-if="isOpen"
-        class="pl-3.5 ml-1.5 border-l border-white/[0.06] space-y-0.5 py-0.5"
+        class="pl-4 ml-1.5 border-l border-slate-200 space-y-0.5 py-0.5"
       >
         <JsonTreeNode
           v-for="ck in childKeys"
@@ -42,7 +42,7 @@
         />
       </div>
 
-      <div v-if="isOpen" class="text-slate-600 pl-3.5 text-[10px]">
+      <div v-if="isOpen" class="text-slate-400 pl-4 text-[11px] font-bold">
         {{ isArray ? ']' : '}' }}
       </div>
     </div>
@@ -50,24 +50,33 @@
     <!-- 2. PRIMITIVE LEAF NODE -->
     <div
       v-else
-      class="flex items-center gap-1.5 py-0.5 px-1 rounded hover:bg-white/[0.03] group"
+      class="flex items-center gap-1.5 py-0.5 px-1.5 rounded hover:bg-slate-50 group"
     >
       <span class="w-3.5"></span>
-      <span class="text-sky-300/80 font-medium">{{ keyName }}:</span>
+      <span class="text-sky-700 font-semibold">{{ keyName }}:</span>
 
-      <span v-if="valueType === 'string'" class="text-emerald-300 whitespace-pre-wrap break-all">
+      <!-- String -->
+      <span v-if="valueType === 'string'" class="text-emerald-700 font-medium whitespace-pre-wrap break-all">
         "{{ val }}"
       </span>
-      <span v-else-if="valueType === 'number'" class="text-orange-400 font-bold">
+
+      <!-- Number -->
+      <span v-else-if="valueType === 'number'" class="text-amber-700 font-bold">
         {{ val }}
       </span>
-      <span v-else-if="valueType === 'boolean'" class="text-purple-400 font-bold">
+
+      <!-- Boolean -->
+      <span v-else-if="valueType === 'boolean'" class="text-violet-700 font-extrabold">
         {{ val }}
       </span>
-      <span v-else-if="valueType === 'null'" class="text-rose-400 font-bold italic">
+
+      <!-- Null -->
+      <span v-else-if="valueType === 'null'" class="text-rose-700 font-bold italic">
         null
       </span>
-      <span v-else class="text-slate-300">
+
+      <!-- Fallback -->
+      <span v-else class="text-slate-800">
         {{ String(val) }}
       </span>
     </div>
