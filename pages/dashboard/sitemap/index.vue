@@ -47,12 +47,13 @@
       <div class="pointer-events-auto flex items-center gap-1.5 shrink-0">
         <button
           @click="resetToCenter"
-          class="px-3.5 py-1.5 rounded-xl bg-[#018786] hover:bg-emerald-800 text-white font-bold shadow-xs transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap active:scale-95 text-d4"
+          class="px-3 py-1.5 rounded-xl bg-[#018786] hover:bg-emerald-800 text-white font-bold shadow-xs transition flex items-center gap-1 cursor-pointer whitespace-nowrap active:scale-95 text-d4"
         >
           <Icon name="mdi:crosshairs-gps" class="w-3.5 h-3.5" />
-          <span class="whitespace-nowrap">{{ isRTL ? 'مرکز کل' : 'Fit All' }}</span>
+          <span class="whitespace-nowrap">{{ isRTL ? 'مرکز' : 'Center' }}</span>
         </button>
 
+        <!-- Quick Filter Pills -->
         <div class="hidden md:flex items-center gap-0.5 bg-white/90 backdrop-blur-md p-0.5 rounded-xl border border-slate-200 shadow-xs">
           <button
             v-for="lens in lenses"
@@ -66,16 +67,16 @@
         </div>
       </div>
 
-      <!-- Right: Search, Zoom & Telemetry Console Trigger -->
+      <!-- Right: Search, Zoom & Console Trigger -->
       <div class="flex items-center gap-1.5 pointer-events-auto shrink-0">
         <!-- Search Input -->
-        <div class="relative w-36 sm:w-44">
+        <div class="relative w-32 sm:w-40">
           <Icon name="mdi:magnify" class="absolute right-2.5 top-2 w-3.5 h-3.5 text-slate-400" />
           <input
             v-model="searchQuery"
             type="text"
             :placeholder="isRTL ? 'جستجو...' : 'Search...'"
-            class="w-full bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl pr-8 pl-2.5 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-xs transition text-xs whitespace-nowrap"
+            class="w-full bg-white/90 backdrop-blur-md border border-slate-200 rounded-xl pr-8 pl-2 py-1 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#018786] shadow-xs transition text-xs whitespace-nowrap"
           />
         </div>
 
@@ -93,7 +94,7 @@
         <!-- Zero-Shift Dev Console Trigger -->
         <button
           @click="showDebugPane = !showDebugPane"
-          class="flex items-center gap-1 px-3 py-1.5 rounded-xl border shadow-xs transition font-bold cursor-pointer whitespace-nowrap text-d4"
+          class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border shadow-xs transition font-bold cursor-pointer whitespace-nowrap text-d4"
           :class="[
             showDebugPane
               ? 'bg-slate-900 text-emerald-400 border-slate-900 shadow-md'
@@ -101,13 +102,13 @@
           ]"
         >
           <Icon name="mdi:code-json" class="w-3.5 h-3.5" />
-          <span class="whitespace-nowrap">{{ isRTL ? 'لاگ شبکه' : 'Network Logs' }}</span>
+          <span class="whitespace-nowrap">{{ isRTL ? 'شبکه' : 'Logs' }}</span>
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
         </button>
       </div>
     </header>
 
-    <!-- Infinite Spatial Canvas Stage -->
+    <!-- Infinite Spatial Canvas Stage with Dragging Nodes -->
     <div
       ref="canvasStageRef"
       class="relative w-full h-full cursor-grab active:cursor-grabbing"
@@ -131,22 +132,22 @@
       >
         <!-- VECTOR SVG CONNECTION ARCS -->
         <svg class="absolute inset-0 w-[4200px] h-[3000px] pointer-events-none z-10 overflow-visible">
-          <!-- Concentric Orbital Guide Rings -->
-          <g opacity="0.15">
+          <!-- Concentric Orbital Rings -->
+          <g opacity="0.12">
             <circle cx="1800" cy="1300" r="320" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="6 6" />
             <circle cx="1800" cy="1300" r="620" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="8 8" />
             <circle cx="1800" cy="1300" r="950" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="10 10" />
           </g>
 
-          <!-- Vector Curved Paths -->
+          <!-- Dynamic Bezier Paths -->
           <g v-for="edge in visibleEdges" :key="`${edge.from}-${edge.to}`">
             <path
               :d="getEdgePath(edge)"
               fill="none"
-              :stroke="isEdgeActive(edge) ? edgeColor(edge.color, 0.2) : 'rgba(203, 213, 225, 0.5)'"
-              :stroke-width="isEdgeActive(edge) ? 6 : 1.5"
+              :stroke="isEdgeActive(edge) ? edgeColor(edge.color, 0.2) : 'rgba(203, 213, 225, 0.45)'"
+              :stroke-width="isEdgeActive(edge) ? 5 : 1.2"
               stroke-linecap="round"
-              class="transition-all duration-300"
+              class="transition-all duration-200"
             />
             <path
               :d="getEdgePath(edge)"
@@ -154,11 +155,11 @@
               :stroke="isEdgeActive(edge) ? edgeColor(edge.color, 1) : '#94a3b8'"
               :stroke-width="isEdgeActive(edge) ? 2 : 1"
               stroke-linecap="round"
-              class="transition-all duration-300"
+              class="transition-all duration-200"
             />
             <circle
               v-if="isEdgeActive(edge)"
-              r="3.5"
+              r="3"
               :fill="edgeColor(edge.color, 1)"
             >
               <animateMotion
@@ -170,14 +171,15 @@
           </g>
         </svg>
 
-        <!-- COMPACT SPATIAL NODES -->
+        <!-- COMPACT INTERACTIVE SPATIAL NODES -->
         <div
           v-for="node in visibleNodes"
           :key="node.id"
-          @click.stop="selectNode(node)"
+          @mousedown.stop="startNodeDrag($event, node)"
+          @click.stop="toggleNodeSelect(node)"
           @mouseenter="hoveredNodeId = node.id"
           @mouseleave="hoveredNodeId = null"
-          class="absolute transition-all duration-300 cursor-pointer group z-20 whitespace-nowrap"
+          class="absolute transition-transform duration-200 cursor-pointer group z-20 whitespace-nowrap"
           :style="{
             left: `${node.x}px`,
             top: `${node.y}px`,
@@ -187,56 +189,56 @@
           <!-- 1. CORE SOLAR NUCLEUS -->
           <div
             v-if="node.type === 'nucleus'"
-            class="relative flex flex-col items-center justify-center rounded-full bg-white border-2 border-[#018786] shadow-xl p-4 transition-all duration-400 group-hover:scale-105"
-            :style="{ width: '160px', height: '160px' }"
+            class="relative flex flex-col items-center justify-center rounded-full bg-white border-2 border-[#018786] shadow-lg p-3 transition-all duration-300 group-hover:scale-105"
+            :style="{ width: '140px', height: '140px' }"
             :class="selectedNode?.id === node.id ? 'ring-4 ring-emerald-500/30 scale-105' : ''"
           >
             <span
-              class="absolute top-2 right-2 w-3 h-3 rounded-full border-2 border-white"
-              :class="node.source === 'backend' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)] animate-pulse' : 'bg-slate-400'"
+              class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full border border-white"
+              :class="node.source === 'backend' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse' : 'bg-slate-400'"
             ></span>
 
-            <div class="w-10 h-10 rounded-full bg-[#018786] text-white flex items-center justify-center shadow-md mb-1.5">
-              <Icon :name="node.icon" class="w-5 h-5" />
+            <div class="w-8 h-8 rounded-full bg-[#018786] text-white flex items-center justify-center shadow-xs mb-1">
+              <Icon :name="node.icon" class="w-4 h-4" />
             </div>
 
-            <span class="text-[9px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">CORE HUB</span>
-            <h2 class="text-xs font-extrabold text-slate-900 text-d4 truncate max-w-[130px] whitespace-nowrap text-center">
+            <span class="text-[8px] font-bold text-[#018786] font-mono whitespace-nowrap uppercase">CORE</span>
+            <h2 class="text-[11px] font-extrabold text-slate-900 text-d4 truncate max-w-[110px] whitespace-nowrap text-center">
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h2>
-            <span class="text-[9px] font-mono text-slate-400">/</span>
+            <span class="text-[8px] font-mono text-slate-400">/</span>
           </div>
 
           <!-- 2. PRIMARY PILLARS -->
           <div
             v-else-if="node.type === 'pillar'"
-            class="relative flex flex-col items-center justify-center rounded-full bg-white/95 backdrop-blur-md border shadow-md p-3.5 transition-all duration-300 group-hover:scale-105 text-center"
-            :style="{ width: '125px', height: '125px', borderColor: node.accentColor }"
+            class="relative flex flex-col items-center justify-center rounded-full bg-white/95 backdrop-blur-md border shadow-xs p-2.5 transition-all duration-200 group-hover:scale-105 text-center"
+            :style="{ width: '110px', height: '110px', borderColor: node.accentColor }"
             :class="[
               selectedNode?.id === node.id
-                ? 'ring-4 ring-emerald-500/20 scale-105 z-30'
+                ? 'ring-3 ring-emerald-500/20 scale-105 z-30'
                 : hoveredNodeId === node.id
                   ? 'scale-102 z-20'
                   : 'z-10'
             ]"
           >
             <span
-              class="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full border border-white"
+              class="absolute top-1 right-1 w-2 h-2 rounded-full border border-white"
               :class="node.source === 'backend' ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)] animate-pulse' : 'bg-slate-400'"
             ></span>
 
             <div
-              class="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs mb-1"
+              class="w-7 h-7 rounded-xl flex items-center justify-center text-white shadow-2xs mb-1"
               :style="{ backgroundColor: node.accentColor }"
             >
-              <Icon :name="node.icon" class="w-4 h-4" />
+              <Icon :name="node.icon" class="w-3.5 h-3.5" />
             </div>
 
-            <h3 class="text-[11px] font-extrabold text-slate-900 text-d4 truncate max-w-[100px] whitespace-nowrap">
+            <h3 class="text-[10px] font-extrabold text-slate-900 text-d4 truncate max-w-[90px] whitespace-nowrap">
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </h3>
 
-            <span class="text-[9px] font-mono text-slate-400 truncate max-w-[90px] whitespace-nowrap">
+            <span class="text-[8px] font-mono text-slate-400 truncate max-w-[80px] whitespace-nowrap">
               {{ node.path }}
             </span>
           </div>
@@ -244,164 +246,103 @@
           <!-- 3. SATELLITE ISLANDS -->
           <div
             v-else-if="node.type === 'satellite'"
-            class="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border shadow-xs transition-all duration-200 group-hover:scale-105 whitespace-nowrap"
+            class="relative flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md border shadow-2xs transition-all duration-200 group-hover:scale-105 whitespace-nowrap"
             :style="{ borderColor: node.accentColor ? `${node.accentColor}50` : '#e2e8f0' }"
             :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500 border-emerald-500 scale-105 z-30' : 'hover:border-slate-300 z-10'"
           >
             <span
-              class="w-2 h-2 rounded-full border border-white shrink-0"
+              class="w-1.5 h-1.5 rounded-full border border-white shrink-0"
               :class="node.source === 'backend' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"
             ></span>
 
             <div
-              class="w-5 h-5 rounded-lg flex items-center justify-center text-white text-[10px] shadow-2xs shrink-0"
+              class="w-4.5 h-4.5 rounded-md flex items-center justify-center text-white text-[9px] shadow-2xs shrink-0"
               :style="{ backgroundColor: node.accentColor || '#64748b' }"
             >
-              <Icon :name="node.icon" class="w-3 h-3" />
+              <Icon :name="node.icon" class="w-2.5 h-2.5" />
             </div>
 
-            <span class="text-[11px] font-bold text-slate-800 text-d4 whitespace-nowrap">
+            <span class="text-[10px] font-bold text-slate-800 text-d4 whitespace-nowrap">
               {{ isRTL ? (node.liveData?.titleFa || node.titleFa) : (node.liveData?.titleEn || node.titleEn) }}
             </span>
 
-            <span v-if="node.tag" class="text-[8px] font-bold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-500 whitespace-nowrap">
+            <span v-if="node.tag" class="text-[7px] font-bold px-1 py-0.2 rounded-full bg-slate-100 text-slate-500 whitespace-nowrap">
               {{ node.tag }}
             </span>
+          </div>
+
+          <!-- INLINE SPATIAL MICRO-EDITOR POPOVER (Appears directly pinned to node) -->
+          <div
+            v-if="selectedNode?.id === node.id"
+            @click.stop
+            @mousedown.stop
+            class="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 w-72 bg-white/98 backdrop-blur-2xl border border-slate-200 rounded-2xl shadow-xl p-3 text-slate-800 cursor-default"
+          >
+            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2">
+              <div class="flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full" :class="selectedNode.source === 'backend' ? 'bg-emerald-500' : 'bg-slate-400'"></span>
+                <span class="font-bold text-[10px] text-slate-800 text-d4">{{ isRTL ? 'تنظیم گره' : 'Tune Node' }}</span>
+              </div>
+              <button
+                @click.stop="selectedNode = null"
+                class="w-5 h-5 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 transition cursor-pointer"
+                title="بستن"
+              >
+                <Icon name="mdi:close" class="w-3 h-3" />
+              </button>
+            </div>
+
+            <div class="space-y-1.5 text-right">
+              <div>
+                <label class="text-[9px] font-bold text-slate-400 block">عنوان فارسی</label>
+                <input
+                  v-model="editForm.titleFa"
+                  type="text"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-800 focus:outline-none focus:border-[#018786]"
+                />
+              </div>
+              <div>
+                <label class="text-[9px] font-bold text-slate-400 block">عنوان انگلیسی</label>
+                <input
+                  v-model="editForm.titleEn"
+                  type="text"
+                  dir="ltr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-bold text-slate-800 focus:outline-none focus:border-[#018786] text-left"
+                />
+              </div>
+              <div>
+                <label class="text-[9px] font-bold text-slate-400 block">توضیح کوتاه</label>
+                <input
+                  v-model="editForm.subtitleFa"
+                  type="text"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-[10px] text-slate-700 focus:outline-none focus:border-[#018786]"
+                />
+              </div>
+            </div>
+
+            <div class="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-1.5">
+              <button
+                @click.stop="saveNodeToPocketBase"
+                :disabled="isSaving"
+                class="flex-1 py-1.5 rounded-lg bg-[#018786] hover:bg-emerald-800 text-white font-bold text-[10px] transition flex items-center justify-center gap-1 cursor-pointer disabled:opacity-50 text-d4"
+              >
+                <Icon :name="isSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3 h-3" :class="isSaving ? 'animate-spin' : ''" />
+                <span>{{ isSaving ? '...' : (isRTL ? 'ذخیره در دیتابیس' : 'Save PB') }}</span>
+              </button>
+
+              <NuxtLink
+                v-if="selectedNode.path && !selectedNode.path.includes('[')"
+                :to="selectedNode.path"
+                target="_blank"
+                class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center gap-0.5 text-d4"
+              >
+                <span>↗</span>
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- IN-PLACE CMS COMPACT DRAWER (Right) -->
-    <transition name="sheet-slide">
-      <div
-        v-if="selectedNode"
-        class="absolute inset-y-3 right-3 z-50 w-80 sm:w-96 bg-white/95 backdrop-blur-2xl border border-slate-200 rounded-2xl text-slate-800 shadow-xl p-4 flex flex-col justify-between overflow-y-auto"
-      >
-        <div class="space-y-3">
-          <!-- Header -->
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-            <div class="flex items-center gap-2">
-              <div
-                class="w-7 h-7 rounded-xl flex items-center justify-center text-white text-xs shadow-xs"
-                :style="{ backgroundColor: selectedNode.accentColor || '#018786' }"
-              >
-                <Icon :name="selectedNode.icon" class="w-4 h-4" />
-              </div>
-              <div>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[9px] font-mono font-bold text-slate-400">CMS</span>
-                  <span
-                    class="px-1.5 py-0.2 rounded-md text-[9px] font-bold flex items-center gap-1 whitespace-nowrap"
-                    :class="selectedNode.source === 'backend' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600'"
-                  >
-                    <span class="w-1.5 h-1.5 rounded-full" :class="selectedNode.source === 'backend' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></span>
-                    <span>{{ selectedNode.source === 'backend' ? 'Live PB' : 'Sample' }}</span>
-                  </span>
-                </div>
-                <div class="text-[10px] font-mono font-bold text-[#018786] truncate max-w-[140px]">{{ selectedNode.path || selectedNode.id }}</div>
-              </div>
-            </div>
-
-            <button @click="selectedNode = null" class="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-400">
-              <Icon name="mdi:close" class="w-4 h-4" />
-            </button>
-          </div>
-
-          <!-- Tabs -->
-          <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl text-[11px] font-bold">
-            <button
-              @click="editorTab = 'form'"
-              class="flex-1 py-1 rounded-lg transition cursor-pointer text-d4 whitespace-nowrap"
-              :class="editorTab === 'form' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500'"
-            >
-              {{ isRTL ? 'فیلدها' : 'Fields' }}
-            </button>
-            <button
-              @click="editorTab = 'json'"
-              class="flex-1 py-1 rounded-lg transition cursor-pointer text-d4 whitespace-nowrap"
-              :class="editorTab === 'json' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500'"
-            >
-              {{ isRTL ? 'اسکیما JSON' : 'JSON' }}
-            </button>
-          </div>
-
-          <!-- TAB 1: FORM -->
-          <div v-if="editorTab === 'form'" class="space-y-2.5 text-right">
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block mb-0.5">عنوان فارسی</label>
-              <input
-                v-model="editForm.titleFa"
-                type="text"
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#018786]"
-              />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block mb-0.5">عنوان انگلیسی</label>
-              <input
-                v-model="editForm.titleEn"
-                type="text"
-                dir="ltr"
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-bold focus:outline-none focus:border-[#018786] text-left"
-              />
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block mb-0.5">توضیح کوتاه</label>
-              <textarea
-                v-model="editForm.subtitleFa"
-                rows="2"
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-700 focus:outline-none focus:border-[#018786]"
-              ></textarea>
-            </div>
-            <div>
-              <label class="text-[10px] font-bold text-slate-400 block mb-0.5">آمار / مشخصه</label>
-              <input
-                v-model="editForm.stats"
-                type="text"
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-[#018786]"
-              />
-            </div>
-          </div>
-
-          <!-- TAB 2: JSON -->
-          <div v-else class="space-y-1 text-right">
-            <textarea
-              v-model="rawJsonContent"
-              rows="9"
-              dir="ltr"
-              class="w-full bg-slate-900 text-emerald-400 rounded-xl p-2 font-mono text-[10px] focus:outline-none text-left"
-            ></textarea>
-          </div>
-
-          <!-- Status Alert -->
-          <div v-if="saveStatusMessage" class="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5">
-            <Icon name="mdi:check-circle" class="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-            <span class="truncate">{{ saveStatusMessage }}</span>
-          </div>
-        </div>
-
-        <!-- Footer Actions -->
-        <div class="pt-3 border-t border-slate-100 flex gap-2">
-          <button
-            @click="saveNodeToPocketBase"
-            :disabled="isSaving"
-            class="flex-1 py-2.5 rounded-xl bg-[#018786] hover:bg-emerald-800 text-white font-bold text-xs transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 text-d4 whitespace-nowrap"
-          >
-            <Icon :name="isSaving ? 'mdi:loading' : 'mdi:cloud-upload'" class="w-3.5 h-3.5" :class="isSaving ? 'animate-spin' : ''" />
-            <span class="whitespace-nowrap">{{ isSaving ? '...' : (isRTL ? 'ذخیره در دیتابیس' : 'Save Live') }}</span>
-          </button>
-
-          <NuxtLink
-            v-if="selectedNode.path && !selectedNode.path.includes('[')"
-            :to="selectedNode.path"
-            target="_blank"
-            class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 text-d4 whitespace-nowrap"
-          >
-            <span>↗</span>
-          </NuxtLink>
-        </div>
-      </div>
-    </transition>
 
     <!-- ZERO-LAYOUT-SHIFT DOCKED PRO NETWORK & TELEMETRY INSPECTOR -->
     <transition name="dock-slide">
@@ -410,20 +351,18 @@
         class="fixed bottom-0 inset-x-0 z-50 h-80 bg-slate-950/98 backdrop-blur-2xl border-t border-slate-800 shadow-[0_-20px_60px_rgba(0,0,0,0.5)] flex flex-col font-mono text-[11px] text-slate-200 select-text"
       >
         <!-- Top Dock Controller Bar -->
-        <div class="h-10 px-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
-          <div class="flex items-center gap-3">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="font-bold text-emerald-400 text-xs">POCKETBASE TELEMETRY & NETWORK LOGS</span>
-            </div>
-            <span class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px]">
-              {{ waterfallRequests.length }} requests captured
+        <div class="h-9 px-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0 select-none">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-bold text-emerald-400 text-xs">POCKETBASE NETWORK TELEMETRY</span>
+            <span class="px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-400 text-[9px]">
+              {{ waterfallRequests.length }} requests
             </span>
           </div>
 
           <div class="flex items-center gap-2">
             <!-- Filter Method Pills -->
-            <div class="flex items-center bg-slate-800 rounded-lg p-0.5 text-[10px]">
+            <div class="flex items-center bg-slate-800 rounded-md p-0.5 text-[9px]">
               <button
                 @click="logFilter = 'ALL'"
                 class="px-2 py-0.5 rounded font-bold transition"
@@ -449,28 +388,28 @@
 
             <button
               @click="refreshSitemap"
-              class="px-3 py-1 rounded-lg bg-emerald-900/60 text-emerald-300 border border-emerald-700/80 hover:bg-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1"
+              class="px-2.5 py-1 rounded-md bg-emerald-900/60 text-emerald-300 border border-emerald-700/80 hover:bg-emerald-800 text-[10px] font-bold cursor-pointer flex items-center gap-1"
             >
-              <Icon name="mdi:refresh" class="w-3.5 h-3.5" />
-              <span>Fetch API</span>
+              <Icon name="mdi:refresh" class="w-3 h-3" />
+              <span>Fetch</span>
             </button>
 
             <button
               @click="showDebugPane = false"
-              class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
-              title="Close Console"
+              class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+              title="Close"
             >
-              <Icon name="mdi:close" class="w-4 h-4" />
+              <Icon name="mdi:close" class="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
         <!-- Master-Detail Split Pane (No Layout Shifts) -->
         <div class="flex-1 flex overflow-hidden">
-          <!-- Left: Fixed Waterfall Request Stream (w-96) -->
-          <div class="w-80 sm:w-96 border-r border-slate-800 flex flex-col shrink-0 bg-slate-950/80">
-            <div class="p-2 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[10px] text-slate-400 font-bold select-none">
-              <span>CHRONOLOGICAL REQUESTS</span>
+          <!-- Left: Fixed Waterfall Request Stream (w-80) -->
+          <div class="w-72 sm:w-80 border-r border-slate-800 flex flex-col shrink-0 bg-slate-950/80">
+            <div class="p-1.5 border-b border-slate-800/80 bg-slate-900/40 flex items-center justify-between text-[9px] text-slate-400 font-bold select-none">
+              <span>REQUEST TRACES</span>
               <button @click="clearLogs" class="text-slate-500 hover:text-slate-300">Clear</button>
             </div>
 
@@ -479,24 +418,24 @@
                 v-for="req in filteredWaterfallRequests"
                 :key="req.id"
                 @click="activeRequestId = req.id"
-                class="p-2.5 cursor-pointer transition-colors flex items-center justify-between select-none"
+                class="p-2 cursor-pointer transition-colors flex items-center justify-between select-none"
                 :class="[
                   activeRequestId === req.id
                     ? 'bg-slate-800/90 text-white border-l-2 border-emerald-400'
                     : 'hover:bg-slate-900/80 text-slate-300'
                 ]"
               >
-                <div class="flex items-center gap-2 overflow-hidden">
+                <div class="flex items-center gap-1.5 overflow-hidden">
                   <span
-                    class="px-1.5 py-0.5 rounded text-[9px] font-bold shrink-0"
+                    class="px-1 py-0.2 rounded text-[8px] font-bold shrink-0"
                     :class="req.method === 'POST' ? 'bg-blue-950 text-blue-300 border border-blue-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'"
                   >
                     {{ req.method }}
                   </span>
-                  <span class="font-bold text-[11px] truncate">{{ req.endpoint }}</span>
+                  <span class="font-bold text-[10px] truncate">{{ req.endpoint }}</span>
                 </div>
 
-                <div class="flex items-center gap-2 shrink-0 text-[10px]">
+                <div class="flex items-center gap-1.5 shrink-0 text-[9px]">
                   <span class="font-mono" :class="req.status >= 400 ? 'text-rose-400' : 'text-emerald-400'">{{ req.status }}</span>
                   <span class="text-slate-500 font-mono">{{ req.durationMs }}ms</span>
                 </div>
@@ -507,70 +446,63 @@
           <!-- Right: Selected Request Deep Inspector (Full JSON Payload Viewer) -->
           <div v-if="activeRequest" class="flex-1 flex flex-col overflow-hidden bg-slate-900/30">
             <!-- Inspector Header & Tab Switcher -->
-            <div class="p-2 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 select-none">
-              <div class="flex items-center gap-2">
+            <div class="p-1.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/80 select-none">
+              <div class="flex items-center gap-1.5">
                 <button
                   @click="activeDetailTab = 'response'"
-                  class="px-3 py-1 rounded-md font-bold text-[10px] transition cursor-pointer"
+                  class="px-2.5 py-0.5 rounded font-bold text-[9px] transition cursor-pointer"
                   :class="activeDetailTab === 'response' ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'text-slate-400 hover:text-slate-200'"
                 >
                   RESPONSE JSON
                 </button>
                 <button
                   @click="activeDetailTab = 'request'"
-                  class="px-3 py-1 rounded-md font-bold text-[10px] transition cursor-pointer"
+                  class="px-2.5 py-0.5 rounded font-bold text-[9px] transition cursor-pointer"
                   :class="activeDetailTab === 'request' ? 'bg-blue-950 text-blue-300 border border-blue-700' : 'text-slate-400 hover:text-slate-200'"
                 >
                   REQUEST PAYLOAD
                 </button>
                 <button
                   @click="activeDetailTab = 'headers'"
-                  class="px-3 py-1 rounded-md font-bold text-[10px] transition cursor-pointer"
+                  class="px-2.5 py-0.5 rounded font-bold text-[9px] transition cursor-pointer"
                   :class="activeDetailTab === 'headers' ? 'bg-slate-800 text-slate-200' : 'text-slate-400 hover:text-slate-200'"
                 >
-                  HEADERS & TIMING
+                  HEADERS
                 </button>
               </div>
 
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
                 <button
                   @click="copyActiveJson"
-                  class="px-2.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[10px] font-bold cursor-pointer"
+                  class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[9px] font-bold cursor-pointer"
                 >
-                  {{ copySuccess ? 'Copied!' : 'Copy Full JSON' }}
+                  {{ copySuccess ? 'Copied!' : 'Copy JSON' }}
                 </button>
               </div>
             </div>
 
             <!-- Inspector Body Viewer -->
-            <div class="flex-1 p-3 overflow-y-auto text-left ltr select-text">
+            <div class="flex-1 p-2.5 overflow-y-auto text-left ltr select-text">
               <!-- TAB 1: RESPONSE JSON -->
               <div v-if="activeDetailTab === 'response'">
-                <pre class="font-mono text-[11px] text-emerald-300/95 leading-relaxed whitespace-pre-wrap selection:bg-emerald-800 selection:text-white">{{ formatJson(activeRequest.responseJson) }}</pre>
+                <pre class="font-mono text-[10px] text-emerald-300/95 leading-relaxed whitespace-pre-wrap selection:bg-emerald-800 selection:text-white">{{ formatJson(activeRequest.responseJson) }}</pre>
               </div>
 
               <!-- TAB 2: REQUEST JSON -->
               <div v-else-if="activeDetailTab === 'request'">
-                <pre class="font-mono text-[11px] text-amber-200/95 leading-relaxed whitespace-pre-wrap selection:bg-amber-800 selection:text-white">{{ formatJson(activeRequest.requestJson) }}</pre>
+                <pre class="font-mono text-[10px] text-amber-200/95 leading-relaxed whitespace-pre-wrap selection:bg-amber-800 selection:text-white">{{ formatJson(activeRequest.requestJson) }}</pre>
               </div>
 
-              <!-- TAB 3: HEADERS & TIMING -->
-              <div v-else class="space-y-3">
-                <div class="space-y-1">
-                  <div class="text-[10px] font-bold text-slate-400">GENERAL OVERVIEW</div>
-                  <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1 font-mono text-[10px]">
-                    <div><span class="text-slate-500">Request URL:</span> <span class="text-slate-200">{{ activeRequest.endpoint }}</span></div>
-                    <div><span class="text-slate-500">Request Method:</span> <span class="text-emerald-400 font-bold">{{ activeRequest.method }}</span></div>
-                    <div><span class="text-slate-500">Status Code:</span> <span class="text-emerald-400">{{ activeRequest.status }} {{ activeRequest.statusText }}</span></div>
-                    <div><span class="text-slate-500">Response Duration:</span> <span class="text-slate-200">{{ activeRequest.durationMs }} ms</span></div>
-                    <div><span class="text-slate-500">Recorded At:</span> <span class="text-slate-400">{{ activeRequest.timestamp }}</span></div>
-                  </div>
+              <!-- TAB 3: HEADERS -->
+              <div v-else class="space-y-2">
+                <div class="p-2 rounded bg-slate-900 border border-slate-800 space-y-1 font-mono text-[9px]">
+                  <div><span class="text-slate-500">URL:</span> <span class="text-slate-200">{{ activeRequest.endpoint }}</span></div>
+                  <div><span class="text-slate-500">Method:</span> <span class="text-emerald-400 font-bold">{{ activeRequest.method }}</span></div>
+                  <div><span class="text-slate-500">Status:</span> <span class="text-emerald-400">{{ activeRequest.status }} {{ activeRequest.statusText }}</span></div>
+                  <div><span class="text-slate-500">Duration:</span> <span class="text-slate-200">{{ activeRequest.durationMs }} ms</span></div>
+                  <div><span class="text-slate-500">Time:</span> <span class="text-slate-400">{{ activeRequest.timestamp }}</span></div>
                 </div>
-
-                <div class="space-y-1">
-                  <div class="text-[10px] font-bold text-slate-400">REQUEST HEADERS</div>
-                  <pre class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 font-mono text-[10px]">{{ formatJson(activeRequest.headers || { 'Accept': 'application/json', 'Content-Type': 'application/json' }) }}</pre>
-                </div>
+                <pre class="p-2 rounded bg-slate-900 border border-slate-800 text-slate-300 font-mono text-[9px]">{{ formatJson(activeRequest.headers || { 'Accept': 'application/json', 'Content-Type': 'application/json' }) }}</pre>
               </div>
             </div>
           </div>
@@ -605,18 +537,43 @@ const logFilter = ref<'ALL' | 'GET' | 'POST'>('ALL')
 const copySuccess = ref(false)
 
 // CMS Form
-const editorTab = ref<'form' | 'json'>('form')
 const isSaving = ref(false)
-const saveStatusMessage = ref('')
 const editForm = ref({
   titleFa: '',
   titleEn: '',
-  subtitleFa: '',
-  stats: ''
+  subtitleFa: ''
 })
-const rawJsonContent = ref('')
 
-// Base fallback nodes
+// Dragging Nodes Live State
+let draggedNode: any = null
+let nodeDragStartX = 0
+let nodeDragStartY = 0
+let nodeInitialX = 0
+let nodeInitialY = 0
+
+function startNodeDrag(e: MouseEvent, node: any) {
+  draggedNode = node
+  nodeDragStartX = e.clientX
+  nodeDragStartY = e.clientY
+  nodeInitialX = node.x
+  nodeInitialY = node.y
+}
+
+function toggleNodeSelect(node: any) {
+  if (selectedNode.value?.id === node.id) {
+    selectedNode.value = null
+    return
+  }
+
+  selectedNode.value = node
+  editForm.value = {
+    titleFa: node.liveData?.titleFa || node.titleFa,
+    titleEn: node.liveData?.titleEn || node.titleEn,
+    subtitleFa: node.liveData?.subtitleFa || node.descFa
+  }
+}
+
+// Fallback baseline nodes
 const defaultNodes = [
   {
     id: 'core-home',
@@ -1106,12 +1063,15 @@ const { data: sitemapApiData, refresh: refreshSitemapApi } = await useAsyncData(
   { lazy: true }
 )
 
-const nodes = computed(() => {
+const dynamicNodesState = ref<any[]>(defaultNodes)
+
+watchEffect(() => {
   if (sitemapApiData.value?.nodes && sitemapApiData.value.nodes.length > 0) {
-    return sitemapApiData.value.nodes
+    dynamicNodesState.value = sitemapApiData.value.nodes
   }
-  return defaultNodes
 })
+
+const nodes = computed(() => dynamicNodesState.value)
 
 const backendSyncedCount = computed(() => nodes.value.filter((n: any) => n.source === 'backend').length)
 const hardcodedCount = computed(() => nodes.value.filter((n: any) => n.source === 'hardcoded').length)
@@ -1214,6 +1174,14 @@ function startDrag(e: MouseEvent) {
 }
 
 function onDrag(e: MouseEvent) {
+  if (draggedNode) {
+    const dx = (e.clientX - nodeDragStartX) / zoomScale.value
+    const dy = (e.clientY - nodeDragStartY) / zoomScale.value
+    draggedNode.x = nodeInitialX + dx
+    draggedNode.y = nodeInitialY + dy
+    return
+  }
+
   if (!isDragging.value) return
   panX.value = e.clientX - dragStartX
   panY.value = e.clientY - dragStartY
@@ -1250,6 +1218,7 @@ function onTouchDrag(e: TouchEvent) {
 
 function stopDrag() {
   isDragging.value = false
+  draggedNode = null
   initialPinchDistance = 0
 }
 
@@ -1259,30 +1228,9 @@ function onCanvasDblClick(e: MouseEvent) {
   }
 }
 
-function selectNode(node: any) {
-  selectedNode.value = node
-  saveStatusMessage.value = ''
-
-  editForm.value = {
-    titleFa: node.liveData?.titleFa || node.titleFa,
-    titleEn: node.liveData?.titleEn || node.titleEn,
-    subtitleFa: node.liveData?.subtitleFa || node.descFa,
-    stats: node.liveData?.stats || ''
-  }
-
-  rawJsonContent.value = JSON.stringify(node.liveData?.rawUiData || node.defaultData || {}, null, 2)
-
-  const targetScreenX = window.innerWidth > 1024 ? (window.innerWidth - 380) / 2 : window.innerWidth / 2
-  const targetScreenY = window.innerHeight / 2
-
-  panX.value = targetScreenX - node.x * zoomScale.value
-  panY.value = targetScreenY - node.y * zoomScale.value
-}
-
 async function saveNodeToPocketBase() {
   if (!selectedNode.value) return
   isSaving.value = true
-  saveStatusMessage.value = ''
   const startTime = performance.now()
 
   try {
@@ -1293,8 +1241,7 @@ async function saveNodeToPocketBase() {
       uiData: {
         fa: {
           title: editForm.value.titleFa,
-          subtitle: editForm.value.subtitleFa,
-          stats: editForm.value.stats
+          subtitle: editForm.value.subtitleFa
         },
         en: {
           title: editForm.value.titleEn
@@ -1315,7 +1262,6 @@ async function saveNodeToPocketBase() {
       selectedNode.value.liveData.titleFa = editForm.value.titleFa
       selectedNode.value.liveData.titleEn = editForm.value.titleEn
       selectedNode.value.liveData.subtitleFa = editForm.value.subtitleFa
-      selectedNode.value.liveData.stats = editForm.value.stats
     }
 
     waterfallRequests.value.unshift({
@@ -1331,9 +1277,9 @@ async function saveNodeToPocketBase() {
     })
     activeRequestId.value = newId
 
-    saveStatusMessage.value = isRTL.value ? 'ذخیره شد' : 'Saved'
+    selectedNode.value = null
   } catch (err: any) {
-    saveStatusMessage.value = 'خطا'
+    // Error
   } finally {
     isSaving.value = false
   }
@@ -1425,19 +1371,9 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.sheet-slide-enter-active,
-.sheet-slide-leave-active {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
-}
-.sheet-slide-enter-from,
-.sheet-slide-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
 .dock-slide-enter-active,
 .dock-slide-leave-active {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dock-slide-enter-from,
 .dock-slide-leave-to {
