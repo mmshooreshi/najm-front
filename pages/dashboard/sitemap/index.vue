@@ -1163,16 +1163,17 @@ const lenses = [
 ]
 
 const edges = [
-  { from: 'core-home', to: 'about-pillar', color: '#018786', speed: 3.0 },
-  { from: 'core-home', to: 'products-pillar', color: '#2563eb', speed: 2.8 },
-  { from: 'core-home', to: 'knowledge-pillar', color: '#d97706', speed: 3.2 },
-  { from: 'core-home', to: 'services-pillar', color: '#9333ea', speed: 3.0 },
-  { from: 'core-home', to: 'contact-node', color: '#e11d48', speed: 2.2 },
-  { from: 'core-home', to: 'pb-login', color: '#6366f1', speed: 2.5 },
-  { from: 'core-home', to: 'pb-menu', color: '#0ea5e9', speed: 2.3 },
-  { from: 'core-home', to: 'pb-footer', color: '#64748b', speed: 2.6 },
-  { from: 'knowledge-pillar', to: 'blog-node', color: '#d97706', speed: 2.8 },
-  { from: 'services-pillar', to: 'media-node', color: '#9333ea', speed: 2.9 }
+  { from: 'pb-home', to: 'pb-about', color: '#018786', speed: 3.0 },
+  { from: 'pb-home', to: 'pb-products', color: '#2563eb', speed: 2.8 },
+  { from: 'pb-home', to: 'pb-services', color: '#9333ea', speed: 3.0 },
+  { from: 'pb-home', to: 'pb-history', color: '#d97706', speed: 3.2 },
+  { from: 'pb-home', to: 'pb-contact', color: '#e11d48', speed: 2.2 },
+  { from: 'pb-home', to: 'pb-login', color: '#6366f1', speed: 2.5 },
+  { from: 'pb-home', to: 'pb-menu', color: '#0ea5e9', speed: 2.3 },
+  { from: 'pb-home', to: 'pb-footer', color: '#64748b', speed: 2.6 },
+  { from: 'pb-products', to: 'pb-catalog', color: '#2563eb', speed: 2.8 },
+  { from: 'pb-services', to: 'pb-faq', color: '#9333ea', speed: 2.9 },
+  { from: 'pb-history', to: 'pb-blog', color: '#d97706', speed: 3.0 }
 ]
 
 const visibleNodes = computed(() => {
