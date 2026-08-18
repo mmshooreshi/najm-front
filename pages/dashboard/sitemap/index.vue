@@ -5,21 +5,30 @@
     <div class="flex flex-col gap-4 rounded-3xl bg-white p-6 shadow-xs border border-slate-200 md:flex-row md:items-center md:justify-between">
       <div class="space-y-1">
         <div class="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1 text-xs font-bold text-[#018786] border border-teal-200">
-          <Icon name="mdi:sitemap" class="w-4 h-4" />
-          <span>{{ isRTL ? 'نقشه تفکیکی و دسته‌بندی‌شده' : 'Hierarchical Leveled Sitemap' }}</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>{{ isRTL ? 'پویای متصل به بک‌اند PocketBase' : 'Live PocketBase Backend Dynamic' }}</span>
         </div>
         <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 text-d4">
           {{ isRTL ? 'نقشه جامع و گروه‌بندی‌شده معماری وبسایت' : 'Aggregated Grouped Sitemap' }}
         </h1>
         <p class="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
           {{ isRTL
-            ? 'نمایش سطح‌بندی‌شده (سطح ۱ تا ۴) تمام صفحات، زیرصفحات، کالکشن‌ها و بخش‌های تعاملی به همراه لینک مستقیم دسترسی.'
-            : 'Level-based (L1 to L4) aggregated hierarchy of all public pages, child routes, database collections & UI sections.' }}
+            ? 'تمام داده‌ها، آمارها، گروه‌ها و سطح‌بندی‌ها (سطح ۱ تا ۴) به‌صورت ۱۰۰٪ پویا از سرور و دیتابیس دریافت می‌شوند.'
+            : '100% dynamic live sitemap data fetched from backend server & PocketBase database.' }}
         </p>
       </div>
 
-      <!-- View Switcher & Expand Controls -->
+      <!-- Refresh & View Switcher Controls -->
       <div class="flex items-center gap-2 flex-wrap shrink-0">
+        <button
+          @click="refreshSitemap"
+          :disabled="pending"
+          class="px-3.5 py-2 rounded-2xl bg-teal-50 hover:bg-teal-100 text-[#018786] border border-teal-200 text-xs font-bold transition cursor-pointer text-d4 flex items-center gap-1.5 disabled:opacity-50"
+        >
+          <Icon name="mdi:refresh" class="w-4 h-4" :class="pending ? 'animate-spin' : ''" />
+          <span>{{ isRTL ? 'به‌روزرسانی داده‌ها' : 'Refresh Data' }}</span>
+        </button>
+
         <button
           @click="expandAll = !expandAll"
           class="px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition cursor-pointer text-d4 flex items-center gap-1.5"
@@ -43,6 +52,45 @@
             <Icon :name="mode.icon" class="w-4 h-4" />
             <span class="hidden sm:inline">{{ isRTL ? mode.labelFa : mode.labelEn }}</span>
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Metrics Strip -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center justify-between shadow-2xs">
+        <div>
+          <div class="text-xs text-slate-500 font-bold">تعداد صفحات دیتابیس (pages)</div>
+          <div class="text-lg font-extrabold text-slate-900 font-mono mt-0.5">
+            {{ sitemapStats.pagesCount }} رکورد
+          </div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-blue-50 text-blue-600">
+          <Icon name="mdi:file-document-outline" class="w-5 h-5" />
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center justify-between shadow-2xs">
+        <div>
+          <div class="text-xs text-slate-500 font-bold">تعداد محصولات کاتالوگ (products)</div>
+          <div class="text-lg font-extrabold text-slate-900 font-mono mt-0.5">
+            {{ sitemapStats.productsCount }} آیتم
+          </div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
+          <Icon name="mdi:package-variant" class="w-5 h-5" />
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 flex items-center justify-between shadow-2xs">
+        <div>
+          <div class="text-xs text-slate-500 font-bold">تعداد رسانه‌ها (media_files)</div>
+          <div class="text-lg font-extrabold text-slate-900 font-mono mt-0.5">
+            {{ sitemapStats.mediaCount }} فایل
+          </div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-purple-50 text-purple-600">
+          <Icon name="mdi:folder-multiple-image" class="w-5 h-5" />
         </div>
       </div>
     </div>
@@ -276,6 +324,19 @@ const activeGroup = ref('all')
 const searchQuery = ref('')
 const expandAll = ref(true)
 
+// Fetch Live Sitemap Data 100% Dynamically from Backend API (/api/admin/sitemap)
+const { data: sitemapRes, pending, refresh } = await useAsyncData('admin-sitemap-live', () =>
+  $fetch<any>('/api/admin/sitemap'),
+  { lazy: true }
+)
+
+const sitemapStats = computed(() => sitemapRes.value?.stats || { pagesCount: 0, productsCount: 0, mediaCount: 0 })
+const treeGroups = computed(() => sitemapRes.value?.groups || [])
+
+function refreshSitemap() {
+  refresh()
+}
+
 const viewModes = [
   { id: 'tree', labelFa: 'نمای درختی (سطوح ۱ تا ۴)', labelEn: 'Tree Hierarchy (L1-L4)', icon: 'mdi:file-tree' },
   { id: 'group', labelFa: 'کارت‌های گروه‌بندی‌شده', labelEn: 'Group Cards', icon: 'mdi:view-grid-outline' },
@@ -286,180 +347,17 @@ const groups = [
   { id: 'all', labelFa: 'همه گروه‌ها', labelEn: 'All Groups' },
   { id: 'commercial', labelFa: 'عمومی و تجاری', labelEn: 'Commercial' },
   { id: 'catalog', labelFa: 'کاتالوگ و محصولات', labelEn: 'Catalog & Products' },
-  { id: 'services', labelFa: 'خدمات صنعتی', labelEn: 'Services Fleet' },
   { id: 'knowledge', labelFa: 'دانش و تاریخچه', labelEn: 'Knowledge & Press' },
   { id: 'help', labelFa: 'پشتیبانی و راهنما', labelEn: 'Help & Resources' },
   { id: 'admin', labelFa: 'مدیریت و پیشخوان', labelEn: 'Admin Suite' },
 ]
 
-interface NodeChild {
-  id: string
-  titleFa: string
-  titleEn: string
-  path: string
-  descFa: string
-  descEn: string
-  icon: string
-  subNodes?: string[]
-}
-
-interface TreeGroup {
-  id: string
-  labelFa: string
-  labelEn: string
-  icon: string
-  children: NodeChild[]
-}
-
-const treeGroups: TreeGroup[] = [
-  {
-    id: 'commercial',
-    labelFa: 'عمومی و تجاری',
-    labelEn: 'Commercial Pages',
-    icon: 'mdi:domain',
-    children: [
-      {
-        id: 'about',
-        titleFa: 'درباره ما (روایت صنعتی)',
-        titleEn: 'About Us',
-        path: '/about',
-        descFa: 'معرفی تیم متخصص، خطوط تولید هایدلبرگ و راهکارهای 360vh.',
-        descEn: 'Industrial history and 360vh pinned solutions stage.',
-        icon: 'mdi:information-outline',
-        subNodes: ['AboutGsapPinnedSection (Sticky 360vh)', 'تیم متخصص و لیتوگرافی', 'ماشین‌آلات افست']
-      },
-      {
-        id: 'contact',
-        titleFa: 'تماس و استعلام قیمت',
-        titleEn: 'Contact & Quote',
-        path: '/contact',
-        descFa: 'فرم‌های استعلام قیمت، نقشه نشان و شماره‌های مستقیم واحد فروش.',
-        descEn: 'Instant quote calculator, location map, and contact details.',
-        icon: 'mdi:phone-outline',
-        subNodes: ['فرم استعلام قیمت', 'نقشه نشان/گوگل', 'کانال‌های مستقیم پشتیبانی']
-      }
-    ]
-  },
-  {
-    id: 'catalog',
-    labelFa: 'کاتالوگ و محصولات',
-    labelEn: 'Catalog & Products',
-    icon: 'mdi:package-variant-closed',
-    children: [
-      {
-        id: 'products',
-        titleFa: 'کاتالوگ محصولات',
-        titleEn: 'Products Catalog',
-        path: '/products',
-        descFa: '۱۲ نوع محصول واقعی با موکاپ‌های وکتور SVG و فیلترها.',
-        descEn: '12 packaging products with SVG vector mockups.',
-        icon: 'mdi:package-variant',
-        subNodes: ['۱۲ موکاپ SVG', 'حالت دوگانه شبکه / لیست', 'فیلتر دسته‌بندی']
-      },
-      {
-        id: 'products-detail',
-        titleFa: 'جزئیات محصول و بسته‌بندی',
-        titleEn: 'Product Detail',
-        path: '/products/[slug]',
-        descFa: 'مشخصات فنی مقوا، سلفون حرارتی و دایکات.',
-        descEn: 'Technical specs for packaging, lamination, and die-cutting.',
-        icon: 'mdi:cube-outline',
-        subNodes: ['مشخصات فنی مقوا', 'پوشش‌های تکمیلی UV', 'استعلام تیراژ']
-      }
-    ]
-  },
-  {
-    id: 'knowledge',
-    labelFa: 'دانش، اخبار و تاریخچه',
-    labelEn: 'Knowledge & Press',
-    icon: 'mdi:post-outline',
-    children: [
-      {
-        id: 'history',
-        titleFa: 'تاریخچه ۲۵ ساله',
-        titleEn: '25-Year History',
-        path: '/history',
-        descFa: 'تایم‌لاین کرونولوژیک صنعتی از ۱۳۷۸ تا ۱۴۰۴.',
-        descEn: '25-year chronological journey timeline from 1999 to 2026.',
-        icon: 'mdi:timeline-text-outline',
-        subNodes: ['تایم‌لاین ۱۳۷۸ تا ۱۴۰۴', 'تجهیزات افست هایدلبرگ', 'ماشین‌های بوبست']
-      },
-      {
-        id: 'blog',
-        titleFa: 'وبلاگ تخصصی چاپ',
-        titleEn: 'Technical Blog',
-        path: '/blog',
-        descFa: 'مقالات مقایسه ایندربرد و پشت طوسی و سلفون مخملی.',
-        descEn: 'Technical articles on paperboard specs and prepress.',
-        icon: 'mdi:post',
-        subNodes: ['مقالات پیش از چاپ', 'راهنمای بسته‌بندی صادراتی', 'دسته مقواها']
-      }
-    ]
-  },
-  {
-    id: 'help',
-    labelFa: 'پشتیبانی و راهنماها',
-    labelEn: 'Help & Resources',
-    icon: 'mdi:help-circle-outline',
-    children: [
-      {
-        id: 'faq',
-        titleFa: 'سوالات متداول (FAQ)',
-        titleEn: 'FAQ Help Center',
-        path: '/help/faq',
-        descFa: 'مرکز آکاردئونی دسته‌بندی‌شده سوالات تیراژ و ارسال.',
-        descEn: 'Categorized accordion help center for ordering.',
-        icon: 'mdi:help-circle',
-        subNodes: ['سوالات آماده‌سازی فایل', 'حداقل تیراژ سفارش', 'نحوه ارسال']
-      },
-      {
-        id: 'catalog-download',
-        titleFa: 'دانلود کاتالوگ جامع',
-        titleEn: 'Download Catalog',
-        path: '/catalog',
-        descFa: 'دانلود فایل‌های PDF و سفارش نمونه فیزیکی.',
-        descEn: 'Download PDF catalogs and order physical sample kits.',
-        icon: 'mdi:download',
-        subNodes: ['دانلود PDF کاتالوگ', 'سفارش نمونه فیزیکی']
-      }
-    ]
-  },
-  {
-    id: 'admin',
-    labelFa: 'مدیریت و پیشخوان',
-    labelEn: 'Admin Management',
-    icon: 'mdi:view-dashboard-outline',
-    children: [
-      {
-        id: 'dashboard-cms',
-        titleFa: 'مدیریت محتوای صفحات (CMS)',
-        titleEn: 'CMS Studio',
-        path: '/dashboard/cms',
-        descFa: 'ویرایشگر درگاه پیش‌نویس با کارت‌های آکاردئونی.',
-        descEn: 'In-place CMS page studio.',
-        icon: 'mdi:file-document-edit-outline',
-        subNodes: ['ویرایش سه زبانه', 'ذخیره پیش‌نویس', 'انتشار رسمی']
-      },
-      {
-        id: 'dashboard-media',
-        titleFa: 'مخزن رسانه و فایل‌ها',
-        titleEn: 'Media Lab',
-        path: '/dashboard/media',
-        descFa: 'مدیریت پوشه‌های درختی توئیده معتبر.',
-        descEn: 'Recursive directory tree media manager.',
-        icon: 'mdi:folder-multiple-image',
-        subNodes: ['درخت پوشه‌ها', 'فیلتر پسوند', 'لینک CDN']
-      }
-    ]
-  }
-]
-
 const filteredTreeGroups = computed(() => {
-  return treeGroups.filter(g => {
+  return treeGroups.value.filter((g: any) => {
     if (activeGroup.value !== 'all' && g.id !== activeGroup.value) return false
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase()
-      const matchChildren = g.children.some(c => c.titleFa.toLowerCase().includes(q) || c.titleEn.toLowerCase().includes(q) || c.path.toLowerCase().includes(q))
+      const matchChildren = g.children.some((c: any) => c.titleFa.toLowerCase().includes(q) || c.titleEn.toLowerCase().includes(q) || c.path.toLowerCase().includes(q))
       if (!matchChildren) return false
     }
     return true
@@ -468,8 +366,8 @@ const filteredTreeGroups = computed(() => {
 
 const flatTableRows = computed(() => {
   const rows: any[] = []
-  treeGroups.forEach(g => {
-    g.children.forEach(c => {
+  treeGroups.value.forEach((g: any) => {
+    g.children.forEach((c: any) => {
       if (activeGroup.value !== 'all' && g.id !== activeGroup.value) return
       if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase()
@@ -478,7 +376,7 @@ const flatTableRows = computed(() => {
       }
       rows.push({
         ...c,
-        level: 2,
+        level: c.level || 2,
         groupLabel: isRTL.value ? g.labelFa : g.labelEn
       })
     })
