@@ -592,24 +592,16 @@
                 </button>
               </div>
 
-              <div class="flex items-center gap-1.5">
-                <button
-                  @click="copyActiveJson"
-                  class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 text-[9px] font-bold cursor-pointer"
-                >
-                  {{ copySuccess ? 'Copied!' : 'Copy JSON' }}
-                </button>
-              </div>
-            </div>
-
-            <!-- Inspector Body Viewer -->
-            <div class="flex-1 p-2.5 overflow-y-auto text-left ltr select-text">
-              <div v-if="activeDetailTab === 'response'">
-                <pre class="font-mono text-[10px] text-emerald-300/95 leading-relaxed whitespace-pre-wrap selection:bg-emerald-800 selection:text-white">{{ formatJson(activeRequest.responseJson) }}</pre>
-              </div>
-              <div v-else>
-                <pre class="font-mono text-[10px] text-amber-200/95 leading-relaxed whitespace-pre-wrap selection:bg-amber-800 selection:text-white">{{ formatJson(activeRequest.requestJson) }}</pre>
-              </div>
+            <!-- Inspector Body Viewer with Rich Colorful Collapsible Tree & Expand/Collapse All -->
+            <div class="flex-1 overflow-hidden">
+              <JsonLogViewer
+                v-if="activeDetailTab === 'response'"
+                :data="activeRequest.responseJson"
+              />
+              <JsonLogViewer
+                v-else
+                :data="activeRequest.requestJson"
+              />
             </div>
           </div>
         </div>
@@ -623,6 +615,7 @@ import { ref, computed, onMounted, watchEffect } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 import JsonTreeRow from '~/components/dashboard/JsonTreeRow.vue'
 import VanillaJsonEditor from '~/components/dashboard/VanillaJsonEditor.vue'
+import JsonLogViewer from '~/components/dashboard/JsonLogViewer.vue'
 
 definePageMeta({
   layout: false
