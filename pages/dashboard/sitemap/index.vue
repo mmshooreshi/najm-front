@@ -426,13 +426,66 @@ const searchQuery = ref('')
 const hoveredNodeId = ref<string | null>(null)
 const selectedNode = ref<SpatialConstellationNode | null>(null)
 
-// 60-120 FPS Pan & Zoom Coordinate Matrix
-const panX = ref(window.innerWidth > 1024 ? -1000 : -1300)
-const panY = ref(window.innerHeight > 800 ? -700 : -850)
+// 60-120 FPS Pan & Zoom Engine with Focal Point Cursor-Centric Precision
+const panX = ref(0)
+const panY = ref(0)
 const zoomScale = ref(0.85)
 const isDragging = ref(false)
 let dragStartX = 0
 let dragStartY = 0
+let initialPinchDistance = 0
+let initialPinchScale = 1
+
+function zoomAroundPoint(newScale: number, focalX: number, focalY: number) {
+  const oldScale = zoomScale.value
+  const clampedScale = Math.max(0.3, Math.min(2.5, newScale))
+  if (Math.abs(clampedScale - oldScale) < 0.0001) return
+
+  // Calculate world coordinate under focal point before zoom
+  const worldX = (focalX - panX.value) / oldScale
+  const worldY = (focalY - panY.value) / oldScale
+
+  zoomScale.value = clampedScale
+
+  // Re-adjust pan so world coordinate remains pinned under focal point
+  panX.value = focalX - worldX * clampedScale
+  panY.value = focalY - worldY * clampedScale
+}
+
+function onWheelZoom(e: WheelEvent) {
+  const focalX = e.clientX
+  const focalY = e.clientY
+
+  // Damped exponential factor (silky smooth on both Mac Trackpads & Mouse Wheels)
+  const zoomFactor = Math.exp(-e.deltaY * 0.0012)
+  // Clamp step ratio to prevent sudden runaway jumps
+  const clampedFactor = Math.max(0.92, Math.min(1.08, zoomFactor))
+  
+  zoomAroundPoint(zoomScale.value * clampedFactor, focalX, focalY)
+}
+
+function zoomIn() {
+  const focalX = window.innerWidth / 2
+  const focalY = window.innerHeight / 2
+  zoomAroundPoint(zoomScale.value * 1.18, focalX, focalY)
+}
+
+function zoomOut() {
+  const focalX = window.innerWidth / 2
+  const focalY = window.innerHeight / 2
+  zoomAroundPoint(zoomScale.value / 1.18, focalX, focalY)
+}
+
+function resetToCenter() {
+  const focalX = window.innerWidth / 2
+  const focalY = window.innerHeight / 2
+  const targetScale = window.innerWidth < 768 ? 0.55 : 0.8
+  
+  zoomScale.value = targetScale
+  panX.value = focalX - 1800 * targetScale
+  panY.value = focalY - 1300 * targetScale
+  activeLens.value = 'all'
+}
 
 function startDrag(e: MouseEvent) {
   isDragging.value = true
@@ -447,46 +500,54 @@ function onDrag(e: MouseEvent) {
 }
 
 function startTouchDrag(e: TouchEvent) {
-  isDragging.value = true
-  dragStartX = e.touches[0].clientX - panX.value
-  dragStartY = e.touches[0].clientY - panY.value
+  if (e.touches.length === 1) {
+    isDragging.value = true
+    dragStartX = e.touches[0].clientX - panX.value
+    dragStartY = e.touches[0].clientY - panY.value
+  } else if (e.touches.length === 2) {
+    isDragging.value = false
+    const dx = e.touches[0].clientX - e.touches[1].clientX
+    const dy = e.touches[0].clientY - e.touches[1].clientY
+    initialPinchDistance = Math.hypot(dx, dy)
+    initialPinchScale = zoomScale.value
+  }
 }
 
 function onTouchDrag(e: TouchEvent) {
-  if (!isDragging.value) return
-  panX.value = e.touches[0].clientX - dragStartX
-  panY.value = e.touches[0].clientY - dragStartY
+  if (e.touches.length === 1 && isDragging.value) {
+    panX.value = e.touches[0].clientX - dragStartX
+    panY.value = e.touches[0].clientY - dragStartY
+  } else if (e.touches.length === 2 && initialPinchDistance > 0) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX
+    const dy = e.touches[0].clientY - e.touches[1].clientY
+    const currentDistance = Math.hypot(dx, dy)
+    const focalX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+    const focalY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+    const targetScale = initialPinchScale * (currentDistance / initialPinchDistance)
+    zoomAroundPoint(targetScale, focalX, focalY)
+  }
 }
 
 function stopDrag() {
   isDragging.value = false
-}
-
-function onWheelZoom(e: WheelEvent) {
-  const delta = e.deltaY > 0 ? -0.06 : 0.06
-  zoomScale.value = Math.max(0.35, Math.min(2.0, zoomScale.value + delta))
-}
-
-function zoomIn() {
-  zoomScale.value = Math.min(2.0, zoomScale.value + 0.15)
-}
-
-function zoomOut() {
-  zoomScale.value = Math.max(0.35, zoomScale.value - 0.15)
-}
-
-function resetToCenter() {
-  // Center onto the Solar Nucleus (1800, 1300)
-  panX.value = window.innerWidth / 2 - 1800 * 0.85
-  panY.value = window.innerHeight / 2 - 1300 * 0.85
-  zoomScale.value = 0.85
-  activeLens.value = 'all'
+  initialPinchDistance = 0
 }
 
 function onCanvasDblClick(e: MouseEvent) {
   if ((e.target as HTMLElement).classList.contains('cursor-grab')) {
     resetToCenter()
   }
+}
+
+function selectNode(node: SpatialConstellationNode) {
+  selectedNode.value = node
+
+  // Smooth cinematic camera centering on selected node (offset for drawer)
+  const targetScreenX = window.innerWidth > 1024 ? (window.innerWidth - 380) / 2 : window.innerWidth / 2
+  const targetScreenY = window.innerHeight / 2
+
+  panX.value = targetScreenX - node.x * zoomScale.value
+  panY.value = targetScreenY - node.y * zoomScale.value
 }
 
 const lenses = [
@@ -839,14 +900,6 @@ const visibleEdges = computed(() => {
   const visibleIds = new Set(visibleNodes.value.map(n => n.id))
   return edges.filter(e => visibleIds.has(e.from) && visibleIds.has(e.to))
 })
-
-function selectNode(node: SpatialConstellationNode) {
-  selectedNode.value = node
-
-  // Smooth cinematic camera centering on selected node
-  panX.value = window.innerWidth / 2 - node.x * zoomScale.value
-  panY.value = window.innerHeight / 2 - node.y * zoomScale.value
-}
 
 function isEdgeActive(edge: ConstellationEdge) {
   if (!hoveredNodeId.value && !selectedNode.value) return false
