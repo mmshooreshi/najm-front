@@ -1148,7 +1148,10 @@ function autoFitConstellation() {
   clusterFitScale.value = isMobile ? Math.min(0.85, Math.max(0.55, Math.min(scaleX, scaleY))) : Math.min(1.15, Math.max(0.65, Math.min(scaleX, scaleY)))
 }
 
-// 120 FPS INSTANT DRAGGING WITH ZERO LATENCY
+// Reactive Coordinate Tracker for 120 FPS Glitch-Free SVG Link Following
+const dragCoordRevision = ref(0)
+
+// 120 FPS INSTANT DRAGGING WITH REAL-TIME DISPATCH
 const isDraggingNodeId = ref<string | null>(null)
 
 function startNodePointerDrag(e: PointerEvent, node: any) {
@@ -1177,19 +1180,50 @@ function onGlobalPointerMove(e: PointerEvent) {
     const dy = (e.clientY - nodeDragStartClientY) / clusterFitScale.value
     dragged.currentX = Math.round(nodeDragStartNodeX + dx)
     dragged.currentY = Math.round(nodeDragStartNodeY + dy)
+    dragCoordRevision.value++
   }
+}
+
+function getNodeRadius(node: any): number {
+  if (node.depth === 0) return 135
+  if (node.depth === 1) return 110
+  return 75
+}
+
+function smartRepulseOverlap(activeNode: any) {
+  const rA = getNodeRadius(activeNode)
+
+  for (let iter = 0; iter < 4; iter++) {
+    for (const other of rawDynamicNodes.value) {
+      if (other.id === activeNode.id) continue
+      const rB = getNodeRadius(other)
+      const minDist = rA + rB + 20
+
+      const dx = other.currentX - activeNode.currentX
+      const dy = other.currentY - activeNode.currentY
+      const dist = Math.hypot(dx, dy) || 1
+
+      if (dist < minDist) {
+        const overlap = minDist - dist
+        const nx = dx / dist
+        const ny = dy / dist
+
+        other.currentX = Math.round(Math.min(stageBaseWidth - 80, Math.max(80, other.currentX + nx * overlap * 0.75)))
+        other.currentY = Math.round(Math.min(stageBaseHeight - 60, Math.max(60, other.currentY + ny * overlap * 0.75)))
+      }
+    }
+  }
+
+  saveStateToLocalStorage()
+  dragCoordRevision.value++
 }
 
 function onGlobalPointerUp() {
   if (isDraggingNodeId.value) {
     const dragged = rawDynamicNodes.value.find(n => n.id === isDraggingNodeId.value)
     if (dragged) {
-      if (!isNodeLocked(dragged.id)) {
-        dragged.currentX = dragged.initialX
-        dragged.currentY = dragged.initialY
-      } else {
-        saveStateToLocalStorage()
-      }
+      // Smartly position and push neighbor nodes to prevent overlap!
+      smartRepulseOverlap(dragged)
     }
   }
   isDraggingNodeId.value = null
@@ -1208,6 +1242,9 @@ function isEdgeActive(edge: any) {
 }
 
 function getEdgePath(edge: any) {
+  // Access reactive revision so links follow nodes in real time 120 FPS
+  const _ = dragCoordRevision.value
+
   const fromNode = rawDynamicNodes.value.find((n: any) => n.id === edge.from)
   const toNode = rawDynamicNodes.value.find((n: any) => n.id === edge.to)
   if (!fromNode || !toNode) return ''
