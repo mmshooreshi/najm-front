@@ -346,16 +346,26 @@
             </div>
           </div>
 
-          <!-- 3. COMPACT SATELLITE NODE (140px × 60px) -->
+          <!-- 3. DIVERSE SATELLITE RECTANGULAR SHAPES (Capsule Pill, Rounded Rect, Product Card) -->
           <div
             v-else
-            class="relative rounded-2xl p-2 flex items-center justify-between gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
-            :style="{ width: '140px', minHeight: '60px', touchAction: 'none' }"
-            :class="selectedNode?.id === node.id ? 'ring-2 ring-emerald-500' : ''"
+            class="relative flex items-center justify-between gap-2 transition-all duration-200 bg-white/95 backdrop-blur-md border border-slate-200 shadow-sm"
+            :class="[
+              node.slug === 'faq' || node.slug === 'services'
+                ? 'rounded-full px-3.5 py-1.5'
+                : (node.slug === 'login' || node.slug === 'menu' || node.slug === 'footer' ? 'rounded-xl p-2' : 'rounded-2xl p-2.5'),
+              selectedNode?.id === node.id ? 'ring-2 ring-emerald-500' : ''
+            ]"
+            :style="{
+              width: `${getNodeDimensions(node).w}px`,
+              minHeight: `${getNodeDimensions(node).h}px`,
+              touchAction: 'none'
+            }"
           >
             <div class="flex items-center gap-2 overflow-hidden flex-1">
               <div
-                class="w-6 h-6 rounded-xl flex items-center justify-center text-white shadow-2xs shrink-0"
+                class="w-6 h-6 flex items-center justify-center text-white shadow-2xs shrink-0"
+                :class="node.slug === 'faq' ? 'rounded-full' : 'rounded-xl'"
                 :style="{ backgroundColor: node.accentColor || '#64748b' }"
               >
                 <Icon :name="node.icon || 'mdi:file-document-outline'" class="w-3.5 h-3.5" />
@@ -1264,9 +1274,9 @@ watchEffect(() => {
 // Reactive Coordinate Tracker for 120 FPS Glitch-Free SVG Link Following
 const dragCoordRevision = ref(0)
 
-// 120 FPS FLUID DRAGGING WITH FAMILY GROUP DRAGGING
+// 120 FPS FLUID DIRECT NODE DRAGGING
 const isDraggingNodeId = ref<string | null>(null)
-let draggedFamilyNodeSnapshots: { id: string, startX: number, startY: number }[] = []
+let draggedNodeSnapshot: { id: string, startX: number, startY: number } | null = null
 
 function startNodePointerDrag(e: PointerEvent, node: any) {
   if ((e.target as HTMLElement).closest('button, input, a')) return
@@ -1277,12 +1287,7 @@ function startNodePointerDrag(e: PointerEvent, node: any) {
   nodeDragStartNodeX = node.currentX
   nodeDragStartNodeY = node.currentY
 
-  // Capture all children of this parent to drag the whole family together!
-  const familyIds = getSubtreeNodeIds(node.id)
-  draggedFamilyNodeSnapshots = familyIds
-    .map(id => rawDynamicNodes.value.find(n => n.id === id))
-    .filter(Boolean)
-    .map(n => ({ id: n.id, startX: n.currentX, startY: n.currentY }))
+  draggedNodeSnapshot = { id: node.id, startX: node.currentX, startY: node.currentY }
 
   if (typeof window !== 'undefined') {
     window.addEventListener('pointermove', onGlobalPointerMove, { passive: true })
@@ -1295,59 +1300,76 @@ function onGlobalPointerMove(e: PointerEvent) {
   mouseRelativeX.value = (e.clientX / window.innerWidth - 0.5) * 8
   mouseRelativeY.value = (e.clientY / window.innerHeight - 0.5) * -8
 
-  if (!isDraggingNodeId.value) return
+  if (!isDraggingNodeId.value || !draggedNodeSnapshot) return
 
   const effectiveScale = clusterFitScale.value * canvasZoomLevel.value
   const dx = (e.clientX - nodeDragStartClientX) / effectiveScale
   const dy = (e.clientY - nodeDragStartClientY) / effectiveScale
 
-  // Move the dragged node and its family subtree smoothly
-  for (const snap of draggedFamilyNodeSnapshots) {
-    const item = rawDynamicNodes.value.find(n => n.id === snap.id)
-    if (item) {
-      item.currentX = Math.round(snap.startX + dx)
-      item.currentY = Math.round(snap.startY + dy)
-    }
+  const item = rawDynamicNodes.value.find(n => n.id === draggedNodeSnapshot?.id)
+  if (item) {
+    item.currentX = Math.round(draggedNodeSnapshot.startX + dx)
+    item.currentY = Math.round(draggedNodeSnapshot.startY + dy)
+    dragCoordRevision.value++
   }
-
-  dragCoordRevision.value++
 }
 
-function getNodeRadius(node: any): number {
-  if (node.depth === 0) return 130
-  if (node.depth === 1) return 105
-  return 70
+function getNodeDimensions(node: any): { w: number, h: number } {
+  if (node.depth === 0) return { w: 260, h: 150 }
+  if (node.depth === 1) return { w: 220, h: 115 }
+  if (node.slug === 'login' || node.slug === 'menu' || node.slug === 'footer') {
+    return { w: 140, h: 50 }
+  }
+  if (node.slug === 'faq' || node.slug === 'services') {
+    return { w: 160, h: 56 }
+  }
+  return { w: 160, h: 68 }
 }
 
-// SMART MINIMAL-DISPLACEMENT ORGANIC NON-OVERLAP SOLVER
-function smartPrepositionAllNodes() {
+// TRUE 2D RECTANGULAR (AABB) EDGE OVERLAP & SEPARATION SOLVER
+function resolveRectangularEdgeOverlaps() {
   const visible = visibleNodes.value || []
   if (visible.length < 2) return
 
-  for (let pass = 0; pass < 2; pass++) {
+  const cushionX = repulsionCushion.value + 12
+  const cushionY = repulsionCushion.value + 12
+
+  // Multi-pass AABB edge relaxation: separates any penetrating edges with minimal displacement
+  for (let pass = 0; pass < 4; pass++) {
     for (let i = 0; i < visible.length; i++) {
       const nodeA = visible[i]
-      const rA = getNodeRadius(nodeA)
+      const dimA = getNodeDimensions(nodeA)
 
       for (let j = i + 1; j < visible.length; j++) {
         const nodeB = visible[j]
-        const rB = getNodeRadius(nodeB)
-        const minDist = rA + rB + repulsionCushion.value
+        const dimB = getNodeDimensions(nodeB)
+
+        const minRequiredDistanceX = (dimA.w + dimB.w) / 2 + cushionX
+        const minRequiredDistanceY = (dimA.h + dimB.h) / 2 + cushionY
 
         const dx = nodeB.currentX - nodeA.currentX
         const dy = nodeB.currentY - nodeA.currentY
-        const dist = Math.hypot(dx, dy) || 1
 
-        if (dist < minDist) {
-          const overlap = minDist - dist
-          const nx = dx / dist
-          const ny = dy / dist
-          const halfOverlap = overlap * 0.5
+        const absDx = Math.abs(dx)
+        const absDy = Math.abs(dy)
 
-          nodeA.currentX = Math.round(nodeA.currentX - nx * halfOverlap)
-          nodeA.currentY = Math.round(nodeA.currentY - ny * halfOverlap)
-          nodeB.currentX = Math.round(nodeB.currentX + nx * halfOverlap)
-          nodeB.currentY = Math.round(nodeB.currentY + ny * halfOverlap)
+        // 2D Overlap Condition: Overlap occurs if and only if BOTH X and Y extents intersect
+        if (absDx < minRequiredDistanceX && absDy < minRequiredDistanceY) {
+          const overlapX = minRequiredDistanceX - absDx
+          const overlapY = minRequiredDistanceY - absDy
+
+          // Separate along the axis of shallowest penetration (minimal move)
+          if (overlapX < overlapY) {
+            const signX = dx === 0 ? (i % 2 === 0 ? 1 : -1) : Math.sign(dx)
+            const pushX = Math.round(overlapX * 0.5)
+            nodeA.currentX -= signX * pushX
+            nodeB.currentX += signX * pushX
+          } else {
+            const signY = dy === 0 ? (i % 2 === 0 ? 1 : -1) : Math.sign(dy)
+            const pushY = Math.round(overlapY * 0.5)
+            nodeA.currentY -= signY * pushY
+            nodeB.currentY += signY * pushY
+          }
         }
       }
     }
@@ -1361,10 +1383,11 @@ function onGlobalPointerUp() {
   if (isDraggingNodeId.value) {
     saveStateToLocalStorage()
     dragCoordRevision.value++
-    smartPrepositionAllNodes()
+    // Settle edge overlaps with minimal moves
+    resolveRectangularEdgeOverlaps()
   }
   isDraggingNodeId.value = null
-  draggedFamilyNodeSnapshots = []
+  draggedNodeSnapshot = null
 
   if (typeof window !== 'undefined') {
     window.removeEventListener('pointermove', onGlobalPointerMove)
