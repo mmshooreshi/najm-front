@@ -20,9 +20,9 @@
               class="object-cover w-full h-auto rounded-[1.5rem] max-h-[267px]"
             />
             <div class="m-1 mt-4 flex flex-col gap-1">
-              <div class="font-bold text-d4 text-md">{{ product.name }}</div>
-              <div class="text-d4 text-xs">{{ product.subtitle }}</div>
-              <div class="text-d4 text-xs">{{ product.type }}</div>
+              <div class="font-bold text-d4 text-md" v-editable="`sceneProducts.items.${idx}.name`">{{ product.name }}</div>
+              <div class="text-d4 text-xs" v-editable="`sceneProducts.items.${idx}.subtitle`">{{ product.subtitle }}</div>
+              <div class="text-d4 text-xs" v-editable="`sceneProducts.items.${idx}.type`">{{ product.type }}</div>
             </div>
           </div>
         </div>

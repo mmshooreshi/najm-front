@@ -1,11 +1,11 @@
 {
+  "fa": {
     "hero": {
       "paragraphs": [
         "در دنیای رقابتی امروز، چاپ و بسته‌بندی دیگر فقط یک مرحله از تولید نیست؛ بلکه اولین نقطه تماس برند شما با مشتریان است. ما باور داریم که هر پروژه یک داستان است. داستانی که باید به‌طور ویژه و با دقت روایت شود.",
         "از طراحی تا اجرا، همه چیز در یک مجموعه. با راهکارهای خلاقانه و انعطاف‌پذیر ما اینجا هستیم تا داستان شما را تبدیل به یک تجربه‌ی ماندگار کنیم."
       ]
     },
-  
     "sections": [
       {
         "id": "services",
@@ -13,8 +13,9 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "packaging", "name": "بسته‌بندی (4 مدل)", "slug": "/services/packaging" },
-          { "id": "printing",  "name": "چاپ",             "slug": "/services/printing" }
+          { "id": "packaging", "name": "بسته‌بندی و جعبه‌سازی", "slug": "/services/printing-and-packaging" },
+          { "id": "printing",  "name": "چاپ افست ۵ رنگ", "slug": "/services/printing-and-packaging" },
+          { "id": "finishing", "name": "خدمات تکمیلی و طلاکوب", "slug": "/services/finishing-services" }
         ]
       },
       {
@@ -23,8 +24,9 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "about",   "name": "درباره ما", "slug": "/about-us" },
-          { "id": "history", "name": "تاریخچه",   "slug": "/history" }
+          { "id": "about",   "name": "درباره ما", "slug": "/about" },
+          { "id": "contact", "name": "تماس با ما", "slug": "/contact" },
+          { "id": "catalog", "name": "کاتالوگ جامع", "slug": "/catalog" }
         ]
       },
       {
@@ -33,36 +35,154 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "faq", "name": "سؤالات متداول", "slug": "/help/faq" }
+          { "id": "faq", "name": "سؤالات متداول", "slug": "/contact" },
+          { "id": "guides", "name": "راهنماهای فنی چاپ", "slug": "/guides" }
         ]
       },
       {
         "id": "latest",
-        "name": "آخرین‌ها",
+        "name": "منابع و فایل‌ها",
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "blog", "name": "مقالات",      "slug": "/blog" },
-          { "id": "news", "name": "اخبار صنعت", "slug": "/news" }
+          { "id": "resources", "name": "مرکز دانلود قالب‌ها", "slug": "/resources" },
+          { "id": "cmyk", "name": "پروفایل رنگی CMYK", "slug": "/resources/guide-cmyk-color-profile" }
         ]
       }
     ],
-  
     "contact": {
       "items": [
-        { "id": "phone",  "name": "تلفن", "value": "+98 21 6679 7911", "slug": "tel:+982166797911" , "ltr": true},
-        { "id": "fax",    "name": "فکس",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712"  , "ltr": true},
-        { "id": "email",  "name": "ایمیل", "value": "chapnajm@gmail.com", "slug": "mailto:chapnajm@gmail.com"  , "ltr": true},
-        { "id": "hours1", "name": "ساعت‌های کاری", "value": "شنبه تا چهارشنبه:<br>  9 تا 19<br><br>پنج‌شنبه‌ها:<br>  تا ساعت 16" }
+        { "id": "phone",  "name": "تلفن مستقیم", "value": "+98 21 6679 7911", "slug": "tel:+982166797911", "ltr": true },
+        { "id": "fax",    "name": "فکس کارخانه",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712", "ltr": true },
+        { "id": "email",  "name": "پست الکترونیک", "value": "info@najmprint.com", "slug": "mailto:info@najmprint.com", "ltr": true },
+        { "id": "hours1", "name": "ساعت‌های کاری", "value": "شنبه تا چهارشنبه: ۹ الی ۱۸ | پنج‌شنبه‌ها: ۹ الی ۱۴" }
       ],
       "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
     },
-  
-    "seals": [
-      { "img": "/images/enamad.png",  "url":"",     "alt": "نماد اعتماد الکترونیکی" },
-      { "img": "/images/samandehi.png", "url":"",  "alt": "نشان ملی ثبت رسانه‌های دیجیتال" }
+    "copyright": "کلیه حقوق مادی و معنوی این وب‌سایت متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد."
+  },
+  "en": {
+    "hero": {
+      "paragraphs": [
+        "In today's competitive landscape, print and packaging is no longer just a manufacturing stage—it is your brand's vital first impression. Every packaging project tells a story of quality and distinction.",
+        "From pre-press engineering to finished die-cut delivery, all under one roof with advanced Heidelberg offset and automated finishing."
+      ]
+    },
+    "sections": [
+      {
+        "id": "services",
+        "name": "Services",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "packaging", "name": "Packaging & Box Production", "slug": "/services/printing-and-packaging" },
+          { "id": "printing",  "name": "5-Color Offset Press", "slug": "/services/printing-and-packaging" },
+          { "id": "finishing", "name": "Finishing & Hot Foil", "slug": "/services/finishing-services" }
+        ]
+      },
+      {
+        "id": "najm-collection",
+        "name": "Najm Group",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "about",   "name": "About Us", "slug": "/about" },
+          { "id": "contact", "name": "Contact Us", "slug": "/contact" },
+          { "id": "catalog", "name": "Product Catalog", "slug": "/catalog" }
+        ]
+      },
+      {
+        "id": "customer-service",
+        "name": "Client Services",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "faq", "name": "FAQ & Inquiries", "slug": "/contact" },
+          { "id": "guides", "name": "Technical Guides", "slug": "/guides" }
+        ]
+      },
+      {
+        "id": "latest",
+        "name": "Resources",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "resources", "name": "Die-Cut Download Center", "slug": "/resources" },
+          { "id": "cmyk", "name": "CMYK Color Profiles", "slug": "/resources/guide-cmyk-color-profile" }
+        ]
+      }
     ],
-  
-    "copyright": "کلیه حقوق این سایت متعلق به مجموعه\u200cی چاپ نجم می\u200cباشد."
+    "contact": {
+      "items": [
+        { "id": "phone",  "name": "Direct Phone", "value": "+98 21 6679 7911", "slug": "tel:+982166797911", "ltr": true },
+        { "id": "fax",    "name": "Plant Fax",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712", "ltr": true },
+        { "id": "email",  "name": "Email", "value": "info@najmprint.com", "slug": "mailto:info@najmprint.com", "ltr": true },
+        { "id": "hours1", "name": "Working Hours", "value": "Sat - Wed: 9:00 - 18:00 | Thu: 9:00 - 14:00" }
+      ],
+      "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
+    },
+    "copyright": "All rights reserved by Najm Printing and Packaging Complex."
+  },
+  "ar": {
+    "hero": {
+      "paragraphs": [
+        "في عالم الأعمال التنافسي اليوم، لم تعد الطباعة والتغليف مجرد مرحلة تصنيع، بل هي نقطة الاتصال الأولى لعلامتك التجارية مع عملائك.",
+        "من التصميم الأولي حتى التسليم النهائي الفاخر، كل شيء تحت سقف واحد بأحدث ماكينات هايدلبرغ الألمانية."
+      ]
+    },
+    "sections": [
+      {
+        "id": "services",
+        "name": "الخدمات",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "packaging", "name": "صناعة العلب والكرتون", "slug": "/services/printing-and-packaging" },
+          { "id": "printing",  "name": "طباعة أوفست ٥ ألوان", "slug": "/services/printing-and-packaging" },
+          { "id": "finishing", "name": "خدمات التشطيب والختم الحراري", "slug": "/services/finishing-services" }
+        ]
+      },
+      {
+        "id": "najm-collection",
+        "name": "مجمع نجم",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "about",   "name": "من نحن", "slug": "/about" },
+          { "id": "contact", "name": "اتصل بنا", "slug": "/contact" },
+          { "id": "catalog", "name": "الكتالوج الشامل", "slug": "/catalog" }
+        ]
+      },
+      {
+        "id": "customer-service",
+        "name": "خدمة العملاء",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "faq", "name": "الأسئلة الشائعة", "slug": "/contact" },
+          { "id": "guides", "name": "الأدلة الفنية للطباعة", "slug": "/guides" }
+        ]
+      },
+      {
+        "id": "latest",
+        "name": "المصادر والقوالب",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          { "id": "resources", "name": "مركز تحميل القوالب", "slug": "/resources" },
+          { "id": "cmyk", "name": "ملف ألوان CMYK", "slug": "/resources/guide-cmyk-color-profile" }
+        ]
+      }
+    ],
+    "contact": {
+      "items": [
+        { "id": "phone",  "name": "الهاتف المباشر", "value": "+98 21 6679 7911", "slug": "tel:+982166797911", "ltr": true },
+        { "id": "fax",    "name": "فاكس المصنع",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712", "ltr": true },
+        { "id": "email",  "name": "البريد الإلكتروني", "value": "info@najmprint.com", "slug": "mailto:info@najmprint.com", "ltr": true },
+        { "id": "hours1", "name": "ساعات العمل", "value": "السبت إلى الأربعاء: ٩:٠٠ - ١٨:٠٠ | الخميس: ٩:٠٠ - ١٤:٠٠" }
+      ],
+      "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
+    },
+    "copyright": "جميع الحقوق محفوظة لمجمع نجم للطباعة والتغليف."
   }
-  
+}

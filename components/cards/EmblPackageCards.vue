@@ -187,6 +187,20 @@ const onSelect = () => {
 
 
 const currentPackage = computed(() => props.packages[selectedIndex.value])
+const scrollByPixels = (px) => {
+  if (!embla.value) return
+  try {
+    const engine = typeof embla.value.internalEngine === 'function' ? embla.value.internalEngine() : null
+    if (engine && engine.location && engine.target && engine.animation) {
+      engine.location.add(px)
+      engine.target.set(engine.location.get())
+      engine.animation.start()
+    }
+  } catch (_e) {
+    // Ignore internal engine errors during drag
+  }
+}
+
 const startHoverScroll = () => {
   if (hoverRafId || !embla.value) return
 
@@ -196,24 +210,24 @@ const startHoverScroll = () => {
       return
     }
 
-    const rect = viewportRef.value.getBoundingClientRect()
-    const width = rect.width
-    if (!width) {
+    const rect = viewportRef.value?.getBoundingClientRect()
+    if (!rect || !rect.width) {
       hoverRafId = requestAnimationFrame(step)
       return
     }
 
+    const width = rect.width
     const xRel = hoverX.value / width // 0 (left) -> 1 (right)
     const edgeZone = 0.2              // 20% on each side
-    const maxSpeed = 2                // px per frame – tune this
+    const maxSpeed = 2                // px per frame
 
     // RTL: adjust speed direction if it feels inverted.
-    if (xRel > 1 - edgeZone && embla.value.canScrollNext()) {
+    if (xRel > 1 - edgeZone && embla.value.canScrollNext && embla.value.canScrollNext()) {
       const intensity = (xRel - (1 - edgeZone)) / edgeZone // 0..1
-      embla.scrollBy(intensity * maxSpeed)
-    } else if (xRel < edgeZone && embla.value.canScrollPrev()) {
+      scrollByPixels(intensity * maxSpeed)
+    } else if (xRel < edgeZone && embla.value.canScrollPrev && embla.value.canScrollPrev()) {
       const intensity = (edgeZone - xRel) / edgeZone // 0..1
-      embla.scrollBy(-intensity * maxSpeed)
+      scrollByPixels(-intensity * maxSpeed)
     }
 
     hoverRafId = requestAnimationFrame(step)

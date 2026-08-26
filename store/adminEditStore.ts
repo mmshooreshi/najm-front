@@ -362,6 +362,71 @@ export function restoreVersion(path: PathKey, lang: LangCode, value: string) {
   }
 }
 
+/** Add a new item to an array */
+export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode) {
+  const snap = adminEditState.allLangUI[lang]
+  if (!snap) return
+
+  const arr = getByPath(snap, arrayPath)
+  if (!Array.isArray(arr)) return
+
+  let newItem: any = 'آیتم جدید'
+  if (arr.length > 0) {
+    const template = arr[atIndex] ?? arr[arr.length - 1]
+    if (typeof template === 'object' && template !== null) {
+      newItem = deepClone(template)
+      for (const k of Object.keys(newItem)) {
+        if (typeof newItem[k] === 'string') {
+          newItem[k] = newItem[k] + ' (جدید)'
+        }
+      }
+    } else if (typeof template === 'string') {
+      newItem = template + ' (جدید)'
+    }
+  }
+
+  const insertPos = atIndex >= 0 ? atIndex + 1 : arr.length
+  arr.splice(insertPos, 0, newItem)
+  applySnapshotToBaselines(lang)
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('admin:array-changed', {
+      detail: { arrayPath, action: 'add', atIndex: insertPos, lang }
+    }))
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'success', text: `آیتم جدید به «${arrayPath}» افزوده شد` }
+    }))
+  }
+}
+
+/** Remove an item from an array */
+export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCode) {
+  const snap = adminEditState.allLangUI[lang]
+  if (!snap) return
+
+  const arr = getByPath(snap, arrayPath)
+  if (!Array.isArray(arr) || arr.length <= 1) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('toast', {
+        detail: { type: 'warning', text: 'امکان حذف آخرین آیتم باقی‌مانده وجود ندارد' }
+      }))
+    }
+    return
+  }
+
+  arr.splice(atIndex, 1)
+  applySnapshotToBaselines(lang)
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('admin:array-changed', {
+      detail: { arrayPath, action: 'remove', atIndex, lang }
+    }))
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'info', text: `آیتم از «${arrayPath}» حذف شد` }
+    }))
+  }
+}
+
 /** Helper to list all changed fields with details */
 export function getChangedDetails(lang: LangCode): ChangedFieldDetail[] {
   const list: ChangedFieldDetail[] = []
