@@ -161,33 +161,11 @@ const highlightRefs = ref<(HTMLElement | null)[]>([])
 const typedRefs = ref<(HTMLElement | null)[]>([])
 const paragraphRefs = ref<(HTMLElement | null)[]>([])
 
-let playedOnce = false
-
-onMounted(async () => {
-  if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
-    await (document as any).fonts.ready.catch(() => {})
-  }
-  await nextTick()
-  runHighlightAnimation()
-
-  // Ensure hero section is visible and plays immediately on initial page load
-  if (sectionRef.value) {
-    gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 })
-    tlHighlights.play()
-    playedOnce = true
-  }
-
-  window.addEventListener('admin-edit-discarded', resetAndRerun)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('admin-edit-discarded', resetAndRerun)
-})
-
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-const tlHighlights = gsap.timeline({
+let playedOnce = false
+let tlHighlights = gsap.timeline({
   defaults: { ease: animationConfig.eases.highlight.forward },
   paused: true,
 })
@@ -198,6 +176,8 @@ function runHighlightAnimation() {
   if (sectionRef.value) {
     gsap.set(sectionRef.value, { opacity: 0 })
   }
+
+  tlHighlights.pause(0).clear()
 
   function splitAndAnimateLines(
     type: 'full' | 'vertical',
@@ -342,6 +322,26 @@ function resetAndRerun() {
 // Rebuild cleanly on language change too
 watch(language, () => {
   resetAndRerun()
+})
+
+onMounted(async () => {
+  if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
+    await (document as any).fonts.ready.catch(() => {})
+  }
+  await nextTick()
+  runHighlightAnimation()
+
+  if (sectionRef.value) {
+    gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 })
+    tlHighlights.play()
+    playedOnce = true
+  }
+
+  window.addEventListener('admin-edit-discarded', resetAndRerun)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('admin-edit-discarded', resetAndRerun)
 })
 </script>
 
