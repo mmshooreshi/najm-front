@@ -12,7 +12,8 @@ import {
   changedCountForLang,
   revertPath,
   addArrayItem,
-  removeArrayItem
+  removeArrayItem,
+  setEditingActive
 } from '@/store/adminEditStore'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
@@ -94,20 +95,10 @@ function showHoverBadge(el: HTMLElement, path: string) {
   const lang = state.language
   const changed = isChanged(path, lang)
 
-  // Check if path is part of an array, e.g. "principles.2.title" or "items.0"
-  const arrayMatch = path.match(/^(.*)\.(\d+)(?:\..*)?$/)
-  const isArrayItem = Boolean(arrayMatch)
-  const arrayPath = arrayMatch ? arrayMatch[1] : ''
-  const arrayIndex = arrayMatch ? parseInt(arrayMatch[2], 10) : -1
-
   badge.innerHTML = `
     <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${changed ? '#f59e0b' : '#10b981'};flex-shrink:0;"></span>
-    <span style="opacity:0.95;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">${path}</span>
-    <button id="admin-hover-copy" style="background:rgba(255,255,255,0.08);color:#d1d5db;border:1px solid rgba(255,255,255,0.12);padding:1px 5px;border-radius:4px;cursor:pointer;font-size:10px;margin-left:2px;">Copy</button>
-    ${isArrayItem ? `
-      <button id="admin-hover-add" title="افزودن آیتم جدید" style="background:rgba(16,185,129,0.2);color:#6ee7b7;border:1px solid rgba(16,185,129,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;">+ Add</button>
-      <button id="admin-hover-del" title="حذف این آیتم" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:bold;">- Del</button>
-    ` : ''}
+    <span style="opacity:0.95;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">${path}</span>
+    <button id="admin-hover-copy" style="background:rgba(255,255,255,0.08);color:#d1d5db;border:1px solid rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;margin-left:2px;">Copy</button>
     ${changed ? `<button id="admin-hover-revert" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;">Revert</button>` : ''}
   `
 
@@ -119,22 +110,6 @@ function showHoverBadge(el: HTMLElement, path: string) {
         navigator.clipboard.writeText(path)
         window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Copied path: ${path}` } }))
       }
-    })
-  }
-
-  const addBtn = badge.querySelector('#admin-hover-add')
-  if (addBtn && isArrayItem) {
-    addBtn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      addArrayItem(arrayPath, arrayIndex, lang)
-    })
-  }
-
-  const delBtn = badge.querySelector('#admin-hover-del')
-  if (delBtn && isArrayItem) {
-    delBtn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      removeArrayItem(arrayPath, arrayIndex, lang)
     })
   }
 
@@ -281,7 +256,14 @@ export default defineNuxtPlugin(nuxtApp => {
         }
       }
 
+      const onFocus = () => {
+        if (state.canEdit && state.editMode) {
+          setEditingActive(path, true)
+        }
+      }
+
       const onBlur = () => {
+        setEditingActive(null, false)
         const text = getText(el)
         if (state.editMode) {
           setDraftValue(path, state.language, text)
@@ -321,6 +303,7 @@ export default defineNuxtPlugin(nuxtApp => {
       }
 
       el.addEventListener('input', onInput)
+      el.addEventListener('focus', onFocus)
       el.addEventListener('blur', onBlur)
       el.addEventListener('mouseenter', onMouseEnter)
       el.addEventListener('mouseleave', onMouseLeave)
@@ -331,6 +314,7 @@ export default defineNuxtPlugin(nuxtApp => {
       ;(el as any)._adminCleanup = () => {
         clearTimeout(inputTimer)
         el.removeEventListener('input', onInput)
+        el.removeEventListener('focus', onFocus)
         el.removeEventListener('blur', onBlur)
         el.removeEventListener('mouseenter', onMouseEnter)
         el.removeEventListener('mouseleave', onMouseLeave)

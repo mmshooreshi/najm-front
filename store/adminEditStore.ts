@@ -51,6 +51,8 @@ export interface AdminEditState {
   paletteOpen: boolean
   minimized: boolean
   autosaveEnabled: boolean
+  activeEditingPath: string | null
+  isEditingActive: boolean
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -68,8 +70,22 @@ export const adminEditState = reactive<AdminEditState>({
   historyOpen: false,
   paletteOpen: false,
   minimized: false,
-  autosaveEnabled: false
+  autosaveEnabled: false,
+  activeEditingPath: null,
+  isEditingActive: false
 })
+
+export function setEditingActive(path: string | null, active: boolean) {
+  adminEditState.activeEditingPath = active ? path : null
+  adminEditState.isEditingActive = active
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('najm:admin-editing-state', {
+        detail: { active, path }
+      })
+    )
+  }
+}
 
 /** ---------- String Normalization Helpers ---------- **/
 export function normalize(s: any): string {

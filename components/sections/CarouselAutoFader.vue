@@ -1,13 +1,36 @@
 <!-- components/sections/CarouselAutoFader.vue -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import 'swiper/swiper-bundle.css'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules'
 import ChevronDownIcon from '~/assets/icons/chevron-down-icon.svg'
 
-const containerRef = ref(null)
+const containerRef = ref<any>(null)
 const isOpen = ref(false)
+const isPaused = ref(false)
+
+function togglePlay() {
+  const swiper = containerRef.value?.swiper
+  if (!swiper) return
+  isPaused.value = !isPaused.value
+  if (isPaused.value) {
+    swiper.autoplay?.stop()
+  } else {
+    swiper.autoplay?.start()
+  }
+}
+
+function onAdminStateChange(e: any) {
+  const detail = e?.detail
+  const swiper = containerRef.value?.swiper
+  if (detail?.active) {
+    swiper?.autoplay?.stop()
+    isPaused.value = true
+  } else if (!isPaused.value) {
+    swiper?.autoplay?.start()
+  }
+}
 
 // Define your slides array; add more slides as needed.
 const slides = ref([
@@ -48,21 +71,34 @@ const slides = ref([
   }
 ])
 
-// Optionally listen for slide changes via the @slideChange event in the template.
-const onSlideChange = (swiperInstance: any) => {
-  if (swiperInstance.realIndex === 0) {
-    console.log('Carousel completed a full cycle!')
-  }
-}
+const onSlideChange = (_swiperInstance: any) => {}
 const uniqueId = Math.random().toString(36).substring(2, 9);
 
 onMounted(() => {
-  // Swiper initialized
+  if (typeof window !== 'undefined') {
+    window.addEventListener('najm:admin-editing-state', onAdminStateChange)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('najm:admin-editing-state', onAdminStateChange)
+  }
 })
 </script>
 
 <template>
-  <div  class="relative">
+  <div class="relative group">
+    <!-- Play / Pause control button -->
+    <button
+      type="button"
+      @click="togglePlay"
+      :title="isPaused ? 'پخش خودکار' : 'توقف موقت'"
+      class="absolute top-4 right-4 z-30 w-8 h-8 rounded-full bg-black/40 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-xs transition cursor-pointer opacity-40 hover:opacity-100 group-hover:opacity-100"
+    >
+      <Icon :name="isPaused ? 'mdi:play' : 'mdi:pause'" class="w-4 h-4" />
+    </button>
+
     <ClientOnly>
       <swiper-container
         ref="containerRef"
@@ -83,14 +119,11 @@ onMounted(() => {
           />
           <!-- Overlay Button with Chevron Icon -->
           <div class="absolute left-[50%] -translate-x-[50%] bottom-[1%] group cursor-pointer transition-all bg-opacity-95 hover:bg-opacity-100 duration-300 hover:scale-105 hover:text-gray-900 w-max bg-white py-0 px-2 sm:px-4 sm:py-2 rounded-3xl shadow-md text-sm font-bold flex items-center mb-4">
-            <!-- Center the icon -->
             <div class="text text-xs text-demibold">{{slide.text}}</div>
-
             <div class="ml-2 flex justify-center items-center w-6 h-6 transition-transform -rotate-90" :class="{ 'rotate-180': isOpen }">
                 <ChevronDownIcon class="group-hover:translate-y-2 transition-all duration-300" />
             </div>
-        </div>
-
+          </div>
         </swiper-slide>
         <!-- Swiper built-in pagination indicators -->
         <div :id="`pagination-${uniqueId}`" class="swiper-pagination  h-min !top-8 gap-1 !w-full"></div>

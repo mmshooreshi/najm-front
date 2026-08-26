@@ -35,7 +35,7 @@
               </button> -->
 
             <button
-              class="bg-white/60 active:scale-105 active:bg-white hover:bg-white rounded-xl p-3 disabled:opacity-10 disabled:cursor-default w-10 h-10"
+              class="bg-white/60 active:scale-105 active:bg-white hover:bg-white rounded-xl p-3 disabled:opacity-10 disabled:cursor-default w-10 h-10 cursor-pointer"
               @click="slidePrev" aria-label="Prev slide">
               <svg class="transition-transform" viewBox="0 0 532 532" height="16">
                 <path fill="#014439"
@@ -44,9 +44,18 @@
             </button>
 
             <button
-              class="bg-white/60  active:scale-105 active:bg-white hover:bg-white  rounded-xl p-3  disabled:opacity-30 disabled:cursor-default w-10 h-10"
+              type="button"
+              class="bg-white/60 active:scale-105 active:bg-white hover:bg-white rounded-xl p-2.5 disabled:opacity-30 disabled:cursor-default w-10 h-10 flex items-center justify-center cursor-pointer transition-all"
+              @click="toggleAutoplay"
+              :title="isAutoplayPaused ? 'پخش خودکار اسلایدر' : 'توقف موقت اسلایدر'"
+              :aria-label="isAutoplayPaused ? 'Play slider' : 'Pause slider'"
+            >
+              <Icon :name="isAutoplayPaused ? 'mdi:play' : 'mdi:pause'" class="w-4 h-4 text-[#014439]" />
+            </button>
+
+            <button
+              class="bg-white/60 active:scale-105 active:bg-white hover:bg-white rounded-xl p-3 disabled:opacity-30 disabled:cursor-default w-10 h-10 cursor-pointer"
               @click="slideNext" aria-label="Next Slide">
-              <!-- :class="[isRTL ? '' : 'rotate-180']" -->
               <svg class="transition-transform" viewBox="0 0 532 532" height="16">
                 <path fill="#014439"
                   d="M176.34 520.646c-13.793 13.805-36.208 13.805-50.001 0-13.785-13.804-13.785-36.238 0-50.034L330.78 266 126.34 61.391c-13.785-13.805-13.785-36.239 0-50.044 13.793-13.796 36.208-13.796 50.002 0 22.928 22.947 206.395 206.507 229.332 229.454a35.065 35.065 0 0 1 10.326 25.126c0 9.2-3.393 18.26-10.326 25.2-45.865 45.901-206.404 206.564-229.332 229.52Z" />
@@ -81,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/effect-fade'
@@ -185,10 +194,39 @@ function onSlideChange(_swiper: any) {
   // Silent slide change
 }
 
-const swiperInstance = ref<SwiperCore | null>(null)
-function onSwiper(swiper: SwiperCore) {
-  swiperInstance.value = swiper
+const isAutoplayPaused = ref(false)
+
+function toggleAutoplay() {
+  if (!swiperInstance.value) return
+  isAutoplayPaused.value = !isAutoplayPaused.value
+  if (isAutoplayPaused.value) {
+    swiperInstance.value.autoplay?.stop()
+  } else {
+    swiperInstance.value.autoplay?.start()
+  }
 }
+
+function onAdminStateChange(e: any) {
+  const detail = e?.detail
+  if (detail?.active) {
+    swiperInstance.value?.autoplay?.stop()
+    isAutoplayPaused.value = true
+  } else if (!isAutoplayPaused.value) {
+    swiperInstance.value?.autoplay?.start()
+  }
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    window.addEventListener('najm:admin-editing-state', onAdminStateChange)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('najm:admin-editing-state', onAdminStateChange)
+  }
+})
 
 // Slide navigation methods using captured instance
 function slidePrev() {

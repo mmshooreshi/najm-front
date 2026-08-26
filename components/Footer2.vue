@@ -34,7 +34,7 @@
           </div>
         </div>
 
-        <NuxtImg v-if="isDesktop" class="invisible md:visible md:max-h-full max-w-sm mx-auto w-[80%] mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+        <NuxtImg class="hidden md:block max-w-sm mx-auto w-[80%] mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" alt="Trust" />
       </div>
 
       <div class="max-w-screen-xl overflow-hidden col-span-1 px-6 sm:px-10">
@@ -66,7 +66,7 @@
           <Map />
         </ClientOnly>
 
-        <NuxtImg class="md:invisible md:hidden visible max-w-sm mx-auto w-full mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" />
+        <NuxtImg class="block md:hidden max-w-sm mx-auto w-full mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" alt="Trust" />
       </div>
     </div>
 
