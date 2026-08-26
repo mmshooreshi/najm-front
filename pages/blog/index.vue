@@ -154,6 +154,8 @@ const fallbackPosts = [
     image: '/images/svg/kraft-paper-open-mailing-box-mockup-2-6737.svg',
     date: '۲ اردیبهشت ۱۴۰۴',
     readTime: '۷ دقیقه',
+    author: 'واحد بازرگانی بین‌الملل'
+  },
   {
     id: 5,
     slug: 'auto-bottom-vs-straight-tuck-boxes',
