@@ -40,7 +40,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, nextTick } from 'vue'
 import gsap from 'gsap'
 const { language } = useLocale()
@@ -59,8 +59,10 @@ const contentEl = ref(null)
 watch(
   () => props.isOpen,
   async (open) => {
-    const el = contentEl.value
     await nextTick()
+    const el = contentEl.value as HTMLElement | null
+    if (!el) return
+
     if (open) {
       const fullH = el.scrollHeight
       gsap.fromTo(

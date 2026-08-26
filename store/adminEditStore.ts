@@ -1,6 +1,7 @@
 // store/adminEditStore.ts
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { toLocalizedDigits } from '~/utils/digits'
+import { logger } from '~/utils/logger'
 
 /** ---------- Types ---------- **/
 export type LangCode = string
@@ -10,6 +11,7 @@ export interface LangRecord {
   original: string
   value: string
   draft?: string
+  updatedAt?: string
 }
 
 export type ChangeRecord = Record<LangCode, LangRecord>
@@ -24,15 +26,31 @@ export interface VersionEntry {
 export type VersionsByLang = Record<LangCode, VersionEntry[]>
 export type VersionsMap = Record<PathKey, VersionsByLang>
 
+export interface ChangedFieldDetail {
+  path: PathKey
+  lang: LangCode
+  original: string
+  current: string
+  hasDraft: boolean
+  isChanged: boolean
+}
+
 export interface AdminEditState {
   canEdit: boolean
   editMode: boolean
   slug: string
   language: LangCode
   changes: ChangeMap
-  allLangUI: Record<LangCode, Record<string, any>> // frozen snapshots per lang
+  allLangUI: Record<LangCode, Record<string, any>> // full UI snapshots per lang
   versions: VersionsMap // path -> lang -> versions
   lastSavedAt: string | null
+  saving: boolean
+  lastError: string | null
+  inspectorOpen: boolean
+  historyOpen: boolean
+  paletteOpen: boolean
+  minimized: boolean
+  autosaveEnabled: boolean
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -43,36 +61,23 @@ export const adminEditState = reactive<AdminEditState>({
   changes: {},
   allLangUI: {},
   versions: {},
-  lastSavedAt: null
+  lastSavedAt: null,
+  saving: false,
+  lastError: null,
+  inspectorOpen: false,
+  historyOpen: false,
+  paletteOpen: false,
+  minimized: false,
+  autosaveEnabled: false
 })
 
-/** ---------- Utils ---------- **/
-/** Debug helpers */
-export function logFullState() {
-  console.log('[AdminEdit] FULL STATE', JSON.parse(JSON.stringify(adminEditState)))
-}
-
-export function logChangedOnly(lang?: LangCode) {
-  const out: Record<string, any> = {}
-  for (const [path, recs] of Object.entries(adminEditState.changes)) {
-    for (const [l, rec] of Object.entries(recs)) {
-      if (isChanged(path, l)) {
-        if (lang && l !== lang) continue
-        out[path] = out[path] || {}
-        out[path][l] = { original: rec.original, value: rec.value, draft: rec.draft }
-      }
-    }
-  }
-  console.log(`[AdminEdit] CHANGED${lang ? ' [' + lang + ']' : ''}`, out)
-}
-
-
+/** ---------- String Normalization Helpers ---------- **/
 export function normalize(s: any): string {
   return String(s ?? '')
-    .replace(/\u00A0/g, ' ')                 // NBSP → space
-    .replace(/[\u200B-\u200D\uFEFF]/g, '‌')   // zero-width
+    .replace(/\u00A0/g, ' ')               // NBSP → space
+    .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width spaces
     .replace(/\s+/g, ' ')
-    // .trim()
+    .trim()
 }
 
 export function getText(el: HTMLElement): string {
@@ -80,7 +85,11 @@ export function getText(el: HTMLElement): string {
 }
 
 export function deepClone<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj))
+  try {
+    return JSON.parse(JSON.stringify(obj))
+  } catch {
+    return obj
+  }
 }
 
 /** Dot-path getter supporting array indices like "a.b.0.c" */
@@ -94,51 +103,38 @@ export function getByPath(obj: any, path: string): any {
   }, obj)
 }
 
-function normValueForCompare(v: any): string {
-  return normalize(v)
-}
-function normOriginalForCompare(orig: any, lang: LangCode): string {
-  // Localize original to current language before comparing with DOM value
-  return normalize(toLocalizedDigits(orig))
-}
-function normSnapshotForCompare(snap: any, lang: LangCode): string {
-  // Same rule for snapshot text used in baseline sync logic
-  return normalize(toLocalizedDigits(snap))
+function normForCompare(v: any, lang: LangCode): string {
+  return normalize(toLocalizedDigits(v))
 }
 
 /** ---------- Core API ---------- **/
 export function setSlug(slug: string) {
-  adminEditState.slug = slug
-  console.log(`[AdminEdit] slug → ${slug}`)
+  if (adminEditState.slug !== slug) {
+    adminEditState.slug = slug
+  }
 }
 
 export function syncLanguage(lang: LangCode) {
+  if (!lang) return
   if (adminEditState.language !== lang) {
     adminEditState.language = lang
-    console.log(`[AdminEdit] language → ${lang}`)
   }
 }
 
 /** Freeze & store full-UI snapshot for a language */
 export function captureLanguageSnapshot(lang: LangCode, ui: Record<string, any>) {
-  if (!ui || Object.keys(ui).length === 0) {
-    console.warn(`[AdminEdit] skip snapshot — UI empty for ${lang}`)
-    return
-  }
+  if (!ui || Object.keys(ui).length === 0) return
 
   const prev = adminEditState.allLangUI[lang]
   const snap = deepClone(ui)
 
-  // dedupe: if same keys and same values → skip
+  // Deduplicate
   if (prev && JSON.stringify(prev) === JSON.stringify(snap)) {
-    console.log(`[AdminEdit] snapshot unchanged → ${lang}`)
     return
   }
 
   adminEditState.allLangUI[lang] = snap
-  console.log(`[AdminEdit] snapshot saved → ${lang} (${Object.keys(snap).length} keys)`)
 }
-
 
 /** Versions helpers */
 export function addVersion(path: PathKey, lang: LangCode, value: string, type: VersionType) {
@@ -147,21 +143,19 @@ export function addVersion(path: PathKey, lang: LangCode, value: string, type: V
   const list = adminEditState.versions[path][lang]
   const last = list[list.length - 1]
   const nVal = normalize(value)
-//   if (!last || normalize(last.value) !== nVal || last.type !== type) {
-//     list.push({ type, value, date: new Date().toISOString() })
-//   }
   const nowIso = new Date().toISOString()
   const nowMs = Date.parse(nowIso)
-  // throttle drafts: keep only the last one inside a 60s window
-  if (type === 'draft' && last && last.type === 'draft' && (nowMs - Date.parse(last.date)) < 60_000) {
+
+  // Throttle drafts: update inside a 30s window if consecutive draft
+  if (type === 'draft' && last && last.type === 'draft' && (nowMs - Date.parse(last.date)) < 30_000) {
     last.value = value
     last.date = nowIso
     return
   }
+
   if (!last || normalize(last.value) !== nVal || last.type !== type) {
     list.push({ type, value, date: nowIso })
   }
-
 }
 
 export function getVersions(path: PathKey, lang: LangCode): VersionEntry[] {
@@ -169,177 +163,224 @@ export function getVersions(path: PathKey, lang: LangCode): VersionEntry[] {
 }
 
 /**
- * Apply snapshot to baselines for a language.
- * - Never overwrite paths that have local edits (drafts).
- * - If untouched → sync baseline & versions.
- * - If empty original but value matches snapshot → promote.
+ * Apply snapshot to baselines for a language without touching modified fields.
  */
 export function applySnapshotToBaselines(lang: LangCode) {
   const snap = adminEditState.allLangUI[lang]
   if (!snap) return
-  console.group(`[AdminEdit] applySnapshotToBaselines [${lang}]`)
 
-  for (const [path, raw] of Object.entries(snap)) {
-    const text = (typeof raw === 'string' || typeof raw === 'number') ? String(raw) : ''
-    if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
-    const rec = adminEditState.changes[path][lang]
+  function walk(obj: any, prefix = '') {
+    if (!obj || typeof obj !== 'object') return
+    for (const [k, v] of Object.entries(obj)) {
+      const fullPath = prefix ? `${prefix}.${k}` : k
+      if (v !== null && typeof v === 'object') {
+        walk(v, fullPath)
+      } else {
+        const text = String(v ?? '')
+        if (!adminEditState.changes[fullPath]) adminEditState.changes[fullPath] = {}
+        const rec = adminEditState.changes[fullPath][lang]
 
-    const nSnapLoc = normSnapshotForCompare(text, lang)
-
-    if (!rec) {
-      // No baseline yet → set fresh
-      adminEditState.changes[path][lang] = { original: text, value: text }
-      addVersion(path, lang, text, 'original')
-      console.log(`+ baseline set → ${path}`)
-      continue
-    }
-
-    // ⛔ Don’t touch paths with local edits
-    if (isChanged(path, lang)) {
-      console.log(`~ keep edits → ${path}`)
-      continue
-    }
-
-    const nVal     = normValueForCompare(rec.value)
-    const nOrigLoc = normOriginalForCompare(rec.original, lang)
-
-    if (nVal === nOrigLoc) {
-      // No edits → sync snapshot
-      if (nOrigLoc !== nSnapLoc) addVersion(path, lang, text, 'original')
-      rec.original = text
-      rec.value = text
-      console.log(`= synced (no edits) → ${path}`)
-    } else if (normalize(rec.original) === '' && nVal === nSnapLoc) {
-      // Promote when original empty but matches snapshot
-      addVersion(path, lang, text, 'original')
-      rec.original = text
-      rec.value = text
-      console.log(`^ promote original → ${path}`)
+        if (!rec) {
+          adminEditState.changes[fullPath][lang] = { original: text, value: text }
+          addVersion(fullPath, lang, text, 'original')
+        } else if (!isChanged(fullPath, lang)) {
+          rec.original = text
+          rec.value = text
+        }
+      }
     }
   }
 
-  console.groupEnd()
+  walk(snap)
 }
 
-/** Ensure baseline exists for this path+lang (used by directive on mount) */
+/** Ensure baseline exists for this path+lang (called on directive mount) */
 export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: string) {
+  if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
   const rec = adminEditState.changes[path][lang]
-  if (rec && rec.original) return
-
-//   const snapText = getByPath(adminEditState.allLangUI[lang], path)
-//   const original =
-//     typeof snapText === 'string' || typeof snapText === 'number' ? String(snapText) : ''
-
-//   adminEditState.changes[path][lang] = {
-//     original,
-//     value: currentElText
-//   }
-//   if (original) addVersion(path, lang, original, 'original')
+  if (rec && rec.original != null && rec.original !== '') return
 
   const snapText = getByPath(adminEditState.allLangUI[lang], path)
-  const hasSnap = typeof snapText === 'string' || typeof snapText === 'number'
+  const hasSnap = snapText !== undefined && snapText !== null
   const original = hasSnap ? String(snapText) : currentElText
-  adminEditState.changes[path][lang] = { original, value: currentElText }
-  if (hasSnap) addVersion(path, lang, original, 'original')
-  
-  console.log(`[AdminEdit] baseline set [${lang}] ${path} → orig:"${original}" val:"${currentElText}")`)
+  const value = hasSnap ? String(snapText) : currentElText
+
+  adminEditState.changes[path][lang] = {
+    original,
+    value,
+    updatedAt: new Date().toISOString()
+  }
+  if (original) {
+    addVersion(path, lang, original, 'original')
+  }
 }
 
+
 export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
+  if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
   if (!adminEditState.changes[path][lang]) {
-    adminEditState.changes[path][lang] = { original: '', value: '' }
+    adminEditState.changes[path][lang] = { original: newValue, value: newValue }
   }
-  adminEditState.changes[path][lang].draft = newValue
+  const rec = adminEditState.changes[path][lang]
+  rec.draft = newValue
+  rec.updatedAt = new Date().toISOString()
   addVersion(path, lang, newValue, 'draft')
+
+  if (process.dev) {
+    logger.debug('Admin:Edit', `Draft updated on "${path}" [${lang.toUpperCase()}]: "${newValue.slice(0, 40)}${newValue.length > 40 ? '...' : ''}"`)
+  }
 }
 
 export function setValueSilently(path: PathKey, lang: LangCode, newValue: string) {
+  if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
   if (!adminEditState.changes[path][lang]) {
-    adminEditState.changes[path][lang] = { original: '', value: '' }
+    adminEditState.changes[path][lang] = { original: newValue, value: newValue }
+    return
   }
   const rec = adminEditState.changes[path][lang]
-  if (rec.draft != null) return // 🚫 don’t clobber an active draft
+  if (rec.draft != null) return // don't overwrite user's active draft
   rec.value = newValue
-}
-
-function normForCompare(v: any, lang: LangCode): string {
-  return normalize(toLocalizedDigits(v)) // convert both sides the same way
 }
 
 export function isChanged(path: PathKey, lang: LangCode): boolean {
   const rec = adminEditState.changes[path]?.[lang]
   if (!rec) return false
-  const base = normForCompare(rec.original, lang)
-  const curr = normForCompare(rec.draft ?? rec.value, lang)
-  return curr !== base
+  if (rec.draft !== undefined && rec.draft !== null) {
+    return normForCompare(rec.draft, lang) !== normForCompare(rec.original, lang)
+  }
+  if (!rec.original) return false
+  return normForCompare(rec.value, lang) !== normForCompare(rec.original, lang)
 }
 
 
-/** Build save payload for current lang */
+/** Build save payload for a given language */
 export function buildChangesPayload(lang: LangCode): { path: string; value: string }[] {
   const out: { path: string; value: string }[] = []
   for (const [path, rec] of Object.entries(adminEditState.changes)) {
     const lr = rec?.[lang]
     if (!lr) continue
     const candidate = lr.draft ?? lr.value
-    if (normalize(candidate) !== normalize(lr.original)) {
+    if (normForCompare(candidate, lang) !== normForCompare(lr.original, lang)) {
       out.push({ path, value: candidate })
     }
+  }
+  if (process.dev && out.length > 0) {
+    logger.group('Admin:Sync', `Changes Payload generated for [${lang.toUpperCase()}] (${out.length} items)`, () => {
+      out.forEach(item => logger.debug('Admin:Sync', `↳ ${item.path} → "${item.value}"`))
+    })
   }
   return out
 }
 
-/** Record saved versions for a set of paths (after save success) */
+/** Record saved versions for saved paths */
 export function recordSavedVersions(lang: LangCode, paths: string[]) {
   for (const path of paths) {
     const rec = adminEditState.changes[path]?.[lang]
     if (rec) {
-      addVersion(path, lang, rec.draft ?? rec.value, 'saved')
-      rec.value = rec.draft ?? rec.value
+      const finalVal = rec.draft ?? rec.value
+      addVersion(path, lang, finalVal, 'saved')
+      rec.original = finalVal
+      rec.value = finalVal
       rec.draft = undefined
     }
   }
+  if (process.dev) {
+    logger.success('Admin:Sync', `Committed and baseline-recorded ${paths.length} saved fields for [${lang.toUpperCase()}]`)
+  }
 }
 
+/** Revert a single path back to its original baseline */
+export function revertPath(path: PathKey, lang: LangCode) {
+  const rec = adminEditState.changes[path]?.[lang]
+  if (!rec) return
 
+  rec.draft = undefined
+  rec.value = rec.original
+
+  // Update DOM element directly
+  if (typeof document !== 'undefined') {
+    document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
+      .forEach(el => {
+        el.textContent = rec.original ?? ''
+        el.classList.remove('v-editable--changed')
+        el.removeAttribute('data-admin-changed')
+      })
+  }
+
+  addVersion(path, lang, rec.original, 'draft')
+  if (process.dev) {
+    logger.info('Admin:Edit', `Reverted "${path}" [${lang.toUpperCase()}] back to baseline: "${rec.original}"`)
+  }
+}
+
+export function revertPathToOriginal(path: PathKey, lang: LangCode) {
+  revertPath(path, lang)
+}
+
+/** Discard all changes for a given language */
 export function discardAllChanges(lang: LangCode) {
   for (const [path, recs] of Object.entries(adminEditState.changes)) {
     const rec = recs?.[lang]
     if (!rec) continue
     rec.value = rec.original
-    rec.draft = undefined  // 🚀 reset draft so isChanged() becomes false
+    rec.draft = undefined
+
+    if (typeof document !== 'undefined') {
+      document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
+        .forEach(el => {
+          el.textContent = rec.original ?? ''
+          el.classList.remove('v-editable--changed')
+          el.removeAttribute('data-admin-changed')
+        })
+    }
   }
-  console.log(`[AdminEdit] discarded all changes for [${lang}]`)
+  if (process.dev) {
+    logger.warn('Admin:Edit', `Discarded all pending drafts for [${lang.toUpperCase()}]`)
+  }
 }
 
-
-/** ---------- New helpers for History/UX ---------- **/
-export function revertPathToOriginal(path: PathKey, lang: LangCode) {
-  if (!adminEditState.changes[path]) return
-  const rec = adminEditState.changes[path][lang]
-  if (!rec) return
-
-  rec.draft = undefined         // 🚫 drop draft
-  rec.value = rec.original      // reset to baseline
-  addVersion(path, lang, rec.original, 'draft') // optional: log as "revert" draft
-  console.log(`[AdminEdit] reverted [${lang}] ${path} → "${rec.original}"`)
-}
-
+/** Restore a specific revision from history */
 export function restoreVersion(path: PathKey, lang: LangCode, value: string) {
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
   if (!adminEditState.changes[path][lang]) {
     adminEditState.changes[path][lang] = { original: '', value: '' }
   }
   const rec = adminEditState.changes[path][lang]
-
-  rec.draft = value   // 💾 treat as new draft
+  rec.draft = value
   addVersion(path, lang, value, 'draft')
-  console.log(`[AdminEdit] restored version → [${lang}] ${path} = "${value}"`)
+
+  if (typeof document !== 'undefined') {
+    document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
+      .forEach(el => {
+        el.textContent = value
+        el.classList.add('v-editable--changed')
+        el.setAttribute('data-admin-changed', 'true')
+      })
+  }
 }
 
+/** Helper to list all changed fields with details */
+export function getChangedDetails(lang: LangCode): ChangedFieldDetail[] {
+  const list: ChangedFieldDetail[] = []
+  for (const [path, perLang] of Object.entries(adminEditState.changes)) {
+    const rec = perLang[lang]
+    if (!rec) continue
+    if (isChanged(path, lang)) {
+      list.push({
+        path,
+        lang,
+        original: rec.original ?? '',
+        current: rec.draft ?? rec.value ?? '',
+        hasDraft: rec.draft !== undefined,
+        isChanged: true
+      })
+    }
+  }
+  return list
+}
 
 export function getAllPaths(): string[] {
   return Object.keys(adminEditState.changes)
@@ -350,13 +391,14 @@ export function getAllLangs(): string[] {
   for (const rec of Object.values(adminEditState.changes)) {
     Object.keys(rec || {}).forEach(l => a.add(l))
   }
+  if (!a.size) return ['fa', 'en', 'ar']
   return Array.from(a)
 }
 
 export function changedCountForLang(lang: LangCode): number {
-  let n = 0
+  let count = 0
   for (const p of Object.keys(adminEditState.changes)) {
-    if (isChanged(p, lang)) n++
+    if (isChanged(p, lang)) count++
   }
-  return n
+  return count
 }

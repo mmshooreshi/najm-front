@@ -7,8 +7,7 @@ import { MotionPathPlugin } from 'gsap/MotionPathPlugin'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 
-gsap.registerPlugin(MotionPathPlugin)
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(MotionPathPlugin, ScrollTrigger, CustomEase)
 
 interface PopOptions {
   delay?: number    // seconds

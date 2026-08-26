@@ -1,61 +1,39 @@
 <!-- pages/index.vue -->
 <template>
-<!-- Each scene wrapped in a section-snap for ScrollTrigger snapping -->
- <div>
-<div class="section-snap">
-    <SceneHero />
-  </div>
+  <div class="home-page-root w-full">
+    <div class="section-snap">
+      <SceneHero />
+    </div>
 
-   <div class="section-snap">
-    <SceneServicesAndCapabilities />
-  </div>
-<!--  
-  <div class="section-snap">
-    <SceneCardsIntro />
-  </div> 
-  <div class="section-snap">
-    <SceneProjects />
-  </div> -->
+    <div class="section-snap">
+      <SceneServicesAndCapabilities />
+    </div>
 
-  <div class="section-snap">
-    <!-- <ScrollWrapperWebpKiller />    -->
-     <SW/>
-  </div>
+    <div class="section-snap">
+      <SW />
+    </div>
 
+    <div class="section-snap">
+      <SceneApplicationsAndIndustries />
+    </div>
 
+    <div class="section-snap">
+      <SceneFacilities />
+    </div>
 
+    <div class="section-snap">
+      <SceneProducts />
+    </div>
 
+    <div class="section-snap">
+      <ScenePromo />
+    </div>
 
-  <div class="section-snap">
-    <SceneApplicationsAndIndustries />
-  </div>
+    <SceneCustomers />
 
-  
-  <div class="section-snap">
-    <SceneFacilities />
-  </div>
-
-  <div class="section-snap">
-    <SceneProducts />
-  </div>
-
-  <div class="section-snap">
-    <ScenePromo />
-  </div>
-  <SceneCustomers />
-
-
-  <!-- <div class="section-snap"> -->
-    <!-- <SceneSlider /> -->
-  <!-- </div> -->
-
-  <!-- <div class="section-snap"> -->
-    <!-- <SceneFinalMessage /> -->
-  <!-- </div> -->
-
-  <div class="section-snap">
-    <SceneFaq />
-  </div>
+    <div class="section-snap">
+      <SceneFaq />
+    </div>
   </div>
 </template>
 

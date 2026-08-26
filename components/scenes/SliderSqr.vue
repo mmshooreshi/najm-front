@@ -2,7 +2,7 @@
 <!-- SliderSqr.vue: -->
 <template>
   <div class="h-full w-full  relative">
-    <Swiper ref="swiperRef" :modules="modules" :loop="loop"
+    <Swiper ref="swiperRef" :modules="modules" :loop="shouldLoop"
       :autoplay="{ delay: autoplayDelay, disableOnInteraction: false }" :effect="effect" :fadeEffect="{ crossFade }"
       :pagination="{ clickable: true }" @swiper="onSwiper" @slideChange="onSlideChange" class="h-full w-full">
       <!-- :pagination="pagination ? paginationOptions : false" -->
@@ -151,6 +151,8 @@ const props = defineProps({
 })
 
 
+const shouldLoop = computed(() => props.loop && Array.isArray(props.slides) && props.slides.length > 1)
+
 const swiperRef = ref<InstanceType<typeof Swiper> | null>(null)
 const paginationId = `pagination-${Math.random().toString(36).substr(2, 9)}`
 
@@ -172,17 +174,14 @@ const paginationPositionClasses = computed(() => {
   return classes.join(' ')
 })
 
-function onSlideChange(swiper: any) {
-  if (swiper.realIndex === 0) {
-    console.log('Looped to first slide')
-  }
+function onSlideChange(_swiper: any) {
+  // Silent slide change
 }
 
 const swiperInstance = ref<SwiperCore | null>(null)
 function onSwiper(swiper: SwiperCore) {
   swiperInstance.value = swiper
 }
-
 
 // Slide navigation methods using captured instance
 function slidePrev() {
@@ -191,10 +190,4 @@ function slidePrev() {
 function slideNext() {
   swiperInstance.value?.slideNext()
 }
-
-
-
-onMounted(() => {
-  console.log('SwiperSlider mounted')
-})
 </script>

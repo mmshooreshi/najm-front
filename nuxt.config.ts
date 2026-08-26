@@ -61,48 +61,12 @@ export default defineNuxtConfig({
         {
           name: 'twitter:image',
           content: 'https://chapenajm.com/social-image.png'
-        },
-
-        // Hreflang for multiple languages
-        { rel: 'alternate', hreflang: 'en', href: 'https://chapenajm.com/en' },
-        { rel: 'alternate', hreflang: 'ar', href: 'https://chapenajm.com/ar' },
-        { rel: 'alternate', hreflang: 'fa', href: 'https://chapenajm.com/fa' },
-
-        // Structured Data (Organization)
-        {
-          type: 'application/ld+json',
-          children: `
-        {
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "name": "Najm Printing & Packaging",
-          "url": "https://chapenajm.com",
-          "logo": "https://chapenajm.com/najm-logo.png",
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+98 21 6679 7911",
-            "contactType": "customer service",
-            "areaServed": "IR",
-            "availableLanguage": "Persian, English"
-          },
-          "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Kooy-e-Mehrzad, M8F5+CC8",
-            "addressLocality": "Tehran",
-            "addressRegion": "Tehran Province",
-            "postalCode": "12345678", // Optional, adjust if necessary
-            "addressCountry": "IR"
-          },
-          "sameAs": [
-            "https://www.facebook.com/NajmPrinting",
-            "https://twitter.com/NajmPrinting",
-            "https://www.linkedin.com/company/najmprinting"
-          ]
-        }
-        `
         }
       ],
       link: [
+        { rel: 'alternate', hreflang: 'en', href: 'https://chapenajm.com/en' },
+        { rel: 'alternate', hreflang: 'ar', href: 'https://chapenajm.com/ar' },
+        { rel: 'alternate', hreflang: 'fa', href: 'https://chapenajm.com/fa' },
         { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
         {
           rel: 'apple-touch-icon',
@@ -146,6 +110,38 @@ export default defineNuxtConfig({
 
         // Font Preload Links (existing utility)
         ...fontPreloadLinks
+      ],
+      script: [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: 'Najm Printing & Packaging',
+            url: 'https://chapenajm.com',
+            logo: 'https://chapenajm.com/najm-logo.png',
+            contactPoint: {
+              '@type': 'ContactPoint',
+              telephone: '+98 21 6679 7911',
+              contactType: 'customer service',
+              areaServed: 'IR',
+              availableLanguage: ['Persian', 'English']
+            },
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: 'Kooy-e-Mehrzad, M8F5+CC8',
+              addressLocality: 'Tehran',
+              addressRegion: 'Tehran Province',
+              postalCode: '12345678',
+              addressCountry: 'IR'
+            },
+            sameAs: [
+              'https://www.facebook.com/NajmPrinting',
+              'https://twitter.com/NajmPrinting',
+              'https://www.linkedin.com/company/najmprinting'
+            ]
+          })
+        }
       ]
     }
   },

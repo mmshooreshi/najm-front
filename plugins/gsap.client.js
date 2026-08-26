@@ -11,8 +11,16 @@ import { Draggable } from 'gsap/Draggable';
 
 export default defineNuxtPlugin((nuxtApp) => {
   if (process.client) {
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, ScrollSmoother, Draggable, MotionPathPlugin);
-    
+    gsap.registerPlugin(
+      ScrollTrigger,
+      ScrollToPlugin,
+      ScrollSmoother,
+      Draggable,
+      MotionPathPlugin,
+      CustomEase,
+      SplitText,
+      Flip
+    );
   }
 
   // nuxtApp.provide('gsap', gsap)

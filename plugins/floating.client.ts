@@ -47,8 +47,7 @@ export const floating: Directive<HTMLElement, FloatingOptions> = {
 
 
 export default defineNuxtPlugin(nuxtApp => {
-  nuxtApp.vueApp.directive('memotion-pop-visible', floating)
-
+  nuxtApp.vueApp.directive('floating', floating)
 })
 
 

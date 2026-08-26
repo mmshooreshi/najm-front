@@ -1,7 +1,8 @@
 // composables/ui/usePageUI.ts
 import { useFetch } from '#app'
-import { computed, type ComputedRef } from 'vue'
+import { computed, type ComputedRef, watch } from 'vue'
 import { useLocale } from '@/composables/useLocale'
+import { logger } from '@/utils/logger'
 
 type UiForLang = Record<string, any>
 type AllUi = Record<string, UiForLang>
@@ -65,6 +66,15 @@ export function usePageUI(
           : (localUI ?? {})
       out[lower] = chosen
       out[upper] = chosen
+    }
+
+    if (process.dev) {
+      const availableLangs = Array.from(new Set(Object.keys(out).map(l => l.toUpperCase())))
+      logger.group('Content:Hydrate', `Hydrated UI schema for "${slug}" [${availableLangs.join(', ')}]`, () => {
+        logger.debug('Content:Hydrate', 'Remote Source Status:', data.value?.ok ? '✓ Remote PocketBase OK' : '⚠ Fallback Schema Applied')
+        logger.debug('Content:Hydrate', 'Available Languages:', availableLangs)
+        logger.debug('Content:Hydrate', 'Schema Keys Summary:', Object.keys(out.fa || out.FA || {}))
+      })
     }
 
     return out

@@ -1,12 +1,12 @@
 // composables/useAdminLogger.ts
 import { reactive, computed } from 'vue'
 
-export type LogLevel = 'info' | 'warn' | 'error' | 'network' | 'auth'
+export type AdminLogLevel = 'info' | 'warn' | 'error' | 'network' | 'auth'
 
 export interface LogEntry {
   id: string
   timestamp: string
-  level: LogLevel
+  level: AdminLogLevel
   tag: string
   message: string
   details?: any
@@ -22,7 +22,7 @@ const state = reactive<LoggerState>({
   maxLogs: 200,
 })
 
-function addLog(level: LogLevel, tag: string, message: string, details?: any) {
+function addLog(level: AdminLogLevel, tag: string, message: string, details?: any) {
   const entry: LogEntry = {
     id: `${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
     timestamp: new Date().toLocaleTimeString('en-US', { hour12: false }) + '.' + String(Date.now() % 1000).padStart(3, '0'),

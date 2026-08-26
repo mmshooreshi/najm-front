@@ -175,7 +175,6 @@ const paragraphRefs = ref<HTMLElement[]>([])
         opacity:  1,
         duration: dur,
         ease:     animationConfig.eases.lines.forward,
-        easeBackwards: animationConfig.eases.lines.backward,
         stagger:  stag,
       },
       at
@@ -183,7 +182,6 @@ const paragraphRefs = ref<HTMLElement[]>([])
   }
 
   tlHighlights.pause()
-
 
   // PASS 1: highlight bounce
   props.highlights.forEach((h, i) => {
@@ -195,15 +193,13 @@ const paragraphRefs = ref<HTMLElement[]>([])
           highlightRefs.value[i]!,
           { scale: 0, opacity: 0 },
           { scale: bounceScale, opacity: 1, duration: animationConfig.durations.bounce,
-            ease: animationConfig.eases.highlight.forward,
-            easeBackwards: animationConfig.eases.highlight.backward
+            ease: animationConfig.eases.highlight.forward
           }
         )
         .to(highlightRefs.value[i]!, {
           scale: 1,
           duration: animationConfig.durations.highlightScaleDown,
-          ease: animationConfig.eases.highlight.forward,
-          easeBackwards: animationConfig.eases.highlight.backward
+          ease: animationConfig.eases.highlight.forward
         })
     }
   })

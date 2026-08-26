@@ -3,12 +3,16 @@
   <NuxtLayout>
     <NuxtPage :page-key="route => route.fullPath" />
   </NuxtLayout>
+  <ClientOnly>
+    <AdminEditBar />
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
 import '@unocss/reset/tailwind-compat.css'
 import '@unocss/reset/normalize.css'
 import '@unocss/reset/tailwind.css'
+import AdminEditBar from '~/components/admin/AdminEditBar.client.vue'
 
 const route = useRoute()
 provideHeadlessUseId(() => useId())

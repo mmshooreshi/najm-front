@@ -38,11 +38,6 @@
         </div>
       </div>
     </div>
-
-    <ClientOnly>
-      <AdminEditBar />
-      <HistoryModal :open="state.editMode ?? false" />
-    </ClientOnly>
   </div>
 </template>
 
@@ -51,9 +46,6 @@ import { ref, computed } from 'vue'
 import { useRoute } from '#imports'
 import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import Header from '~/components/Header.vue'
-import AdminEditBar from '~/components/admin/AdminEditBar.client.vue'
-import HistoryModal from '~/components/admin/HistoryModal.client.vue'
-import { adminEditState as state } from '@/store/adminEditStore'
 import { usePageUI } from '@/composables/ui/usePageUI'
 import { useLocale } from '@/composables/useLocale'
 

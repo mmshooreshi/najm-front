@@ -14,15 +14,17 @@
          class="relative max-w-2xl rounded-3xl mt-12 md:mt-0">
       <h2 v-memotion-pop-visible="{ delay: 0.3, duration: 0.6, ease: 'smoothPop' }"
           class="text-2xl font-extrabold text-d4">
-        <span v-html="formattedHeader"></span>
+        <span v-if="path" v-editable="`${path}.header`" v-html="formattedHeader"></span>
+        <span v-else v-html="formattedHeader"></span>
       </h2>
-      <!-- hidden editor that writes to the real source string -->
-      <span class="sr-only" v-editable="`${path}.header`">{{ data.header }}</span>
 
       <p v-memotion-pop-visible="{ delay: 0.6, duration: 0.6, ease: 'smoothPop' }"
          class="text-sm text-d4 mt-4">
-        <span v-editable="`${path}.description1`">{{ data.description1 }}</span><br>
-        <span v-editable="`${path}.description2`">{{ data.description2 }}</span>
+        <span v-if="path" v-editable="`${path}.description1`" v-html="formatMobile(data.description1)"></span>
+        <span v-else v-html="formatMobile(data.description1)"></span>
+        <br v-if="data.description1 && data.description2">
+        <span v-if="path" v-editable="`${path}.description2`" v-html="formatMobile(data.description2)"></span>
+        <span v-else v-html="formatMobile(data.description2)"></span>
       </p>
     </div>
   </div>
@@ -30,34 +32,35 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useMediaQuery } from '@vueuse/core'
+import gsap from 'gsap'
 import CustomEase from 'gsap/CustomEase'
 import { useLocale } from '@/composables/useLocale'
+
+gsap.registerPlugin(CustomEase)
+CustomEase.create('smoothPop', '0.25, 0.1, 0.25, 1')
+
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
-
-CustomEase.create('smoothPop', '0.25, 0.1, 0.25, 1')
 
 const props = defineProps({
   data: { type: Object, default: () => ({}) },
   align: { type: String, default: 'center' },
   hideLabel: { type: Boolean, default: false },
   /** base path for v-editable, e.g. "sceneServicesAndCapabilities" */
-    path: {
+  path: {
     type: String,
-    required: false,   // ⬅️ change this
-    default: '',       // ⬅️ and add a safe default
+    required: false,
+    default: '',
   },
-
 })
 
-const isSmall = useMediaQuery('(max-width: 400px)')
+function formatMobile(str?: string): string {
+  if (!str) return ''
+  return str.replace(/<mobile>/g, '<br class="sm:hidden inline"> ')
+}
 
 const formattedHeader = computed(() => {
-  if (!props.data.header) return ''
-  return isSmall.value
-    ? props.data.header.replace(/<mobile>/g, '<br>')
-    : props.data.header.replace(/<mobile>/g, ' ')
+  return formatMobile(props.data?.header)
 })
 
 const itemsClass = computed(() => ({

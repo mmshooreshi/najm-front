@@ -1,6 +1,6 @@
 // plugins/admin-edit.client.ts
 import { defineNuxtPlugin } from '#app'
-import { watchEffect, type DirectiveBinding } from 'vue'
+import { watch, watchEffect, type DirectiveBinding } from 'vue'
 import {
   adminEditState as state,
   getText,
@@ -9,270 +9,378 @@ import {
   setValueSilently,
   isChanged,
   syncLanguage,
-  getVersions,
   changedCountForLang,
+  revertPath
 } from '@/store/adminEditStore'
 import { useLocale } from '@/composables/useLocale'
-import { toLocalizedDigits } from '~/utils/digits'
-import AdminTip from '@/components/admin/AdminTip.vue'
-import { createApp, ref } from 'vue'
+import { logger } from '@/utils/logger'
 
 /** ---------- ContentEditable helpers ---------- **/
 function setEditable(el: HTMLElement, on: boolean) {
-  el.setAttribute('contenteditable', on ? 'plaintext-only' : 'false')
+  el.setAttribute('contenteditable', on ? 'true' : 'false')
+  el.setAttribute('spellcheck', 'false')
   el.classList.toggle('v-editable--active', on)
-  if (!on) el.blur()
+  if (!on && document.activeElement === el) {
+    el.blur()
+  }
 }
-function paintChanged(el: HTMLElement, changed: boolean) {
+
+function updateElementState(el: HTMLElement, path: string, lang: string) {
+  const changed = isChanged(path, lang)
   el.classList.toggle('v-editable--changed', changed)
-  el.classList.toggle('v-editable--hint', !changed)
+  if (changed) {
+    el.setAttribute('data-admin-changed', 'true')
+  } else {
+    el.removeAttribute('data-admin-changed')
+  }
 }
 
-/** ---------- Tooltip ---------- **/
-let tip: HTMLDivElement | null = null
-let tipApp: any = null
-const tipRows = ref<string>('')
+/** ---------- Instant Hover Badge for Editable Elements ---------- **/
+let hoverBadgeEl: HTMLDivElement | null = null
+let hoverActiveTarget: HTMLElement | null = null
+let hideBadgeTimer: any = null
 
-function showTip(el: HTMLElement, path: string, lang: string) {
-  if (!tip) {
-    tip = document.createElement('div')
-    tip.style.cssText =
-      'position:fixed;z-index:999999;max-width:520px;background:rgba(0,0,0,.92);color:#fff;font:12px/1.45 monospace;padding:10px 12px;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;white-space:pre-wrap;opacity:0;transition:opacity .12s'
-    document.body.appendChild(tip)
-    tipApp = createApp(AdminTip, { rows: tipRows })
-    tipApp.mount(tip)
-  }
-  watchEffect(() => {
-    const vers = getVersions(path, lang).slice(-3)
-    const rec = state.changes[path]?.[lang]
-    const orig = rec?.original ?? ''
-    const curr = rec?.draft ?? rec?.value ?? getText(el)
-    const changed = isChanged(path, lang)
-    const trim = (s: string, n = 100) => (s.length > n ? s.slice(0, n) + '…' : s || '—')
-    tipRows.value = [
-      `【${lang}】 ${path}`,
-      changed ? '● changed' : '✓ clean',
-      '',
-      `orig: ${trim(toLocalizedDigits(orig) || orig)}`,
-      `curr: ${trim(curr)}`,
-      '',
-      ...vers.map(v => `• ${v.type} · ${new Date(v.date).toLocaleTimeString()} · ${trim(v.value, 80)}`),
-    ].join('\n')
+function getOrCreateHoverBadge(): HTMLDivElement {
+  if (hoverBadgeEl) return hoverBadgeEl
+  hoverBadgeEl = document.createElement('div')
+  hoverBadgeEl.className = 'admin-hover-badge'
+  hoverBadgeEl.style.cssText = `
+    position: fixed;
+    z-index: 999999;
+    pointer-events: auto;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    background: rgba(18, 18, 20, 0.95);
+    color: #f3f4f6;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.1s ease, transform 0.1s ease;
+    transform: translateY(0);
+    opacity: 0;
+    user-select: none;
+  `
+
+  hoverBadgeEl.addEventListener('mouseenter', () => {
+    if (hideBadgeTimer) {
+      clearTimeout(hideBadgeTimer)
+      hideBadgeTimer = null
+    }
   })
-  const r = el.getBoundingClientRect()
-  tip.style.left = `${Math.max(8, Math.min(window.innerWidth - 368, r.left))}px`
-  tip.style.top = `${r.bottom + 6}px`
-  tip.style.opacity = '1'
-}
-function hideTip() { if (tip) tip.style.opacity = '0' }
 
-/** ---------- Diff highlighting ---------- **/
-function saveCaret(el: HTMLElement) {
-  const sel = window.getSelection()
-  if (!sel?.rangeCount || !el.contains(sel.anchorNode)) return -1
-  const range = sel.getRangeAt(0).cloneRange()
-  range.selectNodeContents(el)
-  range.setEnd(sel.getRangeAt(0).endContainer, sel.getRangeAt(0).endOffset)
-  return range.toString().length
-}
-function restoreCaret(el: HTMLElement, pos: number) {
-  const sel = window.getSelection()
-  // if (!sel) return
-  if (!sel || pos < 0) return
+  hoverBadgeEl.addEventListener('mouseleave', () => {
+    hideHoverBadge()
+  })
 
-  const range = document.createRange()
-  let idx = 0
-  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
-  while (walker.nextNode()) {
-    const node = walker.currentNode as Text
-    const next = idx + node.length
-    if (pos <= next) {
-      range.setStart(node, pos - idx)
-      break
+  document.body.appendChild(hoverBadgeEl)
+  return hoverBadgeEl
+}
+
+function showHoverBadge(el: HTMLElement, path: string) {
+  if (!state.canEdit || !state.editMode) return
+  if (hideBadgeTimer) {
+    clearTimeout(hideBadgeTimer)
+    hideBadgeTimer = null
+  }
+  hoverActiveTarget = el
+  const badge = getOrCreateHoverBadge()
+  const lang = state.language
+  const changed = isChanged(path, lang)
+
+  badge.innerHTML = `
+    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${changed ? '#f59e0b' : '#10b981'};flex-shrink:0;"></span>
+    <span style="opacity:0.95;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">${path}</span>
+    <button id="admin-hover-copy" style="background:rgba(255,255,255,0.08);color:#d1d5db;border:1px solid rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;margin-left:2px;">Copy</button>
+    ${changed ? `<button id="admin-hover-revert" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;">Revert</button>` : ''}
+  `
+
+  const copyBtn = badge.querySelector('#admin-hover-copy')
+  if (copyBtn) {
+    copyBtn.addEventListener('click', (e) => {
+      e.stopPropagation()
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(path)
+        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Copied path: ${path}` } }))
+      }
+    })
+  }
+
+  const revertBtn = badge.querySelector('#admin-hover-revert')
+  if (revertBtn) {
+    revertBtn.addEventListener('click', (e) => {
+      e.stopPropagation()
+      revertPath(path, lang)
+      showHoverBadge(el, path)
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `Reverted "${path}"` } }))
+    })
+  }
+
+  const rect = el.getBoundingClientRect()
+  badge.style.display = 'inline-flex'
+  badge.style.top = `${Math.max(8, rect.top - 32)}px`
+  badge.style.left = `${Math.max(8, rect.left)}px`
+  badge.style.opacity = '1'
+}
+
+function hideHoverBadge() {
+  if (hideBadgeTimer) clearTimeout(hideBadgeTimer)
+  hideBadgeTimer = setTimeout(() => {
+    if (hoverBadgeEl) {
+      hoverBadgeEl.style.opacity = '0'
+      setTimeout(() => {
+        if (hoverBadgeEl && hoverBadgeEl.style.opacity === '0') {
+          hoverBadgeEl.style.display = 'none'
+        }
+      }, 100)
     }
-    idx = next
-  }
-  if ((range as any).startContainer === document) { range.selectNodeContents(el); range.collapse(false) }
-  if (document.activeElement !== el) el.focus()
-  sel.removeAllRanges(); sel.addRange(range)
+    hoverActiveTarget = null
+  }, 120)
 }
 
-function highlightDiffP(orig: string, curr: string) {
-  const m = orig.length, n = curr.length
-  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0))
-  for (let i = m - 1; i >= 0; i--)
-    for (let j = n - 1; j >= 0; j--)
-      dp[i][j] = orig[i] === curr[j]
-        ? 1 + dp[i + 1][j + 1]
-        : Math.max(dp[i + 1][j], dp[i][j + 1])
-
-  let out = '', i = 0, j = 0
-  let buf = '' // collect consecutive changed chars
-
-  const flush = () => {
-    if (buf) {
-      out += `<span class="v-changed-char">${buf}</span>`
-      buf = ''
-    }
-  }
-
-  while (i < m && j < n) {
-    if (orig[i] === curr[j]) {
-      flush()
-      out += curr[j]
-      i++; j++
-    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-      i++
-    } else {
-      buf += curr[j++]
-    }
-  }
-
-  while (j < n) buf += curr[j++]
-  flush()
-
-  return out
-}
-
-
-function highlightDiff(orig: string, curr: string) {
-  const origWords = orig.split(/(\s+)/) // keep spaces as tokens
-  const currWords = curr.split(/(\s+)/)
-
-  const m = origWords.length, n = currWords.length
-  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0))
-
-  // LCS table
-  for (let i = m - 1; i >= 0; i--) {
-    for (let j = n - 1; j >= 0; j--) {
-      dp[i][j] = origWords[i] === currWords[j]
-        ? 1 + dp[i + 1][j + 1]
-        : Math.max(dp[i + 1][j], dp[i][j + 1])
-    }
-  }
-
-  // reconstruct diff
-  let out = ''
-  let i = 0, j = 0
-  while (i < m && j < n) {
-    if (origWords[i] === currWords[j]) {
-      out += currWords[j] // unchanged word/space
-      i++; j++
-    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
-      i++ // skip word from orig
-    } else {
-      out += `<span class="v-changed-block">${currWords[j]}</span>`
-      j++
-    }
-  }
-  while (j < n) {
-    out += `<span class="v-changed-block">${currWords[j]}</span>`
-    j++
-  }
-
-  return out
-}
-
-function patch(el: HTMLElement, orig: string, curr: string) {
-  const caret = saveCaret(el)
-  el.innerHTML = highlightDiff(orig, curr)
-  // restoreCaret(el, caret)
-  if (caret >= 0) restoreCaret(el, caret)
-
-}
-
-/** ---------- Toasts ---------- **/
+/** ---------- Notification Toast Host ---------- **/
 let toastHost: HTMLDivElement | null = null
 function toast(text: string, type: 'success' | 'error' | 'info' = 'info') {
   if (!toastHost) {
     toastHost = document.createElement('div')
-    toastHost.style.cssText = 'position:fixed;z-index:100000;right:12px;bottom:12px;display:grid;gap:8px'
+    toastHost.style.cssText = 'position:fixed;z-index:9999999;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;pointer-events:none;'
     document.body.appendChild(toastHost)
   }
   const el = document.createElement('div')
-  el.style.cssText =
-    `background:${type==='success'?'rgba(16,185,129,.95)':type==='error'?'rgba(239,68,68,.95)':'rgba(55,65,81,.95)'};color:white;padding:8px 10px;border-radius:10px;box-shadow:0 8px 16px rgba(0,0,0,.25);font:13px/1.3 system-ui`
+  const bg = type === 'success' ? '#059669' : type === 'error' ? '#dc2626' : '#27272a'
+  el.style.cssText = `
+    background: ${bg};
+    color: white;
+    padding: 9px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(12px) scale(0.95);
+    opacity: 0;
+    pointer-events: auto;
+  `
   el.textContent = text
   toastHost.appendChild(el)
-  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateY(6px)';setTimeout(()=>el.remove(),200)},2000)
+
+  requestAnimationFrame(() => {
+    el.style.opacity = '1'
+    el.style.transform = 'translateY(0) scale(1)'
+  })
+
+  setTimeout(() => {
+    el.style.opacity = '0'
+    el.style.transform = 'translateY(8px) scale(0.95)'
+    setTimeout(() => el.remove(), 250)
+  }, 2500)
 }
+
 
 /** ---------- Nuxt Plugin ---------- **/
 export default defineNuxtPlugin(nuxtApp => {
   const { language } = useLocale()
-  state.canEdit = !!document.cookie.split('; ').find(c => c.startsWith('pb_admin='))
-  watchEffect(() => syncLanguage(language.value))
-  watchEffect(() => {
-    const on = state.canEdit && state.editMode
-    document.querySelectorAll<HTMLElement>('[data-edit-path]').forEach(el => setEditable(el, on))
-  })
-  watchEffect(() => {
-    for (const [path] of Object.entries(state.changes)) {
-      const changed = isChanged(path, state.language)
-      document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`).forEach(el =>
-        paintChanged(el, changed))
+
+  // Initialize admin capability from cookie or dev mode
+  const adminCookie = useCookie('pb_admin')
+  state.canEdit = !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin=')) || process.dev
+
+  if (process.dev) {
+    logger.info('Admin:Auth', `Superuser Session: ${state.canEdit ? '✓ Active (canEdit=true)' : '○ Inactive (Visitor Mode)'}`)
+  }
+
+  // Keep language in sync
+  watch(language, (lang) => {
+    if (lang) syncLanguage(lang)
+  }, { immediate: true })
+
+  // Toggle contenteditable across all editable elements
+  watch(() => [state.canEdit, state.editMode], ([canEdit, editMode]) => {
+    const on = !!(canEdit && editMode)
+    const elements = document.querySelectorAll<HTMLElement>('[data-edit-path]')
+    elements.forEach(el => {
+      setEditable(el, on)
+    })
+    if (!on) {
+      hideHoverBadge()
+    }
+    if (process.dev) {
+      if (on) {
+        logger.success('Admin:Edit', `Edit Mode ENGAGED on ${elements.length} editable DOM nodes`)
+      } else {
+        logger.info('Admin:Edit', 'Edit Mode DISENGAGED (Preview mode active)')
+      }
     }
   })
-  const baseTitle = document.title
-  watchEffect(() => { document.title = (changedCountForLang(state.language) ? '● ' : '') + baseTitle })
 
+  // Update page title badge for unsaved changes
+  const baseTitle = typeof document !== 'undefined' ? document.title : ''
+  watch(() => changedCountForLang(state.language), (count) => {
+    if (typeof document !== 'undefined') {
+      document.title = (count > 0 ? `(${count}) ● ` : '') + (baseTitle.replace(/^\(\d+\)\s*●\s*/, ''))
+    }
+  })
+
+  // Directive: v-editable="path"
   nuxtApp.vueApp.directive('editable', {
     mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
       const path = binding.value
       if (!path || path.startsWith('undefined') || path.startsWith('null')) return
+
       el.dataset.editPath = path
       el.classList.add('v-editable')
+
+      // Set initial editable state
       setEditable(el, state.canEdit && state.editMode)
       ensureBaseline(path, state.language, getText(el))
-      paintChanged(el, isChanged(path, state.language))
+      updateElementState(el, path, state.language)
+
+      // Clean, non-destructive input handler
+      let inputTimer: any = null
       const onInput = () => {
-        setDraftValue(path, state.language, getText(el))
-        const rec = state.changes[path]?.[state.language]
-        if (rec) patch(el, rec.original, rec.draft ?? rec.value)
+        const text = getText(el)
+        setDraftValue(path, state.language, text)
+        updateElementState(el, path, state.language)
+
+        if (hoverActiveTarget === el) {
+          showHoverBadge(el, path)
+        }
       }
+
+      const onBlur = () => {
+        const text = getText(el)
+        if (state.editMode) {
+          setDraftValue(path, state.language, text)
+        } else {
+          setValueSilently(path, state.language, text)
+        }
+        updateElementState(el, path, state.language)
+      }
+
+      const onMouseEnter = () => {
+        if (state.canEdit && state.editMode) {
+          showHoverBadge(el, path)
+        }
+      }
+
+      const onMouseLeave = () => {
+        hideHoverBadge()
+      }
+
+      const onMouseDown = (e: MouseEvent) => {
+        if (state.canEdit && state.editMode) {
+          e.stopPropagation()
+        }
+      }
+
+      const onClick = (e: MouseEvent) => {
+        if (state.canEdit && state.editMode) {
+          e.stopPropagation()
+          el.focus()
+        }
+      }
+
+      const onPaste = (e: ClipboardEvent) => {
+        e.preventDefault()
+        const text = e.clipboardData?.getData('text/plain') || ''
+        document.execCommand('insertText', false, text)
+      }
+
       el.addEventListener('input', onInput)
-      const mo = new MutationObserver(() => {
-        const now = getText(el)
-        ensureBaseline(path, state.language, now)
-        if (state.editMode && document.activeElement === el) setDraftValue(path, state.language, now)
-        else setValueSilently(path, state.language, now)
-        paintChanged(el, isChanged(path, state.language))
-      })
-      mo.observe(el, { childList: true, characterData: true, subtree: true })
-      // el.addEventListener('mouseenter', () => showTip(el, path, state.language))
-      // el.addEventListener('mouseleave', hideTip)
-      ;(el as any)._cleanup = () => { el.removeEventListener('input', onInput); mo.disconnect() }
+      el.addEventListener('blur', onBlur)
+      el.addEventListener('mouseenter', onMouseEnter)
+      el.addEventListener('mouseleave', onMouseLeave)
+      el.addEventListener('mousedown', onMouseDown)
+      el.addEventListener('click', onClick)
+      el.addEventListener('paste', onPaste)
+
+      ;(el as any)._adminCleanup = () => {
+        clearTimeout(inputTimer)
+        el.removeEventListener('input', onInput)
+        el.removeEventListener('blur', onBlur)
+        el.removeEventListener('mouseenter', onMouseEnter)
+        el.removeEventListener('mouseleave', onMouseLeave)
+        el.removeEventListener('mousedown', onMouseDown)
+        el.removeEventListener('click', onClick)
+        el.removeEventListener('paste', onPaste)
+      }
     },
-updated(el, binding) {
-  const rec = state.changes[binding.value]?.[state.language]
-  if (!rec || el === document.activeElement) return
 
-  const changed = isChanged(binding.value, state.language)
 
-  clearTimeout((el as any)._stableTimer)
+    updated(el: HTMLElement, binding: DirectiveBinding<string>) {
+      const path = binding.value
+      if (!path) return
+      el.dataset.editPath = path
+      setEditable(el, state.canEdit && state.editMode)
+      updateElementState(el, path, state.language)
+    },
 
-  if (changed) {
-    // still changed → show highlight
-    ;(el as any)._stableTimer = setTimeout(() => {
-      patch(el, rec.original, rec.draft ?? rec.value)
-    }, 500)
-  } else {
-    // 🔥 became clean → strip any old highlight spans
-    el.textContent = rec.value ?? rec.original ?? ''
+    unmounted(el: any) {
+      el._adminCleanup?.()
+      if (hoverActiveTarget === el) {
+        hideHoverBadge()
+      }
+    }
+  })
+
+  // Global Keyboard Shortcuts
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', (e: KeyboardEvent) => {
+      const meta = e.metaKey || e.ctrlKey
+      const target = e.target as HTMLElement
+      const isInput = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.getAttribute('contenteditable') === 'true' || target?.getAttribute('contenteditable') === 'plaintext-only'
+
+      // Toggle edit mode: ⌘/Ctrl + E
+      if (meta && e.key.toLowerCase() === 'e') {
+        e.preventDefault()
+        state.editMode = !state.editMode
+        toast(state.editMode ? 'Edit Mode Activated' : 'Preview Mode', 'info')
+        return
+      }
+
+      // Save draft: ⌘/Ctrl + S
+      if (meta && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        window.dispatchEvent(new CustomEvent('admin-save'))
+        return
+      }
+
+      // Command palette / Inspector: ⌘/Ctrl + K
+      if (meta && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        state.paletteOpen = !state.paletteOpen
+        return
+      }
+
+      // Discard / Close modals: Escape
+      if (e.key === 'Escape') {
+        if (state.paletteOpen) {
+          state.paletteOpen = false
+          return
+        }
+        if (state.inspectorOpen) {
+          state.inspectorOpen = false
+          return
+        }
+        if (state.historyOpen) {
+          state.historyOpen = false
+          return
+        }
+        if (!isInput && changedCountForLang(state.language) > 0) {
+          window.dispatchEvent(new CustomEvent('admin-discard'))
+        }
+      }
+    })
+
+    window.addEventListener('toast', (e: any) => {
+      toast(e.detail?.text || 'Notification', e.detail?.type || 'info')
+    })
   }
-},
-
-    unmounted(el: any) { el._cleanup?.(); hideTip() },
-  })
-
-  window.addEventListener('keydown', e => {
-    const meta = e.metaKey || e.ctrlKey
-    if (meta && e.key.toLowerCase() === 'e') { e.preventDefault(); window.dispatchEvent(new CustomEvent('admin-toggle-edit')) }
-    if (meta && e.key.toLowerCase() === 's') { e.preventDefault(); window.dispatchEvent(new CustomEvent('admin-save')) }
-    if (meta && e.key.toLowerCase() === 'k') { e.preventDefault(); window.dispatchEvent(new CustomEvent('admin-command-palette')) }
-    if (e.key === 'Escape' && (e.target as HTMLElement)?.tagName !== 'INPUT') window.dispatchEvent(new CustomEvent('admin-discard'))
-    if (e.key === '?' && (e.shiftKey || (e.target as HTMLElement)?.getAttribute('contenteditable'))) { e.preventDefault(); window.dispatchEvent(new CustomEvent('admin-help')) }
-  })
-  window.addEventListener('toast', (e: any) => toast(e.detail?.text || 'Okay', e.detail?.type || 'info'))
-  console.log('[AdminEdit] plugin ready (simplified)')
 })
+

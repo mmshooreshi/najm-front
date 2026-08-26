@@ -49,8 +49,8 @@
           <span
             :ref="el => (typedRefs[i] = el as HTMLElement | null)"
             v-editable="`highlightedText.${i}.sentence`"
-            class="inline-block mx-0 text-2xl md:text-3xl  font-black text-d4 whitespace-pre "
-          ></span>
+            class="inline-block mx-0 text-2xl md:text-3xl font-black text-d4 whitespace-pre"
+          >{{ h.sentence || '' }}</span>
         </div>
       </template>
       <div class="basis-full h-0"></div>
@@ -63,7 +63,7 @@
           :class="[i === 0 ? 'font-extrabold' : '']"
           v-editable="`paragraphes.${i}.sentence`"
           class="text-sm md:text-base text-center mb-4"
-        ></p>
+        >{{ p.sentence || '' }}</p>
       </template>
     </div>
   </div>
@@ -166,11 +166,12 @@ const isVisible = ref(false)
 const intersectionRatio = ref(0)
 let playedOnce = false
 
-onMounted(() => {
-  nextTick(() => {
-    runHighlightAnimation()
-  })
-  // Listen for Discard from admin bar to fully reset animations
+onMounted(async () => {
+  if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
+    await (document as any).fonts.ready.catch(() => {})
+  }
+  await nextTick()
+  runHighlightAnimation()
   window.addEventListener('admin-edit-discarded', resetAndRerun)
 })
 
@@ -231,43 +232,27 @@ function runHighlightAnimation() {
     })
   }
 
-  useIntersectionObserver(
-    sectionRef,
-    ([entry]) => {
-      if (!sectionRef.value) return
-
-      intersectionRatio.value = entry.intersectionRatio
-      isVisible.value = entry.isIntersecting
-
-      if (entry.isIntersecting) {
-        // Fade in section always
-        gsap.to(sectionRef.value, {
-          opacity: 1,
-          duration: 0.5,
-          ease: 'power1.out'
-        })
-
-        // Only play animation once
-        if (!playedOnce) {
-          tlHighlights.restart()
-          tlHighlights.seek(0).play()
-          playedOnce = true
-        }
-      } else {
-        // Fade out when leaving view
-        gsap.to(sectionRef.value, {
-          opacity: 0,
-          duration: 0.6,
-          ease: 'expo.out'
-        })
+  // overall timeline scroll trigger
+  ScrollTrigger.create({
+    trigger: sectionRef.value,
+    start: start,
+    scrub: scrub,
+    markers: false,
+    onEnter: () => {
+      if (!playedOnce && sectionRef.value) {
+        gsap.to(sectionRef.value, { opacity: 1, duration: 0.2 })
+        tlHighlights.play()
+        playedOnce = true
       }
     },
-    {
-      threshold: 0.6,
-      rootMargin: "-65px 0px 0px 0px"
+    onEnterBack: () => {
+      if (!playedOnce && sectionRef.value) {
+        gsap.to(sectionRef.value, { opacity: 1, duration: 0.2 })
+        tlHighlights.play()
+        playedOnce = true
+      }
     }
-  )
-
+  })
 
   // PASS 1: highlight bounce
   props.highlights.forEach((h, i) => {
@@ -286,15 +271,13 @@ function runHighlightAnimation() {
               scale: bounceScale,
               opacity: 1,
               duration: animationConfig.durations.bounce,
-              ease: animationConfig.eases.highlight.forward,
-              easeBackwards: animationConfig.eases.highlight.backward
+              ease: animationConfig.eases.highlight.forward
             }
           )
           .to(target, {
             scale: 1,
             duration: animationConfig.durations.highlightScaleDown,
-            ease: animationConfig.eases.highlight.forward,
-            easeBackwards: animationConfig.eases.highlight.backward
+            ease: animationConfig.eases.highlight.forward
           })
       }
     }
