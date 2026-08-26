@@ -44,6 +44,7 @@ const props = withDefaults(defineProps<{
   start?: string
   scrub?: boolean | number
   markers?: boolean
+  pathPrefix?: string
 }>(), {
   highlights: () => [],
   paragraphes: () => [],
@@ -51,7 +52,8 @@ const props = withDefaults(defineProps<{
   bounceDuration: 0.5,
   start: 'top center',
   scrub: false,
-  markers: false
+  markers: false,
+  pathPrefix: 'sceneCardsIntro'
 })
 
 
@@ -320,11 +322,13 @@ watch(language, async () => {
               '!hover:text-white',
               '!cursor-pointer'
             ]"
+            v-editable="pathPrefix ? `${pathPrefix}.highlightedText.${i}.label` : ''"
           >{{ h.label }} </span>
           <span v-else :style="{ 'margin-inline': h.indent ?? '3px' }"></span>
           <span
             :ref="el => (typedRefs[i] = el as HTMLElement)"
-            class="inline-block mx-0 text-2xl font-extrabold text-d4 whitespace-pre "
+            class="inline-block mx-0 text-2xl font-extrabold text-d4 whitespace-pre"
+            v-editable="pathPrefix ? `${pathPrefix}.highlightedText.${i}.sentence` : ''"
           ></span>
         </div>
       </template>
@@ -336,6 +340,7 @@ watch(language, async () => {
           :ref="el => (paragraphRefs[i] = el as HTMLElement)"
           :class="[i === 0 ? 'font-extrabold' : '']"
           class="text-sm md:text-base text-center mb-4"
+          v-editable="pathPrefix ? `${pathPrefix}.paragraphes.${i}.sentence` : ''"
         ></p>
       </template>
     </div>

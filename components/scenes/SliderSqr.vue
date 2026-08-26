@@ -61,12 +61,10 @@
 
           <div class="flex-grow"></div>
 
-          <NuxtLink :to="slide.href"
-            class="gap-2 self-end bg-white flex flex-row items-center text-d4 text-xs text-demibold px-6 py-3 rounded-3xl">
-            <Icon name="mdi:arrow-left" class="w-4 h-4" />
-
-            {{ slide.text }}
-
+          <NuxtLink :to="resolveHref(slide.href)"
+            class="gap-2 self-end bg-white hover:bg-najmgrey transition-all flex flex-row items-center text-d4 text-xs text-demibold px-6 py-3 rounded-3xl cursor-pointer shadow-xs active:scale-95">
+            <Icon name="mdi:arrow-left" class="w-4 h-4 text-najmgreen" />
+            <span>{{ slide.text }}</span>
           </NuxtLink>
 
 
@@ -102,6 +100,11 @@ interface Slide {
   alt?: string
   text?: string
   href?: string
+}
+
+function resolveHref(href?: string): string {
+  if (!href || href === '/home2') return '/facilities'
+  return href
 }
 
 const props = defineProps({

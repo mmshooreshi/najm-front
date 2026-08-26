@@ -1,0 +1,260 @@
+{
+  "FA": {
+    "badge": "زیرساخت صنعتی و خطوط تولید چاپ نجم",
+    "title": "امکانات، تجهیزات و ماشین‌آلات مدرن چاپ و بسته‌بندی",
+    "description": "مجموعه‌ای یکپارچه از پیشرفته‌ترین ماشین‌آلات چاپ افست، لیتوگرافی هوشمند CTP، خطوط تمام‌اتوماتیک دایکات بوبست و خدمات تکمیلی پس از چاپ با بالاترین استانداردهای کیفی جهانی.",
+    "stats": [
+      { "value": "+۱۰,۰۰۰", "label": "متر مربع مساحت خطوط تولید و انبارداری" },
+      { "value": "۱۸,۰۰۰", "label": "برگ در ساعت ظرفیت چاپ افست چندرنگ" },
+      { "value": "۹۹.۸٪", "label": "دقت و انطباق رنگی با استاندارد ISO 12647" },
+      { "value": "۲۴/۷", "label": "پایش کیفی مستمر و تحویل منظم سفارشات" }
+    ],
+    "categories": [
+      { "key": "all", "label": "همه بخش‌ها" },
+      { "key": "printing", "label": "چاپ افست مدرن" },
+      { "key": "prepress", "label": "پیش از چاپ و لیتوگرافی" },
+      { "key": "finishing", "label": "پس از چاپ و تکمیلی" },
+      { "key": "quality", "label": "کنترل کیفیت و آزمایشگاه" },
+      { "key": "logistics", "label": "انبارداری و لجستیک" }
+    ],
+    "machines": [
+      {
+        "id": "heidelberg-xl-106",
+        "category": "printing",
+        "title": "ماشین چاپ افست هایدلبرگ Speedmaster XL 106",
+        "spec": "۶ رنگ همراه با برج لاک و ورنی پایه آب و UV",
+        "speed": "ظرفیت ۱۸,۰۰۰ برگ در ساعت",
+        "description": "مجهز به سیستم اسپکتروفتومتری هوشمند Inpress Control 3 برای تنظیم خودکار رجیستر و دانسیته رنگ بدون توقف ماشین.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "چاپ صنعتی تیراژ بالا"
+      },
+      {
+        "id": "heidelberg-suprasetter-ctp",
+        "category": "prepress",
+        "title": "پلیت‌ستر هایدلبرگ Suprasetter 106 CTP",
+        "spec": "لیتوگرافی حرارتی با رزولوشن ۲۵۴۰ dpi",
+        "speed": "تولید ۴۵ زینک در ساعت با فیلتر ترام هیبرید",
+        "description": "پرتودهی لیزری با کالیبراسیون طیف نوری برای انتقال دقیق‌ترین ترام‌های تصویری و پایداری در طول تیراژهای سنگین.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "پیش از چاپ دیجیتال"
+      },
+      {
+        "id": "bobst-novacut-106",
+        "category": "finishing",
+        "title": "دستگاه دایکات اتوماتیک Bobst Novacut 106 E",
+        "spec": "قالب‌زنی، تیغ‌زنی، پوشال‌برداری و برجسته‌سازی",
+        "speed": "سرعت ۸,۰۰۰ برگ در ساعت با دقت ±۰.۰۵ میلی‌متر",
+        "description": "فشار یکنواخت تا ۳۰۰ تن برای برش دقیق انواع جعبه‌های دارویی، آرایشی، فودگرید و هاردباکس‌های سخت.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "تیغ و قالب‌زنی سوئیسی"
+      },
+      {
+        "id": "heidelberg-diana-folder-gluer",
+        "category": "finishing",
+        "title": "خط جعبه‌چسبانی اتوماتیک هایدلبرگ Diana Easy 115",
+        "spec": "چسب گرم و سرد، قفل کف، ۴ گوشه و لاک‌باتم",
+        "speed": "سرعت خروجی تا ۳۰۰ متر در دقیقه",
+        "description": "سیستم اسکن نوری برای بررسی چسب‌خوری بی‌نقص و حذف اتوماتیک جعبه‌های دارای خطای تولید.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "مونتاژ و بسته‌بندی جعبه"
+      },
+      {
+        "id": "thermal-velvet-laminator",
+        "category": "finishing",
+        "title": "خط سلفون‌کشی حرارتی اتوماتیک و مخملی (Soft-Touch)",
+        "spec": "سلفون مات، براق، مخملی، ضدخش و متالایز",
+        "speed": "حرارت کنترل‌شده هیدرولیک تا ۱۰۰ متر در دقیقه",
+        "description": "چسبندگی بی‌نقص بدون ایجاد حباب روی انواع کاغذ و مقواهای سنگین حتی روی فرم‌های با تمپلات رنگی غلیظ.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "پوشش‌های لوکس"
+      },
+      {
+        "id": "xrite-qa-spectro",
+        "category": "quality",
+        "title": "آزمایشگاه کنترل کیفیت و اسپکتروفتومتری X-Rite",
+        "spec": "سنجش ترام، مقاومت سایش Sutherland و ترکیدگی مقوا",
+        "speed": "انطباق تضمین‌شده با استانداردهای دارویی و غذایی",
+        "description": "کالیبراسیون دوره‌ای بر اساس استانداردهای ایزو و تطابق صددرصدی رنگ چاپ با نمونه پروف دیجیتال تأییدشده.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "تضمین کیفیت ISO"
+      }
+    ],
+    "consultationCta": {
+      "title": "نیاز به بررسی فنی پروژه یا بازدید از کارخانه دارید؟",
+      "subtitle": "کارشناسان فنی و مهندسی بسته‌بندی نجم آماده پاسخگویی و هماهنگی جلسه حضوری هستند.",
+      "button": "درخواست مشاوره و استعلام فنی"
+    }
+  },
+  "EN": {
+    "badge": "Industrial Infrastructure & Production Lines",
+    "title": "Advanced Printing, Die-Cutting & Finishing Machinery",
+    "description": "An integrated facility featuring state-of-the-art multi-color Heidelberg offset presses, Suprasetter CTP lithography, automated Bobst die-cutters, and premium finishing equipment complying with global ISO standards.",
+    "stats": [
+      { "value": "+10,000", "label": "Sq. Meters Production & Warehousing Space" },
+      { "value": "18,000", "label": "Sheets/Hour High-Speed Offset Capacity" },
+      { "value": "99.8%", "label": "ISO 12647-2 Color Accuracy Guarantee" },
+      { "value": "24/7", "label": "Continuous QA & On-Time Scheduled Deliveries" }
+    ],
+    "categories": [
+      { "key": "all", "label": "All Sections" },
+      { "key": "printing", "label": "Offset Printing" },
+      { "key": "prepress", "label": "Pre-press & CTP" },
+      { "key": "finishing", "label": "Finishing & Die-Cutting" },
+      { "key": "quality", "label": "Quality Assurance Lab" },
+      { "key": "logistics", "label": "Warehousing & Logistics" }
+    ],
+    "machines": [
+      {
+        "id": "heidelberg-xl-106",
+        "category": "printing",
+        "title": "Heidelberg Speedmaster XL 106 Offset Press",
+        "spec": "6-Color with In-line Water-based & UV Coating Tower",
+        "speed": "Capacity up to 18,000 sheets/hour",
+        "description": "Equipped with Inpress Control 3 inline spectrophotometry for dynamic auto-register and color density control.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "High-Volume Printing"
+      },
+      {
+        "id": "heidelberg-suprasetter-ctp",
+        "category": "prepress",
+        "title": "Heidelberg Suprasetter 106 CTP System",
+        "spec": "Thermal Plate Imaging at 2540 dpi resolution",
+        "speed": "Up to 45 plates/hour with hybrid screening",
+        "description": "Laser diode thermal imaging ensuring razor-sharp halftone dot reproduction and robust press stability.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "Digital Pre-Press"
+      },
+      {
+        "id": "bobst-novacut-106",
+        "category": "finishing",
+        "title": "Bobst Novacut 106 E Autoplaten Die-Cutter",
+        "spec": "Die-cutting, Creasing, Stripping & Embossing",
+        "speed": "8,000 sheets/hour at ±0.05mm precision",
+        "description": "Delivers up to 300 metric tons of cutting force for pharmaceutical, cosmetic, and luxury rigid boxes.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "Swiss Die-Cutting"
+      },
+      {
+        "id": "heidelberg-diana-folder-gluer",
+        "category": "finishing",
+        "title": "Heidelberg Diana Easy 115 Automatic Folder-Gluer",
+        "spec": "Hot-melt & cold glue, crash-lock bottom, 4-corner cartons",
+        "speed": "Operating speeds up to 300 m/min",
+        "description": "Optical sensor inspection ensures flawless glue application and automatic ejection of defect cartons.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "Box Folding & Gluing"
+      },
+      {
+        "id": "thermal-velvet-laminator",
+        "category": "finishing",
+        "title": "Automatic Thermal & Soft-Touch Velvet Laminator",
+        "spec": "Matte, Gloss, Anti-scratch & Soft-Touch Velvet Films",
+        "speed": "Hydraulic temperature control up to 100 m/min",
+        "description": "Bubble-free adhesion on heavy cardboards and dark ink coverages without delamination.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "Luxury Coatings"
+      },
+      {
+        "id": "xrite-qa-spectro",
+        "category": "quality",
+        "title": "X-Rite Quality Assurance & Spectrophotometry Lab",
+        "spec": "Halftone analysis, Sutherland rub testing, burst test",
+        "speed": "Pharmaceutical & Food-Grade GMP compliance",
+        "description": "Continuous ISO color calibration ensuring 100% fidelity between approved digital proofs and run sheets.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "ISO Quality Guarantee"
+      }
+    ],
+    "consultationCta": {
+      "title": "Need technical consultation or a factory tour?",
+      "subtitle": "Najm engineering specialists are ready to discuss your structural requirements and quote your project.",
+      "button": "Request Technical Consultation"
+    }
+  },
+  "AR": {
+    "badge": "البنية التحتية الصناعية وخطوط إنتاج مطبعة نجم",
+    "title": "المرافق والمعدات والآلات الحديثة للطباعة والتغليف",
+    "description": "منظومة متكاملة من أحدث ماكينات طباعة الأوفست من هايدلبرغ، وليثوغرافيا CTP الذكية، وخطوط بوبست الأوتوماتيكية لقص وتكسير القوالب وخدمات ما بعد الطباعة بأعلى معايير الجودة العالمية.",
+    "stats": [
+      { "value": "+١٠,٠٠٠", "label": "متر مربع مساحة خطوط الإنتاج والمستودعات" },
+      { "value": "١٨,٠٠٠", "label": "ورقة في الساعة سعة طباعة الأوفست متعددة الألوان" },
+      { "value": "٩٩.٨٪", "label": "دقة مطابقة الألوان مع معايير ISO 12647" },
+      { "value": "٢٤/٧", "label": "مراقبة جودة مستمرة والتزام بمواعيد التسليم" }
+    ],
+    "categories": [
+      { "key": "all", "label": "جميع الأقسام" },
+      { "key": "printing", "label": "طباعة الأوفست الحديثة" },
+      { "key": "prepress", "label": "ما قبل الطباعة والليثوغرافيا" },
+      { "key": "finishing", "label": "ما بعد الطباعة والتشطيب" },
+      { "key": "quality", "label": "مختبر ضبط الجودة" },
+      { "key": "logistics", "label": "التخزين والخدمات اللوجستية" }
+    ],
+    "machines": [
+      {
+        "id": "heidelberg-xl-106",
+        "category": "printing",
+        "title": "ماكينة طباعة أوفست هايدلبرغ Speedmaster XL 106",
+        "spec": "٦ ألوان مع برج ورنيش مائي وUV",
+        "speed": "سعة ١٨,٠٠٠ ورقة في الساعة",
+        "description": "مزودة بنظام قياس الطيف الذكي Inpress Control 3 لضبط تطابق الألوان تلقائياً دون إيقاف الماكينة.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "طباعة صناعية للكميات الكبيرة"
+      },
+      {
+        "id": "heidelberg-suprasetter-ctp",
+        "category": "prepress",
+        "title": "جهاز بليت سيتر هايدلبرغ Suprasetter 106 CTP",
+        "spec": "ليثوغرافيا حرارية بدقة ٢٥٤٠ نقطة في البوصة",
+        "speed": "إنتاج ٤٥ صفيحة في الساعة مع معالجة هجينة",
+        "description": "تعريض ليزري فائق الدقة لنقل أدق تفاصيل التصميم وثبات الألوان خلال فترات الطباعة الطويلة.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "ما قبل الطباعة الرقمية"
+      },
+      {
+        "id": "bobst-novacut-106",
+        "category": "finishing",
+        "title": "ماكينة دایکات أوتوماتيكية Bobst Novacut 106 E",
+        "spec": "قص القوالب، التكسير، إزالة الزوائد والنقش البارز",
+        "speed": "سرعة ٨,٠٠٠ ورقة في الساعة بدقة ±۰.۰۵ ملم",
+        "description": "ضغط متجانس يصل إلى ۳۰۰ طن لقص عبوات الأدوية ومستحضرات التجميل والعلب الفاخرة بدقة متناهية.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "قص قوالب سويسري"
+      },
+      {
+        "id": "heidelberg-diana-folder-gluer",
+        "category": "finishing",
+        "title": "خط طي ولصق العلب الأوتوماتيكي هايدلبرغ Diana Easy 115",
+        "spec": "غراء ساخن وبارد، قفل سفلي، و٤ زوايا",
+        "speed": "سرعة تشغيل تصل إلى ۳۰۰ متر في الدقيقة",
+        "description": "نظام فحص ضوئي يضمن لصقاً متقناً واستبعاداً تلقائياً لأي علبة تحتوي على عيب مصنعي.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "تجميع ولصق العلب"
+      },
+      {
+        "id": "thermal-velvet-laminator",
+        "category": "finishing",
+        "title": "خط سلفنة حراري ومخملي أوتوماتيكي (Soft-Touch)",
+        "spec": "سلفان مطفي، لامع، مخملي، ومقاوم للخدش",
+        "speed": "تحكم حراري هيدروليكي حتى ۱۰۰ متر في الدقيقة",
+        "description": "التصاق مثالي بدون فقاعات هواء على الكرتون والورق المقوى حتى مع التغطيات اللونية الكثيفة.",
+        "image": "/images/sections/facilities/facilities-1.avif",
+        "tag": "تغليفات فاخرة"
+      },
+      {
+        "id": "xrite-qa-spectro",
+        "category": "quality",
+        "title": "مختبر ضبط الجودة وقياس الطيف X-Rite",
+        "spec": "فحص التدرج اللوني، اختبار مقاومة الاحتكاك وقوة الانفجار",
+        "speed": "مطابقة معايير التصنيع الجيد للأدوية والأغذية",
+        "description": "معايرة دورية وفق معايير ISO لضمان مطابقة بنسبة ۱۰۰٪ بين البروفة المعتمدة والمطبوعات النهائية.",
+        "image": "/images/sections/facilities/machines-1.avif",
+        "tag": "ضمان جودة ISO"
+      }
+    ],
+    "consultationCta": {
+      "title": "هل تحتاج إلى استشارة فنية أو زيارة للمصنع؟",
+      "subtitle": "مهندسو التغليف والطباعة في نجم جاهزون لمناقشة مشروعك وتقديم عروض أسعار دقيقة.",
+      "button": "طلب استشارة واستعلام فني"
+    }
+  }
+}

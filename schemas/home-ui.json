@@ -421,29 +421,35 @@
       "machinesSlides": [
         {
           "image": "/images/sections/facilities/machines-1.mp4",
-          "alt": "تجهیزات و دستگاه‌ها",
-          "text": "تجهیزات و دستگاه‌ها",
-          "href": "/home2"
+          "alt": "تجهیزات و دستگاه‌های هایدلبرگ",
+          "text": "تجهیزات و ماشین‌آلات چاپ",
+          "href": "/facilities"
+        },
+        {
+          "image": "/images/sections/facilities/machines-1.avif",
+          "alt": "پلیت‌ستر و لیتوگرافی هوشمند CTP",
+          "text": "لیتوگرافی پیشرفته CTP",
+          "href": "/services/lithography-and-plates"
         }
       ],
       "facilitiesSlides": [
         {
           "image": "/images/sections/facilities/facilities-1.mp4",
-          "alt": "امکانات و بخش‌ها",
-          "text": "امکانات و بخش‌ها",
-          "href": "/home2"
+          "alt": "امکانات و خطوط تولید صنعتی",
+          "text": "مرکز امکانات صنعتی نجم",
+          "href": "/facilities"
         },
         {
           "image": "/images/sections/facilities/facilities-1.avif",
-          "alt": "بخش‌ها و امکانات",
-          "text": "بخش‌ها و امکانات",
-          "href": "/home2"
+          "alt": "سالن چاپ افست و بسته‌بندی",
+          "text": "سالن چاپ و بسته‌بندی",
+          "href": "/services/printing-and-packaging"
         },
         {
           "image": "/images/sections/facilities/machines-1.avif",
-          "alt": "بخش‌ها و امکانات",
-          "text": "بخش‌ها و امکانات",
-          "href": "/home2"
+          "alt": "خدمات پس از چاپ و تکمیلی",
+          "text": "خدمات تکمیلی و دایکات",
+          "href": "/services/finishing-services"
         }
       ]
     },
@@ -1199,29 +1205,35 @@
       "machinesSlides": [
         {
           "image": "/images/sections/facilities/machines-1.mp4",
-          "alt": "الأجهزة والمعدات",
-          "text": "الأجهزة والمعدات",
-          "href": "/home2"
+          "alt": "ماكينات ومعدات هايدلبرغ",
+          "text": "معدات وماكينات الطباعة",
+          "href": "/facilities"
+        },
+        {
+          "image": "/images/sections/facilities/machines-1.avif",
+          "alt": "ليثوغرافيا وبليت سيتر CTP",
+          "text": "ليثوغرافيا CTP المتقدمة",
+          "href": "/services/lithography-and-plates"
         }
       ],
       "facilitiesSlides": [
         {
           "image": "/images/sections/facilities/facilities-1.mp4",
-          "alt": "المرافق والأقسام",
-          "text": "المرافق والأقسام",
-          "href": "/home2"
+          "alt": "خطوط الإنتاج والمرافق الصناعية",
+          "text": "مرافق نجم الصناعية",
+          "href": "/facilities"
         },
         {
           "image": "/images/sections/facilities/facilities-1.avif",
-          "alt": "الأقسام والمرافق",
-          "text": "الأقسام والمرافق",
-          "href": "/home2"
+          "alt": "صالة طباعة الأوفست والتغليف",
+          "text": "صالة الطباعة والتغليف",
+          "href": "/services/printing-and-packaging"
         },
         {
           "image": "/images/sections/facilities/machines-1.avif",
-          "alt": "الأقسام والمرافق",
-          "text": "الأقسام والمرافق",
-          "href": "/home2"
+          "alt": "خدمات ما بعد الطباعة والتشطيب",
+          "text": "خدمات التشطيب والقص",
+          "href": "/services/finishing-services"
         }
       ]
     },
@@ -1977,29 +1989,35 @@
       "machinesSlides": [
         {
           "image": "/images/sections/facilities/machines-1.mp4",
-          "alt": "Machines & Equipment",
-          "text": "Machines & Equipment",
-          "href": "/home2"
+          "alt": "Heidelberg Printing Presses",
+          "text": "Printing Machinery",
+          "href": "/facilities"
+        },
+        {
+          "image": "/images/sections/facilities/machines-1.avif",
+          "alt": "Suprasetter CTP Lithography",
+          "text": "Advanced CTP Lithography",
+          "href": "/services/lithography-and-plates"
         }
       ],
       "facilitiesSlides": [
         {
           "image": "/images/sections/facilities/facilities-1.mp4",
-          "alt": "Facilities & Departments",
-          "text": "Facilities & Departments",
-          "href": "/home2"
+          "alt": "Industrial Production Lines",
+          "text": "Industrial Facilities",
+          "href": "/facilities"
         },
         {
           "image": "/images/sections/facilities/facilities-1.avif",
-          "alt": "Departments & Facilities",
-          "text": "Departments & Facilities",
-          "href": "/home2"
+          "alt": "Offset Printing & Packaging Hall",
+          "text": "Printing & Packaging Hall",
+          "href": "/services/printing-and-packaging"
         },
         {
           "image": "/images/sections/facilities/machines-1.avif",
-          "alt": "Departments & Facilities",
-          "text": "Departments & Facilities",
-          "href": "/home2"
+          "alt": "Finishing & Die-Cutting Unit",
+          "text": "Finishing & Die-Cutting",
+          "href": "/services/finishing-services"
         }
       ]
     },

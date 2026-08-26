@@ -49,94 +49,69 @@
 
 
 <script setup lang="ts">
+import { inject, computed } from 'vue'
 import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 import r3col from '@/components/scenes/r3col.vue'
 import SliderSqr from '@/components/scenes/SliderSqr.vue'
 import labelz from '@/components/scenes/labelz.vue'
 
-const dataPrev = {
-  label : "امکانات و تجهیزات",
-  header:"کیفیت و دقتی که درباره اون صحبت می‌کنیم رو از نزدیک ببینید",
-  description1: "یه تیم یکپارچه به شما این امکان رو می‌ده که تمام مراحل تولید، از طراحی تا چاپ و بسته‌بندی رو با یک پارتنر پیش ببرید و به جای مدیریت چندین تأمین‌کننده جداگانه فقط بر کار خودتون متمرکز بشید.",
-  description2: ""
+const homeUI = inject<any>('homeUI') ?? {}
+
+const defaultFacilities = {
+  label: 'امکانات و تجهیزات',
+  header: 'کیفیت و دقتی که درباره اون صحبت می‌کنیم رو از نزدیک ببینید',
+  description1: 'یه تیم یکپارچه به شما این امکان رو می‌ده که تمام مراحل تولید، از طراحی تا چاپ و بسته‌بندی رو با یک پارتنر پیش ببرید و به جای مدیریت چندین تأمین‌کننده جداگانه فقط بر کار خودتون متمرکز بشید.',
+  description2: '',
+  labels: [
+    { text: 'تجربه و تخصص', bg: '#B9ADFF' },
+    { text: 'دقت و سرعت', bg: '#FFEBB7' },
+    { text: 'یکپارچگی در فرایند', bg: '#F4FFD0' },
+    { text: 'تعادل بین کیفیت و هزینه', bg: '#ADFAFF' },
+    { text: 'انعطاف‌پذیری در اجرا', bg: '#FFD0F4' }
+  ],
+  machinesSlides: [
+    {
+      image: '/images/sections/facilities/machines-1.mp4',
+      alt: 'تجهیزات و دستگاه‌های هایدلبرگ',
+      text: 'تجهیزات و ماشین‌آلات چاپ',
+      href: '/facilities'
+    },
+    {
+      image: '/images/sections/facilities/machines-1.avif',
+      alt: 'پلیت‌ستر و لیتوگرافی هوشمند CTP',
+      text: 'لیتوگرافی پیشرفته CTP',
+      href: '/services/lithography-and-plates'
+    }
+  ],
+  facilitiesSlides: [
+    {
+      image: '/images/sections/facilities/facilities-1.mp4',
+      alt: 'امکانات و خطوط تولید صنعتی',
+      text: 'مرکز امکانات صنعتی نجم',
+      href: '/facilities'
+    },
+    {
+      image: '/images/sections/facilities/facilities-1.avif',
+      alt: 'سالن چاپ افست و بسته‌بندی',
+      text: 'سالن چاپ و بسته‌بندی',
+      href: '/services/printing-and-packaging'
+    },
+    {
+      image: '/images/sections/facilities/machines-1.avif',
+      alt: 'خدمات پس از چاپ و تکمیلی',
+      text: 'خدمات تکمیلی و دایکات',
+      href: '/services/finishing-services'
+    }
+  ]
 }
 
-// ——————————————
-// Slides for the *left* (machines) slider
-const machinesSlidesPrev = [
-  {
-    image: '/images/sections/facilities/machines-1.mp4',
-    alt:   'تجهیزات و دستگاه‌ها',
-    text:  'تجهیزات و دستگاه‌ها',
-    href: '/home2'
+const data = computed(() => {
+  const current = homeUI?.value?.sceneFacilities
+  return {
+    ...defaultFacilities,
+    ...(current || {})
   }
-]
-
-// ——————————————
-// Slides for the *right* (facilities) slider
-const facilitiesSlidesPrev = [
-  {
-    image: '/images/sections/facilities/facilities-1.mp4',
-    alt:   'امکانات و بخش‌ها',
-    text:  'امکانات و بخش‌ها',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/facilities-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/machines-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/facilities-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/machines-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/facilities-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/machines-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/facilities-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  },
-  {
-    image: '/images/sections/facilities/machines-1.avif',
-    alt:   'بخش‌ها و امکانات',
-    text:  'بخش‌ها و امکانات',
-    href: '/home2'
-  }
-
-]
-
-
-const homeUI = inject<any>('homeUI') ?? {}
-const data = computed(() => homeUI?.value?.sceneFacilities ?? {})
-
-
+})
 </script>
 
 

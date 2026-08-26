@@ -8,7 +8,12 @@
 
       <div :class="[toFade ? 'scale-0' : '']" class="transition-all duration-200 easeflex flex-col h-full justify-between p-6">
         <div class="flex justify-between items-center  h-10">
-          <button  class="h-10 text-nowrap text-black hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 text-d4 text-demibold text-sm">{{name}}</button>
+          <button
+            class="h-10 text-nowrap text-black hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white rounded-[25px] py-2 px-4 text-d4 text-demibold text-sm"
+            v-editable="editPath ? `${editPath}.name` : ''"
+          >
+            {{name}}
+          </button>
           <div class="transform   opacity-0  group-hover:opacity-100 transition-all duration-200 ease-out">
            <HaArrow />
         </div>
@@ -106,7 +111,7 @@ interface Item {
 
 type SpecKey = keyof Specs
 
-const props = defineProps<{ items: Item[], name: String , currentPackage: Number, toFade: Boolean}>()
+const props = defineProps<{ items: Item[], name: String , currentPackage: Number, toFade: Boolean, editPath?: string }>()
 
 const editingItem = ref<Item | null>(null)
 const defaultSpecs = ref<Specs | null>(null)

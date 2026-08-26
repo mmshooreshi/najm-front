@@ -52,7 +52,8 @@
 
             <!-- </CardOverlayWrapper> -->
             <CardOverlayWrapper :toFade="selectedType != pkg.type" :currentPackage="selectedIndex"
-              :style="{ backgroundColor: pkg.color }" :name="pkg.name" :items="pkg.items">
+              :style="{ backgroundColor: pkg.color }" :name="pkg.name" :items="pkg.items"
+              :editPath="`sceneApplicationsAndIndustries.packages.${idx}`">
               <!-- <div class="relative h-full w-full"> -->
               <NuxtImg v-if="pkg.image" :src="pkg.image" :alt="pkg.name" loading="lazy" placeholder="blur"
                 v-memotion-pop-visible="{ ystart: 100, delay: idx * 0.3, duration: 0.8 }"
