@@ -64,7 +64,7 @@
           <NuxtLink :to="resolveHref(slide.href)"
             class="gap-2 self-end bg-white hover:bg-najmgrey transition-all flex flex-row items-center text-d4 text-xs text-demibold px-6 py-3 rounded-3xl cursor-pointer shadow-xs active:scale-95">
             <Icon name="mdi:arrow-left" class="w-4 h-4 text-najmgreen" />
-            <span>{{ slide.text }}</span>
+            <span v-editable="path ? `${path}.${index}.text` : ''">{{ slide.text }}</span>
           </NuxtLink>
 
 
@@ -134,7 +134,11 @@ const props = defineProps({
   },
   pagination: {
     type: Boolean,
-    default: true,
+    default: false,
+  },
+  path: {
+    type: String,
+    default: '',
   },
   paginationPosition: {
     type: String as PropType<

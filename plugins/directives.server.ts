@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   }
 
-  // Directives that are registered in client-only plugins and need SSR dummy fallback
+  // Only client-only custom directives that need SSR getSSRProps fallback
   const customDirectives = [
     'editable',
     'floating',
@@ -20,7 +20,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   ]
 
   for (const name of customDirectives) {
-    if (!nuxtApp.vueApp._context.directives[name]) {
+    if (!nuxtApp.vueApp.directive(name)) {
       nuxtApp.vueApp.directive(name, ssrDirective)
     }
   }

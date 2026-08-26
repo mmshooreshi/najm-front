@@ -34,7 +34,7 @@
         ? 'border-[#C2D3D1] !bg-najmgreen !text-white'
         : 'border-[#C2D3D1] text-gray-700']"
     >
-      {{ group }}
+      <span v-editable="`sceneProducts.groups.${selectedType}.${i}`">{{ group }}</span>
     </button>
   </div>
 </div>

@@ -10,6 +10,9 @@
 </template>
 
 <script setup lang="ts">
+import '@unocss/reset/tailwind-compat.css'
+import '@unocss/reset/normalize.css'
+import '@unocss/reset/tailwind.css'
 import AdminEditBar from '~/components/admin/AdminEditBar.client.vue'
 import ConsultationModal from '~/components/consultation/ConsultationModal.vue'
 

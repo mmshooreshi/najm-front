@@ -14,6 +14,7 @@
           '!delay-0  z-0 scale-50 top-10 opacity-0':    next3Index  === idx  /* ← fifth slot */
         }"
         :style="{ background: activeIndex === idx ? lbl.bg : 'lightgray' }"
+        v-editable="`sceneFacilities.labels.${idx}.text`"
       >
         {{ lbl.text }}
       </div>

@@ -8,7 +8,7 @@
 
       <template #left>
         <div v-memotion-pop-visible="{ delay: 1, duration: 0.4 }"   class="h-[300px] md:h-[400px] rounded-3xl w-full">
-          <SliderSqr class="h-full w-full" :slides="data.facilitiesSlides" paginationPosition="bottom left" />
+          <SliderSqr class="h-full w-full" :slides="data.facilitiesSlides" path="sceneFacilities.facilitiesSlides" paginationPosition="bottom left" />
 
           <!-- 2) SliderSqr just needs to be full -->
         </div>
@@ -38,7 +38,7 @@
 
       <template #right>
         <div v-memotion-pop-visible="{ delay: 0.5, duration: 0.4 }"  class="h-[300px] md:h-[400px] rounded-3xl w-full">
-          <SliderSqr hideArrows class="h-full w-full" :slides="data.machinesSlides" paginationPosition="bottom left"/>
+          <SliderSqr hideArrows class="h-full w-full" :slides="data.machinesSlides" path="sceneFacilities.machinesSlides" paginationPosition="bottom left"/>
 
         </div>
       </template>
