@@ -153,6 +153,7 @@ const paragraphRefs = ref<HTMLElement[]>([])
     el: HTMLElement,
     { duration, stagger, at }: { duration?: number; stagger?: number; at?: string }
   ) {
+    if (!el || !el.isConnected) return
     ;(el as any)._split?.revert()
     const split = new SplitText(el, { type: 'lines', linesClass: 'split-line' })
     splits.push(split)
@@ -246,16 +247,14 @@ const paragraphRefs = ref<HTMLElement[]>([])
 }
 
 onMounted(async () => {
-
   localHighlights.value = props.highlights
   localParagraphes.value = props.paragraphes
-  nextTick(() => {
-    if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
-    runAnimation()
-  })
-
-
-// watch visibility
+  if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
+    await (document as any).fonts.ready.catch(() => {})
+  }
+  await nextTick()
+  if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
+  runAnimation()
 })
 
 
@@ -280,6 +279,10 @@ watch(language, async () => {
   localHighlights.value = props.highlights
   localParagraphes.value = props.paragraphes
   isRTL.value = language.value === 'FA' || language.value === 'AR'
+
+  if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
+    await (document as any).fonts.ready.catch(() => {})
+  }
 
   // 4. Wait for DOM to update and rerun animation
   await nextTick()

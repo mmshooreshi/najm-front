@@ -161,9 +161,6 @@ const highlightRefs = ref<(HTMLElement | null)[]>([])
 const typedRefs = ref<(HTMLElement | null)[]>([])
 const paragraphRefs = ref<(HTMLElement | null)[]>([])
 
-// Debug state
-const isVisible = ref(false)
-const intersectionRatio = ref(0)
 let playedOnce = false
 
 onMounted(async () => {
@@ -172,6 +169,14 @@ onMounted(async () => {
   }
   await nextTick()
   runHighlightAnimation()
+
+  // Ensure hero section is visible and plays immediately on initial page load
+  if (sectionRef.value) {
+    gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 })
+    tlHighlights.play()
+    playedOnce = true
+  }
+
   window.addEventListener('admin-edit-discarded', resetAndRerun)
 })
 
