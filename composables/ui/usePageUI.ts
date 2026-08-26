@@ -2,7 +2,6 @@
 import { useFetch } from '#app'
 import { computed, type ComputedRef } from 'vue'
 import { useLocale } from '@/composables/useLocale'
-import { useRuntimeConfig } from '#imports'
 
 type UiForLang = Record<string, any>
 type AllUi = Record<string, UiForLang>
@@ -16,10 +15,10 @@ export function usePageUI(
 ): {
   ui: ComputedRef<UiForLang>
   allUi: ComputedRef<AllUi>
+  pending: ComputedRef<boolean>
+  refresh: () => Promise<void>
 } {
   const { language } = useLocale()
-  const runtime = useRuntimeConfig()
-  const apiBase = (runtime.public?.apiBase as string | undefined)?.replace(/\/$/, '') ?? 'https://aisland.co'
 
   // Local fallback schemas (eager so they're available at build/runtime without extra fetch)
   const localData = import.meta.glob<{ default: AllUi }>(
@@ -33,55 +32,50 @@ export function usePageUI(
     return (entry?.[1]?.default ?? {}) as AllUi
   })()
 
-  // Remote source (cached by key). Query is encoded safely.
-  const { data } = useFetch<{ items: { uiData: AllUi }[] }>(
-    `${apiBase}/najm/api/collections/pages/records`,
+  // Fetch from unified Nuxt server endpoint connecting to live PocketBase
+  const { data, pending, refresh } = useFetch<{ ok: boolean, uiData: AllUi, title?: string }>(
+    `/api/content/${slug}`,
     {
-      key: `page-ui:${slug}`,
-      query: { filter: `slug="${slug}"` },
-      default: () => ({ items: [] }),
+      key: `page-ui-content:${slug}`,
+      default: () => ({ ok: false, uiData: {} })
     }
   )
 
   // Build a complete language->UI map with remote-first, local-fallback per-language
   const allUi = computed<AllUi>(() => {
-    const remoteAll: AllUi = data.value?.items?.[0]?.uiData ?? {}
+    const remoteAll: AllUi = data.value?.uiData ?? {}
 
-    // union of languages present in remote and local
+    // Union of languages present in remote and local
     const langs = new Set<string>([
+      'fa', 'en', 'ar', 'FA', 'EN', 'AR',
       ...Object.keys(remoteAll || {}),
-      ...Object.keys(local || {}),
+      ...Object.keys(local || {})
     ])
 
     const out: AllUi = {}
     for (const lang of langs) {
-      const remoteUI = remoteAll?.[lang]
+      const lower = lang.toLowerCase()
+      const upper = lang.toUpperCase()
+      const remoteUI = remoteAll?.[lower] || remoteAll?.[upper] || remoteAll?.[lang]
+      const localUI = local?.[lower] || local?.[upper] || local?.[lang]
+
       const chosen =
         (remoteUI && Object.keys(remoteUI).length > 0)
           ? remoteUI
-          : (local?.[lang] ?? {})
-      out[lang] = chosen
+          : (localUI ?? {})
+      out[lower] = chosen
+      out[upper] = chosen
     }
 
-    if (process.dev) {
-      console.log(
-        `[AdminEdit] usePageUI("${slug}") → hydrated languages: ${Object.keys(out).join(', ') || '∅'}`
-      )
-    }
     return out
   })
 
   // Current language view (for regular page rendering)
   const ui = computed<UiForLang>(() => {
-    const lang = language.value
-    const chosen = allUi.value?.[lang] ?? {}
-    if (process.dev) {
-      console.log(
-        `[AdminEdit] usePageUI("${slug}") → ${lang} (${Object.keys(chosen).length} keys)`
-      )
-    }
+    const lang = (language.value || 'FA').toLowerCase()
+    const chosen = allUi.value?.[lang] || allUi.value?.[lang.toUpperCase()] || {}
     return chosen
   })
 
-  return { ui, allUi }
+  return { ui, allUi, pending, refresh }
 }

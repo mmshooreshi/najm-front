@@ -27,42 +27,42 @@
     </div>
 
     <!-- Main Editorial Container -->
-    <main class="pt-24 pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-28">
+    <main class="pt-20 sm:pt-24 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16 sm:space-y-28">
       <!-- Section 1: Hero & Vision (Scale & Staff) -->
-      <section id="vision" class="scroll-mt-28 space-y-10">
+      <section id="vision" class="scroll-mt-28 space-y-8 sm:space-y-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           <!-- Text Lead -->
-          <div class="lg:col-span-6 space-y-6 text-right">
+          <div class="lg:col-span-6 space-y-4 sm:space-y-6 text-right">
             <span class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4">
-              درباره مجتمع چاپ و بسته‌بندی نجم
+              {{ ui?.title || 'درباره مجتمع چاپ و بسته‌بندی نجم' }}
             </span>
-            <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
-              نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی
+            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
+              {{ ui?.subtitle || 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی' }}
             </h1>
-            <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
-              مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و صادراتی کشور فعالیت می‌کند.
+            <p class="text-xs sm:text-sm lg:text-base text-gray-600 leading-relaxed">
+              {{ ui?.story || 'مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و صادراتی کشور فعالیت می‌کند.' }}
             </p>
             
-            <!-- Typographic Key Metrics -->
-            <div class="grid grid-cols-3 gap-6 pt-6 border-t border-gray-200">
-              <div class="space-y-1">
-                <div class="text-2xl sm:text-3xl font-extrabold text-najmgreen text-d4">+۲۵ سال</div>
-                <div class="text-xs text-gray-500">سابقه مستمر صنعتی</div>
+            <!-- Typographic Key Metrics (Mobile-first responsive grid) -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-6 pt-4 sm:pt-6 border-t border-gray-200 text-center sm:text-right">
+              <div class="space-y-1 p-2 sm:p-0 rounded-2xl bg-white/60 sm:bg-transparent border sm:border-0 border-gray-100">
+                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4">+۲۵ سال</div>
+                <div class="text-[10px] sm:text-xs text-gray-500">سابقه مستمر</div>
               </div>
-              <div class="space-y-1">
-                <div class="text-2xl sm:text-3xl font-extrabold text-najmgreen text-d4">+۱۵ میلیون</div>
-                <div class="text-xs text-gray-500">تیراژ تولید سالانه</div>
+              <div class="space-y-1 p-2 sm:p-0 rounded-2xl bg-white/60 sm:bg-transparent border sm:border-0 border-gray-100">
+                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4">+۱۵M</div>
+                <div class="text-[10px] sm:text-xs text-gray-500">تیراژ سالانه</div>
               </div>
-              <div class="space-y-1">
-                <div class="text-2xl sm:text-3xl font-extrabold text-najmgreen text-d4">۹۹.۸٪</div>
-                <div class="text-xs text-gray-500">انطباق دقیق رنگی</div>
+              <div class="space-y-1 p-2 sm:p-0 rounded-2xl bg-white/60 sm:bg-transparent border sm:border-0 border-gray-100">
+                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4">۹۹.۸٪</div>
+                <div class="text-[10px] sm:text-xs text-gray-500">انطباق رنگی</div>
               </div>
             </div>
           </div>
 
           <!-- Hero Photography Asset -->
           <div class="lg:col-span-6">
-            <div class="relative rounded-3xl overflow-hidden shadow-xl aspect-[4/3] sm:aspect-[16/11] bg-gray-100 group">
+            <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-md sm:shadow-xl aspect-[4/3] sm:aspect-[16/11] bg-gray-100 group">
               <img
                 src="/images/about/staff.png"
                 alt="تیم متخصص و خطوط تولید چاپ نجم"
@@ -70,7 +70,7 @@
                 loading="lazy"
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
-              <div class="absolute bottom-4 right-4 text-white text-right">
+              <div class="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 text-white text-right">
                 <div class="text-xs font-bold text-d4">تیم متخصص مهندسی چاپ و تولید</div>
                 <div class="text-[10px] text-white/80">مجتمع تخصصی چاپ و بسته‌بندی نجم</div>
               </div>
@@ -381,11 +381,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
+import { usePageUI } from '~/composables/ui/usePageUI'
 
 definePageMeta({
   name: 'درباره ما - چاپ نجم',
   layout: 'default'
 })
+
+const { ui } = usePageUI('about')
 
 const sections = [
   { id: 'vision', label: 'معرفی' },

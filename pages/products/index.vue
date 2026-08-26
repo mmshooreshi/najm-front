@@ -287,6 +287,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useDynamicProducts } from '~/composables/useDynamicData'
+import { usePageUI } from '~/composables/ui/usePageUI'
 
 definePageMeta({
   name: 'محصولات چاپ و بسته‌بندی - مجتمع چاپ نجم',
@@ -297,6 +299,9 @@ const searchQuery = ref('')
 const selectedCategory = ref('all')
 const sortBy = ref('popular')
 const viewMode = ref<'grid' | 'list'>('grid')
+
+const { ui } = usePageUI('products')
+const { products: remoteProducts } = useDynamicProducts(selectedCategory, searchQuery, sortBy)
 
 const categories = [
   { id: 'all', label: 'همه محصولات' },

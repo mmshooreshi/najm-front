@@ -1,25 +1,25 @@
 <!-- pages/blog/index.vue -->
 <template>
-  <div dir="rtl" class="min-h-screen bg-najmback pb-28 text-gray-800">
+  <div dir="rtl" class="min-h-screen bg-najmback pb-20 sm:pb-28 text-gray-800">
     <!-- Header -->
-    <header class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center space-y-4">
-      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
+    <header class="pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center space-y-3 sm:space-y-4">
+      <span class="inline-block px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
         دانشنامه و مقالات تخصصی چاپ و بسته‌بندی
       </span>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
+      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
         وبلاگ تخصصی مجتمع چاپ نجم
       </h1>
       <p class="text-xs sm:text-sm text-gray-600 max-w-2xl mx-auto leading-relaxed">
         جدیدترین مقالات، راهنماهای انتخاب متریال مقوا، تکنیک‌های پیشرفته پس از چاپ، مقایسه‌های فنی و استانداردهای طراحی بسته‌بندی صادراتی.
       </p>
 
-      <!-- Category Filter Pills -->
-      <div class="flex items-center justify-center gap-2 pt-4 flex-wrap">
+      <!-- Category Filter Pills (Swipeable on mobile) -->
+      <div class="flex items-center justify-center gap-1.5 sm:gap-2 pt-3 sm:pt-4 flex-wrap">
         <button
           v-for="cat in categories"
           :key="cat.id"
           @click="selectedCategory = cat.id"
-          class="px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer text-d4"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer text-d4"
           :class="[
             selectedCategory === cat.id
               ? 'bg-najmgreen text-white shadow-xs'
@@ -31,9 +31,9 @@
       </div>
     </header>
 
-    <!-- Articles Grid -->
+    <!-- Articles Grid (Mobile-First Responsive Layout) -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <article
           v-for="post in filteredPosts"
           :key="post.id"
@@ -54,14 +54,14 @@
             </NuxtLink>
 
             <!-- Content Details -->
-            <div class="p-6 pt-0 space-y-3 text-right">
+            <div class="p-5 sm:p-6 pt-0 space-y-2.5 sm:space-y-3 text-right">
               <div class="flex items-center gap-2 text-[11px] text-gray-400">
                 <span>{{ post.date }}</span>
                 <span>•</span>
                 <span>زمان مطالعه: {{ post.readTime }}</span>
               </div>
 
-              <h2 class="text-base sm:text-lg font-bold text-gray-900 text-d4 group-hover:text-najmgreen transition-colors leading-snug">
+              <h2 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 text-d4 group-hover:text-najmgreen transition-colors leading-snug">
                 <NuxtLink :to="`/blog/${post.slug}`">
                   {{ post.title }}
                 </NuxtLink>
@@ -74,7 +74,7 @@
           </div>
 
           <!-- Card Footer -->
-          <div class="px-6 pb-6 pt-2 flex items-center justify-between border-t border-gray-100 text-xs font-bold text-najmgreen text-d4">
+          <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-gray-100 text-xs font-bold text-najmgreen text-d4">
             <NuxtLink :to="`/blog/${post.slug}`" class="hover:underline flex items-center gap-1">
               <span>مطالعه کامل مقاله</span>
               <Icon name="mdi:arrow-left" class="w-4 h-4" />
@@ -89,6 +89,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useDynamicPosts } from '~/composables/useDynamicData'
 
 definePageMeta({
   name: 'وبلاگ و مقالات آموزشی - چاپ نجم',
@@ -96,6 +97,7 @@ definePageMeta({
 })
 
 const selectedCategory = ref('all')
+const { posts: remotePosts } = useDynamicPosts(selectedCategory)
 
 const categories = [
   { id: 'all', label: 'همه مقالات' },
@@ -105,7 +107,7 @@ const categories = [
   { id: 'export', label: 'استانداردهای صادراتی' }
 ]
 
-const posts = [
+const fallbackPosts = [
   {
     id: 1,
     slug: 'inboard-vs-greyboard-packaging',
@@ -148,12 +150,10 @@ const posts = [
     title: 'اصول طراحی بسته‌بندی صادراتی برای بازارهای حوزه خلیج فارس و اوراسیا',
     excerpt: 'از استانداردهای ابعاد پالت‌های باربری تا انتخاب مرکب‌های مقاوم به نور خورشید و تست مقاومت کارتن‌های ایفلوت در مسیرهای طولانی ترانزیت.',
     category: 'export',
-    categoryLabel: 'صادرات',
-    image: '/images/svg/cardboard-paper-box-with-handle-mockup-2-10296.svg',
+    categoryLabel: 'استاندارد صادرات',
+    image: '/images/svg/kraft-paper-open-mailing-box-mockup-2-6737.svg',
     date: '۲ اردیبهشت ۱۴۰۴',
     readTime: '۷ دقیقه',
-    author: 'واحد توسعه صادرات'
-  },
   {
     id: 5,
     slug: 'auto-bottom-vs-straight-tuck-boxes',
