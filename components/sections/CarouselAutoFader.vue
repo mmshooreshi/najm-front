@@ -57,7 +57,7 @@ const onSlideChange = (swiperInstance: any) => {
 const uniqueId = Math.random().toString(36).substring(2, 9);
 
 onMounted(() => {
-  console.log('Swiper initialized')
+  // Swiper initialized
 })
 </script>
 
@@ -68,7 +68,7 @@ onMounted(() => {
         ref="containerRef"
         class="h-96 md:h-full "
         :modules="[Autoplay, EffectFade, Pagination]"
-        :loop="true"
+        :loop="slides && slides.length > 1"
         :autoplay="{ delay: 2000, disableOnInteraction: false }"
         :effect="'fade'"
         :fadeEffect="{ crossFade: true }"

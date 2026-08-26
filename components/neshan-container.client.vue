@@ -269,9 +269,6 @@ function handleMap(map) {
     markers.forEach(({ marker }) => marker.getPopup()?.remove());
   });
 }
-
-
-definePageMeta({ name: 'neshan', layout: 'd' })
 </script>
 
 <style>

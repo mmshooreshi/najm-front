@@ -9,28 +9,31 @@
         <span>/</span>
         <NuxtLink to="/resources" class="hover:text-najmgreen">منابع و قالب‌ها</NuxtLink>
         <span>/</span>
-        <span class="text-gray-900 font-bold text-d4">{{ currentResource.title }}</span>
+        <span class="text-gray-900 font-bold text-d4" v-editable="'title'">{{ currentResource.title }}</span>
       </nav>
 
-      <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4">
+      <span
+        class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4"
+        v-editable="'categoryLabel'"
+      >
         {{ currentResource.categoryLabel }}
       </span>
 
-      <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 leading-tight text-d4">
+      <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 leading-tight text-d4" v-editable="'title'">
         {{ currentResource.title }}
       </h1>
 
-      <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+      <p class="text-xs sm:text-sm text-gray-600 leading-relaxed" v-editable="'description'">
         {{ currentResource.description }}
       </p>
 
       <!-- Metadata Strip -->
-      <div class="flex items-center gap-4 text-xs text-gray-500 border-y border-gray-200 py-3 font-mono">
-        <span>فرمت: {{ currentResource.fileFormat }}</span>
+      <div class="flex items-center gap-4 text-xs text-gray-500 border-y border-gray-200 py-3">
+        <span>فرمت: <span v-editable="'fileFormat'">{{ currentResource.fileFormat }}</span></span>
         <span>•</span>
-        <span>حجم فایل: {{ currentResource.fileSize }}</span>
+        <span>حجم فایل: <span v-editable="'fileSize'">{{ currentResource.fileSize }}</span></span>
         <span>•</span>
-        <span>نسخه ۲۰۲۶</span>
+        <span v-editable="'specs.version'">{{ currentResource.specs?.version || 'نسخه ۲۰۲۶' }}</span>
       </div>
     </header>
 
@@ -43,8 +46,12 @@
             <Icon name="mdi:file-download-outline" class="w-7 h-7" />
           </div>
           <div>
-            <h3 class="text-base font-bold text-gray-900 text-d4">دانلود بسته کامل فایل فنی</h3>
-            <p class="text-xs text-gray-500">شامل فایل‌های وکتور AI، PDF استاندارد چاپ و راهنمای راهبری</p>
+            <h3 class="text-base font-bold text-gray-900 text-d4" v-editable="'downloadBoxTitle'">
+              {{ currentResource.downloadBoxTitle || 'دانلود بسته کامل فایل فنی' }}
+            </h3>
+            <p class="text-xs text-gray-500" v-editable="'downloadBoxSubtitle'">
+              {{ currentResource.downloadBoxSubtitle || 'شامل فایل‌های وکتور AI، PDF استاندارد چاپ و راهنمای راهبری' }}
+            </p>
           </div>
         </div>
 
@@ -54,30 +61,36 @@
           class="px-8 py-3.5 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-2 transition shadow-xs whitespace-nowrap text-d4"
         >
           <Icon name="mdi:download" class="w-4 h-4" />
-          <span>دانلود مستقیم فایل</span>
+          <span>دانلود مستقیم فایل ({{ currentResource.fileSize }})</span>
         </a>
       </div>
 
       <!-- Guidelines Details -->
       <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 space-y-6 text-right leading-relaxed text-sm sm:text-base text-gray-700">
-        <h2 class="text-xl font-bold text-gray-900 text-d4">راهنمای استفاده و ضوابط اجرایی</h2>
+        <h2 class="text-xl font-bold text-gray-900 text-d4" v-editable="'guidelinesTitle'">
+          {{ currentResource.guidelinesTitle || 'راهنمای استفاده و ضوابط اجرایی' }}
+        </h2>
         <ul class="space-y-3 text-xs sm:text-sm text-gray-600 list-disc list-inside">
-          <li>فایل‌های وکتور در فضای رنگی CMYK تنظیم شده‌اند؛ از تبدیل به RGB خودداری فرمایید.</li>
-          <li>خطوط برش با رنگ اسپات DieCut و خطوط تا با رنگ Crease تفکیک شده و روی حالت Overprint قرار دارند.</li>
-          <li>حداقل لبه برش (Bleed) در نظر گرفته شده ۳ میلیمتر از هر لبه بیرونی است.</li>
-          <li>برای بررسی نهایی پیش از چاپ، فایل تکمیل‌شده را از طریق بخش استعلام برای کارشناسان لیتوگرافی ارسال نمایید.</li>
+          <li
+            v-for="(guide, i) in (currentResource.guidelines || defaultGuidelines)"
+            :key="i"
+            v-editable="`guidelines.${i}`"
+          >
+            {{ guide }}
+          </li>
         </ul>
       </div>
 
-      <!-- Related Resources Link -->
-      <div class="flex items-center justify-between text-xs font-bold text-najmgreen text-d4 pt-4">
-        <NuxtLink to="/guides" class="hover:underline flex items-center gap-1">
-          <Icon name="mdi:arrow-right" class="w-4 h-4" />
-          <span>مشاهده همه راهنماهای فنی</span>
-        </NuxtLink>
-        <NuxtLink to="/catalog" class="hover:underline flex items-center gap-1">
-          <span>دانلود کاتالوگ جامع محصولات</span>
-          <Icon name="mdi:arrow-left" class="w-4 h-4" />
+      <!-- Contact CTA -->
+      <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="text-xs text-gray-500" v-editable="'contactCta'">
+          {{ currentResource.contactCta || 'نیاز به راهنمایی بیشتر یا طراحی قالب اختصاصی دارید؟' }}
+        </span>
+        <NuxtLink
+          to="/contact"
+          class="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold transition"
+        >
+          <span v-editable="'contactBtn'">{{ currentResource.contactBtn || 'تماس با واحد لیتوگرافی و طراحی' }}</span>
         </NuxtLink>
       </div>
     </main>
@@ -87,23 +100,54 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 
 definePageMeta({
-  name: 'جزئیات منبع فنی - چاپ نجم',
   layout: 'default'
 })
 
 const route = useRoute()
 const slug = computed(() => (route.params.slug as string) || '')
+const pageSlug = computed(() => `resources-${slug.value}`)
+
+const { ui, allUi } = usePageUI(pageSlug.value)
+useAdminEditable(pageSlug.value, allUi)
+
+const defaultGuidelines = [
+  'فایل‌های وکتور در فضای رنگی CMYK تنظیم شده‌اند؛ از تبدیل به RGB خودداری فرمایید.',
+  'خطوط برش با رنگ اسپات DieCut و خطوط تا با رنگ Crease تفکیک شده و روی حالت Overprint قرار دارند.',
+  'حداقل لبه برش (Bleed) در نظر گرفته شده ۳ میلیمتر از هر لبه بیرونی است.',
+  'برای بررسی نهایی پیش از چاپ، فایل تکمیل‌شده را از طریق بخش استعلام برای کارشناسان لیتوگرافی ارسال نمایید.'
+]
+
+const fallbackResource = {
+  title: 'راهنمای آماده‌سازی فایل و مشخصات فنی چاپ',
+  categoryLabel: 'راهنمای فنی',
+  description: 'دستورالعمل خروجی استاندارد PDF/X-1a، تنظیم رزولوشن ۳۰۰DPI، درصد ترکیب رنگ مشکی پرکلاغی و تنظیمات Overprint برای لیتوگرافی CTP.',
+  fileFormat: 'PDF / AI Vector',
+  fileSize: '4.8 MB',
+  downloadUrl: '#',
+  downloadBoxTitle: 'دانلود بسته کامل فایل فنی',
+  downloadBoxSubtitle: 'شامل فایل‌های وکتور AI، PDF استاندارد چاپ و راهنمای راهبری',
+  guidelinesTitle: 'راهنمای استفاده و ضوابط اجرایی',
+  guidelines: defaultGuidelines,
+  contactCta: 'نیاز به راهنمایی بیشتر یا طراحی قالب اختصاصی دارید؟',
+  contactBtn: 'تماس با واحد لیتوگرافی و طراحی'
+}
 
 const currentResource = computed(() => {
+  const dynamicUi = ui.value || {}
+  if (dynamicUi && Object.keys(dynamicUi).length > 0 && dynamicUi.title) {
+    return {
+      ...fallbackResource,
+      ...dynamicUi
+    }
+  }
   return {
-    title: 'راهنمای آماده‌سازی فایل و پروفایل رنگی CMYK در چاپ افست',
-    categoryLabel: 'راهنمای فنی چاپ',
-    description: 'دستورالعمل خروجی استاندارد PDF/X-1a، تنظیم رزولوشن ۳۰۰DPI، درصد ترکیب رنگ مشکی پرکلاغی و تنظیمات Overprint برای لیتوگرافی CTP.',
-    fileFormat: 'PDF / AI Vector',
-    fileSize: '4.8 MB',
-    downloadUrl: '#'
+    ...fallbackResource,
+    title: slug.value.replace(/-/g, ' ') || fallbackResource.title
   }
 })
 </script>
+

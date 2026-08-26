@@ -62,7 +62,7 @@ onMounted(() => {
     <swiper-container
       ref="containerRef3"
       :modules="[Autoplay, EffectFade, Pagination]"
-      :loop="true"
+      :loop="slides.length > 1"
       :autoplay="{ delay: 3500, disableOnInteraction: false }"
       :effect="'fade'"
       :fadeEffect="{ crossFade: true }"

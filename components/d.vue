@@ -580,12 +580,6 @@ const outerSwiperSlideStyle = (pkgIdx) => {
     backgroundColor: packages[pkgIdx][0].bgColor || 'transparent',
   };
 };
-
-
-definePageMeta({
-  name: 'd',
-  layout: 'd',
-})
 </script>
 
 <style scoped>

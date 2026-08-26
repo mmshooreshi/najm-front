@@ -1,5 +1,5 @@
 {
-  "fa": {
+  "FA": {
     "badge": "مرکز منابع و راهنماهای فنی چاپ نجم",
     "title": "کاتالوگ‌ها، قالب‌های تیغ و راهنماهای طراحی",
     "description": "تمامی فایل‌های مورد نیاز طراحان، مدیران محصول و تولید، شامل استانداردهای رنگ، قالب‌های تیغ و کاتالوگ‌های جامع محصولات به صورت مستقیم قابل دانلود است.",
@@ -12,7 +12,7 @@
     "detailsBtn": "مشاهده جزئیات",
     "downloadBtn": "دانلود"
   },
-  "en": {
+  "EN": {
     "badge": "Najm Technical Resources & Knowledge Hub",
     "title": "Catalogs, Die-Lines & Production Guidelines",
     "description": "Direct access to essential pre-press resources, ICC color profiles, vector packaging die-lines, and comprehensive product catalogs.",
@@ -25,7 +25,7 @@
     "detailsBtn": "View Details",
     "downloadBtn": "Download"
   },
-  "ar": {
+  "AR": {
     "badge": "مركز الموارد والأدلة الفنية لمطبعة نجم",
     "title": "الكتالوجات، قوالب السكاكين وأدلة التصميم",
     "description": "تحميل مباشر لجميع الملفات الفنية التي يحتاجها المصممون ومدراء الإنتاج بما في ذلك معايير الألوان وقوالب التغليف والكتالوجات الشاملة.",

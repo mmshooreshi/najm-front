@@ -53,8 +53,7 @@ const onSlideChange = (swiperInstance: any) => {
 const uniqueId = Math.random().toString(36).substring(2, 9);
 
 onMounted(() => {
-
-  console.log('Swiper initialized')
+  // Swiper initialized
 })
 </script>
 
@@ -62,7 +61,7 @@ onMounted(() => {
   <div class="relative">
     <ClientOnly>
       <swiper-container ref="containerRef" class="h-96 md:h-130" :modules="[Autoplay, EffectFade, Pagination]"
-        :loop="true" :autoplay="{ delay: 3500, disableOnInteraction: false }" :effect="'fade'"
+        :loop="slides && slides.length > 1" :autoplay="{ delay: 3500, disableOnInteraction: false }" :effect="'fade'"
         :fadeEffect="{ crossFade: true }" :pagination="{ el: `#pagination-${uniqueId}`, clickable: true }"
         @slideChange="onSlideChange">
         <swiper-slide v-for="(slide, index) in slides" :key="index" class="relative">
