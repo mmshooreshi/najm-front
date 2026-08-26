@@ -1,18 +1,27 @@
 <!-- pages/products/index.vue -->
 <template>
-  <div dir="rtl" class="min-h-screen bg-najmback pb-24">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback pb-24">
     <!-- Hero Section -->
     <section class="pt-12 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
-      <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-        <div class="space-y-3 max-w-2xl text-right">
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
-            کاتالوگ محصولات و خدمات اختصاصی
+      <div class="bg-white rounded-3xl p-5 sm:p-12 shadow-xs border border-najmborder/40 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 sm:gap-8">
+        <div class="space-y-3 max-w-2xl" :class="isRTL ? 'text-right' : 'text-left'">
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4 break-words"
+            v-editable="'badge'"
+          >
+            {{ uiContent.badge }}
           </span>
-          <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
-            محصولات چاپ، ساخت جعبه و بسته‌بندی
+          <h1
+            class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight text-d4 break-words"
+            v-editable="'title'"
+          >
+            {{ uiContent.title }}
           </h1>
-          <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
-            از جعبه‌های دارویی و بهداشتی استاندارد تا هاردباکس‌های لوکس مگنتی، ساک‌های دستی و اوراق تجاری؛ تمامی محصولات با بالاترین دقت رنگی، متریال درجه‌یک و خطوط تولید تمام‌اتوماتیک تولید می‌شوند.
+          <p
+            class="text-xs sm:text-sm text-gray-600 leading-relaxed break-words"
+            v-editable="'description'"
+          >
+            {{ uiContent.description }}
           </p>
         </div>
 
@@ -22,7 +31,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="جستجوی نام محصول، متریال یا نوع جعبه..."
+              :placeholder="uiContent.searchPlaceholder || 'جستجوی نام محصول...'"
               class="w-full pl-10 pr-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition shadow-inner"
             />
             <Icon name="mdi:magnify" class="w-5 h-5 text-gray-400 absolute left-3.5 top-3.5" />
@@ -33,13 +42,13 @@
               to="/catalog"
               class="flex-1 py-2.5 px-3 rounded-xl bg-najmgrey hover:bg-gray-200 text-gray-800 text-center font-bold text-d4 transition"
             >
-              دانلود کاتالوگ PDF
+              <span v-editable="'downloadCatalogBtn'">{{ uiContent.downloadCatalogBtn || 'دانلود کاتالوگ PDF' }}</span>
             </NuxtLink>
             <NuxtLink
               to="/contact"
               class="flex-1 py-2.5 px-3 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white text-center font-bold text-d4 transition shadow-xs"
             >
-              استعلام تیراژ
+              <span v-editable="'quoteBtn'">{{ uiContent.quoteBtn || 'استعلام تیراژ' }}</span>
             </NuxtLink>
           </div>
         </div>
@@ -289,18 +298,40 @@
 import { ref, computed } from 'vue'
 import { useDynamicProducts } from '~/composables/useDynamicData'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
+import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
-  name: 'محصولات چاپ و بسته‌بندی - مجتمع چاپ نجم',
   layout: 'default'
 })
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const searchQuery = ref('')
 const selectedCategory = ref('all')
 const sortBy = ref('popular')
 const viewMode = ref<'grid' | 'list'>('grid')
 
-const { ui } = usePageUI('products')
+const { ui, allUi } = usePageUI('products')
+useAdminEditable('products', allUi)
+
+const fallbackProductsUI = {
+  badge: 'کاتالوگ محصولات و خدمات اختصاصی',
+  title: 'محصولات چاپ، ساخت جعبه و بسته‌بندی',
+  description: 'از جعبه‌های دارویی و بهداشتی استاندارد تا هاردباکس‌های لوکس مگنتی، ساک‌های دستی و اوراق تجاری؛ تمامی محصولات با بالاترین دقت رنگی، متریال درجه‌یک و خطوط تولید تمام‌اتوماتیک تولید می‌شوند.',
+  searchPlaceholder: 'جستجوی نام محصول، متریال یا نوع جعبه...',
+  downloadCatalogBtn: 'دانلود کاتالوگ PDF',
+  quoteBtn: 'استعلام تیراژ'
+}
+
+const uiContent = computed(() => {
+  return {
+    ...fallbackProductsUI,
+    ...(ui.value || {})
+  }
+})
+
 const { products: remoteProducts } = useDynamicProducts(selectedCategory, searchQuery, sortBy)
 
 const categories = [

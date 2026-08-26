@@ -540,8 +540,18 @@ blockquote {
   cursor: crosshair !important;
 }
 
+/* ─── BRAND UTILITIES PROTECTION (Overrides element resets) ─── */
+.bg-najmgreen,
+button.bg-najmgreen,
+[type='button'].bg-najmgreen,
+[type='submit'].bg-najmgreen {
+  background-color: #014439 !important;
+}
 
+.text-najmgreen {
+  color: #014439 !important;
+}
 
-
-
-
+.border-najmgreen {
+  border-color: #014439 !important;
+}

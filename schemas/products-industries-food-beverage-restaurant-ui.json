@@ -1,0 +1,86 @@
+{
+  "fa": {
+    "badge": "راهکار بسته‌بندی ویژه صنعت",
+    "title": "صنایع غذایی، نوشیدنی و رستوران",
+    "description": "بسته‌بندی‌های بهداشتی، مقاوم در برابر رطوبت و چربی با قابلیت قرارگیری در زنجیره سرد و خطوط پرکنی صنعتی.",
+    "packagesTitle": "اقلام و پکیج‌های پیشنهادی برای این صنعت",
+    "packages": [
+      {
+        "title": "جعبه‌های مقوایی فودگرید",
+        "desc": "مناسب شکلات، شیرینی، فست‌فود، چای و فرآورده‌های منجمد با پوشش بهداشتی ضد چربی.",
+        "specs": ["ایندربرد ۲۸۰ تا ۳۵۰ گرم", "پوشش پلی‌اتیلن / فودگرید", "قفل لاک‌باتم"]
+      },
+      {
+        "title": "ساک و پاکت‌های کاغذی کرافت",
+        "desc": "پاکت‌های بیرون‌بر رستورانی و کافه‌ها با چاپ اختصاصی و مقاومت در برابر پاره شدن.",
+        "specs": ["کرافت سنگین", "دسته‌های تقویت‌شده", "مرکب پایه‌گیاهی"]
+      },
+      {
+        "title": "لیبل و برچسب‌های ضدآب رول",
+        "desc": "برچسب بطری نوشیدنی‌ها، سس‌ها و شیشه‌های مواد غذایی با چسبندگی قوی در یخچال.",
+        "specs": ["متالایز", "یووی ضدخش", "پلی‌پروپیلن PP"]
+      }
+    ],
+    "standards": {
+      "title": "استانداردهای بهداشتی و ایمنی تماس با محصول",
+      "description": "کلیه بسته‌بندی‌های تولیدی در خطوط نجم با متریال فودگرید (Food Grade)، مقوای ایندربرد بهداشتی و مرکب‌های بدون بو و سازگار با سلامت مصرف‌کننده تولید می‌گردند.",
+      "button": "استعلام سفارش تولید"
+    }
+  },
+  "en": {
+    "badge": "Dedicated Industry Solution",
+    "title": "Food, Beverage & Restaurant Packaging",
+    "description": "Certified hygienic, moisture-resistant, and greaseproof packaging engineered for cold-chain distribution and automated filling lines.",
+    "packagesTitle": "Recommended Packaging Solutions for Food & Beverage",
+    "packages": [
+      {
+        "title": "Food-Grade Paperboard Cartons",
+        "desc": "Ideal for confectionery, pastries, tea, and frozen items with internal grease-barrier coating.",
+        "specs": ["280-350gsm Certified FBB", "PE/Biodegradable Barrier", "Auto-Lock Base"]
+      },
+      {
+        "title": "Heavyweight Kraft Takeout Bags",
+        "desc": "Custom printed restaurant delivery and takeaway bags featuring reinforced flat or twisted handles.",
+        "specs": ["Virgin Kraft Stock", "Reinforced Bottom", "Vegetable-Based Inks"]
+      },
+      {
+        "title": "Waterproof Roll Adhesive Labels",
+        "desc": "Pressure-sensitive bottle and jar labels with superior condensation and refrigerator resistance.",
+        "specs": ["Metallized Substrates", "Anti-Scratch UV Coating", "PP / BoPP Films"]
+      }
+    ],
+    "standards": {
+      "title": "Hygienic Standards & Direct Food Contact Compliance",
+      "description": "All food packaging produced at Najm utilizes virgin food-grade SBS boards, low-migration odorless inks, and complies with stringent sanitary regulations.",
+      "button": "Request Production Quote"
+    }
+  },
+  "ar": {
+    "badge": "حلول التغليف المخصصة للقطاعات",
+    "title": "صناعات الأغذية والمشروبات والمطاعم",
+    "description": "حلول تغليف صحية مقاومة للرطوبة والدهون ملائمة لسلاسل التبريد وخطوط التعبئة الصناعية المؤتمتة.",
+    "packagesTitle": "الباقات المقترحة لقطاع الأغذية والمشروبات",
+    "packages": [
+      {
+        "title": "علب الكرتون الصحي الغذائي (Food Grade)",
+        "desc": "ملائمة للشوكولاتة والحلويات والشاي والأطعمة المجمدة مع طبقة عازلة للدهون.",
+        "specs": ["كرتون إنفربورد 280 إلى 350 جرام", "طبقة عازلة صحية", "قفل آلي سريع"]
+      },
+      {
+        "title": "أكياس ومظاريف ورق الكرافت",
+        "desc": "أكياس مطاعم وكافيهات للطلبات الخارجية مع مقابض متينة وأحبار نباتية آمنة.",
+        "specs": ["ورق كرافت ثقيل", "مقابض معززة", "أحبار نباتية"]
+      },
+      {
+        "title": "ملصقات الرول المقاومة للماء",
+        "desc": "لصاقات القوارير والصلصات والأوعية الزجاجية مع ثبات عالي داخل الثلاجات.",
+        "specs": ["ورق متالايز", "يو في مقاوم للخدش", "بولي بروبيلين PP"]
+      }
+    ],
+    "standards": {
+      "title": "المعايير الصحية وملامسة المواد الغذائية",
+      "description": "تصنع كافة عبوات الأغذية في مطبعة نجم باستخدام كرتون غذائي معتمد وأحبار خالية من الروائح متوافقة مع الصحة والسلامة.",
+      "button": "استعلام طلب الإنتاج"
+    }
+  }
+}

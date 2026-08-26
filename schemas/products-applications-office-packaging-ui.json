@@ -1,0 +1,86 @@
+{
+  "fa": {
+    "badge": "پکیج کاربردی و هدفمند",
+    "title": "پکیج سازمانی و اداری یکپارچه",
+    "description": "مجموعه کامل اوراق اداری، پاکت‌ها، فولدرها و سررسیدهای یکپارچه برای تقویت هویت برند سازمانی با بالاترین ثبات رنگی.",
+    "itemsTitle": "اقلام موجود در این پکیج",
+    "items": [
+      {
+        "name": "ست اداری کامل (سربرگ، پاکت، کارت ویزیت)",
+        "desc": "چاپ با پنتون رنگ سازمانی بر روی کاغذهای تحریر یا کتان خارجی با کیفیت بالا.",
+        "feature": "هماهنگی ۱۰۰٪ رنگی در تمامی اقلام"
+      },
+      {
+        "name": "فولدر شرکتی و پوشه اسناد (Folders)",
+        "desc": "فولدرهای مقوایی با جیب اختصاصی قرارگیری CD، بروشور و جای کارت ویزیت.",
+        "feature": "سلفون مات و طلاکوب لوگو"
+      },
+      {
+        "name": "دفتر یادداشت و سررسید سازمانی",
+        "desc": "صحافی فنر دوبل یا جلد سخت سلفونی با درج لوگو در تمامی صفحات داخلی.",
+        "feature": "کاغذ تحریر ۷۰ و ۸۰ گرم"
+      }
+    ],
+    "cta": {
+      "title": "نیاز به سفارشی‌سازی اقلام این پکیج دارید؟",
+      "description": "شما می‌توانید متریال، ابعاد، پوشش‌های چاپی و تیراژ هر یک از اقلام را مطابق با بودجه و هویت بصری سازمان خود تغییر دهید.",
+      "button": "درخواست پکیج اختصاصی"
+    }
+  },
+  "en": {
+    "badge": "Integrated Application Kit",
+    "title": "Unified Corporate & Stationery Packaging Kit",
+    "description": "Complete suite of corporate stationery, document folders, executive envelopes, and branded notebooks engineered for corporate identity cohesion.",
+    "itemsTitle": "Items Included in this Application Kit",
+    "items": [
+      {
+        "name": "Complete Stationery Suite (Letterhead, Envelopes, Business Cards)",
+        "desc": "Printed with certified brand Pantone matching on premium woodfree or textured cotton papers.",
+        "feature": "100% Color Cohesion Across All Mediums"
+      },
+      {
+        "name": "Corporate Presentation Folders (Die-Cut Pockets)",
+        "desc": "Sturdy laminated presentation folders with business card slits and brochure document pockets.",
+        "feature": "Matte Soft-Touch & Hot Foil Stamped Logo"
+      },
+      {
+        "name": "Branded Executive Notebooks & Planners",
+        "desc": "Twin-wire or casebound hardcover journals with custom watermark grid pages.",
+        "feature": "70-80gsm Opaque Woodfree Stock"
+      }
+    ],
+    "cta": {
+      "title": "Need a Custom Tailored Stationery Package?",
+      "description": "You can customize paper selections, dimensions, foil embellishments, and order quantities to match your exact brand guidelines.",
+      "button": "Request Custom Corporate Kit"
+    }
+  },
+  "ar": {
+    "badge": "حزمة تطبيقية متكاملة",
+    "title": "باقة المطبوعات المؤسسية والمكتبية المتكاملة",
+    "description": "مجموعة شاملة من المطبوعات الرسمية والمظاريف والمجلدات والمذكرات المصممة لتعزيز الهوية المؤسسية بأعلى درجات ثبات الألوان.",
+    "itemsTitle": "العناصر المضمنة في هذه الباقة",
+    "items": [
+      {
+        "name": "طقم الهوية الكامل (ترويسة، أظرف، بطاقات عمل)",
+        "desc": "طباعة بألوان بانتون الخاصة على أرقى أنواع الورق القطني والكتاني المستورد.",
+        "feature": "تطابق لوني 100% عبر جميع العناصر"
+      },
+      {
+        "name": "مجلدات حفظ المستندات (فولدرات)",
+        "desc": "فولدرات كرتونية مقواة مع جيوب خاصة لوضع البروشورات وبطاقات العمل.",
+        "feature": "سلوفان مطفي وبصمة ذهبية للشعار"
+      },
+      {
+        "name": "دفاتر ومفكرات سنوية مخصصة",
+        "desc": "تجليد سلك لولبي أو تجليد فني صلب مع طباعة الشعار في الصفحات الداخلية.",
+        "feature": "ورق تحرير أبيض 70 و 80 جرام"
+      }
+    ],
+    "cta": {
+      "title": "هل ترغب في تخصيص عناصر هذه الباقة؟",
+      "description": "يمكنك تعديل الخامات والأبعاد والمؤثرات التكميلية والكميات لتناسب ميزانيتك وهوية مؤسستك.",
+      "button": "طلب باقة مؤسسية مخصصة"
+    }
+  }
+}

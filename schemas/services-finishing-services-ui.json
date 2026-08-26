@@ -1,0 +1,95 @@
+{
+  "fa": {
+    "hero": {
+      "eyebrow": "خدمات تکمیلی و پس از چاپ",
+      "title": "سلفون‌کشی، طلاکوب، برجسته‌سازی و دایکات اتوماتیک",
+      "subtitle": "خلق تمایز بصری و لمسی روی جعبه‌ها با پیشرفته‌ترین افکت‌های لوکس",
+      "description": "خطوط تکمیلی مجهز به دستگاه‌های تمام‌اتوماتیک دایکات بابست (Bobst)، سیستم‌های پوشش UV سیلندری و طلاکوب دیجیتال و حرارتی، ارزش محصول شما را در قفسه فروشگاه چند برابر می‌کنند.",
+      "highlights": ["سلفون مات حرارتی و سافت‌تاچ", "طلاکوب و نقره‌کوب دقیق", "دایکات لبه‌صاف بابست"]
+    },
+    "serviceIncludes": {
+      "title": "مجموعه خدمات تکمیلی تخصصی",
+      "description": "انواع پوشش‌ها و افکت‌های چاپی جهت محافظت و ارتقای جلوه بصری بسته‌بندی.",
+      "groups": [
+        {
+          "title": "پوشش‌های سطحی و سلفون",
+          "description": "محافظت در برابر سایش، آب و تغییر رنگ به همراه لطافت مخملی.",
+          "items": ["سلفون حرارتی مات و براق", "سلفون ضدخش (Anti-Scratch)", "سلفون لمسی مخملی (Soft-Touch)"]
+        },
+        {
+          "title": "طلاکوب، برجسته‌سازی و یووی",
+          "description": "جلوه‌های نوری چشم‌نواز با خطای صفر در رجیستری.",
+          "items": ["طلاکوب و نقره‌کوب حرارتی", "یووی موضعی و شنی برجسته", "امباس و برجسته‌سازی سه‌بعدی"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "جلوه‌های ویژه چاپی",
+      "title": "مشاوره برای پیاده‌سازی افکت‌های لوکس روی بسته‌بندی",
+      "description": "برای ارتقای هویت لوکس بسته‌بندی محصولات خود با مشاوران ما در ارتباط باشید.",
+      "primaryCta": { "label": "درخواست مشاوره افکت‌ها" }
+    }
+  },
+  "en": {
+    "hero": {
+      "eyebrow": "Post-Press Converting & Embellishment",
+      "title": "Lamination, Hot Foil Stamping, Embossing & Auto Die-Cutting",
+      "subtitle": "Transforming packaging with tactile luxury finishes and Bobst high-precision converting",
+      "description": "Equipped with automatic Bobst die-cutters, cylinder spot UV coaters, and precision hot foil stampers to maximize shelf impact and brand distinction.",
+      "highlights": ["Thermal Soft-Touch Lamination", "Micro-Foil Stamping Precision", "Bobst Automatic Die-Cutting"]
+    },
+    "serviceIncludes": {
+      "title": "Specialized Post-Press Services",
+      "description": "Protective barriers and visual enhancements for premium product packaging.",
+      "groups": [
+        {
+          "title": "Protective Surface Coatings",
+          "description": "Moisture barrier and scratch-resistant lamination films.",
+          "items": ["Matte & Gloss Thermal Laminates", "Anti-Scratch Heavy Duty Film", "Velvet Soft-Touch Film"]
+        },
+        {
+          "title": "Foil Stamping & Dimensional UV",
+          "description": "High-impact visual depth with flawless microscopic registration.",
+          "items": ["Hot Foil & Holographic Stamping", "Raised Dimensional Spot UV", "Multi-Level 3D Embossing & Debossing"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "Luxury Finishing Consultation",
+      "title": "Consult on Specialty Packaging Effects",
+      "description": "Collaborate with our finishing experts to craft distinctive visual appeal.",
+      "primaryCta": { "label": "Consult Finishing Specialists" }
+    }
+  },
+  "ar": {
+    "hero": {
+      "eyebrow": "خدمات ما بعد الطباعة والمؤثرات الفاخرة",
+      "title": "السلوفان، البصمة الحرارية، البروز والقص الآلي",
+      "subtitle": "إضفاء التميز البصري والملمس الفاخر على العلب بماكينات بوبست السويسرية",
+      "description": "خطوط مؤتمتة بالكامل لقص وتكسير الكرتون وتطبيق السلوفان المخملي والبصمات الذهبية لرفع القيمة السوقية لمنتجك.",
+      "highlights": ["سلوفان حراري وسوفت تاتش", "بصمة حرارية دقيقة", "قص آلي سريع من بوبست"]
+    },
+    "serviceIncludes": {
+      "title": "مجموعة الخدمات التكميلية المتخصصة",
+      "description": "طبقات حماية ومؤثرات فاخرة لحماية العبوة وإبراز جاذبيتها.",
+      "groups": [
+        {
+          "title": "السلوفان وطبقات الحماية",
+          "description": "حماية من الخدش والرطوبة مع ملمس مخملي جذاب.",
+          "items": ["سلوفان مطفي ولامع", "سلوفان مقاوم للخدش", "سلوفان مخملي سوفت تاتش"]
+        },
+        {
+          "title": "البصمة والبروز واليو في",
+          "description": "مؤثرات بصرية بفرز ومطابقة متناهية الدقة.",
+          "items": ["بصمة ذهبية وفضية حرارية", "يو في موضعي وبارز", "بروز ونقش ثلاثي الأبعاد"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "مؤثرات الطباعة الخاصة",
+      "title": "استشارة لتطبيق المؤثرات الفاخرة على علبك",
+      "description": "تواصل مع خبرائنا لتحديد أفضل المؤثرات الجمالية المناسبة لمنتجك.",
+      "primaryCta": { "label": "طلب استشارة المؤثرات" }
+    }
+  }
+}

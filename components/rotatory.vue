@@ -3,8 +3,9 @@
     <button
       @click="openModal()"
       type="button"
+      style="background-color: #014439 !important;"
       aria-label="مشاوره رایگان و استعلام قیمت"
-      class="group relative flex items-center justify-center overflow-hidden rounded-full bg-najmgreen text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 active:scale-95 shadow-xl hover:shadow-2xl w-18 h-18 md:w-24 md:h-24 cursor-pointer"
+      class="rotatory-btn group relative flex items-center justify-center overflow-hidden rounded-full bg-najmgreen text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 active:scale-95 shadow-xl hover:shadow-2xl w-18 h-18 md:w-24 md:h-24 cursor-pointer"
     >
       <!-- Rotating text along a circular path -->
       <svg
@@ -71,6 +72,9 @@
   </script>
   
   <style scoped>
+.rotatory-btn {
+  background-color: #014439 !important;
+}
 /* Slow anti-clockwise spin */
 .animSpin {
   animation: spinn 8s linear infinite;

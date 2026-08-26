@@ -1,0 +1,65 @@
+{
+  "fa": {
+    "badge": "کاتالوگ محصولات و خدمات اختصاصی",
+    "title": "محصولات چاپ، ساخت جعبه و بسته‌بندی",
+    "description": "از جعبه‌های دارویی و بهداشتی استاندارد تا هاردباکس‌های لوکس مگنتی، ساک‌های دستی و اوراق تجاری؛ تمامی محصولات با بالاترین دقت رنگی و متریال درجه‌یک تولید می‌شوند.",
+    "searchPlaceholder": "جستجوی نام محصول، متریال یا نوع جعبه...",
+    "downloadCatalogBtn": "دانلود کاتالوگ PDF",
+    "quoteBtn": "استعلام تیراژ",
+    "categories": [
+      { "id": "all", "label": "همه محصولات" },
+      { "id": "packaging", "label": "بسته‌بندی و جعبه‌سازی" },
+      { "id": "commercial", "label": "چاپ تجاری و اداری" },
+      { "id": "luxury", "label": "هاردباکس و لوکس" },
+      { "id": "labels", "label": "لیبل و برچسب" }
+    ],
+    "sortLabel": "مرتب‌سازی:",
+    "sortOptions": {
+      "popular": "محبوب‌ترین و پرفروش",
+      "minQtyAsc": "حداقل تیراژ (کم به زیاد)",
+      "leadTime": "سریع‌ترین زمان تولید"
+    }
+  },
+  "en": {
+    "badge": "Custom Products & Services Catalog",
+    "title": "Printing, Box Making & Structural Packaging",
+    "description": "From certified healthcare folding cartons to bespoke magnetic rigid boxes, luxury shopping bags, and corporate collateral; manufactured with uncompromising color fidelity.",
+    "searchPlaceholder": "Search product name, paperboard grade, or box style...",
+    "downloadCatalogBtn": "Download PDF Catalog",
+    "quoteBtn": "Request Quote",
+    "categories": [
+      { "id": "all", "label": "All Products" },
+      { "id": "packaging", "label": "Folding Cartons & Boxes" },
+      { "id": "commercial", "label": "Commercial & Stationery" },
+      { "id": "luxury", "label": "Luxury Rigid Boxes" },
+      { "id": "labels", "label": "Labels & Roll Stickers" }
+    ],
+    "sortLabel": "Sort By:",
+    "sortOptions": {
+      "popular": "Most Popular & Featured",
+      "minQtyAsc": "Minimum Order (Low to High)",
+      "leadTime": "Shortest Production Turnaround"
+    }
+  },
+  "ar": {
+    "badge": "كتالوج المنتجات والخدمات المخصصة",
+    "title": "منتجات الطباعة وصناعة العلب والتغليف",
+    "description": "من العلب الدوائية والصحية المعتمدة إلى الصناديق الصلبة المغناطيسية الفاخرة والأكياس الورقية، منتجاتنا تصنع بأعلى دقة لونية وأجود الخامات.",
+    "searchPlaceholder": "ابحث عن اسم المنتج، نوع الكرتون، أو شكل العلبة...",
+    "downloadCatalogBtn": "تحميل كتالوج PDF",
+    "quoteBtn": "طلب عرض سعر",
+    "categories": [
+      { "id": "all", "label": "كافة المنتجات" },
+      { "id": "packaging", "label": "العلب والتغليف الكرتوني" },
+      { "id": "commercial", "label": "المطبوعات التجارية والمكتبية" },
+      { "id": "luxury", "label": "الصناديق الفاخرة (هاردبوكس)" },
+      { "id": "labels", "label": "الملصقات والليبل" }
+    ],
+    "sortLabel": "الترتيب حسب:",
+    "sortOptions": {
+      "popular": "الأكثر طلباً ومبيعاً",
+      "minQtyAsc": "الحد الأدنى للكمية (من الأقل)",
+      "leadTime": "أسرع فترة تسليم"
+    }
+  }
+}

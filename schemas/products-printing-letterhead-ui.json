@@ -1,0 +1,74 @@
+{
+  "fa": {
+    "name": "سربرگ و ست اداری اختصاصی",
+    "badge": "خدمات چاپ تجاری، اداری و کاتالوگ",
+    "description": "چاپ سربرگ A4 و A5 بر روی انواع کاغذ تحریر ۸۰ و ۱۰۰ گرم خارجی و کاغذهای کتان و فانتزی با ثبات رنگی دقیق سازمانی.",
+    "minOrder": "۱,۰۰۰ برگ",
+    "leadTime": "۳ الی ۵ روز کاری",
+    "printType": "افست ۵ رنگ هایدلبرگ",
+    "papersTitle": "انواع کاغذ و گرماژ قابل سفارش:",
+    "papers": [
+      "تحریر ۸۰ گرم اندونزی",
+      "تحریر ۱۰۰ گرم کتان فابریانو",
+      "کاغذ کتان آلمانی ۱۲۰ گرم",
+      "کاغذ فانتزی بافت‌دار زبر"
+    ],
+    "finishesTitle": "پوشش‌ها و صحافی:",
+    "finishes": [
+      "چاپ پنتون اختصاصی",
+      "طلاکوب / نقره‌کوب لوگو",
+      "برجسته‌سازی (Emboss)",
+      "سرچسب و پرفراژ"
+    ],
+    "inquiryBtn": "استعلام تیراژ و قیمت چاپ",
+    "guideBtn": "راهنمای تنظیم رنگ CMYK"
+  },
+  "en": {
+    "name": "Corporate Letterhead & Stationery Sets",
+    "badge": "Commercial & Corporate Print Services",
+    "description": "Custom printed A4 and A5 corporate letterheads on 80gsm/100gsm imported woodfree bond, linen, and specialty stocks with exact brand Pantone consistency.",
+    "minOrder": "1,000 Sheets",
+    "leadTime": "3 to 5 Business Days",
+    "printType": "Heidelberg 5-Color Offset",
+    "papersTitle": "Available Paper Stocks & Grammage:",
+    "papers": [
+      "80gsm Premium Woodfree Bond",
+      "100gsm Italian Linen Texture",
+      "120gsm German Laid Cotton",
+      "Specialty Textured Kraft Stock"
+    ],
+    "finishesTitle": "Finishing & Embellishments:",
+    "finishes": [
+      "Spot Brand Pantone Match",
+      "Metallic Hot Foil Stamping",
+      "Blind Embossing / Debossing",
+      "Padding & Perforation"
+    ],
+    "inquiryBtn": "Request Quote & Production Estimate",
+    "guideBtn": "CMYK Color Setup Guide"
+  },
+  "ar": {
+    "name": "أوراق المراسلات والترويسة الرسمية المخصصة",
+    "badge": "خدمات المطبوعات التجارية والمكتبية",
+    "description": "طباعة أوراق المراسلات بقياسات A4 و A5 على أرقى أنواع الورق الأبيض 80 و 100 جرام والورق الكتاني مع ثبات ألوان الهوية المؤسسية.",
+    "minOrder": "1,000 ورقة",
+    "leadTime": "3 إلى 5 أيام عمل",
+    "printType": "أوفست هايدلبرغ 5 ألوان",
+    "papersTitle": "أنواع الورق والأوزان المتاحة:",
+    "papers": [
+      "ورق تحرير أبيض 80 جرام",
+      "ورق كتان إيطالي 100 جرام",
+      "ورق قطني ألماني 120 جرام",
+      "ورق فانتزي منقوش"
+    ],
+    "finishesTitle": "الخدمات التكميلية والمؤثرات:",
+    "finishes": [
+      "ألوان بانتون خاصة",
+      "بصمة حرارية ذهبية وفضية",
+      "بروز الشعار (Emboss)",
+      "تغرية وتخريم دقيق"
+    ],
+    "inquiryBtn": "طلب عرض السعر والكميات",
+    "guideBtn": "دليل ضبط ألوان CMYK"
+  }
+}

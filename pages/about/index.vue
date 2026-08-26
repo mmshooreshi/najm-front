@@ -33,29 +33,38 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
           <!-- Text Lead -->
           <div class="lg:col-span-6 space-y-4 sm:space-y-6 text-right">
-            <span class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4">
-              {{ ui?.title || 'درباره مجتمع چاپ و بسته‌بندی نجم' }}
+            <span
+              class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen text-d4 break-words"
+              v-editable="'badge'"
+            >
+              {{ ui?.badge || 'درباره مجتمع چاپ و بسته‌بندی نجم' }}
             </span>
-            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight text-d4">
-              {{ ui?.subtitle || 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی' }}
+            <h1
+              class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight text-d4 break-words"
+              v-editable="'title'"
+            >
+              {{ ui?.title || 'نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی' }}
             </h1>
-            <p class="text-xs sm:text-sm lg:text-base text-gray-600 leading-relaxed">
+            <p
+              class="text-xs sm:text-sm lg:text-base text-gray-600 leading-relaxed break-words"
+              v-editable="'story'"
+            >
               {{ ui?.story || 'مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و صادراتی کشور فعالیت می‌کند.' }}
             </p>
             
             <!-- Typographic Key Metrics (Mobile-first responsive grid) -->
             <div class="grid grid-cols-3 gap-2 sm:gap-6 pt-4 sm:pt-6 border-t border-gray-200 text-center sm:text-right">
               <div class="space-y-1 p-2 sm:p-0 rounded-2xl bg-white/60 sm:bg-transparent border sm:border-0 border-gray-100">
-                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4">+۲۵ سال</div>
-                <div class="text-[10px] sm:text-xs text-gray-500">سابقه مستمر</div>
+                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4 break-words" v-editable="'metrics.0.value'">{{ ui?.metrics?.[0]?.value || '+۲۵ سال' }}</div>
+                <div class="text-[10px] sm:text-xs text-gray-500 break-words" v-editable="'metrics.0.label'">{{ ui?.metrics?.[0]?.label || 'سابقه مستمر' }}</div>
               </div>
               <div class="space-y-1 p-2 sm:p-0 rounded-2xl bg-white/60 sm:bg-transparent border sm:border-0 border-gray-100">
-                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4">+۱۵M</div>
-                <div class="text-[10px] sm:text-xs text-gray-500">تیراژ سالانه</div>
+                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4 break-words" v-editable="'metrics.1.value'">{{ ui?.metrics?.[1]?.value || '+۱۵M' }}</div>
+                <div class="text-[10px] sm:text-xs text-gray-500 break-words" v-editable="'metrics.1.label'">{{ ui?.metrics?.[1]?.label || 'تیراژ سالانه' }}</div>
               </div>
               <div class="space-y-1 p-2 sm:p-0 rounded-2xl bg-white/60 sm:bg-transparent border sm:border-0 border-gray-100">
-                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4">۹۹.۸٪</div>
-                <div class="text-[10px] sm:text-xs text-gray-500">انطباق رنگی</div>
+                <div class="text-lg sm:text-2xl lg:text-3xl font-extrabold text-najmgreen text-d4 break-words" v-editable="'metrics.2.value'">{{ ui?.metrics?.[2]?.value || '۹۹.۸٪' }}</div>
+                <div class="text-[10px] sm:text-xs text-gray-500 break-words" v-editable="'metrics.2.label'">{{ ui?.metrics?.[2]?.label || 'انطباق رنگی' }}</div>
               </div>
             </div>
           </div>
@@ -382,13 +391,14 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import AboutGsapPinnedSection from '~/components/about/AboutGsapPinnedSection.vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 
 definePageMeta({
-  name: 'درباره ما - چاپ نجم',
   layout: 'default'
 })
 
-const { ui } = usePageUI('about')
+const { ui, allUi } = usePageUI('about')
+useAdminEditable('about', allUi)
 
 const sections = [
   { id: 'vision', label: 'معرفی' },

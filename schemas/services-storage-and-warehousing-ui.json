@@ -1,0 +1,95 @@
+{
+  "fa": {
+    "hero": {
+      "eyebrow": "لجستیک و انبارداری صنعتی",
+      "title": "نگهداری استاندارد، بسته‌بندی پالت و ارسال منظم",
+      "subtitle": "مدیریت زنجیره تامین بسته‌بندی با انبارهای اختصاصی کنترل دما و رطوبت",
+      "description": "با امکان تولید یکجای سالانه و ارسال مرحله‌ای (Call-Off Deliveries)، هزینه‌های انبارداری مشتریان را به حداقل رسانده و از آسیب‌دیدگی جعبه‌ها جلوگیری می‌کنیم.",
+      "highlights": ["کنترل استاندارد دما و رطوبت", "پالت‌بندی شرینک ضدآب", "ارسال زمان‌بندی شده"]
+    },
+    "serviceIncludes": {
+      "title": "خدمات انبارداری و تحویل کالا",
+      "description": "سیستم‌های لجستیکی پیشرفته جهت حفاظت کامل از سفارشات شما تا خط بسته‌بندی نهایی.",
+      "groups": [
+        {
+          "title": "انبارهای مجهز و استاندارد",
+          "description": "فضای نگهداری بهداشتی و ایمن برای جعبه‌های دارویی و غذایی.",
+          "items": ["پالت‌های استاندارد با پلاستیک کششی", "نظارت ۲۴ ساعته بر دما و رطوبت", "سیستم کدگذاری و ردیابی بار"]
+        },
+        {
+          "title": "ارسال دوره‌ای و مرحله‌ای",
+          "description": "تولید با تیراژ اقتصادی بالا و تحویل در تاریخ‌های مقرر طبق سفارش مشتری.",
+          "items": ["تحویل فوری سفارشات فوریتی", "ناوگان اختصاصی حمل امن", "پوشش سراسری ارسال"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "مدیریت زنجیره تامین",
+      "title": "قرارداد سالانه تولید و تحویل مرحله‌ای بسته‌بندی",
+      "description": "با بستن قرارداد سالانه از تخفیف‌های ویژه تیراژ و انبارداری رایگان در نجم بهره‌مند شوید.",
+      "primaryCta": { "label": "درخواست قرارداد سالانه" }
+    }
+  },
+  "en": {
+    "hero": {
+      "eyebrow": "Industrial Logistics & Storage",
+      "title": "Climate-Controlled Warehousing & Call-Off Deliveries",
+      "subtitle": "Optimizing packaging supply chains with secure, moisture-controlled storage facilities",
+      "description": "Benefit from bulk economies of scale with scheduled call-off deliveries directly to your automated packaging lines, minimizing on-site storage footprints.",
+      "highlights": ["Climate & Humidity Control", "Heavy-Duty Shrink Palletizing", "Scheduled Call-Off Logistics"]
+    },
+    "serviceIncludes": {
+      "title": "Warehousing & Supply Chain Services",
+      "description": "Reliable industrial logistics safeguarding packaging integrity from press to filling lines.",
+      "groups": [
+        {
+          "title": "Dedicated Hygienic Storage",
+          "description": "Sanitary environments certified for pharmaceutical and food cartons.",
+          "items": ["Stretch-wrapped pallets with corner protectors", "Continuous climate monitoring", "Barcoded warehouse management (WMS)"]
+        },
+        {
+          "title": "Scheduled Just-In-Time Shipping",
+          "description": "Manufacture at volume scale and receive shipments on demand.",
+          "items": ["Expedited priority deliveries", "Dedicated enclosed transport fleet", "Nationwide logistics coverage"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "Supply Chain Management",
+      "title": "Annual Production & Scheduled Fulfillment Contracts",
+      "description": "Leverage bulk purchasing discounts with complimentary warehousing services.",
+      "primaryCta": { "label": "Inquire About Annual Contracts" }
+    }
+  },
+  "ar": {
+    "hero": {
+      "eyebrow": "اللوجستيات والتخزين الصناعي",
+      "title": "تخزين قياسي، تغليف المنصات وتوريد مجدول",
+      "subtitle": "إدارة سلاسل إمداد التغليف بمستودعات مجهزة بالتحكم في درجات الحرارة والرطوبة",
+      "description": "إمكانية الإنتاج السنوي بكميات كبرى والتسليم التدريجي حسب حاجة خطوط التعبئة لديك، لتقليل تكاليف التخزين وضمان سلامة العلب.",
+      "highlights": ["مستودعات مكيفة ومضبوطة الرطوبة", "تغليف المنصات بالنايلون العازل", "شحن دوري منتظم"]
+    },
+    "serviceIncludes": {
+      "title": "خدمات التخزين والتوريد",
+      "description": "أنظمة لوجستية متطورة لحماية مطبوعاتك حتى خطوط التعبئة والتوزيع.",
+      "groups": [
+        {
+          "title": "مستودعات صحية وآمنة",
+          "description": "بيئة تخزين معقمة للعلب الدوائية والغذائية.",
+          "items": ["منصات خشبية مغلفة ومحمية الحواف", "مراقبة مستمرة للحرارة والرطوبة", "أنظمة تتبع رقمية للمخزون"]
+        },
+        {
+          "title": "التوريد على دفعات",
+          "description": "إنتاج كميات كبيرة بأسعار تفضيلية والتسليم مجدولاً وفق طلبك.",
+          "items": ["تسليم عاجل للطلبيات الطارئة", "أسطول نقل مخصص ومغطى", "تغطية شاملة للشحن"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "إدارة سلاسل الإمداد",
+      "title": "عقود الإنتاج السنوي والتوريد التدريجي",
+      "description": "استفد من خصومات الكميات الكبرى والتخزين المجاني في مستودعات نجم.",
+      "primaryCta": { "label": "طلب عقد سنوي" }
+    }
+  }
+}

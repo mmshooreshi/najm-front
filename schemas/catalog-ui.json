@@ -1,0 +1,167 @@
+{
+  "fa": {
+    "badge": "کاتالوگ و نمونه‌کارهای رسمی",
+    "title": "کاتالوگ جامع محصولات چاپ و بسته‌بندی نجم",
+    "description": "مشاهده و دریافت نسخه دیجیتال (PDF) تمامی لاین‌های تولیدی، جعبه‌های دارویی، هاردباکس‌های لوکس، ساک‌های دستی و نمونه‌های چاپ افست.",
+    "featured": {
+      "badge": "مجموعه کامل ۲۰۲۶",
+      "tag": "نسخه ۲۰۲۶",
+      "coverTitle": "کاتالوگ جامع چاپ نجم",
+      "title": "کاتالوگ جامع خطوط تولید و مشخصات متریال",
+      "description": "این کاتالوگ شامل راهنمای جامع انتخاب گرماژ مقوا (ایندربرد، پشت طوسی، کرافت)، مقایسه خدمات تکمیلی (سلفون مات، حرارتی، طلاکوب، یووی موضعی) و نمونه‌های اجرا شده جعبه‌های دارویی، غذایی و بهداشتی است.",
+      "fileSize": "۱۴.۲ مگابایت",
+      "fileFormat": "PDF",
+      "pagesCount": "۴۸ صفحه تمام‌رنگ",
+      "lastUpdate": "بهار ۱۴۰۵",
+      "resolution": "300 DPI High-Res",
+      "downloadBtn": "دانلود مستقیم فایل کاتالوگ (PDF)",
+      "sampleBtn": "درخواست نمونه فیزیکی (Sample Kit)",
+      "downloadUrl": "#"
+    },
+    "gridTitle": "کاتالوگ‌های تخصصی دسته‌بندی‌ها",
+    "catalogs": [
+      {
+        "id": 1,
+        "badge": "بسته‌بندی سخت",
+        "title": "کاتالوگ هاردباکس و بسته‌بندی لوکس",
+        "desc": "نمونه ساختارهای مگنتی، کشویی، روکش‌های مخمل و جلوه‌های طلاکوب اختصاصی مناسب برندهای لوکس.",
+        "size": "۱۸.۵ مگابایت",
+        "icon": "mdi:package-variant-closed",
+        "downloadUrl": "#"
+      },
+      {
+        "id": 2,
+        "badge": "صنایع سلامت",
+        "title": "کاتالوگ جعبه‌های دارویی و بهداشتی",
+        "desc": "استانداردهای مقوای ایندربرد بهداشتی، خطوط بریل (Braille) و سیستم‌های کنترل اصالت محصول.",
+        "size": "۹.۴ مگابایت",
+        "icon": "mdi:medical-bag",
+        "downloadUrl": "#"
+      },
+      {
+        "id": 3,
+        "badge": "تبلیغات و فروشگاه",
+        "title": "کاتالوگ ساک‌های دستی و پاکت کرافت",
+        "desc": "انواع ساک‌های خرید گلاسه و کرافت، بندهای فانتزی و تحمل وزن تا ۵ کیلوگرم ویژه فروشگاه‌ها.",
+        "size": "۶.۸ مگابایت",
+        "icon": "mdi:shopping-outline",
+        "downloadUrl": "#"
+      }
+    ],
+    "cta": {
+      "title": "درخواست سمپل‌باکس و کیت نمونه‌های فیزیکی",
+      "description": "برای لمس مستقیم بافت مقواها، تست پوشش‌های سلفونی و بررسی نمونه تیغ‌زنی‌ها، کیت نمونه رایگان ما را برای سازمان خود سفارش دهید.",
+      "button": "سفارش کیت نمونه فیزیکی"
+    }
+  },
+  "en": {
+    "badge": "Official Catalogs & Portfolio",
+    "title": "Najm Comprehensive Printing & Packaging Catalog",
+    "description": "Browse and download official digital PDF catalogs for all production lines, folding cartons, luxury rigid boxes, shopping bags, and offset print solutions.",
+    "featured": {
+      "badge": "2026 Collection",
+      "tag": "2026 Edition",
+      "coverTitle": "Najm Master Catalog",
+      "title": "Comprehensive Production Lines & Material Specifications",
+      "description": "A comprehensive reference guide for paperboard selection (SBS/FBB, Duplex, Kraft), premium finishes (soft-touch, hot foil, spot UV), and case studies across food, cosmetics, and pharma sectors.",
+      "fileSize": "14.2 MB",
+      "fileFormat": "PDF",
+      "pagesCount": "48 Full-Color Pages",
+      "lastUpdate": "Spring 2026",
+      "resolution": "300 DPI High-Res",
+      "downloadBtn": "Download Master Catalog (PDF)",
+      "sampleBtn": "Request Physical Sample Kit",
+      "downloadUrl": "#"
+    },
+    "gridTitle": "Specialized Segment Catalogs",
+    "catalogs": [
+      {
+        "id": 1,
+        "badge": "Rigid Boxes",
+        "title": "Luxury Packaging & Rigid Box Catalog",
+        "desc": "Magnetic closure boxes, sliding drawer styles, textured specialty coverings, and precision foil stamping.",
+        "size": "18.5 MB",
+        "icon": "mdi:package-variant-closed",
+        "downloadUrl": "#"
+      },
+      {
+        "id": 2,
+        "badge": "Healthcare",
+        "title": "Pharmaceutical & Healthcare Cartons",
+        "desc": "Certified hygienic SBS/FBB boards, precision Braille embossing, and anti-counterfeiting security integration.",
+        "size": "9.4 MB",
+        "icon": "mdi:medical-bag",
+        "downloadUrl": "#"
+      },
+      {
+        "id": 3,
+        "badge": "Retail & Promo",
+        "title": "Paper Shopping Bags & Kraft Envelopes",
+        "desc": "Art-paper and virgin kraft paper retail shopping bags with reinforced handles supporting up to 5kg.",
+        "size": "6.8 MB",
+        "icon": "mdi:shopping-outline",
+        "downloadUrl": "#"
+      }
+    ],
+    "cta": {
+      "title": "Request a Free Physical Sample Box",
+      "description": "Experience our paperboard textures, inspect hot foil and UV finishes firsthand, and evaluate die-cutting precision for your brand.",
+      "button": "Order Sample Kit"
+    }
+  },
+  "ar": {
+    "badge": "الكتالوجات والنماذج الرسمية",
+    "title": "الكتالوج الشامل لمنتجات الطباعة والتغليف من مطبعة نجم",
+    "description": "استعراض وتحميل النسخة الرقمية (PDF) لجميع خطوط الإنتاج والعلب الدوائية والعلب الصلبة الفاخرة والأكياس الورقية والطباعة الأوفست.",
+    "featured": {
+      "badge": "مجموعة 2026 الكاملة",
+      "tag": "إصدار 2026",
+      "coverTitle": "كتالوج مطبعة نجم الشامل",
+      "title": "الكتالوج الشامل لخطوط الإنتاج ومواصفات الخامات",
+      "description": "دليل فني لاختيار أنواع وسماكات الكرتون (إنفربورد، دوبلكس، كرافت)، ومقارنة الخدمات التكميلية (سلوفان مطفي، بصمة حرارية، يو في بارز) ونماذج العلب الدوائية والغذائية.",
+      "fileSize": "14.2 ميجابايت",
+      "fileFormat": "PDF",
+      "pagesCount": "48 صفحة ملونة بالكامل",
+      "lastUpdate": "ربيع 2026",
+      "resolution": "دقة عالية 300 DPI",
+      "downloadBtn": "تحميل ملف الكتالوج مباشرة (PDF)",
+      "sampleBtn": "طلب عينات فيزيائية (Sample Kit)",
+      "downloadUrl": "#"
+    },
+    "gridTitle": "كتالوجات التخصصات والقطاعات",
+    "catalogs": [
+      {
+        "id": 1,
+        "badge": "تغليف صلب",
+        "title": "كتالوج العلب الصلبة والتغليف الفاخر",
+        "desc": "نماذج علب مغناطيسية وانزلاقية وتجليدات مخملية وبصمات ذهبية ملائمة للعلامات الراقية.",
+        "size": "18.5 ميجابايت",
+        "icon": "mdi:package-variant-closed",
+        "downloadUrl": "#"
+      },
+      {
+        "id": 2,
+        "badge": "قطاع الصحة",
+        "title": "كتالوج العلب الدوائية والصحية",
+        "desc": "معايير الكرتون الصحي وخطوط بريل للمكفوفين وأنظمة مراقبة الجودة والباركود الدوائي.",
+        "size": "9.4 ميجابايت",
+        "icon": "mdi:medical-bag",
+        "downloadUrl": "#"
+      },
+      {
+        "id": 3,
+        "badge": "تجارة وتسوق",
+        "title": "كتالوج الأكياس الورقية وأكياس الكرافت",
+        "desc": "أكياس ورقية كوشيه وكرافت مع أشرطة وحبال متينة تتحمل حتى 5 كجم للمحلات والعلامات التجارية.",
+        "size": "6.8 ميجابايت",
+        "icon": "mdi:shopping-outline",
+        "downloadUrl": "#"
+      }
+    ],
+    "cta": {
+      "title": "طلب صندوق العينات والنماذج الفيزيائية",
+      "description": "لمعاينة ملمس الورق واختبار المؤثرات التكميلية والقص، اطلب صندوق العينات المجاني لمؤسستك.",
+      "button": "طلب صندوق العينات"
+    }
+  }
+}

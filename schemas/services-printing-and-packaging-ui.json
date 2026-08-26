@@ -1,0 +1,95 @@
+{
+  "fa": {
+    "hero": {
+      "eyebrow": "خدمات چاپ و تولید صنعتی",
+      "title": "چاپ افست پیشرفته و بسته‌بندی مکانیزه",
+      "subtitle": "بهره‌گیری از ماشین‌آلات ۵ رنگ هایدلبرگ با سیستم‌های مدیریت رنگ پیشرفته",
+      "description": "خطوط چاپ افست نجم با توانایی چاپ تا ابعاد ۱۰۰×۷۰ سانتی‌متر و پشتیبانی از انواع مرکب‌های UV، متالایز و پایه‌گیاهی، بالاترین کیفیت تفکیک رنگ و یکدستی را در تیراژهای میلیونی تضمین می‌نماید.",
+      "highlights": ["چاپ افست ۵ رنگ همزمان", "اسپکتروفتومتری دقیق رنگ", "ظرفیت روزانه ۵۰۰,۰۰۰ برگ"]
+    },
+    "serviceIncludes": {
+      "title": "قابلیت‌ها و ویژگی‌های خطوط چاپ",
+      "description": "تجهیزات مدرن چاپ افست ما امکان اجرای پیچیده‌ترین پروژه‌ها را با نهایت ظرافت فراهم می‌سازد.",
+      "groups": [
+        {
+          "title": "ماشین‌آلات هایدلبرگ Speedmaster",
+          "description": "مجهز به سیستم کنترل رنگ اتوماتیک جهت انطباق ۱۰۰٪ با نمونه تایید شده مشتری.",
+          "items": ["سیستم اتوماتیک تنظیم زینک", "سیستم کنترل ضخامت مقوا تا ۱ میلیمتر", "سرعت چاپ تا ۱۵,۰۰۰ برگ در ساعت"]
+        },
+        {
+          "title": "مرکب‌های استاندارد و فودگرید",
+          "description": "استفاده از مرکب‌های استاندارد بدون بو و مورد تایید صنایع دارویی و غذایی.",
+          "items": ["مرکب‌های افست روغنی با پیگمنت بالا", "مرکب‌های UV با خشک‌کن فوری", "رنگ‌های اختصاصی کاتالوگ پنتون"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "استعلام قیمت تیراژ چاپ",
+      "title": "برای پروژه چاپ و ساخت جعبه خود مشاوره دریافت کنید",
+      "description": "کارشناسان فنی ما بهترین ترکیب متریال و تکنیک چاپ را متناسب با بودجه شما پیشنهاد می‌دهند.",
+      "primaryCta": { "label": "تماس با واحد فروش" }
+    }
+  },
+  "en": {
+    "hero": {
+      "eyebrow": "Industrial Print & Converting Services",
+      "title": "Advanced Offset Printing & Automated Packaging",
+      "subtitle": "Powered by Heidelberg 5-color presses with closed-loop spectrophotometric color control",
+      "description": "Our multi-format offset presses handle sheets up to 70x100cm, delivering micron-level registration and consistent high-fidelity color reproduction for multimillion runs.",
+      "highlights": ["5-Color In-Line Offset Printing", "Closed-Loop Spectrophotometry", "500,000 Sheets Daily Capacity"]
+    },
+    "serviceIncludes": {
+      "title": "Press Capabilities & Technical Features",
+      "description": "State-of-the-art sheetfed offset equipment engineered for tight color tolerances and flawless production speed.",
+      "groups": [
+        {
+          "title": "Heidelberg Speedmaster Presses",
+          "description": "Equipped with automated color calibration for 100% digital proof matching.",
+          "items": ["AutoPlate fast plate change", "Substrate caliper support up to 1.0mm", "Speeds up to 15,000 sheets/hour"]
+        },
+        {
+          "title": "Food-Grade & Low-Migration Inks",
+          "description": "Using high-purity odorless inks certified for direct and indirect food/cosmetic packaging.",
+          "items": ["High-pigment oil-based inks", "Instant-cure UV inks", "Custom Pantone spot ink matching"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "Volume Production Quote",
+      "title": "Consult With Our Print Engineering Team",
+      "description": "Our engineers will advise on optimal paperboard grades and press configurations for maximum efficiency.",
+      "primaryCta": { "label": "Contact Sales Department" }
+    }
+  },
+  "ar": {
+    "hero": {
+      "eyebrow": "خدمات الطباعة والإنتاج الصناعي",
+      "title": "طباعة أوفست متطورة وتغليف آلي",
+      "subtitle": "ماكينات هايدلبرغ 5 ألوان مع أنظمة إدارة الألوان والتحكم الطيفي المتقدمة",
+      "description": "توفر خطوط طباعة الأوفست في نجم قدرة طباعة بقياسات تصل إلى 70×100 سم مع دعم الأحبار النباتية و UV، لضمان أعلى ثبات لوني في الكميات الكبرى.",
+      "highlights": ["طباعة أوفست 5 ألوان متزامنة", "مطابقة طيفية دقيقة للألوان", "طاقة إنتاجية 500,000 ورقة يومياً"]
+    },
+    "serviceIncludes": {
+      "title": "إمكانيات ومواصفات خطوط الطباعة",
+      "description": "أحدث معدات الطباعة الأوفست المصممة لأدق التفاصيل وأعلى سرعة إنتاجية.",
+      "groups": [
+        {
+          "title": "ماكينات هايدلبرغ سبيدماستر",
+          "description": "مزودة بنظام ضبط ومطابقة الألوان الرقمي مع العينة المعتمدة.",
+          "items": ["تبديل آلي سريع للزنكات", "دعم سماكات كرتون حتى 1 مم", "سرعة تصل إلى 15,000 ورقة في الساعة"]
+        },
+        {
+          "title": "أحبار غذائية وصحية معتمدة",
+          "description": "استخدام أحبار عديمة الرائحة متوافقة مع متطلبات الصناعات الدوائية والغذائية.",
+          "items": ["أحبار عالية التصبغ", "أحبار UV سريعة الجفاف", "ألوان بانتون خاصة"]
+        }
+      ]
+    },
+    "midCta": {
+      "eyebrow": "استعلام أسعار الكميات",
+      "title": "احصل على استشارة فنية لمشروعك",
+      "description": "يقدم خبراؤنا أفضل الخيارات للخامات وتقنيات الطباعة بما يتناسب مع ميزانيتك.",
+      "primaryCta": { "label": "التواصل مع المبيعات" }
+    }
+  }
+}

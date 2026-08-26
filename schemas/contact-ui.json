@@ -1,0 +1,68 @@
+{
+  "fa": {
+    "badge": "راه‌های ارتباطی و مشاوره تخصصی",
+    "title": "ارتباط مستقیم با کارشناسان چاپ و بسته‌بندی نجم",
+    "description": "برای مشاوره انتخاب متریال، استعلام قیمت تیراژ، رزرو زمان چاپ یا هماهنگی بازدید حضوری از کارخانه با ما در تماس باشید.",
+    "phoneLabel": "تلفن مرکزی:",
+    "phone": "۰۲۱-۶۶۲۲۹۹۰۰",
+    "emailLabel": "پست الکترونیک:",
+    "email": "info@chapenajm.com",
+    "addressLabel": "نشانی دفتر مرکزی و کارخانه:",
+    "address": "تهران، جاده مخصوص کرج، کیلومتر ۱۱، خیابان صنعتی نجم، پلاک ۲۴",
+    "hoursLabel": "ساعات کاری:",
+    "hours": "شنبه تا چهارشنبه ۸:۰۰ الی ۱۷:۳۰ | پنجشنبه‌ها ۸:۰۰ الی ۱۳:۰۰",
+    "form": {
+      "title": "فرم آنلاین استعلام قیمت و سفارش",
+      "namePlaceholder": "نام و نام خانوادگی",
+      "phonePlaceholder": "شماره تماس همراه",
+      "companyPlaceholder": "نام سازمان یا برند",
+      "servicePlaceholder": "نوع محصول یا خدمت مورد نیاز",
+      "messagePlaceholder": "توضیحات ابعاد، تیراژ تخمینی و ویژگی‌های مد نظر...",
+      "submitButton": "ارسال درخواست استعلام"
+    }
+  },
+  "en": {
+    "badge": "Contact & Technical Advisory",
+    "title": "Direct Contact with Najm Print & Packaging Experts",
+    "description": "Get in touch for material consulting, quote estimates, press-pass scheduling, or to arrange an in-person factory tour.",
+    "phoneLabel": "Central Phone:",
+    "phone": "+98 (21) 6622 9900",
+    "emailLabel": "Email Address:",
+    "email": "info@chapenajm.com",
+    "addressLabel": "Headquarters & Production Facility:",
+    "address": "No. 24, Najm Industrial Blvd, Km 11 Makhsoos Road, Tehran, Iran",
+    "hoursLabel": "Operating Hours:",
+    "hours": "Saturday – Wednesday: 08:00 – 17:30 | Thursday: 08:00 – 13:00",
+    "form": {
+      "title": "Online Quote & Project Inquiry",
+      "namePlaceholder": "Full Name",
+      "phonePlaceholder": "Mobile Phone Number",
+      "companyPlaceholder": "Company / Brand Name",
+      "servicePlaceholder": "Select Product or Service Category",
+      "messagePlaceholder": "Project specifications, estimated quantity, dimensions...",
+      "submitButton": "Submit Inquiry"
+    }
+  },
+  "ar": {
+    "badge": "طرق التواصل والاستشارة الفنية",
+    "title": "التواصل المباشر مع خبراء مطبعة وتغليف نجم",
+    "description": "تواصل معنا للحصول على استشارة الخامات، استعلام الأسعار، حجز مواعيد الطباعة، أو تنظيم زيارة ميدانية للمصنع.",
+    "phoneLabel": "الهاتف الرئيسي:",
+    "phone": "+98 (21) 6622 9900",
+    "emailLabel": "البريد الإلكتروني:",
+    "email": "info@chapenajm.com",
+    "addressLabel": "المقر الرئيسي والمصنع:",
+    "address": "طهران، طريق كرج المخصوص، الكيلو 11، شارع نجم الصناعي، مبنى 24",
+    "hoursLabel": "أوقات العمل:",
+    "hours": "السبت إلى الأربعاء: 08:00 – 17:30 | الخميس: 08:00 – 13:00",
+    "form": {
+      "title": "نموذج استعلام الأسعار والطلبات عبر الإنترنت",
+      "namePlaceholder": "الاسم الكامل",
+      "phonePlaceholder": "رقم الهاتف الجوال",
+      "companyPlaceholder": "اسم الشركة أو العلامة التجارية",
+      "servicePlaceholder": "نوع المنتج أو الخدمة المطلوبة",
+      "messagePlaceholder": "مواصفات المشروع، الكمية التقديرية، الأبعاد...",
+      "submitButton": "إرسال طلب الاستعلام"
+    }
+  }
+}

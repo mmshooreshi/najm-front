@@ -1,0 +1,92 @@
+{
+  "fa": {
+    "name": "جعبه‌های مقوایی دارویی، بهداشتی و غذایی",
+    "badge": "دسته‌بندی بسته‌بندی و جعبه‌سازی",
+    "description": "تولید انواع جعبه‌های مقوایی تاشو (Folding Cartons) با خطوط تیغ دقیق، قفل لاک‌باتم اتوماتیک و مقوای ایندربرد بهداشتی فودگرید.",
+    "minOrder": "۳,۰۰۰ عدد",
+    "leadTime": "۷ الی ۱۰ روز کاری",
+    "printType": "افست ۵ رنگ هایدلبرگ",
+    "materialsTitle": "متریال و گرماژهای قابل سفارش:",
+    "materials": [
+      "ایندربرد بهداشتی ۲۵۰ تا ۳۵۰ گرم",
+      "پشت طوسی دوبلکس ۲۸۰ تا ۴۰۰ گرم",
+      "کرافت سنگین طبیعی ۲۳۰ تا ۳۰۰ گرم",
+      "مقوای متالایز نقره‌ای و طلایی"
+    ],
+    "finishesTitle": "خدمات تکمیلی پس از چاپ:",
+    "finishes": [
+      "سلفون حرارتی مات و براق",
+      "یووی موضعی و شنی",
+      "طلاکوب و نقره‌کوب دیجیتال",
+      "خطوط بریل دارویی (Braille)"
+    ],
+    "specs": {
+      "dimensions": "کاملاً نامحدود بر اساس ساختار محصول شما",
+      "strength": "تست فشار و خمش استاندارد (BCT / ECT)",
+      "glue": "چسب گرم و سرد خطی / لاک‌باتم اتوماتیک",
+      "coating": "سلفون مات، براق، ضدخش و واتربیس"
+    },
+    "inquiryBtn": "درخواست استعلام قیمت و ابعاد",
+    "downloadDieCutBtn": "دانلود کاتالوگ و قالب تیغ"
+  },
+  "en": {
+    "name": "Folding Paperboard Cartons (Pharma, Beauty & Food)",
+    "badge": "Packaging & Box Manufacturing",
+    "description": "Manufacturing bespoke folding cartons with high-precision die-lines, automated auto-lock bottoms, and hygienic certified food-grade SBS/FBB paperboards.",
+    "minOrder": "3,000 Units",
+    "leadTime": "7 to 10 Business Days",
+    "printType": "Heidelberg 5-Color Offset",
+    "materialsTitle": "Available Paperboard Grades & Calipers:",
+    "materials": [
+      "250-350gsm Certified Virgin SBS/FBB",
+      "280-400gsm Duplex Greyback Board",
+      "230-300gsm Heavyweight Natural Kraft",
+      "Metallic Silver / Gold Foil Laminated Board"
+    ],
+    "finishesTitle": "Post-Press Converting & Embellishments:",
+    "finishes": [
+      "Matte, Gloss & Soft-Touch Thermal Laminate",
+      "Precision Spot UV & Textured Grit UV",
+      "Digital & Hot Foil Stamping",
+      "Certified Pharmaceutical Braille Embossing"
+    ],
+    "specs": {
+      "dimensions": "Fully custom engineered to your exact product volume",
+      "strength": "Standardized compression tested (BCT / ECT)",
+      "glue": "Linear cold/hot melt & high-speed auto crash lock",
+      "coating": "Water-based dispersion, anti-scratch barrier films"
+    },
+    "inquiryBtn": "Request Quote & Custom Dieline",
+    "downloadDieCutBtn": "Download Catalog & Die-Line"
+  },
+  "ar": {
+    "name": "العلب الكرتونية القابلة للطي (أدوية، تجميل وأغذية)",
+    "badge": "تصنيع العلب والتغليف الكرتوني",
+    "description": "تصنيع علب الكرتون القابلة للطي بأعلى درجات دقة القوالب والسكاكين، والقفل الآلي (لوك باتم) باستخدام كرتون إنفربورد صحي معتمد.",
+    "minOrder": "3,000 علبة",
+    "leadTime": "7 إلى 10 أيام عمل",
+    "printType": "أوفست هايدلبرغ 5 ألوان",
+    "materialsTitle": "أنواع وسماكات الكرتون المتاحة:",
+    "materials": [
+      "كرتون إنفربورد صحي 250 إلى 350 جرام",
+      "كرتون دوبلكس 280 إلى 400 جرام",
+      "كرتون كرافت طبيعي متين 230 إلى 300 جرام",
+      "كرتون متالايز فضي وذهبي"
+    ],
+    "finishesTitle": "الخدمات التكميلية بعد الطباعة:",
+    "finishes": [
+      "سلوفان حراري مطفي ولامع وسوفت تاتش",
+      "يو في موضعي ويو في رملي",
+      "بصمة حرارية ذهبية وفضية",
+      "كتابة بريل الدوائية للمكفوفين"
+    ],
+    "specs": {
+      "dimensions": "مخصصة بالكامل وفق قياسات منتجك",
+      "strength": "اختبارات مقاومة الضغط والتحمل (BCT / ECT)",
+      "glue": "غراء حراري وبارد خطي / قفل آلي سريع",
+      "coating": "ورنيش مائي، سلوفان مقاوم للخدش"
+    },
+    "inquiryBtn": "طلب عرض سعر ومخطط القالب",
+    "downloadDieCutBtn": "تحميل الكتالوج وقالب السكين"
+  }
+}

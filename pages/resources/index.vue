@@ -1,29 +1,29 @@
 <!-- pages/resources/index.vue -->
 <template>
-  <div dir="rtl" class="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10 sm:space-y-12">
     <!-- Header -->
     <div class="text-center max-w-3xl mx-auto space-y-4">
       <span
-        class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4"
+        class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4 break-words"
         v-editable="'badge'"
       >
         {{ ui.badge || 'مرکز منابع و راهنماهای فنی چاپ نجم' }}
       </span>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight text-d4" v-editable="'title'">
+      <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight text-d4 leading-tight break-words" v-editable="'title'">
         {{ ui.title || 'کاتالوگ‌ها، قالب‌های تیغ و راهنماهای طراحی' }}
       </h1>
-      <p class="text-sm sm:text-base text-gray-600 leading-relaxed" v-editable="'description'">
+      <p class="text-xs sm:text-base text-gray-600 leading-relaxed max-w-2xl mx-auto break-words" v-editable="'description'">
         {{ ui.description || 'تمامی فایل‌های مورد نیاز طراحان، مدیران محصول و تولید، شامل استانداردهای رنگ، قالب‌های تیغ و کاتالوگ‌های جامع محصولات به صورت مستقیم قابل دانلود است.' }}
       </p>
     </div>
 
     <!-- Category Filter Tabs -->
-    <div class="flex justify-center overflow-x-auto gap-2 py-2">
+    <div class="flex justify-center overflow-x-auto gap-2 py-2 whitespace-nowrap">
       <button
         v-for="(cat, idx) in categories"
         :key="cat.key"
         @click="activeCategory = cat.key"
-        class="px-5 py-2 rounded-2xl text-xs font-bold transition-all duration-200"
+        class="px-5 py-2 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer"
         :class="[
           activeCategory === cat.key
             ? 'bg-najmgreen text-white shadow-xs'
@@ -35,11 +35,12 @@
     </div>
 
     <!-- Resources Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
       <article
         v-for="item in filteredResources"
         :key="item.id"
         class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
+        :class="isRTL ? 'text-right' : 'text-left'"
       >
         <div>
           <div class="flex items-center justify-between mb-4">
@@ -86,11 +87,14 @@
 import { ref, computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
+import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
-  name: 'منابع و کاتالوگ‌ها - چاپ نجم',
   layout: 'default'
 })
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const { ui, allUi } = usePageUI('resources')
 useAdminEditable('resources', allUi)

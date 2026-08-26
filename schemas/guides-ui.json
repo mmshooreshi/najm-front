@@ -1,0 +1,188 @@
+{
+  "fa": {
+    "badge": "راهنماهای فنی و استانداردهای چاپ",
+    "title": "راهنمای آماده‌سازی فایل و اصول پیش از چاپ",
+    "description": "دستورالعمل‌های استاندارد برای طراحان گرافیک و مدیران تولید جهت آماده‌سازی بی‌نقص فایل‌های چاپی، پروفایل رنگی، لبه برش و خروجی زینک CTP.",
+    "principles": [
+      {
+        "icon": "mdi:palette-swatch-outline",
+        "title": "مد رنگی CMYK",
+        "desc": "تمام فایل‌ها باید در مد CMYK خروجی گرفته شوند. فایل‌های RGB در چاپ افست دچار تغییر فاحش رنگ خواهند شد."
+      },
+      {
+        "icon": "mdi:ruler-square",
+        "title": "لبه برش (Bleed ۳ تا ۵ میل)",
+        "desc": "برای جلوگیری از ایجاد سفیدی لبه کار در هنگام برش و دایکات، پس‌زمینه‌ها باید حداقل ۳ تا ۵ میلیمتر خارج از خط تیغ امتداد یابند."
+      },
+      {
+        "icon": "mdi:image-filter-hdr",
+        "title": "رزولوشن ۳۰۰DPI",
+        "desc": "تصاویر و عکس‌های استفاده‌شده باید در اندازه واقعی با حداقل رزولوشن ۳۰۰ پیکسل بر اینچ ذخیره شوند."
+      },
+      {
+        "icon": "mdi:format-font",
+        "title": "تبدیل فونت به منحنی (Curve)",
+        "desc": "برای جلوگیری از به‌هم‌ریختگی قلم‌ها در لیتوگرافی، تمامی متون در ایلاستریتور و ایندیزاین باید Create Outlines شوند."
+      }
+    ],
+    "guidesTitle": "مجموعه مقالات و فایل‌های راهنمای کاربردی",
+    "guides": [
+      {
+        "id": 1,
+        "category": "رنگ و لیتوگرافی",
+        "readTime": "۵ دقیقه مطالعه",
+        "title": "دستورالعمل کامل تنظیم رنگ مشکی پرکلاغی (Rich Black) در چاپ افست",
+        "summary": "برای دستیابی به مشکی عمیق و یکدست بدون تداخل رنگی، از ترکیب C:60 M:40 Y:40 K:100 برای سطوح بزرگ و K:100 خالص برای متون ریز استفاده نمایید.",
+        "fileSlug": "guide-cmyk-color-profile",
+        "pdfUrl": "#"
+      },
+      {
+        "id": 2,
+        "category": "قالب و تیغ‌زنی",
+        "readTime": "۷ دقیقه مطالعه",
+        "title": "استانداردهای ساخت خطوط تیغ، خط‌تا و برجسته‌سازی در ایلاستریتور",
+        "summary": "نحوه تفکیک لایه‌های وکتور، اختصاص رنگ‌های اسپات به خطوط برش و خط‌تا و تنظیم Overprint روی لایه‌های تکمیلی.",
+        "fileSlug": "template-tuck-end-box",
+        "pdfUrl": "#"
+      },
+      {
+        "id": 3,
+        "category": "متریال و گرماژ",
+        "readTime": "۶ دقیقه مطالعه",
+        "title": "راهنمای انتخاب گرماژ مناسب مقوا بر اساس ابعاد و وزن محصول",
+        "summary": "بررسی مقاومت فشاری BCT و ECT در مقواهای ایندربرد، کرافت دوبلکس و فلوتینگ‌های E و B جهت حفاظت از محتویات بسته.",
+        "fileSlug": "catalog-general-2026",
+        "pdfUrl": "#"
+      }
+    ],
+    "cta": {
+      "title": "نیاز به بررسی فنی فایل طراحی خود دارید؟",
+      "description": "کارشناسان واحد لیتوگرافی و پیش از چاپ نجم فایل شما را از نظر تفکیک رنگ، خطوط تیغ و گرماژ بررسی نموده و تاییدیه فنی ارائه می‌دهند.",
+      "button": "ارسال فایل برای بررسی فنی"
+    }
+  },
+  "en": {
+    "badge": "Technical Guidelines & Print Standards",
+    "title": "Pre-Press & Artwork Preparation Guidelines",
+    "description": "Standard operating procedures for designers and production managers to ensure flawless artwork output, ICC color accuracy, bleed tolerances, and CTP plate precision.",
+    "principles": [
+      {
+        "icon": "mdi:palette-swatch-outline",
+        "title": "CMYK Color Model",
+        "desc": "All artwork must be converted and exported in CMYK. RGB assets will undergo severe color shifts during four-color offset printing."
+      },
+      {
+        "icon": "mdi:ruler-square",
+        "title": "Bleed Margins (3-5mm)",
+        "desc": "Extend all artwork backgrounds 3 to 5mm beyond the cutting line to prevent unprinted white edges during trimming and die-cutting."
+      },
+      {
+        "icon": "mdi:image-filter-hdr",
+        "title": "300 DPI Resolution",
+        "desc": "Ensure all raster imagery is placed at 100% scale with a minimum resolution of 300 pixels per inch."
+      },
+      {
+        "icon": "mdi:format-font",
+        "title": "Convert Fonts to Outlines",
+        "desc": "Convert all active typography to vector paths (Create Outlines) in Illustrator and InDesign to prevent missing font substitutions."
+      }
+    ],
+    "guidesTitle": "Practical Articles & Technical Guides",
+    "guides": [
+      {
+        "id": 1,
+        "category": "Color & Pre-Press",
+        "readTime": "5 min read",
+        "title": "Mastering Rich Black Ink Formulations in Offset Printing",
+        "summary": "Achieve deep, rich blacks on solid backgrounds using C:60 M:40 Y:40 K:100 while keeping fine body text set to pure 100% Black.",
+        "fileSlug": "guide-cmyk-color-profile",
+        "pdfUrl": "#"
+      },
+      {
+        "id": 2,
+        "category": "Die-Lines & Cutting",
+        "readTime": "7 min read",
+        "title": "Vector Die-Line Construction & Layer Spot Color Standards",
+        "summary": "How to structure cut, crease, and perforating layers with designated Spot Colors and Overprint flags.",
+        "fileSlug": "template-tuck-end-box",
+        "pdfUrl": "#"
+      },
+      {
+        "id": 3,
+        "category": "Materials & Caliper",
+        "readTime": "6 min read",
+        "title": "Selecting Optimal Paperboard Calipers for Structural Strength",
+        "summary": "Evaluating BCT/ECT crush resistance across SBS/FBB, Duplex, and micro-flute corrugated boards for product safety.",
+        "fileSlug": "catalog-general-2026",
+        "pdfUrl": "#"
+      }
+    ],
+    "cta": {
+      "title": "Need a Professional Pre-Flight File Check?",
+      "description": "Our pre-press engineers will audit your artwork for color separation, spot die-lines, and trapping tolerances before plate output.",
+      "button": "Submit Artwork for Pre-Flight"
+    }
+  },
+  "ar": {
+    "badge": "الأدلة الفنية ومعايير الطباعة",
+    "title": "دليل إعداد الملفات ومبادئ ما قبل الطباعة",
+    "description": "تعليمات قياسية للمصممين ومدراء الإنتاج لإعداد ملفات الطباعة بدقة تامة وضبط مساحات الألوان وهامش القص وزنكات CTP.",
+    "principles": [
+      {
+        "icon": "mdi:palette-swatch-outline",
+        "title": "نظام الألوان CMYK",
+        "desc": "يجب تصدير كافة الملفات بنظام CMYK حيث أن ملفات RGB تتعرض لتغيرات لونية حادة عند طباعة الأوفست."
+      },
+      {
+        "icon": "mdi:ruler-square",
+        "title": "هامش القص (Bleed ۳ إلى ۵ مم)",
+        "desc": "لمنع ظهور حواف بيضاء غير مطبوعة عند القص والقوالب، يجب مد الخلفيات 3 إلى 5 مم خارج خط السكين."
+      },
+      {
+        "icon": "mdi:image-filter-hdr",
+        "title": "دقة وضوح 300 DPI",
+        "desc": "يجب حفظ كافة الصور والرسومات بالحجم الفعلي وبدقة لا تقل عن 300 بكسل في البوصة."
+      },
+      {
+        "icon": "mdi:format-font",
+        "title": "تحويل الخطوط إلى منحنيات",
+        "desc": "لتجنب فقدان أو تشوه الخطوط في وحدة الليثوغراف، حول كافة النصوص إلى مسارات (Create Outlines)."
+      }
+    ],
+    "guidesTitle": "مجموعة المقالات والأدلة الإرشادية",
+    "guides": [
+      {
+        "id": 1,
+        "category": "الألوان والليثوغراف",
+        "readTime": "قراءة 5 دقائق",
+        "title": "التعليمات الشاملة لضبط اللون الأسود الغني (Rich Black)",
+        "summary": "للحصول على أسود عميق ومتجانس في المساحات الكبيرة استخدم C:60 M:40 Y:40 K:100 وللنصوص الصغيرة K:100 فقط.",
+        "fileSlug": "guide-cmyk-color-profile",
+        "pdfUrl": "#"
+      },
+      {
+        "id": 2,
+        "category": "القوالب والسكاكين",
+        "readTime": "قراءة 7 دقائق",
+        "title": "معايير رسم خطوط القص والطي والبروز في إليستريتور",
+        "summary": "كيفية فرز الطبقات وتخصيص ألوان خاصة Spot Colors لخطوط القص والطي وضبط خاصية Overprint.",
+        "fileSlug": "template-tuck-end-box",
+        "pdfUrl": "#"
+      },
+      {
+        "id": 3,
+        "category": "الخامات والجراماج",
+        "readTime": "قراءة 6 دقائق",
+        "title": "دليل اختيار سماكة ونوع الكرتون حسب وزن المنتج",
+        "summary": "مراجعة مقاومة الضغط BCT و ECT لكرتون الإنفربورد والكرافت والمايكروفلوت لحماية المنتج الداخلي.",
+        "fileSlug": "catalog-general-2026",
+        "pdfUrl": "#"
+      }
+    ],
+    "cta": {
+      "title": "هل تحتاج إلى مراجعة فنية لملف تصميمك؟",
+      "description": "يقوم مهندسو ما قبل الطباعة في مطبعة نجم بفحص ملفك من حيث فرز الألوان وخطوط القوالب ومنحك الموافقة الفنية.",
+      "button": "إرسال الملف للفحص الفني"
+    }
+  }
+}

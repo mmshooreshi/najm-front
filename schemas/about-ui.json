@@ -1,0 +1,59 @@
+{
+  "fa": {
+    "badge": "درباره مجتمع چاپ و بسته‌بندی نجم",
+    "title": "نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی",
+    "story": "مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و صادراتی کشور فعالیت می‌کند.",
+    "metrics": [
+      { "value": "+۲۵ سال", "label": "سابقه مستمر" },
+      { "value": "+۱۵M", "label": "تیراژ سالانه" },
+      { "value": "۹۹.۸٪", "label": "انطباق رنگی" }
+    ],
+    "missionTitle": "ماموریت و تعهد به کیفیت پایدار",
+    "missionDescription": "ما معتقدیم بسته‌بندی تنها یک لایه محافظ نیست، بلکه نخستین زبان ارتباطی برند شما با جهان است. با ترکیب هنر دیزاین، فناوری چاپ نوین و متریال‌های تجزیه‌پذیر، ارزش واقعی محصول شما را تجسم می‌بخشیم.",
+    "timelineTitle": "مسیر تکامل و پیشرفت تکنولوژی نجم",
+    "timeline": [
+      { "year": "۱۳۷۸", "title": "تاسیس و راه‌اندازی کارگاه افست", "desc": "شروع فعالیت با یک دستگاه چاپ ۲ رنگ و تمرکز بر کارهای تجاری." },
+      { "year": "۱۳۸۸", "title": "توسعه خطوط بسته‌بندی جعبه‌های دارویی", "desc": "افزایش خطوط ۵ رنگ هایدلبرگ و ورود به صنعت سلامت و داروسازی." },
+      { "year": "۱۳۹۶", "title": "احداث واحد تخصصی هاردباکس", "desc": "راه‌اندازی خطوط اتوماتیک جعبه‌های سخت و مقوای فشرده لوکس." },
+      { "year": "۱۴۰۴", "title": "استقرار استاندارد‌های چاپ سبز و هوشمند", "desc": "به‌کارگیری مرکب‌های گیاهی، خطوط تمام اتوماتیک بازرسی چشمی و سیستم‌های مدیریت یکپارچه." }
+    ]
+  },
+  "en": {
+    "badge": "About Najm Printing & Packaging Complex",
+    "title": "Innovation in Offset Printing, Precision in Structural Packaging",
+    "story": "Backed by over two decades of industrial expertise, cutting-edge Heidelberg multi-color presses, and automated post-press converting lines, Najm stands as the trusted production partner for leading pharmaceutical, cosmetic, food, and export brands.",
+    "metrics": [
+      { "value": "25+ Years", "label": "Industry Track Record" },
+      { "value": "15M+", "label": "Annual Output Volume" },
+      { "value": "99.8%", "label": "Color Fidelity Rate" }
+    ],
+    "missionTitle": "Our Mission & Sustainable Quality Commitment",
+    "missionDescription": "We believe packaging is more than protective encasing—it is your brand's primary visual handshake with the world. We elevate your product's market value by uniting structural engineering, state-of-the-art print technology, and eco-friendly certified materials.",
+    "timelineTitle": "Najm Technological Evolution",
+    "timeline": [
+      { "year": "1999", "title": "Founding of Offset Printing Workshop", "desc": "Operations commenced with two-color offset machinery focusing on commercial print." },
+      { "year": "2009", "title": "Expansion into Pharmaceutical Packaging", "desc": "Integration of 5-color Heidelberg presses and entering cleanroom health packaging." },
+      { "year": "2017", "title": "Dedicated Rigid Box Facility Commissioned", "desc": "Installation of automated luxury rigid box wrapping and grooving lines." },
+      { "year": "2026", "title": "Smart Factory & Green Printing Standards", "desc": "Adoption of vegetable-based soy inks, automated vision inspection, and digital workflows." }
+    ]
+  },
+  "ar": {
+    "badge": "حول مجمع مطبعة وتغليف نجم",
+    "title": "ابتكار في طباعة الأوفست وهندسة دقيقة في هياكل التغليف",
+    "story": "بفضل أكثر من عقدين من الخبرة الصناعية وامتلاك أحدث ماكينات هايدلبرغ وأنظمة ما بعد الطباعة المؤتمتة بالكامل، تعد مطبعة نجم الشريك المعتمد لأكبر العلامات التجارية في مجالات الأدوية والتجميل والأغذية والتصدير.",
+    "metrics": [
+      { "value": "+25 عاماً", "label": "خبرة متواصلة" },
+      { "value": "+15M", "label": "إنتاج سنوي" },
+      { "value": "99.8%", "label": "دقة مطابقة الألوان" }
+    ],
+    "missionTitle": "مهمتنا والالتزام بالجودة المستدامة",
+    "missionDescription": "نحن نؤمن بأن التغليف ليس مجرد غطاء واقٍ، بل هو لغة التواصل الأولى لعلامتك مع العالم. نجسد القيمة الحقيقية لمنتجك من خلال الجمع بين الهندسة الهيكلية والتقنيات الحديثة والمواد الصديقة للبيئة.",
+    "timelineTitle": "مسيرة تطور ونمو تكنولوجيا نجم",
+    "timeline": [
+      { "year": "1999", "title": "تأسيس ورشة طباعة الأوفست", "desc": "انطلاق العمل بماكينات لونين والتركيز على المطبوعات التجارية." },
+      { "year": "2009", "title": "التوسع نحو علب الأدوية والرعاية الصحية", "desc": "إضافة ماكينات هايدلبرغ 5 ألوان ودخول قطاع التغليف الصحي المعتمد." },
+      { "year": "2017", "title": "تدشين وحدة العلب الصلبة (هاردبوكس)", "desc": "تشغيل خطوط الإنتاج الآلي للصناديق الفاخرة والكرتون المقوى." },
+      { "year": "2026", "title": "تطبيق معايير الطباعة الخضراء الذكية", "desc": "اعتماد الأحبار النباتية وأنظمة الفحص البصري الآلي وإدارة الجودة الرقمية." }
+    ]
+  }
+}

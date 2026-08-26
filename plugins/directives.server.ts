@@ -8,20 +8,20 @@ export default defineNuxtPlugin((nuxtApp) => {
     }
   }
 
-  const directiveNames = [
+  // Directives that are registered in client-only plugins and need SSR dummy fallback
+  const customDirectives = [
     'editable',
-    'memotion-pop-visible',
     'floating',
-    'motion',
-    'pop-visible',
-    'motion-pop',
-    'motion-pop-visible',
-    'motion-fade',
-    'motion-slide',
-    'pop-up'
+    'memotion-pop-visible',
+    'memotion-pop-pop',
+    'memotion-pop-spring',
+    'memotion-pop-cards',
+    'memotion-pop-text'
   ]
 
-  for (const name of directiveNames) {
-    nuxtApp.vueApp.directive(name, ssrDirective)
+  for (const name of customDirectives) {
+    if (!nuxtApp.vueApp._context.directives[name]) {
+      nuxtApp.vueApp.directive(name, ssrDirective)
+    }
   }
 })
