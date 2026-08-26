@@ -1,0 +1,224 @@
+{
+  "FA": {
+    "badge": "مشاوره تخصصی و مهندسی بسته‌بندی",
+    "title": "مشاوره رایگان و استعلام هوشمند پروژه",
+    "subtitle": "طراحی ساختار، انتخاب مقوا و محاسبه دقیق هزینه فرم‌های چاپی با همراهی مهندسان ارشد چاپ نجم.",
+    "trustBadges": [
+      {
+        "icon": "mdi:clock-fast",
+        "title": "پاسخگویی کمتر از ۲ ساعت",
+        "desc": "در روزهای کاری"
+      },
+      {
+        "icon": "mdi:package-variant-closed-check",
+        "title": "ماکت فیزیکی رایگان",
+        "desc": "پیش از چاپ تیراژ"
+      },
+      {
+        "icon": "mdi:shield-check-outline",
+        "title": "تضمین انطباق رنگی ۹۹.۸٪",
+        "desc": "با استانداردهای بین‌المللی"
+      }
+    ],
+    "steps": {
+      "step1Title": "۱. انتخاب نوع محصول و ساختار",
+      "step2Title": "۲. تیراژ و متریال مدنظر",
+      "step3Title": "۳. مشخصات تماس و زمان مشاوره"
+    },
+    "categories": [
+      {
+        "id": "folding-carton",
+        "title": "جعبه مقوایی و ایندربرد",
+        "desc": "دارویی، آرایشی، فودگرید"
+      },
+      {
+        "id": "hardbox",
+        "title": "هاردباکس و جعبه لوکس",
+        "desc": "مگنتی، کشویی، زعفران و صادراتی"
+      },
+      {
+        "id": "commercial",
+        "title": "کاتالوگ، ساک و ست اداری",
+        "desc": "بروشور، اوراق تجاری، ساک دستی"
+      },
+      {
+        "id": "label-special",
+        "title": "لیبل و بسته‌بندی خاص",
+        "desc": "سلفون مخملی، طلاکوب، متالایز"
+      }
+    ],
+    "quantities": [
+      "۵۰۰ عدد",
+      "۱,۰۰۰ عدد",
+      "۲,۵۰۰ عدد",
+      "۵,۰۰۰ عدد",
+      "۱۰,۰۰۰ عدد",
+      "+۲۵,۰۰۰ عدد"
+    ],
+    "timeSlots": [
+      "صبح (۹:۰۰ الی ۱۲:۰۰)",
+      "ظهر (۱۲:۰۰ الی ۱۵:۰۰)",
+      "عصر (۱۵:۰۰ الی ۱۸:۰۰)"
+    ],
+    "form": {
+      "nameLabel": "نام و نام خانوادگی",
+      "companyLabel": "نام برند یا شرکت",
+      "phoneLabel": "شماره تماس همراه",
+      "preferredTimeLabel": "زمان ترجیحی تماس کارشناسان",
+      "descLabel": "توضیحات و ابعاد تقریبی (اختیاری)",
+      "mockupCheck": "مایلم ماکت سه‌بعدی و نمونه اولیه فیزیکی (Mockup) دریافت کنم",
+      "submitBtn": "ثبت درخواست مشاوره رایگان",
+      "submitting": "در حال ارسال اطلاعات...",
+      "successTitle": "درخواست شما با موفقیت ثبت شد!",
+      "successDesc": "مهندسان فنی چاپ نجم در زمان انتخابی با شما تماس خواهند گرفت."
+    }
+  },
+  "EN": {
+    "badge": "Packaging Engineering & Consultation",
+    "title": "Free Expert Consultation & Instant Quote",
+    "subtitle": "Structure design, material selection, and cost estimation with Najm senior print engineers.",
+    "trustBadges": [
+      {
+        "icon": "mdi:clock-fast",
+        "title": "Reply within 2 Hours",
+        "desc": "During business days"
+      },
+      {
+        "icon": "mdi:package-variant-closed-check",
+        "title": "Free Physical Mockup",
+        "desc": "Before production run"
+      },
+      {
+        "icon": "mdi:shield-check-outline",
+        "title": "99.8% Color Accuracy",
+        "desc": "ISO calibrated output"
+      }
+    ],
+    "steps": {
+      "step1Title": "1. Select Product Category",
+      "step2Title": "2. Quantity & Material",
+      "step3Title": "3. Contact & Schedule"
+    },
+    "categories": [
+      {
+        "id": "folding-carton",
+        "title": "Folding Cartons",
+        "desc": "Pharma, cosmetics, food-grade"
+      },
+      {
+        "id": "hardbox",
+        "title": "Rigid Boxes & Hardbox",
+        "desc": "Magnetic, drawer, luxury gifts"
+      },
+      {
+        "id": "commercial",
+        "title": "Catalogs & Paper Bags",
+        "desc": "Corporate brochures, luxury bags"
+      },
+      {
+        "id": "label-special",
+        "title": "Labels & Custom Finishing",
+        "desc": "Velvet lamination, hot foil, UV"
+      }
+    ],
+    "quantities": [
+      "500 units",
+      "1,000 units",
+      "2,500 units",
+      "5,000 units",
+      "10,000 units",
+      "25,000+ units"
+    ],
+    "timeSlots": [
+      "Morning (9:00 - 12:00)",
+      "Noon (12:00 - 15:00)",
+      "Afternoon (15:00 - 18:00)"
+    ],
+    "form": {
+      "nameLabel": "Full Name",
+      "companyLabel": "Brand / Company Name",
+      "phoneLabel": "Phone Number",
+      "preferredTimeLabel": "Preferred Call Time",
+      "descLabel": "Project Notes / Dimensions (Optional)",
+      "mockupCheck": "I would like to receive a free 3D/physical prototype mockup",
+      "submitBtn": "Book Free Consultation",
+      "submitting": "Submitting...",
+      "successTitle": "Request Received Successfully!",
+      "successDesc": "Our technical engineers will contact you at your preferred time slot."
+    }
+  },
+  "AR": {
+    "badge": "استشارات هندسة الطباعة والتغليف",
+    "title": "استشارة مجانية وطلب عرض أسعار فوري",
+    "subtitle": "تصميم الهيكل واختيار الورق المقوى وحساب تكلفة الطباعة بدقة مع مهندسي مجمع نجم.",
+    "trustBadges": [
+      {
+        "icon": "mdi:clock-fast",
+        "title": "الرد في أقل من ساعتين",
+        "desc": "خلال ساعات العمل"
+      },
+      {
+        "icon": "mdi:package-variant-closed-check",
+        "title": "عينة مجسمة مجانية",
+        "desc": "قبل بدء الطباعة"
+      },
+      {
+        "icon": "mdi:shield-check-outline",
+        "title": "مطابقة ألوان ۹۹.۸٪",
+        "desc": "وفق أعلى المعايير"
+      }
+    ],
+    "steps": {
+      "step1Title": "١. نوع المنتج وهيكل العلبة",
+      "step2Title": "٢. الكمية والمواد المطلوبة",
+      "step3Title": "٣. بيانات الاتصال وموعد الاستشارة"
+    },
+    "categories": [
+      {
+        "id": "folding-carton",
+        "title": "علب الكرتون والورق المقوى",
+        "desc": "أدوية، مستحضرات تجميل، أغذية"
+      },
+      {
+        "id": "hardbox",
+        "title": "علب فاخرة وهاردبوكس",
+        "desc": "مغناطيسية، سحب، زعفران وهدايا"
+      },
+      {
+        "id": "commercial",
+        "title": "كتالوجات وأكياس ورقية",
+        "desc": "مطبوعات تجارية، أكياس هدايا"
+      },
+      {
+        "id": "label-special",
+        "title": "ملصقات ولمسات خاصة",
+        "desc": "سلوفان مخملي، بصمة حرارية"
+      }
+    ],
+    "quantities": [
+      "٥٠٠ قطعة",
+      "١,٠٠٠ قطعة",
+      "٢,٥٠٠ قطعة",
+      "٥,٠٠٠ قطعة",
+      "١٠,٠٠٠ قطعة",
+      "+٢٥,٠٠٠ قطعة"
+    ],
+    "timeSlots": [
+      "صباحاً (٩:٠٠ إلى ١٢:٠٠)",
+      "ظهراً (١٢:٠٠ إلى ١٥:٠٠)",
+      "مساءً (١٥:٠٠ إلى ١٨:٠٠)"
+    ],
+    "form": {
+      "nameLabel": "الاسم الكامل",
+      "companyLabel": "اسم الشركة أو العلامة التجارية",
+      "phoneLabel": "رقم الهاتف المحمول",
+      "preferredTimeLabel": "الوقت المفضل للاتصال",
+      "descLabel": "ملاحظات المشروع والأبعاد (اختياري)",
+      "mockupCheck": "أرغب في استلام نموذج ثلاثي الأبعاد وعينة فیزيائية مجانية",
+      "submitBtn": "تأكيد طلب الاستشارة المجانية",
+      "submitting": "جاري الإرسال...",
+      "successTitle": "تم استلام طلبك بنجاح!",
+      "successDesc": "سيتواصل معك مهندسونا الفنيون في الوقت المحدد."
+    }
+  }
+}

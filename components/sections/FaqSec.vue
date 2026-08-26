@@ -3,7 +3,7 @@
   <section :dir="isRTL ? 'rtl' : 'ltr'" class="pt-16">
     <div class="max-w-4xl mx-auto flex flex-col gap-12 overflow-visible">
       <!-- Title -->
-      <h2 class="text-lg md:text-xl font-bold text-center">
+      <h2 class="text-lg md:text-xl font-bold text-center" v-editable="'sceneFaq.heading'">
         {{ data.heading }}
       </h2>
 
@@ -17,7 +17,7 @@
               ? 'border-[#C2D3D1] bg-najmgreen/20 text-najmgreen'
               : 'border-[#C2D3D1] text-gray-700 bg-transparent hover:bg-gray-200'
           ]">
-            {{ cat.name }}
+            <span v-editable="`sceneFaq.categories.${i}.name`">{{ cat.name }}</span>
           </button>
         </div>
       </div>
@@ -28,15 +28,15 @@
 
           <!-- FAQ List -->
           <div class="divide-y-0.5  divide-najmborder    -mt-6 px-6 max-h-[50vh] overflow-auto">
-
-            <!-- <div class="grid grid-cols-3 divide-x divide-gray-400">
-  <div class="text-center">1</div>
-  <div class="text-center">2</div>
-  <div class="text-center">3</div>
-</div> -->
-            <div v-for="(item, idx) in data.categories[activeTab].items" :key="item.key" :class="{ 'py-0': idx !== 0 }">
-              <FaqItem :index="idx" :question="item.question" :answer="item.answer" :open="activeItem === idx"
-                @toggle="activeItem = activeItem === idx ? null : idx" />
+            <div v-for="(item, idx) in data.categories[activeTab]?.items || []" :key="item.key" :class="{ 'py-0': idx !== 0 }">
+              <FaqItem
+                :index="idx"
+                :catIndex="activeTab"
+                :question="item.question"
+                :answer="item.answer"
+                :open="activeItem === idx"
+                @toggle="activeItem = activeItem === idx ? null : idx"
+              />
             </div>
 
           </div>

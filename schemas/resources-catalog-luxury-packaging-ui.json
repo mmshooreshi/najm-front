@@ -1,0 +1,74 @@
+{
+  "fa": {
+    "title": "کاتالوگ بسته‌بندی‌های لوکس و هاردباکس",
+    "categoryLabel": "کاتالوگ",
+    "description": "نمونه ساختارهای ویژه جعبه‌های مگنتی، کشویی، روکش‌دار و جلوه‌های طلاکوب و یووی موضعی مناسب برندهای لوکس و هدایای تبلیغاتی.",
+    "fileFormat": "PDF",
+    "fileSize": "18.5 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "درباره این کاتالوگ",
+    "specsTitle": "مشخصات و الزامات فنی",
+    "specs": {
+      "software": "Adobe Acrobat / PDF Reader",
+      "version": "1404 / 2026",
+      "fileFormat": "PDF",
+      "fileSize": "18.5 MB"
+    },
+    "guidelinesTitle": "ویژگی‌های بسته‌بندی‌های لوکس نجم:",
+    "guidelines": [
+      "تولید با مرغوب‌ترین مقواهای کرافت و فشرده هلندی و روکش‌های مخملی و فانتزی.",
+      "امکان اجرای خدمات تکمیلی نظیر طلاکوب، نقره‌کوب، برجسته‌کاری و UV موضعی سه بعدی.",
+      "طراحی قفل‌های مگنتی پنهان و اتصالات مستحکم برای ماندگاری بالا."
+    ],
+    "contactCta": "می‌خواهید بسته‌بندی لوکس برند خود را سفارشی‌سازی کنید؟",
+    "contactBtn": "درخواست مشاوره اختصاصی هاردباکس"
+  },
+  "en": {
+    "title": "Luxury Packaging & Rigid Box Catalog",
+    "categoryLabel": "Catalog",
+    "description": "Specialized luxury packaging structures including magnetic closures, drawer boxes, premium coatings, foil stamping, and spot UV for premium brands.",
+    "fileFormat": "PDF",
+    "fileSize": "18.5 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "About this Catalog",
+    "specsTitle": "Technical Specifications",
+    "specs": {
+      "software": "Adobe Acrobat / PDF Reader",
+      "version": "2026",
+      "fileFormat": "PDF",
+      "fileSize": "18.5 MB"
+    },
+    "guidelinesTitle": "Najm Luxury Packaging Highlights:",
+    "guidelines": [
+      "Manufactured with premium Dutch greyboard and velvet/textured specialty coverings.",
+      "High-precision hot foil stamping, embossing, and 3D spot UV capabilities.",
+      "Integrated hidden magnetic locks and reinforced hinges for durability."
+    ],
+    "contactCta": "Ready to design bespoke luxury packaging for your brand?",
+    "contactBtn": "Request Rigid Box Consultation"
+  },
+  "ar": {
+    "title": "كتالوج التغليف الفاخر والعلب الصلبة (هاردبوكس)",
+    "categoryLabel": "كتالوج",
+    "description": "نماذج وتراكيب الصناديق الفاخرة ذات الإغلاق المغناطيسي، الصناديق الانزلاقية، وتقنيات البصمة الذهبية واليو في الموضعي للعلامات الراقية.",
+    "fileFormat": "PDF",
+    "fileSize": "18.5 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "حول هذا الكتالوج",
+    "specsTitle": "المواصفات والمتطلبات الفنية",
+    "specs": {
+      "software": "Adobe Acrobat / PDF Reader",
+      "version": "2026",
+      "fileFormat": "PDF",
+      "fileSize": "18.5 MB"
+    },
+    "guidelinesTitle": "مميزات التغليف الفاخر من مطبعة نجم:",
+    "guidelines": [
+      "تصنيع بأجود أنواع الكرتون الهولندي الصلب وأفخم أنواع التجليد الورقي والقماشي.",
+      "تنفيذ تقنيات البصمة الحرارية الذهبية والفضية، البروز، واليو في البارز ثلاثي الأبعاد.",
+      "أقفال مغناطيسية مخفية وهياكل متينة تضمن أعلى درجات الفخامة."
+    ],
+    "contactCta": "هل ترغب في تصميم تغليف فاخر مخصص لعلامتك التجارية؟",
+    "contactBtn": "طلب استشارة تغليف فاخر"
+  }
+}

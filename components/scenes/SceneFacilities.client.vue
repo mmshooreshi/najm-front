@@ -1,7 +1,7 @@
 <!-- components/scenes/SceneFacilities.client.vue -->
 <template>
   <div class="snap-start flex flex-col w-full gap-12 pt-12">
-    <SceneHeading :data="data"/>
+    <SceneHeading :data="data" path="sceneFacilities"/>
 
     <!-- 1) Add h-[400px] and items-stretch here -->
     <r3col class="md:h-[400px]  items-stretch">

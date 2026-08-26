@@ -1,0 +1,74 @@
+{
+  "fa": {
+    "title": "راهنمای آماده‌سازی فایل و پروفایل رنگی CMYK",
+    "categoryLabel": "راهنمای فنی",
+    "description": "این سند حاوی استانداردهای فنی چاپ افست، دستورالعمل خروجی استاندارد PDF/X-1a، تنظیم رزولوشن ۳۰۰DPI، درصد ترکیب رنگ مشکی پرکلاغی (Rich Black) و کنترل خطوط تیغ و Overprint است.",
+    "fileFormat": "PDF",
+    "fileSize": "3.8 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "درباره این راهنما",
+    "specsTitle": "مشخصات و الزامات فنی",
+    "specs": {
+      "software": "Adobe CC / Acrobat",
+      "version": "1404 / 2026",
+      "fileFormat": "PDF",
+      "fileSize": "3.8 MB"
+    },
+    "guidelinesTitle": "نکات مهم قبل از ارسال فایل به چاپخانه:",
+    "guidelines": [
+      "فونت‌های استفاده شده را حتماً به منحنی (Create Outlines / Convert to Curves) تبدیل کنید.",
+      "تمامی تصاویر باید با مود رنگی CMYK و رزولوشن ۳۰۰DPI در فایل درج شده باشند.",
+      "برای اقلام دارای قالب تیغ، لایه Die-Cut را با رنگ اسپات (Spot Color) مجزا و نامگذاری مشخص قرار دهید."
+    ],
+    "contactCta": "نیاز به راهنمایی بیشتر یا طراحی قالب اختصاصی دارید؟",
+    "contactBtn": "تماس با واحد لیتوگرافی و طراحی"
+  },
+  "en": {
+    "title": "CMYK Color Profile & File Preparation Guide",
+    "categoryLabel": "Technical Guide",
+    "description": "Comprehensive offset printing guidelines, PDF/X-1a export settings, 300 DPI resolution requirements, Rich Black ink formulas, and Overprint quality control.",
+    "fileFormat": "PDF",
+    "fileSize": "3.8 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "About this Document",
+    "specsTitle": "Technical Specifications",
+    "specs": {
+      "software": "Adobe CC / Acrobat",
+      "version": "2026",
+      "fileFormat": "PDF",
+      "fileSize": "3.8 MB"
+    },
+    "guidelinesTitle": "Key Pre-press Checklist:",
+    "guidelines": [
+      "Convert all typography and fonts to outlines (Create Outlines).",
+      "Ensure all embedded images are CMYK at a minimum of 300 DPI.",
+      "Place die-cut and spot UV lines on dedicated Spot Color vector layers."
+    ],
+    "contactCta": "Need technical assistance or custom die-line consultation?",
+    "contactBtn": "Contact Pre-Press & Design Team"
+  },
+  "ar": {
+    "title": "دليل إعداد الملفات وملف الألوان CMYK",
+    "categoryLabel": "دليل تقني",
+    "description": "دليل المعايير الفنية للطباعة الأوفست، إعدادات تصدير PDF/X-1a، ضبط دقة 300 DPI، نسب اللون الأسود الغني، ومراقبة خطوط القولبة والطباعة الفوقية.",
+    "fileFormat": "PDF",
+    "fileSize": "3.8 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "حول هذا الملف",
+    "specsTitle": "المواصفات والمتطلبات الفنية",
+    "specs": {
+      "software": "Adobe CC / Acrobat",
+      "version": "2026",
+      "fileFormat": "PDF",
+      "fileSize": "3.8 MB"
+    },
+    "guidelinesTitle": "إرشادات هامة قبل إرسال الملف إلى المطبعة:",
+    "guidelines": [
+      "تأكد من تحويل جميع الخطوط إلى مسارات ومنحنيات (Create Outlines).",
+      "يجب أن تكون كافة الصور بصيغة ألوان CMYK وبدقة 300 DPI على الأقل.",
+      "ضع خطوط القولبة (Die-Cut) في طبقة متجهة منفصلة بلون خاص (Spot Color)."
+    ],
+    "contactCta": "هل تحتاج إلى استشارة فنية أو تصميم قالب مخصص؟",
+    "contactBtn": "التواصل مع فريق الليثوغراف والتصميم"
+  }
+}

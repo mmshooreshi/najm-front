@@ -5,6 +5,7 @@
     <div class="projects-intro">
       <SceneHeading
         :data="sceneProjects"
+        path="sceneProjects"
         :align="isRTL ? 'right' : 'left'"
       />
     </div>

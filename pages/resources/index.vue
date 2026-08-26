@@ -3,21 +3,24 @@
   <div dir="rtl" class="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12">
     <!-- Header -->
     <div class="text-center max-w-3xl mx-auto space-y-4">
-      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
-        مرکز منابع و راهنماهای فنی چاپ نجم
+      <span
+        class="inline-block px-4 py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4"
+        v-editable="'badge'"
+      >
+        {{ ui.badge || 'مرکز منابع و راهنماهای فنی چاپ نجم' }}
       </span>
-      <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight text-d4">
-        کاتالوگ‌ها، قالب‌های تیغ و راهنماهای طراحی
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight text-d4" v-editable="'title'">
+        {{ ui.title || 'کاتالوگ‌ها، قالب‌های تیغ و راهنماهای طراحی' }}
       </h1>
-      <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
-        تمامی فایل‌های مورد نیاز طراحان، مدیران محصول و تولید، شامل استانداردهای رنگ، قالب‌های تیغ و کاتالوگ‌های جامع محصولات به صورت مستقیم قابل دانلود است.
+      <p class="text-sm sm:text-base text-gray-600 leading-relaxed" v-editable="'description'">
+        {{ ui.description || 'تمامی فایل‌های مورد نیاز طراحان، مدیران محصول و تولید، شامل استانداردهای رنگ، قالب‌های تیغ و کاتالوگ‌های جامع محصولات به صورت مستقیم قابل دانلود است.' }}
       </p>
     </div>
 
     <!-- Category Filter Tabs -->
     <div class="flex justify-center overflow-x-auto gap-2 py-2">
       <button
-        v-for="cat in categories"
+        v-for="(cat, idx) in categories"
         :key="cat.key"
         @click="activeCategory = cat.key"
         class="px-5 py-2 rounded-2xl text-xs font-bold transition-all duration-200"
@@ -27,7 +30,7 @@
             : 'bg-white text-gray-700 hover:bg-najmgrey border border-najmborder/60'
         ]"
       >
-        {{ cat.label }}
+        <span v-editable="`categories.${idx}.label`">{{ cat.label }}</span>
       </button>
     </div>
 
@@ -81,19 +84,25 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 
 definePageMeta({
   name: 'منابع و کاتالوگ‌ها - چاپ نجم',
   layout: 'default'
 })
 
-const categories = [
+const { ui, allUi } = usePageUI('resources')
+useAdminEditable('resources', allUi)
+
+const defaultCategories = [
   { key: 'all', label: 'همه منابع' },
   { key: 'catalogs', label: 'کاتالوگ‌ها' },
   { key: 'guides', label: 'راهنماهای فنی چاپ' },
-  { key: 'templates', label: 'قالب‌های تیغ (Die-Cuts)' },
-  { key: 'standards', label: 'استانداردها و گواهینامه‌ها' }
+  { key: 'templates', label: 'قالب‌های تیغ (Die-Cuts)' }
 ]
+
+const categories = computed(() => ui.value?.categories || defaultCategories)
 
 const activeCategory = ref('all')
 

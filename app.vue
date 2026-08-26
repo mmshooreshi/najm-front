@@ -5,6 +5,7 @@
   </NuxtLayout>
   <ClientOnly>
     <AdminEditBar />
+    <ConsultationModal />
   </ClientOnly>
 </template>
 

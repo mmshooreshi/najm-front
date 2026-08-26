@@ -1,0 +1,74 @@
+{
+  "fa": {
+    "title": "کاتالوگ جامع محصولات و خدمات چاپ نجم",
+    "categoryLabel": "کاتالوگ",
+    "description": "معرفی جامع خطوط تولید چاپ افست، انواع جعبه‌های مقوایی، هاردباکس، ساک‌های دستی و نمونه‌های تولیدی سال جاری با تصاویر و توضیحات کامل.",
+    "fileFormat": "PDF",
+    "fileSize": "14.2 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "درباره این کاتالوگ",
+    "specsTitle": "مشخصات و الزامات فنی",
+    "specs": {
+      "software": "Adobe Acrobat / PDF Reader",
+      "version": "1404 / 2026",
+      "fileFormat": "PDF",
+      "fileSize": "14.2 MB"
+    },
+    "guidelinesTitle": "نکات مهم قبل از سفارش:",
+    "guidelines": [
+      "تمام نمونه‌های این کاتالوگ در تیراژ‌های اختصاصی قابل سفارش و تولید هستند.",
+      "امکان تغییر جنس مقوا، گراماژ و ابعاد بر اساس نیاز پروژه شما فراهم است.",
+      "برای دریافت نمونه فیزیکی با واحد فروش تماس بگیرید."
+    ],
+    "contactCta": "نیاز به مشاوره جهت انتخاب مناسب‌ترین نوع بسته‌بندی دارید؟",
+    "contactBtn": "تماس با واحد فروش و مشاوره"
+  },
+  "en": {
+    "title": "Najm Comprehensive Products & Services Catalog",
+    "categoryLabel": "Catalog",
+    "description": "Comprehensive presentation of offset production lines, folding cartons, rigid boxes, paper shopping bags, and current year product portfolios.",
+    "fileFormat": "PDF",
+    "fileSize": "14.2 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "About this Catalog",
+    "specsTitle": "Technical Specifications",
+    "specs": {
+      "software": "Adobe Acrobat / PDF Reader",
+      "version": "2026",
+      "fileFormat": "PDF",
+      "fileSize": "14.2 MB"
+    },
+    "guidelinesTitle": "Important Ordering Notes:",
+    "guidelines": [
+      "All items in this catalog can be customized in tailored print runs.",
+      "Custom paper stock, grammage, and dimensions are fully configurable.",
+      "Contact our sales team to request a physical sample kit."
+    ],
+    "contactCta": "Need guidance choosing the optimal packaging structure?",
+    "contactBtn": "Contact Sales & Advisory Team"
+  },
+  "ar": {
+    "title": "الكتالوج الشامل لمنتجات وخدمات مطبعة نجم",
+    "categoryLabel": "كتالوج",
+    "description": "استعراض شامل لخطوط إنتاج طباعة الأوفست، العلب الكرتونية، الصناديق الفاخرة (هاردبوكس)، الأكياس الورقية، ونماذج منتجات العام الحالي.",
+    "fileFormat": "PDF",
+    "fileSize": "14.2 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "حول هذا الكتالوج",
+    "specsTitle": "المواصفات والمتطلبات الفنية",
+    "specs": {
+      "software": "Adobe Acrobat / PDF Reader",
+      "version": "2026",
+      "fileFormat": "PDF",
+      "fileSize": "14.2 MB"
+    },
+    "guidelinesTitle": "ملاحظات هامة قبل الطلب:",
+    "guidelines": [
+      "جميع النماذج قابلة للتخصيص والإنتاج بالكميات المطلوبة.",
+      "إمكانية تغيير نوع الورق والجراماج والأبعاد بما يلائم متطلبات مشروعك.",
+      "تواصل مع قسم المبيعات لطلب عينات فيزيائية."
+    ],
+    "contactCta": "هل تحتاج إلى استشارة لاختيار أفضل نوع تغليف؟",
+    "contactBtn": "التواصل مع فريق المبيعات والاستشارات"
+  }
+}

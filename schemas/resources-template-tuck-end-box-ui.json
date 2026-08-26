@@ -1,0 +1,74 @@
+{
+  "fa": {
+    "title": "قالب تیغ استاندارد جعبه درب‌دار (Tuck-End)",
+    "categoryLabel": "قالب تیغ",
+    "description": "فایل برداری وکتور خطوط تیغ، خط‌تا و زبانه چسب در فرمت‌های Adobe Illustrator و PDF آماده جایگذاری طرح گرافیکی و کنترل ابعاد.",
+    "fileFormat": "AI / PDF",
+    "fileSize": "5.4 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "درباره این قالب",
+    "specsTitle": "مشخصات و الزامات فنی",
+    "specs": {
+      "software": "Adobe Illustrator / CorelDraw",
+      "version": "1404 / 2026",
+      "fileFormat": "AI / PDF",
+      "fileSize": "5.4 MB"
+    },
+    "guidelinesTitle": "دستورالعمل استفاده از خطوط قالب:",
+    "guidelines": [
+      "خطوط قرمز نشان‌دهنده خط تیغ (برش نهایی) و خطوط آبی نشان‌دهنده خط تا (Crease) هستند.",
+      "فایل طراحی گرافیکی خود را در لایه زیرین خطوط قالب قرار دهید و لایه قالب را قفل کنید.",
+      "حداقل ۳ میلی‌متر لبه کار را از خطوط تیغ فراتر ببرید (Bleed)."
+    ],
+    "contactCta": "نیاز به تغییر ابعاد قالب یا تولید قالب تیغ اختصاصی دارید؟",
+    "contactBtn": "سفارش قالب تیغ اختصاصی"
+  },
+  "en": {
+    "title": "Standard Tuck-End Folding Carton Die-Line Template",
+    "categoryLabel": "Die-Line",
+    "description": "Vector die-cut, crease, and glue flap template in Adobe Illustrator and PDF formats ready for artwork placement and structural verification.",
+    "fileFormat": "AI / PDF",
+    "fileSize": "5.4 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "About this Template",
+    "specsTitle": "Technical Specifications",
+    "specs": {
+      "software": "Adobe Illustrator / CorelDraw",
+      "version": "2026",
+      "fileFormat": "AI / PDF",
+      "fileSize": "5.4 MB"
+    },
+    "guidelinesTitle": "Die-Line Usage Guidelines:",
+    "guidelines": [
+      "Red lines denote cut edges; cyan/blue lines indicate score/crease lines.",
+      "Place your artwork on dedicated art layers beneath the locked die-line layer.",
+      "Extend background artwork at least 3mm past all outer cutting edges (Bleed)."
+    ],
+    "contactCta": "Need custom structural sizing or bespoke packaging engineering?",
+    "contactBtn": "Order Custom Die-Line"
+  },
+  "ar": {
+    "title": "قالب سكاكين قياسي للعلب ذات الغطاء المتداخل (Tuck-End)",
+    "categoryLabel": "قالب سكاكين",
+    "description": "ملف فيكتور لخطوط القص والطي ولسان اللصق بصيغتي Adobe Illustrator و PDF جاهز لوضع التصميم ومراجعة الأبعاد.",
+    "fileFormat": "AI / PDF",
+    "fileSize": "5.4 MB",
+    "downloadUrl": "#",
+    "overviewTitle": "حول هذا القالب",
+    "specsTitle": "المواصفات والمتطلبات الفنية",
+    "specs": {
+      "software": "Adobe Illustrator / CorelDraw",
+      "version": "2026",
+      "fileFormat": "AI / PDF",
+      "fileSize": "5.4 MB"
+    },
+    "guidelinesTitle": "إرشادات استخدام خطوط القالب:",
+    "guidelines": [
+      "الخطوط الحمراء تمثل خطوط القص والخطوط الزرقاء تمثل خطوط الطي (Crease).",
+      "ضع التصميم في طبقة منفصلة أسفل طبقة خطوط القالب واقفل طبقة القالب.",
+      "احرص على مد الخلفية والألوان 3 مم خارج خطوط القص (Bleed)."
+    ],
+    "contactCta": "هل تحتاج إلى تعديل الأبعاد أو تصميم قالب خاص؟",
+    "contactBtn": "طلب قالب مخصص"
+  }
+}

@@ -50,7 +50,7 @@
             :ref="el => (typedRefs[i] = el as HTMLElement | null)"
             v-editable="`highlightedText.${i}.sentence`"
             class="inline-block mx-0 text-2xl md:text-3xl font-black text-d4 whitespace-pre"
-          >{{ h.sentence || '' }}</span>
+          ></span>
         </div>
       </template>
       <div class="basis-full h-0"></div>
@@ -63,7 +63,7 @@
           :class="[i === 0 ? 'font-extrabold' : '']"
           v-editable="`paragraphes.${i}.sentence`"
           class="text-sm md:text-base text-center mb-4"
-        >{{ p.sentence || '' }}</p>
+        ></p>
       </template>
     </div>
   </div>
@@ -331,8 +331,8 @@ onMounted(async () => {
   await nextTick()
   runHighlightAnimation()
 
-  if (sectionRef.value) {
-    gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 })
+  if (sectionRef.value && !playedOnce) {
+    gsap.set(sectionRef.value, { opacity: 1 })
     tlHighlights.play()
     playedOnce = true
   }

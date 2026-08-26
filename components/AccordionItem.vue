@@ -16,7 +16,7 @@
         ? ''
         : (hasAnyOpen ? 'md:!pt-1' : '')"
     >
-      <span>{{ title }}</span>
+      <span v-editable="index !== undefined ? `accordion.${index}.title` : ''">{{ title }}</span>
       <svg
         class="icon"
         :class="{ open: isOpen }"
@@ -34,7 +34,7 @@
     </div>
     <div ref="contentEl" class="content overflow-hidden text-xs font-medium">
       <div class="pb-6 md:pb-12 pt-0 px-6"  :class="[isRTL ? 'pl-8 md:pl-16' : 'pr-8 md:pr-16']">
-        <p>{{ content }}</p>
+        <p v-editable="index !== undefined ? `accordion.${index}.content` : ''">{{ content }}</p>
       </div>
     </div>
   </div>
@@ -51,7 +51,8 @@ const props = defineProps({
   content: String,
   isOpen: Boolean,
   hasAnyOpen: Boolean,
-  delay: Number
+  delay: Number,
+  index: Number
 })
 
 const contentEl = ref(null)

@@ -2,7 +2,7 @@
 <!-- SceneProducts.vue -->
 <template>
   <div class="rtl snap-start flex flex-col flex-grow w-full h-full gap-12 pt-12">
-    <SceneHeading hideLabel :data="data" align="center" />
+    <SceneHeading hideLabel :data="data" align="center" path="sceneProducts" />
 
     <!-- Type Toggle -->
     <div class="w-max mx-auto cursor-pointer">
@@ -15,7 +15,7 @@
           ? 'bg-najmgreen text-white'
           : 'bg-transparent text-black hover:bg-gray-300/40']"
       >
-        {{ data.types[type]}}
+        <span v-editable="`sceneProducts.types.${type}`">{{ data.types?.[type] }}</span>
       </button>
     </div>
 

@@ -10,7 +10,10 @@
         @click="toggle"
       >
 
-        <span class="max-w-[95%] text-sm font-demibold text-[#2F3136]">
+        <span
+          class="max-w-[95%] text-sm font-demibold text-[#2F3136]"
+          v-editable="catIndex !== undefined && index !== undefined ? `sceneFaq.categories.${catIndex}.items.${index}.question` : ''"
+        >
           {{ question }}
         </span>
         <svg
@@ -41,6 +44,7 @@
           ref="contentRef"
           :class="[isRTL? 'text-right' : 'text-left']"
           class="mt-2 text-xs text-gray-600  leading-relaxed mb-2"
+          v-editable="catIndex !== undefined && index !== undefined ? `sceneFaq.categories.${catIndex}.items.${index}.answer` : ''"
         >
           {{ answer }}
         </div>
@@ -56,6 +60,7 @@ const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
     question: string
     answer: string
     index: number
+    catIndex?: number
     open: boolean
   }>()
 

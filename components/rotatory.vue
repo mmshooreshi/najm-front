@@ -1,7 +1,10 @@
 <!-- components/rotatory.vue -->
 <template>
     <button
-      class="group relative flex items-center justify-center overflow-hidden rounded-full bg-najmgreen text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 w-18 h-18 md:w-24 md:h-24"
+      @click="openModal()"
+      type="button"
+      aria-label="مشاوره رایگان و استعلام قیمت"
+      class="group relative flex items-center justify-center overflow-hidden rounded-full bg-najmgreen text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 active:scale-95 shadow-xl hover:shadow-2xl w-18 h-18 md:w-24 md:h-24 cursor-pointer"
     >
       <!-- Rotating text along a circular path -->
       <svg
@@ -62,6 +65,9 @@
   
   <script setup lang="ts">
   import ConsulText from '~/assets/svg/ConsulText.svg'
+  import { useConsultation } from '~/composables/useConsultation'
+
+  const { openModal } = useConsultation()
   </script>
   
   <style scoped>

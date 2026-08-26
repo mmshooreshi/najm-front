@@ -6,12 +6,12 @@
         v-for="(item, index) in items"
         :delay="index*0.1"
         :key="index"
+        :index="index"
         :title="item.title"
         :content="item.content"
         :isOpen="openIndex === index"
         :hasAnyOpen="openIndex!=null"
         @toggle="() => openIndex = openIndex === index ? null : index"
-
       />
     </div>
   </template>

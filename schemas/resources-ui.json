@@ -1,0 +1,41 @@
+{
+  "fa": {
+    "badge": "مرکز منابع و راهنماهای فنی چاپ نجم",
+    "title": "کاتالوگ‌ها، قالب‌های تیغ و راهنماهای طراحی",
+    "description": "تمامی فایل‌های مورد نیاز طراحان، مدیران محصول و تولید، شامل استانداردهای رنگ، قالب‌های تیغ و کاتالوگ‌های جامع محصولات به صورت مستقیم قابل دانلود است.",
+    "categories": [
+      { "key": "all", "label": "همه منابع" },
+      { "key": "catalogs", "label": "کاتالوگ‌ها" },
+      { "key": "guides", "label": "راهنماهای فنی چاپ" },
+      { "key": "templates", "label": "قالب‌های تیغ (Die-Cuts)" }
+    ],
+    "detailsBtn": "مشاهده جزئیات",
+    "downloadBtn": "دانلود"
+  },
+  "en": {
+    "badge": "Najm Technical Resources & Knowledge Hub",
+    "title": "Catalogs, Die-Lines & Production Guidelines",
+    "description": "Direct access to essential pre-press resources, ICC color profiles, vector packaging die-lines, and comprehensive product catalogs.",
+    "categories": [
+      { "key": "all", "label": "All Resources" },
+      { "key": "catalogs", "label": "Catalogs" },
+      { "key": "guides", "label": "Technical Guides" },
+      { "key": "templates", "label": "Die-Lines & Templates" }
+    ],
+    "detailsBtn": "View Details",
+    "downloadBtn": "Download"
+  },
+  "ar": {
+    "badge": "مركز الموارد والأدلة الفنية لمطبعة نجم",
+    "title": "الكتالوجات، قوالب السكاكين وأدلة التصميم",
+    "description": "تحميل مباشر لجميع الملفات الفنية التي يحتاجها المصممون ومدراء الإنتاج بما في ذلك معايير الألوان وقوالب التغليف والكتالوجات الشاملة.",
+    "categories": [
+      { "key": "all", "label": "جميع الموارد" },
+      { "key": "catalogs", "label": "الكتالوجات" },
+      { "key": "guides", "label": "الأدلة الفنية" },
+      { "key": "templates", "label": "قوالب السكاكين (Die-Cuts)" }
+    ],
+    "detailsBtn": "عرض التفاصيل",
+    "downloadBtn": "تحميل"
+  }
+}

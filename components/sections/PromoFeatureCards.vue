@@ -62,20 +62,19 @@ function bgUtility (card: FeatureCard) {
 
 <template>
   <!-- RTL wrapper -------------------------------------------------- -->
-  <section       :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl text-right' : 'ltr text-left']"  class="mx-auto max-w-screen-xl  px-0 py-0 my-auto">
+  <section :dir="isRTL ? 'rtl' : 'ltr'" :class="[isRTL ? 'rtl text-right' : 'ltr text-left']" class="mx-auto max-w-screen-xl px-0 py-0 my-auto">
     <!-- Stack on mobile → 3‑col grid ≥ md ------------------------- -->
     <div class="grid gap-2 md:grid-cols-3 md:gap-4">
       <article
-      v-motion
-  :initial="{ opacity: 0, y: 40 }"
-  :enter="{ opacity: 1, y: 0, transition: { duration: 500, ease: 'easeOut' } }"
-
-        v-for="card in cards"
+        v-for="(card, cardIdx) in cards"
         :key="card.id"
-        class="relative flex flex-col overflow-hidden rounded-3xl p-6 min-h-[280px] md:min-h-[280px] " 
+        v-motion
+        :initial="{ opacity: 0, y: 40 }"
+        :enter="{ opacity: 1, y: 0, transition: { duration: 500, ease: 'easeOut' } }"
+        class="relative flex flex-col overflow-hidden rounded-3xl p-6 min-h-[280px] md:min-h-[280px]"
         :class="[
-          'min-h-[280px]',               // mobile minimum
-          card.minHeight,                   // explicit figma aspect helpers
+          'min-h-[280px]',
+          card.minHeight,
           card.dashed && 'border-dashed border-[2.5px] border-[#B5B5B5]'
         ]"
       >
@@ -83,26 +82,27 @@ function bgUtility (card: FeatureCard) {
         <div
           class="absolute cliplip inset-0 z-0"
           :class="bgUtility(card)"
-          :style="`background-image: url('${card.bgImage}'); opacity: ${card.id === 3 ? 0.2: 1};`"
+          :style="`background-image: url('${card.bgImage}'); opacity: ${card.id === 3 ? 0.2 : 1};`"
         ></div>
 
         <!-- 🔹 foreground (fills full card height) ------------------ -->
-        <header class="relative z-10 flex  flex-col justify-between gap-3 h-full">
+        <header class="relative z-10 flex flex-col justify-between gap-3 h-full">
           <!-- title + optional description wrapped so they stick together -->
-        <h2 class="text-xl font-extrabold leading-[30px] text-najmgreen max-w-[150px]">
-          <span v-for="(line, i) in card.title" :key="i" class="block">
-            {{ line }}
-          </span>
-        </h2>
+          <h2 class="text-xl font-extrabold leading-[30px] text-najmgreen max-w-[150px]">
+            <span v-for="(line, i) in (Array.isArray(card.title) ? card.title : [card.title])" :key="i" class="block" v-editable="`scenePromo.cards.${cardIdx}.title.${i}`">
+              {{ line }}
+            </span>
+          </h2>
 
 
-            <p v-if="card.description" class=" text-sm leading-[21px] font-medium">
+            <p v-if="card.description" v-editable="`scenePromo.cards.${cardIdx}.description`" class=" text-sm leading-[21px] font-medium">
               {{ card.description }}
             </p>
 
           <!-- call‑to‑action button bottom‑aligned                   -->
            <div class="flex flex-row w-full flex-2 justify-between">
           <div
+            v-editable="`scenePromo.cards.${cardIdx}.buttonLabel`"
             class="flex h-12 items-center justify-center gap-2 rounded-[15px] bg-white/0 px-6 py-0 text-[14px] font-semibold leading-[21px]"
           >
             {{ card.buttonLabel }}

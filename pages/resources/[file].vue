@@ -4,16 +4,19 @@
     <nav class="flex items-center gap-2 text-xs text-gray-500 mb-4">
       <NuxtLink to="/resources" class="hover:text-najmgreen">منابع و کاتالوگ‌ها</NuxtLink>
       <span>/</span>
-      <span class="text-gray-800 font-semibold">{{ currentResource.title }}</span>
+      <span class="text-gray-800 font-semibold" v-editable="'title'">{{ currentResource.title }}</span>
     </nav>
 
     <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-gray-100 space-y-8">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 pb-6">
         <div>
-          <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-najmgreen mb-2">
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-najmgreen mb-2"
+            v-editable="'categoryLabel'"
+          >
             {{ currentResource.categoryLabel }}
           </span>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900" v-editable="'title'">
             {{ currentResource.title }}
           </h1>
         </div>
@@ -23,59 +26,71 @@
           class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition"
         >
           <Icon name="mdi:download" class="w-5 h-5" />
-          دانلود فایل ({{ currentResource.fileSize }})
+          <span>دانلود فایل ({{ currentResource.fileSize }})</span>
         </a>
       </div>
 
       <!-- Overview -->
       <div class="space-y-4">
-        <h2 class="text-lg font-bold text-gray-900">درباره این فایل</h2>
-        <p class="text-sm sm:text-base text-gray-700 leading-relaxed">
+        <h2 class="text-lg font-bold text-gray-900" v-editable="'overviewTitle'">
+          {{ currentResource.overviewTitle || 'درباره این فایل' }}
+        </h2>
+        <p class="text-sm sm:text-base text-gray-700 leading-relaxed" v-editable="'description'">
           {{ currentResource.description }}
         </p>
       </div>
 
       <!-- File Specifications -->
       <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-        <h3 class="text-sm font-bold text-gray-900 mb-4">مشخصات و الزامات فنی</h3>
+        <h3 class="text-sm font-bold text-gray-900 mb-4" v-editable="'specsTitle'">
+          {{ currentResource.specsTitle || 'مشخصات و الزامات فنی' }}
+        </h3>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
           <div>
             <span class="block text-gray-500 mb-1">فرمت فایل:</span>
-            <span class="font-bold text-gray-800 font-mono">{{ currentResource.fileFormat }}</span>
+            <span class="font-bold text-gray-800" v-editable="'fileFormat'">{{ currentResource.fileFormat }}</span>
           </div>
           <div>
             <span class="block text-gray-500 mb-1">حجم فایل:</span>
-            <span class="font-bold text-gray-800 font-mono">{{ currentResource.fileSize }}</span>
+            <span class="font-bold text-gray-800" v-editable="'fileSize'">{{ currentResource.fileSize }}</span>
           </div>
           <div>
             <span class="block text-gray-500 mb-1">سازگاری نرم‌افزاری:</span>
-            <span class="font-bold text-gray-800">Adobe CC / Acrobat</span>
+            <span class="font-bold text-gray-800" v-editable="'specs.software'">{{ currentResource.specs?.software || 'Adobe CC / Acrobat' }}</span>
           </div>
           <div>
             <span class="block text-gray-500 mb-1">آخرین بروزرسانی:</span>
-            <span class="font-bold text-gray-800 font-mono">2026 / 1404</span>
+            <span class="font-bold text-gray-800" v-editable="'specs.version'">{{ currentResource.specs?.version || '1404 / 2026' }}</span>
           </div>
         </div>
       </div>
 
       <!-- Guidelines checklist -->
-      <div class="space-y-3">
-        <h3 class="text-sm font-bold text-gray-900">نکات مهم قبل از ارسال فایل به چاپخانه:</h3>
+      <div class="space-y-3" v-if="currentResource.guidelines?.length">
+        <h3 class="text-sm font-bold text-gray-900" v-editable="'guidelinesTitle'">
+          {{ currentResource.guidelinesTitle || 'نکات مهم قبل از ارسال فایل به چاپخانه:' }}
+        </h3>
         <ul class="space-y-2 text-xs sm:text-sm text-gray-600 list-disc pr-5">
-          <li>فونت‌های استفاده شده را حتماً به منحنی (Create Outlines / Convert to Curves) تبدیل کنید.</li>
-          <li>تمامی تصاویر باید با مود رنگی CMYK و رزولوشن ۳۰۰DPI در فایل درج شده باشند.</li>
-          <li>برای اقلام دارای قالب تیغ، لایه Die-Cut را با رنگ اسپات (Spot Color) مجزا و نامگذاری مشخص قرار دهید.</li>
+          <li
+            v-for="(guide, i) in currentResource.guidelines"
+            :key="i"
+            v-editable="`guidelines.${i}`"
+          >
+            {{ guide }}
+          </li>
         </ul>
       </div>
 
       <!-- Contact CTA -->
       <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span class="text-xs text-gray-500">نیاز به راهنمایی بیشتر یا طراحی قالب اختصاصی دارید؟</span>
+        <span class="text-xs text-gray-500" v-editable="'contactCta'">
+          {{ currentResource.contactCta || 'نیاز به راهنمایی بیشتر یا طراحی قالب اختصاصی دارید؟' }}
+        </span>
         <NuxtLink
           to="/contact"
           class="px-5 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-semibold transition"
         >
-          تماس با واحد لیتوگرافی و طراحی
+          <span v-editable="'contactBtn'">{{ currentResource.contactBtn || 'تماس با واحد لیتوگرافی و طراحی' }}</span>
         </NuxtLink>
       </div>
     </div>
@@ -85,6 +100,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 
 definePageMeta({
   name: 'جزئیات فایل راهنما - چاپ نجم',
@@ -92,7 +109,11 @@ definePageMeta({
 })
 
 const route = useRoute()
-const slug = computed(() => (route.params.file as string) || '')
+const fileSlug = computed(() => (route.params.file as string) || '')
+const pageSlug = computed(() => `resources-${fileSlug.value}`)
+
+const { ui, allUi } = usePageUI(pageSlug.value)
+useAdminEditable(pageSlug.value, allUi)
 
 const fallbackResource = {
   title: 'راهنما و مشخصات فنی چاپ و قالب‌سازی',
@@ -100,48 +121,31 @@ const fallbackResource = {
   description: 'این سند حاوی استانداردهای فنی چاپ افست، دستورالعمل‌های آماده‌سازی خطوط تیغ و کنترل کیفیت خروجی است.',
   fileFormat: 'PDF / AI',
   fileSize: '5.2 MB',
-  downloadUrl: '#'
-}
-
-const resourcesMap: Record<string, typeof fallbackResource> = {
-  'catalog-general-2026': {
-    title: 'کاتالوگ جامع محصولات و خدمات چاپ نجم',
-    categoryLabel: 'کاتالوگ',
-    description: 'معرفی جامع خطوط تولید چاپ افست، انواع جعبه‌های مقوایی، هاردباکس، ساک‌های دستی و نمونه‌های تولیدی سال جاری با تصاویر و توضیحات کامل.',
-    fileFormat: 'PDF',
-    fileSize: '14.2 MB',
-    downloadUrl: '#'
+  downloadUrl: '#',
+  overviewTitle: 'درباره این فایل',
+  specsTitle: 'مشخصات و الزامات فنی',
+  specs: {
+    software: 'Adobe CC / Acrobat',
+    version: '1404 / 2026'
   },
-  'catalog-luxury-packaging': {
-    title: 'کاتالوگ بسته‌بندی‌های لوکس و هاردباکس',
-    categoryLabel: 'کاتالوگ',
-    description: 'نمونه ساختارهای ویژه جعبه‌های مگنتی، کشویی، روکش‌دار و جلوه‌های طلاکوب و یووی موضعی مناسب برندهای لوکس.',
-    fileFormat: 'PDF',
-    fileSize: '18.5 MB',
-    downloadUrl: '#'
-  },
-  'guide-cmyk-color-profile': {
-    title: 'راهنمای آماده‌سازی فایل و پروفایل رنگی CMYK',
-    categoryLabel: 'راهنمای فنی',
-    description: 'دستورالعمل خروجی استاندارد PDF/X-1a، تنظیم رزولوشن ۳۰۰DPI، درصد ترکیب رنگ مشکی پرکلاغی و نکات Overprint.',
-    fileFormat: 'PDF',
-    fileSize: '3.8 MB',
-    downloadUrl: '#'
-  },
-  'template-tuck-end-box': {
-    title: 'قالب تیغ استاندارد جعبه درب‌دار (Tuck-End)',
-    categoryLabel: 'قالب تیغ',
-    description: 'فایل برداری وکتور خطوط تیغ، خط‌تا و زبانه چسب در فرمت‌های Adobe Illustrator و PDF آماده جایگذاری طرح.',
-    fileFormat: 'AI / PDF',
-    fileSize: '5.4 MB',
-    downloadUrl: '#'
-  }
+  guidelinesTitle: 'نکات مهم قبل از ارسال فایل به چاپخانه:',
+  guidelines: [
+    'فونت‌های استفاده شده را حتماً به منحنی (Create Outlines / Convert to Curves) تبدیل کنید.',
+    'تمامی تصاویر باید با مود رنگی CMYK و رزولوشن ۳۰۰DPI در فایل درج شده باشند.',
+    'برای اقلام دارای قالب تیغ، لایه Die-Cut را با رنگ اسپات (Spot Color) مجزا و نامگذاری مشخص قرار دهید.'
+  ],
+  contactCta: 'نیاز به راهنمایی بیشتر یا طراحی قالب اختصاصی دارید؟',
+  contactBtn: 'تماس با واحد لیتوگرافی و طراحی'
 }
 
 const currentResource = computed(() => {
-  return resourcesMap[slug.value] || {
+  const dynamicUi = ui.value || {}
+  if (dynamicUi && Object.keys(dynamicUi).length > 0 && dynamicUi.title) {
+    return dynamicUi
+  }
+  return {
     ...fallbackResource,
-    title: slug.value.replace(/-/g, ' ') || fallbackResource.title
+    title: fileSlug.value.replace(/-/g, ' ') || fallbackResource.title
   }
 })
 </script>

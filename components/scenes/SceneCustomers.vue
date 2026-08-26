@@ -2,10 +2,10 @@
 <!-- ScenePromo6.vue -->
 <template>
   <section :dir="isRTL? 'rtl' : 'ltr'" lang="fa" class="relative py-32 mx-0  text-center">
-    <h2 class="text-lg text-d4 font-extrabold">
+    <h2 class="text-lg text-d4 font-extrabold" v-editable="'sceneCustomers.heading'">
       {{ data.heading }}
     </h2>
-    <p class="mt-4 text-d4 text-xs font-medium text-gray-600">
+    <p class="mt-4 text-d4 text-xs font-medium text-gray-600" v-editable="'sceneCustomers.description'">
       {{ data.description }}
     </p>
 
