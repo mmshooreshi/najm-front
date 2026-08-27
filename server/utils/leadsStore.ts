@@ -3,11 +3,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const PB_SERVER_URL = 'http://65.108.80.205:8090'
-const PB_SUPERUSER_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc4NzE0NjU0MSwiaWQiOiJha3ZrOTZnNDMyODk4bDEiLCJyZWZyZXNoYWJsZSI6dHJ1ZSwidHlwZSI6ImF1dGgifQ.auLVQl1bXPsuGHbXWaqtohXZeI0wYfu-cdp-UBXmV_0'
-
+const LEADS_PAGE_ID = 'z2962w7ya816ei0'
 const LEADS_FILE_PATH = path.resolve(process.cwd(), '.data', 'leads.json')
 
-// In-memory fallback for serverless environments (Vercel, AWS Lambda) where fs is read-only
+// In-memory fallback for serverless environments (Vercel, AWS Lambda)
 let inMemoryLeads: any[] = []
 
 function ensureStorageDir() {
@@ -19,9 +18,7 @@ function ensureStorageDir() {
     if (!fs.existsSync(LEADS_FILE_PATH)) {
       fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify([]), 'utf-8')
     }
-  } catch (err) {
-    // Read-only filesystem in serverless environments (e.g. Vercel)
-  }
+  } catch (err) {}
 }
 
 export function readLocalLeads(): any[] {
@@ -35,9 +32,7 @@ export function readLocalLeads(): any[] {
         return parsed
       }
     }
-  } catch (err) {
-    // Filesystem read failed or read-only environment
-  }
+  } catch (err) {}
   return inMemoryLeads
 }
 
@@ -46,62 +41,58 @@ export function writeLocalLeads(leads: any[]) {
   try {
     ensureStorageDir()
     fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), 'utf-8')
-  } catch (err) {
-    // Filesystem write failed in read-only environment
-  }
+  } catch (err) {}
 }
 
+/** Fetch all leads from remote PocketBase with local fallback */
 export async function getAllLeads(): Promise<any[]> {
-  const localLeads = readLocalLeads()
-
-  // Try PocketBase
   try {
-    const res: any = await $fetch(`${PB_SERVER_URL}/api/collections/messages/records`, {
-      headers: { Authorization: PB_SUPERUSER_TOKEN },
-      query: { perPage: 200, sort: '-created' },
-      timeout: 3000
+    const res: any = await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${LEADS_PAGE_ID}`, {
+      timeout: 4000
     }).catch(() => null)
 
-    if (res?.items && Array.isArray(res.items)) {
-      const pbLeads = res.items.map((m: any) => ({
-        id: m.id,
-        name: m.name || 'کاربر سایت',
-        phone: m.phone || '',
-        company: m.company || '',
-        category: m.category || 'هاردباکس لوکس',
-        quantity: typeof m.quantity === 'object' ? `${m.quantity.min || 1000} عدد` : (m.quantity || '۱,۰۰۰ عدد'),
-        timeSlot: m.timeSlot || 'صبح (۹:۰۰ الی ۱۲:۰۰)',
-        mockupRequested: Boolean(m.mockupRequested),
-        description: m.description || '',
-        status: m.status || 'new',
-        sourcePage: m.sourcePage || '/',
-        referer: m.referer || 'ورود مستقیم',
-        device: m.device || 'Mobile',
-        timeOnSite: m.timeOnSite || '۱ دقیقه',
-        journey: m.journey || 'صفحه اصلی',
-        productContext: m.productContext || m.category || '',
-        created: m.created ? new Date(m.created).toLocaleDateString('fa-IR') : 'امروز',
-        source: 'pocketbase'
-      }))
-
-      // Merge PB leads with local leads
-      const seenIds = new Set(pbLeads.map((l: any) => l.id))
-      const combined = [...pbLeads]
-      for (const loc of localLeads) {
-        if (!seenIds.has(loc.id)) {
-          seenIds.add(loc.id)
-          combined.push(loc)
+    if (res && res.uiData) {
+      let parsed: any = res.uiData
+      if (typeof parsed === 'string') {
+        try {
+          parsed = JSON.parse(parsed)
+        } catch {
+          parsed = []
         }
       }
-      return combined
+      if (Array.isArray(parsed)) {
+        inMemoryLeads = parsed
+        writeLocalLeads(parsed)
+        return parsed
+      }
     }
   } catch (err) {}
 
-  return localLeads
+  return readLocalLeads()
+}
+
+/** Save full leads array to remote PocketBase */
+async function syncLeadsToPB(leads: any[]): Promise<boolean> {
+  try {
+    await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${LEADS_PAGE_ID}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: {
+        uiData: leads
+      },
+      timeout: 4000
+    })
+    return true
+  } catch (err) {
+    return false
+  }
 }
 
 export async function createLead(lead: any): Promise<any> {
-  const localLeads = readLocalLeads()
+  // Always fetch latest leads first to prevent overwriting
+  let leads = await getAllLeads()
+  if (!Array.isArray(leads)) leads = []
+
   const newLead = {
     id: `req-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     ...lead,
@@ -110,81 +101,32 @@ export async function createLead(lead: any): Promise<any> {
     timestamp: Date.now()
   }
 
-  // Save to local / in-memory
-  localLeads.unshift(newLead)
-  writeLocalLeads(localLeads)
+  // Prepend to top
+  leads.unshift(newLead)
+  writeLocalLeads(leads)
 
-  // Try PocketBase in background
-  try {
-    await $fetch(`${PB_SERVER_URL}/api/collections/messages/records`, {
-      method: 'POST',
-      headers: {
-        Authorization: PB_SUPERUSER_TOKEN,
-        'Content-Type': 'application/json'
-      },
-      body: {
-        name: newLead.name,
-        phone: newLead.phone,
-        company: newLead.company,
-        category: newLead.category,
-        quantity: newLead.quantity,
-        timeSlot: newLead.timeSlot,
-        mockupRequested: newLead.mockupRequested,
-        description: newLead.description,
-        status: newLead.status,
-        sourcePage: newLead.sourcePage,
-        referer: newLead.referer,
-        device: newLead.device,
-        timeOnSite: newLead.timeOnSite,
-        journey: newLead.journey,
-        productContext: newLead.productContext
-      },
-      timeout: 3000
-    }).catch(() => null)
-  } catch (err) {}
+  // Save to PocketBase
+  await syncLeadsToPB(leads)
 
   return newLead
 }
 
 export async function updateLeadStatus(id: string, patch: any): Promise<boolean> {
-  const localLeads = readLocalLeads()
-  const idx = localLeads.findIndex(l => l.id === id)
+  const leads = await getAllLeads()
+  const idx = leads.findIndex(l => l.id === id)
   if (idx !== -1) {
-    localLeads[idx] = { ...localLeads[idx], ...patch }
-    writeLocalLeads(localLeads)
+    leads[idx] = { ...leads[idx], ...patch }
+    writeLocalLeads(leads)
+    await syncLeadsToPB(leads)
+    return true
   }
-
-  try {
-    if (!id.startsWith('req-')) {
-      await $fetch(`${PB_SERVER_URL}/api/collections/messages/records/${id}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: PB_SUPERUSER_TOKEN,
-          'Content-Type': 'application/json'
-        },
-        body: patch,
-        timeout: 3000
-      }).catch(() => null)
-    }
-  } catch {}
-
-  return true
+  return false
 }
 
 export async function removeLead(id: string): Promise<boolean> {
-  const localLeads = readLocalLeads()
-  const updated = localLeads.filter(l => l.id !== id)
+  const leads = await getAllLeads()
+  const updated = leads.filter(l => l.id !== id)
   writeLocalLeads(updated)
-
-  try {
-    if (!id.startsWith('req-')) {
-      await $fetch(`${PB_SERVER_URL}/api/collections/messages/records/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: PB_SUPERUSER_TOKEN },
-        timeout: 3000
-      }).catch(() => null)
-    }
-  } catch {}
-
+  await syncLeadsToPB(updated)
   return true
 }
