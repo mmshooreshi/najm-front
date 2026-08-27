@@ -2,6 +2,7 @@
 import { defineEventHandler, getQuery } from 'h3'
 import fs from 'node:fs'
 import path from 'node:path'
+import { staticMediaCatalog } from '~/server/utils/staticMediaCatalog'
 
 const PB_SERVER_URL = 'http://65.108.80.205:8090'
 const PB_SUPERUSER_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc4NzE0NjU0MSwiaWQiOiJha3ZrOTZnNDMyODk4bDEiLCJyZWZyZXNoYWJsZSI6dHJ1ZSwidHlwZSI6ImF1dGgifQ.auLVQl1bXPsuGHbXWaqtohXZeI0wYfu-cdp-UBXmV_0'
@@ -65,7 +66,7 @@ export default defineEventHandler(async (event) => {
   const allItems: any[] = []
   const seenUrls = new Set<string>()
 
-  // 1. Fetch from PocketBase
+  // 1. Fetch uploaded assets from PocketBase
   try {
     const res: any = await $fetch(`${PB_SERVER_URL}/api/collections/media_files/records`, {
       headers: { Authorization: PB_SUPERUSER_TOKEN },
@@ -105,18 +106,29 @@ export default defineEventHandler(async (event) => {
     }
   } catch (err) {}
 
-  // 2. Scan Local Static Directories in public/
-  const publicDir = path.resolve(process.cwd(), 'public')
-  const localFiles = scanLocalDirectory(publicDir, publicDir)
+  // 2. Scan Local Static Directories in public/ (available in local dev)
+  try {
+    const publicDir = path.resolve(process.cwd(), 'public')
+    const localFiles = scanLocalDirectory(publicDir, publicDir)
+    for (const item of localFiles) {
+      if (!seenUrls.has(item.url)) {
+        seenUrls.add(item.url)
+        allItems.push(item)
+      }
+    }
+  } catch (err) {}
 
-  for (const item of localFiles) {
-    if (!seenUrls.has(item.url)) {
-      seenUrls.add(item.url)
-      allItems.push(item)
+  // 3. Fallback to Bundled Static Media Catalog (ensures 100% coverage on serverless Vercel)
+  if (Array.isArray(staticMediaCatalog)) {
+    for (const item of staticMediaCatalog) {
+      if (!seenUrls.has(item.url)) {
+        seenUrls.add(item.url)
+        allItems.push(item)
+      }
     }
   }
 
-  // 3. Filter
+  // 4. Filter
   let filtered = allItems
   if (search) {
     filtered = filtered.filter(i =>
