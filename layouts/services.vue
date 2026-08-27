@@ -59,19 +59,19 @@ const serviceSlug = computed(() => (route.params.slug as string) || '')
 const { ui } = usePageUI(`services-${serviceSlug.value}`)
 
 const topLabel = computed(
-  () => ui.value?.layout?.topLabel ?? 'خدمات تخصصی چاپ و بسته‌بندی'
+  () => ui.value?.layout?.topLabel ?? (isRTL.value ? 'خدمات تخصصی چاپ و بسته‌بندی' : 'Industrial Printing & Packaging Services')
 )
 
 const primaryCtaLabel = computed(() => {
   const p = ui.value?.layout?.bottomButtons?.primary
-  if (!p) return 'استعلام و تماس با ما'
-  return typeof p === 'string' ? p : p.label || 'استعلام و تماس'
+  if (!p) return isRTL.value ? 'استعلام و تماس با ما' : 'Inquire & Contact Us'
+  return typeof p === 'string' ? p : p.label || (isRTL.value ? 'استعلام و تماس' : 'Inquire & Contact')
 })
 
 const secondaryCtaLabel = computed(() => {
   const s = ui.value?.layout?.bottomButtons?.secondary
-  if (!s) return 'دانلود کاتالوگ و قالب‌ها'
-  return typeof s === 'string' ? s : s.label || 'دانلود کاتالوگ'
+  if (!s) return isRTL.value ? 'دانلود کاتالوگ و قالب‌ها' : 'Download Catalog & Templates'
+  return typeof s === 'string' ? s : s.label || (isRTL.value ? 'دانلود کاتالوگ' : 'Download Catalog')
 })
 </script>
 

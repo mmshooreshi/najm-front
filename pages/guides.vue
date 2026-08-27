@@ -87,7 +87,7 @@
               :to="`/resources/${guide.fileSlug}`"
               class="px-5 py-2.5 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold text-center transition flex-1 sm:w-full whitespace-nowrap"
             >
-              مطالعه / Read
+              {{ isRTL ? 'مطالعه مقاله' : 'Read Guide' }}
             </NuxtLink>
             <a
               :href="guide.pdfUrl || '#'"
@@ -95,12 +95,12 @@
               class="px-5 py-2.5 rounded-xl bg-najmgreen text-white hover:bg-emerald-800 text-xs font-bold text-center flex items-center justify-center gap-1 transition flex-1 sm:w-full shadow-xs whitespace-nowrap"
             >
               <Icon name="mdi:download" class="w-4 h-4" />
-              <span>دانلود PDF</span>
+              <span>{{ isRTL ? 'دانلود PDF' : 'Download PDF' }}</span>
             </a>
           </div>
         </div>
 
-        <AdminAddCardPlaceholder path="guides" label="افزودن راهنمای فنی جدید" />
+        <AdminAddCardPlaceholder path="guides" :label="isRTL ? 'افزودن راهنمای فنی جدید' : 'Add New Technical Guide'" />
       </div>
     </div>
 

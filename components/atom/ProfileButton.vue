@@ -12,7 +12,7 @@
 
     {{ isAuthenticated && user.name
         ? `${user?.name} ${user?.familyName}` 
-        : 'ورود' 
+        : loginText 
     }}
 
             <Icon
@@ -27,14 +27,25 @@
 
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import profileUserIcon from '~/assets/icons/profile-user-icon.svg'
 import { useMediaQuery } from '@vueuse/core'
+import { useLocale } from '~/composables/useLocale'
 
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')
 
 const { user, isAuthenticated } = useAuth()
+const { language } = useLocale()
+
+const loginText = computed(() => {
+  const lang = (language.value || 'FA').toUpperCase()
+  if (lang === 'EN') return 'Login'
+  if (lang === 'AR') return 'تسجيل الدخول'
+  return 'ورود'
+})
+
 function handleLogin() {
   // login logic if needed
 }

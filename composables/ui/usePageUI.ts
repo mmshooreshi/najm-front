@@ -11,6 +11,25 @@ type AllUi = Record<string, UiForLang>
  * Returns CURRENT language UI plus ALL languages for the slug.
  * Remote-first with local JSON fallback per-language.
  */
+function deepMerge(target: any, source: any): any {
+  if (!target || typeof target !== 'object') return source ?? target
+  if (!source || typeof source !== 'object') return target ?? source
+  if (Array.isArray(target) && Array.isArray(source)) {
+    return source.length > 0 ? source : target
+  }
+  const result = { ...target }
+  for (const key of Object.keys(source)) {
+    if (source[key] !== undefined && source[key] !== null) {
+      if (typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        result[key] = deepMerge(target[key] || {}, source[key])
+      } else {
+        result[key] = source[key]
+      }
+    }
+  }
+  return result
+}
+
 export function usePageUI(
   slug: string
 ): {
@@ -57,13 +76,10 @@ export function usePageUI(
     for (const lang of langs) {
       const lower = lang.toLowerCase()
       const upper = lang.toUpperCase()
-      const remoteUI = remoteAll?.[lower] || remoteAll?.[upper] || remoteAll?.[lang]
-      const localUI = local?.[lower] || local?.[upper] || local?.[lang]
+      const remoteUI = remoteAll?.[lower] || remoteAll?.[upper] || remoteAll?.[lang] || {}
+      const localUI = local?.[lower] || local?.[upper] || local?.[lang] || {}
 
-      const chosen =
-        (remoteUI && Object.keys(remoteUI).length > 0)
-          ? remoteUI
-          : (localUI ?? {})
+      const chosen = deepMerge(localUI, remoteUI)
       out[lower] = chosen
       out[upper] = chosen
     }

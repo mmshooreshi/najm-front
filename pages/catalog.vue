@@ -143,13 +143,13 @@
               class="w-full py-2.5 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold flex items-center justify-center gap-1.5 transition"
             >
               <Icon name="mdi:download" class="w-3.5 h-3.5" />
-              <span>دانلود نسخه PDF</span>
+              <span>{{ isRTL ? 'دانلود نسخه PDF' : 'Download PDF' }}</span>
             </a>
           </div>
         </div>
 
         <!-- Add New Catalog Card Placeholder -->
-        <AdminAddCardPlaceholder path="catalogs" label="افزودن کاتالوگ جدید" />
+        <AdminAddCardPlaceholder path="catalogs" :label="isRTL ? 'افزودن کاتالوگ جدید' : 'Add New Catalog'" />
       </div>
     </div>
 

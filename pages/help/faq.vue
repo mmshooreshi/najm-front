@@ -35,11 +35,14 @@
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3 sm:space-y-4">
       <div
         v-for="(item, idx) in filteredFaqs"
-        :key="item.id"
-        class="bg-white rounded-2xl sm:rounded-3xl border transition-all duration-200 overflow-hidden shadow-xs"
+        :key="item.id || idx"
+        class="relative bg-white rounded-2xl sm:rounded-3xl border transition-all duration-200 overflow-hidden shadow-xs group"
         :class="openIndex === idx ? 'border-najmgreen/50 ring-1 ring-najmgreen/10' : 'border-gray-200 hover:border-gray-300'"
       >
-        <!-- Accordion Header Button (min-h 48px touch target) -->
+        <!-- In-place Item Action [+] / [-] -->
+        <AdminArrayItemActions path="faqs" :index="idx" />
+
+        <!-- Accordion Header Button -->
         <button
           @click="toggleFaq(idx)"
           class="w-full p-4 sm:p-6 text-right flex items-center justify-between gap-3 sm:gap-4 cursor-pointer select-none"
@@ -48,7 +51,7 @@
             <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-xl bg-najmgrey text-najmgreen font-bold text-xs flex items-center justify-center font-mono shrink-0">
               ۰{{ idx + 1 }}
             </span>
-            <h2 class="text-xs sm:text-base font-bold text-gray-900 text-d4 leading-snug">
+            <h2 class="text-xs sm:text-base font-bold text-gray-900 text-d4 leading-snug break-words" v-editable="`faqs.${idx}.question`">
               {{ item.question }}
             </h2>
           </div>
@@ -63,23 +66,29 @@
           v-if="openIndex === idx"
           class="px-4 sm:px-6 pb-5 sm:pb-6 pt-0 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 mt-1 sm:mt-2 pt-3 sm:pt-4 text-right"
         >
-          <p class="whitespace-pre-line">{{ item.answer }}</p>
+          <p class="whitespace-pre-line break-words" v-editable="`faqs.${idx}.answer`">{{ item.answer }}</p>
         </div>
       </div>
+
+      <AdminAddCardPlaceholder path="faqs" label="افزودن پرسش و پاسخ متداول جدید" />
     </main>
 
     <!-- Bottom Contact Support -->
     <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16">
       <div class="bg-white rounded-3xl p-6 sm:p-10 border border-najmborder/40 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 text-center sm:text-right">
         <div class="space-y-1">
-          <h3 class="text-sm sm:text-base font-bold text-gray-900 text-d4">پاسخ سوال خود را نیافتید؟</h3>
-          <p class="text-xs text-gray-500">کارشناسان فنی مجتمع چاپ نجم در تمامی روزهای کاری آماده پاسخگویی به شما هستند.</p>
+          <h3 class="text-sm sm:text-base font-bold text-gray-900 text-d4 break-words" v-editable="'supportCtaTitle'">
+            {{ ui?.supportCtaTitle || 'پاسخ سوال خود را نیافتید؟' }}
+          </h3>
+          <p class="text-xs text-gray-500 break-words" v-editable="'supportCtaDesc'">
+            {{ ui?.supportCtaDesc || 'کارشناسان فنی مجتمع چاپ نجم در تمامی روزهای کاری آماده پاسخگویی به شما هستند.' }}
+          </p>
         </div>
         <NuxtLink
           to="/contact"
           class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs transition shadow-xs whitespace-nowrap text-d4 text-center"
         >
-          ارتباط با واحد پشتیبانی
+          <span v-editable="'supportCtaBtn'">{{ ui?.supportCtaBtn || 'ارتباط با واحد پشتیبانی' }}</span>
         </NuxtLink>
       </div>
     </section>
@@ -89,6 +98,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
@@ -99,7 +109,9 @@ definePageMeta({
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-const { ui } = usePageUI('faq')
+const { ui, allUi } = usePageUI('faq')
+useAdminEditable('faq', allUi)
+
 const selectedCategory = ref('all')
 const openIndex = ref<number | null>(0)
 

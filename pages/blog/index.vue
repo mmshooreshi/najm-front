@@ -35,10 +35,13 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <article
-          v-for="post in filteredPosts"
-          :key="post.id"
-          class="bg-white rounded-3xl overflow-hidden shadow-xs border border-najmborder/40 hover:shadow-md hover:border-najmgreen transition-all duration-300 flex flex-col justify-between group"
+          v-for="(post, pIdx) in filteredPosts"
+          :key="post.id || pIdx"
+          class="relative bg-white rounded-3xl overflow-hidden shadow-xs border border-najmborder/40 hover:shadow-md hover:border-najmgreen transition-all duration-300 flex flex-col justify-between group"
         >
+          <!-- Article Action [+] / [-] -->
+          <AdminArrayItemActions path="posts" :index="pIdx" />
+
           <div class="space-y-4">
             <!-- Article Image -->
             <NuxtLink :to="`/blog/${post.slug}`" class="block aspect-[16/10] overflow-hidden bg-gray-100 relative">
@@ -48,7 +51,7 @@
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="lazy"
               />
-              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-najmgreen text-white text-[10px] font-bold text-d4 shadow-xs">
+              <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-najmgreen text-white text-[10px] font-bold text-d4 shadow-xs" v-editable="`posts.${pIdx}.categoryLabel`">
                 {{ post.categoryLabel }}
               </span>
             </NuxtLink>
@@ -56,18 +59,18 @@
             <!-- Content Details -->
             <div class="p-5 sm:p-6 pt-0 space-y-2.5 sm:space-y-3 text-right">
               <div class="flex items-center gap-2 text-[11px] text-gray-400">
-                <span>{{ post.date }}</span>
+                <span v-editable="`posts.${pIdx}.date`">{{ post.date }}</span>
                 <span>•</span>
-                <span>زمان مطالعه: {{ post.readTime }}</span>
+                <span>زمان مطالعه: <span v-editable="`posts.${pIdx}.readTime`">{{ post.readTime }}</span></span>
               </div>
 
-              <h2 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 text-d4 group-hover:text-najmgreen transition-colors leading-snug">
+              <h2 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 text-d4 group-hover:text-najmgreen transition-colors leading-snug break-words" v-editable="`posts.${pIdx}.title`">
                 <NuxtLink :to="`/blog/${post.slug}`">
                   {{ post.title }}
                 </NuxtLink>
               </h2>
 
-              <p class="text-xs text-gray-500 line-clamp-3 leading-relaxed">
+              <p class="text-xs text-gray-500 line-clamp-3 leading-relaxed break-words" v-editable="`posts.${pIdx}.excerpt`">
                 {{ post.excerpt }}
               </p>
             </div>
@@ -79,9 +82,11 @@
               <span>مطالعه کامل مقاله</span>
               <Icon name="mdi:arrow-left" class="w-4 h-4" />
             </NuxtLink>
-            <span class="text-gray-400 font-normal text-[11px]">نویسنده: {{ post.author }}</span>
+            <span class="text-gray-400 font-normal text-[11px]">نویسنده: <span v-editable="`posts.${pIdx}.author`">{{ post.author }}</span></span>
           </div>
         </article>
+
+        <AdminAddCardPlaceholder path="posts" label="افزودن مقاله وبلاگ جدید" />
       </div>
     </main>
   </div>
@@ -89,6 +94,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useDynamicPosts } from '~/composables/useDynamicData'
 
 definePageMeta({
@@ -96,16 +103,19 @@ definePageMeta({
   layout: 'default'
 })
 
+const { ui, allUi } = usePageUI('blog')
+useAdminEditable('blog', allUi)
+
 const selectedCategory = ref('all')
 const { posts: remotePosts } = useDynamicPosts(selectedCategory)
 
-const categories = [
+const categories = computed(() => ui.value?.categories || [
   { id: 'all', label: 'همه مقالات' },
   { id: 'materials', label: 'متریال و انواع مقوا' },
   { id: 'packaging', label: 'طراحی ساختار بسته‌بندی' },
   { id: 'finishing', label: 'تکنیک‌های چاپ و پس از چاپ' },
   { id: 'export', label: 'استانداردهای صادراتی' }
-]
+])
 
 const fallbackPosts = [
   {
@@ -143,47 +153,17 @@ const fallbackPosts = [
     date: '۱۰ اردیبهشت ۱۴۰۴',
     readTime: '۵ دقیقه',
     author: 'سرپرست خطوط افست'
-  },
-  {
-    id: 4,
-    slug: 'packaging-design-export-standards',
-    title: 'اصول طراحی بسته‌بندی صادراتی برای بازارهای حوزه خلیج فارس و اوراسیا',
-    excerpt: 'از استانداردهای ابعاد پالت‌های باربری تا انتخاب مرکب‌های مقاوم به نور خورشید و تست مقاومت کارتن‌های ایفلوت در مسیرهای طولانی ترانزیت.',
-    category: 'export',
-    categoryLabel: 'استاندارد صادرات',
-    image: '/images/svg/kraft-paper-open-mailing-box-mockup-2-6737.svg',
-    date: '۲ اردیبهشت ۱۴۰۴',
-    readTime: '۷ دقیقه',
-    author: 'واحد بازرگانی بین‌الملل'
-  },
-  {
-    id: 5,
-    slug: 'auto-bottom-vs-straight-tuck-boxes',
-    title: 'بررسی ساختار جعبه لاک‌باتم (Auto-Bottom) در مقایسه با جعبه‌های درب دارویی',
-    excerpt: 'چرا کارخانجات بزرگ دارویی و آرایشی استفاده از ساختار جعبه لاک‌باتم را برای افزایش راندمان خطوط بسته‌بندی ترجیح می‌دهند؟',
-    category: 'packaging',
-    categoryLabel: 'طراحی ساختار',
-    image: '/images/svg/kraft-paper-open-mailing-box-mockup-2-6737.svg',
-    date: '۲۲ فروردین ۱۴۰۴',
-    readTime: '۵ دقیقه',
-    author: 'واحد طراحی قالب'
-  },
-  {
-    id: 6,
-    slug: 'eco-friendly-kraft-packaging-trends',
-    title: 'روند صعودی بسته‌بندی‌های سبز و مقواهای کرافت بازیافت‌پذیر در سال ۲۰۲۶',
-    excerpt: 'چگونه برندهای پیشرو با جایگزینی پلاستیک با کاغذهای کرافت و مرکب‌های پایه سویا، وفاداری مشتریان نسل جدید را جلب می‌کنند.',
-    category: 'materials',
-    categoryLabel: 'متریال و مقوا',
-    image: '/images/svg/free-kraft-paper-shopping-bag-mockup-1.svg',
-    date: '۱۵ فروردین ۱۴۰۴',
-    readTime: '۶ دقیقه',
-    author: 'دپارتمان پایداری'
   }
 ]
 
+const postsList = computed(() => {
+  if (ui.value?.posts?.length) return ui.value.posts
+  if (remotePosts.value?.length) return remotePosts.value
+  return fallbackPosts
+})
+
 const filteredPosts = computed(() => {
-  if (selectedCategory.value === 'all') return posts
-  return posts.filter(p => p.category === selectedCategory.value)
+  if (selectedCategory.value === 'all') return postsList.value
+  return postsList.value.filter((p: any) => p.category === selectedCategory.value)
 })
 </script>

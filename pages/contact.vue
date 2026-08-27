@@ -134,7 +134,8 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.nameLabel'">
-                {{ uiContent.form.nameLabel || 'نام و نام خانوادگی *' }}
+                {{ (uiContent.form.nameLabel || 'نام و نام خانوادگی').replace(/\*+/g, '').trim() }}
+                <span class="text-rose-500 mr-0.5">*</span>
               </label>
               <input
                 v-model="form.name"
@@ -145,16 +146,11 @@
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.phoneLabel'">
-                {{ uiContent.form.phoneLabel || 'شماره تماس همراه *' }}
-              </label>
-              <input
+              <SmartPhoneInput
                 v-model="form.phone"
-                type="tel"
-                inputmode="tel"
+                :label="uiContent.form.phoneLabel || 'شماره تماس همراه'"
                 required
-                :placeholder="uiContent.form.phonePlaceholder"
-                class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition ltr text-right font-mono"
+                :placeholder="uiContent.form.phonePlaceholder || '۰۹۱۲۳۴۵۶۷۸۹'"
               />
             </div>
           </div>
