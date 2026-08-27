@@ -1,9 +1,19 @@
 // plugins/pb.client.ts
 import PocketBase from 'pocketbase'
-import { defineNuxtPlugin, useCookie } from '#app'
+import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-  const pb = new PocketBase(useRuntimeConfig().public.pbUrl)
+  const config = useRuntimeConfig()
+  let pbUrl = config.public?.pbUrl || 'http://65.108.80.205:8090'
+
+  // If loaded in browser over HTTPS and PocketBase is HTTP, use same-origin proxy to eliminate Mixed Content errors
+  if (process.client && typeof window !== 'undefined') {
+    if (window.location.protocol === 'https:' && pbUrl.startsWith('http://')) {
+      pbUrl = `${window.location.origin}/api/pb`
+    }
+  }
+
+  const pb = new PocketBase(pbUrl)
 
   if (process.client) {
     const token = useCookie<string>('pb_admin')
@@ -22,7 +32,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   nuxtApp.provide('pb', pb)
 })
-
 
 export const usePocketBase = () =>
   useNuxtApp().$pb as PocketBase
