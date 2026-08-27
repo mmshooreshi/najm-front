@@ -509,16 +509,28 @@
                 </div>
 
                 <!-- TAB 5: GALLERY -->
-                <div v-else-if="activeTab === 'gallery'" class="space-y-3">
+                <div v-else-if="activeTab === 'gallery'" class="space-y-3 flex-1 flex flex-col min-h-0">
                   <div class="flex items-center justify-between">
                     <h3 class="text-xs font-bold text-white font-d4">گالری فایل‌های سایت</h3>
                     <button
                       type="button"
-                      class="text-zinc-400 hover:text-white cursor-pointer"
+                      class="text-zinc-400 hover:text-white cursor-pointer p-1 rounded-lg hover:bg-white/5 transition-colors"
+                      title="تازه‌سازی لیست"
                       @click="fetchGalleryItems"
                     >
                       <AdminIcon name="rotate" class="w-3.5 h-3.5" :class="{ 'animate-spin': isFetchingGallery }" />
                     </button>
+                  </div>
+
+                  <!-- Gallery Search -->
+                  <div class="relative">
+                    <input
+                      v-model="gallerySearchQuery"
+                      type="text"
+                      placeholder="جستجو در نام فایل..."
+                      class="w-full h-8 pr-7 pl-2.5 rounded-xl bg-zinc-900 border border-white/10 text-[11px] text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 font-mono"
+                    />
+                    <AdminIcon name="search" class="w-3 h-3 text-zinc-500 absolute right-2 top-2.5 pointer-events-none" />
                   </div>
 
                   <!-- Category filter chips -->
@@ -535,11 +547,13 @@
                     </button>
                   </div>
 
-                  <div class="max-h-64 overflow-y-auto grid grid-cols-3 gap-2 custom-scrollbar">
+                  <!-- Full Height Gallery Grid -->
+                  <div class="flex-1 overflow-y-auto grid grid-cols-3 gap-2 custom-scrollbar pr-0.5 min-h-[380px]">
                     <div
                       v-for="item in filteredGalleryItems"
                       :key="item.url"
-                      class="group relative aspect-square rounded-xl bg-zinc-900 border border-white/10 overflow-hidden cursor-pointer hover:border-emerald-500/60 transition-all flex items-center justify-center p-1"
+                      class="group relative aspect-square rounded-xl bg-zinc-900 border overflow-hidden cursor-pointer hover:border-emerald-500/60 transition-all flex items-center justify-center p-1"
+                      :class="currentMediaUrl === item.url ? 'border-emerald-500 ring-2 ring-emerald-500/30' : 'border-white/10'"
                       @click="loadFromGallery(item)"
                     >
                       <img
@@ -727,9 +741,22 @@ const cropOverlayStyle = computed(() => {
   }
 })
 
+const gallerySearchQuery = ref('')
+
 const filteredGalleryItems = computed(() => {
-  if (galleryCategory.value === 'all') return galleryItems.value
-  return galleryItems.value.filter(i => i.category === galleryCategory.value)
+  let list = galleryItems.value
+  if (galleryCategory.value !== 'all') {
+    list = list.filter(i => i.category === galleryCategory.value)
+  }
+  if (gallerySearchQuery.value) {
+    const q = gallerySearchQuery.value.toLowerCase()
+    list = list.filter(i =>
+      i.filename?.toLowerCase().includes(q) ||
+      i.format?.toLowerCase().includes(q) ||
+      i.url?.toLowerCase().includes(q)
+    )
+  }
+  return list
 })
 
 function onWheelZoom(e: WheelEvent) {
