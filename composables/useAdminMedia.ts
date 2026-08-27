@@ -238,10 +238,17 @@ export function useAdminMedia() {
     })
   }
 
-  /** Upload media via server endpoint */
-  async function uploadMedia(file: File, onProgress?: (percent: number) => void): Promise<{ url: string; id?: string }> {
+  /** Upload media via server endpoint with optional target folder path */
+  async function uploadMedia(
+    file: File,
+    onProgress?: (percent: number) => void,
+    targetPath = ''
+  ): Promise<{ url: string; id?: string }> {
     const formData = new FormData()
     formData.append('file', file)
+    if (targetPath) {
+      formData.append('path', targetPath)
+    }
 
     onProgress?.(30)
     try {
@@ -250,7 +257,7 @@ export function useAdminMedia() {
         body: formData
       })
       onProgress?.(100)
-      return { url: res?.url || res?.item?.url || '', id: res?.item?.id }
+      return { url: res?.url || res?.item?.url || '', id: res?.id || res?.item?.id }
     } catch (err: any) {
       logger.error('AdminMedia', 'Upload failed', err)
       throw err
