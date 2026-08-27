@@ -79,14 +79,14 @@
         <div class="flex items-center justify-between w-full md:w-auto gap-3 shrink-0">
           <!-- Sort Dropdown -->
           <div class="flex items-center gap-1.5 text-xs text-gray-600">
-            <span class="text-d4 font-bold hidden sm:inline">مرتب‌سازی:</span>
+            <span class="text-d4 font-bold hidden sm:inline">{{ isRTL ? 'مرتب‌سازی:' : 'Sort by:' }}</span>
             <select
               v-model="sortBy"
               class="px-3 py-1.5 rounded-xl bg-najmgrey/80 border border-najmborder/40 text-xs font-bold text-gray-800 focus:outline-none focus:border-najmgreen transition cursor-pointer text-d4"
             >
-              <option value="popular">محبوب‌ترین و پرفروش</option>
-              <option value="minQtyAsc">حداقل تیراژ (کم به زیاد)</option>
-              <option value="leadTime">سریع‌ترین زمان تولید</option>
+              <option value="popular">{{ isRTL ? 'محبوب‌ترین و پرفروش' : 'Most Popular' }}</option>
+              <option value="minQtyAsc">{{ isRTL ? 'حداقل تیراژ (کم به زیاد)' : 'Min Run (Low to High)' }}</option>
+              <option value="leadTime">{{ isRTL ? 'سریع‌ترین زمان تولید' : 'Fastest Turnaround' }}</option>
             </select>
           </div>
 
@@ -96,7 +96,7 @@
               @click="viewMode = 'grid'"
               class="p-1.5 rounded-lg transition cursor-pointer"
               :class="viewMode === 'grid' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-500 hover:text-gray-900'"
-              title="نمای شبکه‌ای"
+              :title="isRTL ? 'نمای شبکه‌ای' : 'Grid View'"
             >
               <Icon name="mdi:view-grid" class="w-4 h-4" />
             </button>
@@ -104,7 +104,7 @@
               @click="viewMode = 'list'"
               class="p-1.5 rounded-lg transition cursor-pointer"
               :class="viewMode === 'list' ? 'bg-white text-najmgreen shadow-xs' : 'text-gray-500 hover:text-gray-900'"
-              title="نمای لیست و مقایسه"
+              :title="isRTL ? 'نمای لیست و مقایسه' : 'List View'"
             >
               <Icon name="mdi:view-list" class="w-4 h-4" />
             </button>
@@ -116,11 +116,11 @@
     <!-- Main Products Grid / List View Container -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
       <!-- Active Results Count -->
-      <div class="flex items-center justify-between mb-6 text-xs text-gray-500">
-        <span>نمایش <strong class="text-gray-900 font-bold font-mono">{{ filteredProducts.length }}</strong> محصول تخصصی</span>
+      <div class="flex items-center justify-between mb-6 text-xs text-gray-500" :class="isRTL ? 'text-right' : 'text-left'">
+        <span>{{ isRTL ? 'نمایش' : 'Showing' }} <strong class="text-gray-900 font-bold font-mono">{{ filteredProducts.length }}</strong> {{ isRTL ? 'محصول تخصصی' : 'products' }}</span>
         <span v-if="searchQuery" class="text-najmgreen">
-          فیلتر شده بر اساس عبارت «{{ searchQuery }}»
-          <button @click="searchQuery = ''" class="mr-1 text-red-500 hover:underline">× پاکسازی</button>
+          {{ isRTL ? `فیلتر شده بر اساس عبارت «${searchQuery}»` : `Filtered by "${searchQuery}"` }}
+          <button @click="searchQuery = ''" class="mx-1 text-red-500 hover:underline">{{ isRTL ? '× پاکسازی' : '× Clear' }}</button>
         </span>
       </div>
 
@@ -161,15 +161,15 @@
             <!-- Technical Specifications Tags -->
             <div class="pt-2 border-t border-gray-100 space-y-1.5 text-[11px]">
               <div class="flex items-center justify-between text-gray-600">
-                <span class="text-gray-400">متریال:</span>
+                <span class="text-gray-400">{{ isRTL ? 'متریال:' : 'Material:' }}</span>
                 <span class="font-bold text-gray-800">{{ prod.material }}</span>
               </div>
               <div class="flex items-center justify-between text-gray-600">
-                <span class="text-gray-400">حداقل سفارش:</span>
+                <span class="text-gray-400">{{ isRTL ? 'حداقل سفارش:' : 'Min Order:' }}</span>
                 <span class="font-bold text-najmgreen">{{ prod.minQty }}</span>
               </div>
               <div class="flex items-center justify-between text-gray-600">
-                <span class="text-gray-400">زمان تحویل:</span>
+                <span class="text-gray-400">{{ isRTL ? 'زمان تحویل:' : 'Lead Time:' }}</span>
                 <span class="text-gray-700">{{ prod.leadTime }}</span>
               </div>
             </div>
@@ -181,12 +181,12 @@
               :to="prod.to || '/contact'"
               class="flex-1 py-2 px-3 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold text-center transition text-d4"
             >
-              مشاهده و سفارش
+              {{ isRTL ? 'مشاهده و سفارش' : 'View & Order' }}
             </NuxtLink>
             <NuxtLink
               to="/contact"
               class="p-2 rounded-xl bg-najmgrey hover:bg-gray-200 text-gray-700 transition"
-              title="درخواست استعلام قیمت فوری"
+              :title="isRTL ? 'درخواست استعلام قیمت فوری' : 'Quick Quote'"
             >
               <Icon name="mdi:phone-outline" class="w-4 h-4" />
             </NuxtLink>
@@ -206,7 +206,7 @@
             <div class="w-24 h-24 rounded-2xl bg-[#F7F9FA] border border-gray-100 overflow-hidden flex items-center justify-center p-2 shrink-0">
               <img :src="prod.image" :alt="prod.title" class="w-full h-full object-contain group-hover:scale-105 transition-transform" />
             </div>
-            <div class="space-y-1 text-right">
+            <div class="space-y-1" :class="isRTL ? 'text-right' : 'text-left'">
               <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-600 text-d4">
                 {{ prod.categoryLabel }}
               </span>
@@ -222,15 +222,15 @@
           <!-- Middle Technical Details -->
           <div class="grid grid-cols-3 gap-4 text-xs w-full md:w-auto text-center border-t md:border-t-0 md:border-r border-gray-100 pt-3 md:pt-0 pr-0 md:pr-6">
             <div>
-              <div class="text-[10px] text-gray-400">متریال پایه</div>
+              <div class="text-[10px] text-gray-400">{{ isRTL ? 'متریال پایه' : 'Base Material' }}</div>
               <div class="font-bold text-gray-800 text-d4">{{ prod.material }}</div>
             </div>
             <div>
-              <div class="text-[10px] text-gray-400">حداقل تیراژ</div>
+              <div class="text-[10px] text-gray-400">{{ isRTL ? 'حداقل تیراژ' : 'Min Run' }}</div>
               <div class="font-bold text-najmgreen text-d4">{{ prod.minQty }}</div>
             </div>
             <div>
-              <div class="text-[10px] text-gray-400">زمان تحویل</div>
+              <div class="text-[10px] text-gray-400">{{ isRTL ? 'زمان تحویل' : 'Lead Time' }}</div>
               <div class="font-bold text-gray-800 text-d4">{{ prod.leadTime }}</div>
             </div>
           </div>
@@ -241,7 +241,7 @@
               :to="prod.to || '/contact'"
               class="flex-1 md:flex-initial py-2.5 px-5 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white text-xs font-bold text-center transition text-d4 shadow-xs"
             >
-              مشاهده و استعلام
+              {{ isRTL ? 'مشاهده و استعلام' : 'View & Inquire' }}
             </NuxtLink>
           </div>
         </div>
@@ -250,13 +250,13 @@
       <!-- Empty State -->
       <div v-if="filteredProducts.length === 0" class="bg-white rounded-3xl p-16 text-center space-y-4 border border-najmborder/40">
         <Icon name="mdi:package-variant-closed-remove" class="w-12 h-12 text-gray-300 mx-auto" />
-        <h3 class="text-base font-bold text-gray-900 text-d4">محصولی با این مشخصات یافت نشد</h3>
-        <p class="text-xs text-gray-500">لطفاً فیلترها را تغییر داده یا از کلمات کلیدی دیگری در جستجو استفاده نمایید.</p>
+        <h3 class="text-base font-bold text-gray-900 text-d4">{{ isRTL ? 'محصولی با این مشخصات یافت نشد' : 'No products found' }}</h3>
+        <p class="text-xs text-gray-500">{{ isRTL ? 'لطفاً فیلترها را تغییر داده یا از کلمات کلیدی دیگری در جستجو استفاده نمایید.' : 'Try adjusting your search or filters.' }}</p>
         <button
           @click="selectedCategory = 'all'; searchQuery = ''"
           class="px-5 py-2 rounded-xl bg-najmgrey hover:bg-gray-200 text-xs font-bold text-gray-800 text-d4 transition"
         >
-          مشاهده همه محصولات
+          {{ isRTL ? 'مشاهده همه محصولات' : 'Show All Products' }}
         </button>
       </div>
     </section>

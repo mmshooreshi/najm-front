@@ -8,6 +8,7 @@
       <img
         :src="imageSrc"
         :alt="title"
+        v-media-editable="mediaPath || ''"
         class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
       />
       <button
@@ -33,6 +34,7 @@ interface Props {
   subtitle?: string;
   buttonText?: string;
   to?: string;
+  mediaPath?: string;
 }
 
 const props = defineProps<Props>();

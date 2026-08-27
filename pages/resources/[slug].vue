@@ -5,9 +5,9 @@
     <header class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6" :class="isRTL ? 'text-right' : 'text-left'">
       <!-- Breadcrumbs -->
       <nav class="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
-        <NuxtLink to="/" class="hover:text-najmgreen">خانه</NuxtLink>
+        <NuxtLink to="/" class="hover:text-najmgreen transition">{{ isRTL ? 'خانه' : 'Home' }}</NuxtLink>
         <span>/</span>
-        <NuxtLink to="/resources" class="hover:text-najmgreen">منابع و قالب‌ها</NuxtLink>
+        <NuxtLink to="/resources" class="hover:text-najmgreen transition">{{ isRTL ? 'منابع و قالب‌ها' : 'Resources & Guides' }}</NuxtLink>
         <span>/</span>
         <span class="text-gray-900 font-bold text-d4 break-words" v-editable="'title'">{{ currentResource.title }}</span>
       </nav>
@@ -29,11 +29,11 @@
 
       <!-- Metadata Strip -->
       <div class="flex items-center gap-4 text-xs text-gray-500 border-y border-gray-200 py-3 flex-wrap">
-        <span>فرمت: <span class="font-bold text-gray-800" v-editable="'fileFormat'">{{ currentResource.fileFormat }}</span></span>
+        <span>{{ isRTL ? 'فرمت:' : 'Format:' }} <span class="font-bold text-gray-800" v-editable="'fileFormat'">{{ currentResource.fileFormat }}</span></span>
         <span>•</span>
-        <span>حجم فایل: <span class="font-bold text-gray-800" v-editable="'fileSize'">{{ currentResource.fileSize }}</span></span>
+        <span>{{ isRTL ? 'حجم فایل:' : 'File Size:' }} <span class="font-bold text-gray-800" v-editable="'fileSize'">{{ currentResource.fileSize }}</span></span>
         <span>•</span>
-        <span v-editable="'specs.version'">{{ currentResource.specs?.version || 'نسخه ۲۰۲۶' }}</span>
+        <span v-editable="'specs.version'">{{ currentResource.specs?.version || (isRTL ? 'نسخه ۲۰۲۶' : 'Edition 2026') }}</span>
       </div>
     </header>
 
@@ -47,10 +47,10 @@
           </div>
           <div>
             <h3 class="text-base font-bold text-gray-900 text-d4 break-words" v-editable="'downloadBoxTitle'">
-              {{ currentResource.downloadBoxTitle || 'دانلود بسته کامل فایل فنی' }}
+              {{ currentResource.downloadBoxTitle || (isRTL ? 'دانلود بسته کامل فایل فنی' : 'Download Complete Technical Package') }}
             </h3>
             <p class="text-xs text-gray-500 break-words" v-editable="'downloadBoxSubtitle'">
-              {{ currentResource.downloadBoxSubtitle || 'شامل فایل‌های وکتور AI، PDF استاندارد چاپ و راهنمای راهبری' }}
+              {{ currentResource.downloadBoxSubtitle || (isRTL ? 'شامل فایل‌های وکتور AI، PDF استاندارد چاپ و راهنمای راهبری' : 'Includes vector AI, print-ready PDF, and ICC color guidelines') }}
             </p>
           </div>
         </div>
@@ -61,14 +61,14 @@
           class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition shadow-xs whitespace-nowrap text-d4"
         >
           <Icon name="mdi:download" class="w-4 h-4" />
-          <span>دانلود مستقیم فایل ({{ currentResource.fileSize }})</span>
+          <span>{{ isRTL ? `دانلود مستقیم فایل (${currentResource.fileSize})` : `Direct Download (${currentResource.fileSize})` }}</span>
         </a>
       </div>
 
       <!-- Guidelines Details -->
       <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 space-y-6 leading-relaxed text-sm sm:text-base text-gray-700">
         <h2 class="text-xl font-bold text-gray-900 text-d4 break-words" v-editable="'guidelinesTitle'">
-          {{ currentResource.guidelinesTitle || 'راهنمای استفاده و ضوابط اجرایی' }}
+          {{ currentResource.guidelinesTitle || (isRTL ? 'راهنمای استفاده و ضوابط اجرایی' : 'Usage Guidelines & Technical Guidelines') }}
         </h2>
         <ul class="space-y-3 text-xs sm:text-sm text-gray-600">
           <li
@@ -84,7 +84,7 @@
           </li>
         </ul>
 
-        <AdminAddCardPlaceholder path="guidelines" label="افزودن بند راهنمای جدید" customClass="min-h-[60px] p-2" />
+        <AdminAddCardPlaceholder path="guidelines" :label="isRTL ? 'افزودن بند راهنمای جدید' : 'Add New Guideline Item'" customClass="min-h-[60px] p-2" />
       </div>
 
       <!-- Contact CTA -->

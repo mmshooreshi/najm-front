@@ -15,6 +15,7 @@
           <!-- border-black border -->
 
           <img v-gsap.magnetic :src="card.loop" :alt="card.text" :duration="100"
+            v-media-editable="`sceneProjects.cards.${idx}.loop`"
             class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8" />
 
           <div v-gsap.magnetic :class="[isRTL ? 'right-6' : 'left-6']" :duration="100"

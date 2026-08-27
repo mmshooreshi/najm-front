@@ -35,6 +35,17 @@ export interface ChangedFieldDetail {
   isChanged: boolean
 }
 
+export interface MediaMetadata {
+  format?: string
+  width?: number
+  height?: number
+  size?: number
+  aspectRatio?: number
+  mime?: string
+  blob?: Blob
+  url?: string
+}
+
 export interface AdminEditState {
   canEdit: boolean
   editMode: boolean
@@ -53,6 +64,13 @@ export interface AdminEditState {
   autosaveEnabled: boolean
   activeEditingPath: string | null
   isEditingActive: boolean
+  // Media Studio & In-Place Media Editor State
+  mediaStudioOpen: boolean
+  activeMediaPath: string | null
+  activeMediaElement: HTMLElement | null
+  activeMediaInitialUrl: string
+  activeMediaMetadata: MediaMetadata | null
+  mediaDrafts: Record<PathKey, { original: string; draft?: string; meta?: MediaMetadata }>
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -72,7 +90,13 @@ export const adminEditState = reactive<AdminEditState>({
   minimized: false,
   autosaveEnabled: false,
   activeEditingPath: null,
-  isEditingActive: false
+  isEditingActive: false,
+  mediaStudioOpen: false,
+  activeMediaPath: null,
+  activeMediaElement: null,
+  activeMediaInitialUrl: '',
+  activeMediaMetadata: null,
+  mediaDrafts: {}
 })
 
 export function setEditingActive(path: string | null, active: boolean) {
@@ -318,12 +342,33 @@ export function revertPath(path: PathKey, lang: LangCode) {
 
   // Update DOM element directly
   if (typeof document !== 'undefined') {
+    // Text elements
     document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
       .forEach(el => {
         el.textContent = rec.original ?? ''
         el.classList.remove('v-editable--changed')
         el.removeAttribute('data-admin-changed')
       })
+
+    // Media / Image elements
+    document.querySelectorAll<HTMLElement>(`[data-media-path="${CSS.escape(path)}"], [data-edit-path="${CSS.escape(path)}"]`)
+      .forEach(el => {
+        if (el instanceof HTMLImageElement) {
+          el.src = rec.original ?? ''
+        } else if (el.tagName === 'IMG') {
+          (el as HTMLImageElement).src = rec.original ?? ''
+        }
+        const img = el.querySelector('img')
+        if (img) {
+          img.src = rec.original ?? ''
+        }
+        el.classList.remove('v-media-changed')
+        el.removeAttribute('data-admin-changed')
+      })
+
+    window.dispatchEvent(new CustomEvent('admin:media-changed', {
+      detail: { path, url: rec.original, lang, action: 'revert' }
+    }))
   }
 
   addVersion(path, lang, rec.original, 'draft')
@@ -482,4 +527,91 @@ export function changedCountForLang(lang: LangCode): number {
     if (isChanged(p, lang)) count++
   }
   return count
+}
+
+/** ---------- Media In-Place Management Helpers ---------- **/
+
+export function isMediaUrl(val: any): boolean {
+  if (typeof val !== 'string') return false
+  const s = val.trim().toLowerCase()
+  if (s.startsWith('data:image/') || s.startsWith('blob:')) return true
+  const extMatch = s.match(/\.(png|jpe?g|webp|avif|gif|svg|ico|bmp|tiff?|pdf|psd|ai)(\?.*)?$/i)
+  if (extMatch) return true
+  if (s.includes('/api/files/') || s.includes('/images/') || s.includes('/media/')) return true
+  return false
+}
+
+export function openMediaStudio(target: {
+  path?: string
+  el?: HTMLElement | null
+  url: string
+  meta?: MediaMetadata
+}) {
+  adminEditState.activeMediaPath = target.path || null
+  adminEditState.activeMediaElement = target.el || null
+  adminEditState.activeMediaInitialUrl = target.url || ''
+  adminEditState.activeMediaMetadata = target.meta || null
+  adminEditState.mediaStudioOpen = true
+
+  if (target.path && target.url) {
+    const lang = adminEditState.language || 'fa'
+    ensureBaseline(target.path, lang, target.url)
+  }
+}
+
+export function closeMediaStudio() {
+  adminEditState.mediaStudioOpen = false
+  adminEditState.activeMediaPath = null
+  adminEditState.activeMediaElement = null
+  adminEditState.activeMediaInitialUrl = ''
+  adminEditState.activeMediaMetadata = null
+}
+
+export function setMediaDraftValue(
+  path: PathKey,
+  lang: LangCode,
+  newUrl: string,
+  meta?: MediaMetadata
+) {
+  if (!path || !lang) return
+
+  // Register in main change store
+  setDraftValue(path, lang, newUrl)
+
+  // Track media-specific metadata
+  if (!adminEditState.mediaDrafts[path]) {
+    const orig = adminEditState.changes[path]?.[lang]?.original || newUrl
+    adminEditState.mediaDrafts[path] = { original: orig }
+  }
+  adminEditState.mediaDrafts[path].draft = newUrl
+  if (meta) {
+    adminEditState.mediaDrafts[path].meta = meta
+  }
+
+  // Update matching DOM elements directly for immediate real-time feedback
+  if (typeof document !== 'undefined') {
+    const escaped = CSS.escape(path)
+    document.querySelectorAll<HTMLElement>(`[data-media-path="${escaped}"], [data-edit-path="${escaped}"]`)
+      .forEach(el => {
+        if (el instanceof HTMLImageElement) {
+          el.src = newUrl
+        } else if (el.tagName === 'IMG') {
+          (el as HTMLImageElement).src = newUrl
+        }
+        const img = el.querySelector('img')
+        if (img) {
+          img.src = newUrl
+        }
+        el.classList.add('v-media-changed')
+        el.setAttribute('data-admin-changed', 'true')
+      })
+
+    window.dispatchEvent(new CustomEvent('admin:media-changed', {
+      detail: { path, url: newUrl, lang, meta, action: 'draft' }
+    }))
+  }
+
+  if (process.dev) {
+    logger.success('Admin:Media', `Applied in-place media draft for "${path}": ${newUrl.slice(0, 60)}...`)
+  }
 }

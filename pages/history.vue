@@ -155,15 +155,15 @@
     <!-- Bottom CTA Bar -->
     <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
       <div class="bg-najmgreen text-white rounded-3xl p-6 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div class="space-y-2 text-right">
-          <h3 class="text-lg sm:text-2xl font-bold text-d4">پروژه چاپ یا بسته‌بندی بعدی خود را با ما آغاز کنید</h3>
-          <p class="text-xs text-emerald-100">کارشناسان ما آماده ارائه مشاوره فنی در انتخاب متریال و بهینه‌سازی فرم‌های چاپی هستند.</p>
+        <div class="space-y-2" :class="isRTL ? 'text-right' : 'text-left'">
+          <h3 class="text-lg sm:text-2xl font-bold text-d4">{{ ui?.ctaTitle || (isRTL ? 'پروژه چاپ یا بسته‌بندی بعدی خود را با ما آغاز کنید' : 'Start Your Next Packaging & Print Project With Us') }}</h3>
+          <p class="text-xs text-emerald-100">{{ ui?.ctaDescription || (isRTL ? 'کارشناسان ما آماده ارائه مشاوره فنی در انتخاب متریال و بهینه‌سازی فرم‌های چاپی هستند.' : 'Our technical engineers are ready to consult on structural design, materials, and print optimization.') }}</p>
         </div>
         <NuxtLink
           to="/contact"
           class="w-full sm:w-auto text-center px-7 py-3 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition whitespace-nowrap shadow-xs text-d4"
         >
-          تماس و استعلام پروژه
+          {{ ui?.ctaBtn || (isRTL ? 'تماس و استعلام پروژه' : 'Contact & Project Inquiries') }}
         </NuxtLink>
       </div>
     </section>
@@ -171,12 +171,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
   name: 'تاریخچه ۲۵ ساله - مجتمع چاپ نجم',
   layout: 'default'
 })
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const { ui } = usePageUI('history')
 </script>

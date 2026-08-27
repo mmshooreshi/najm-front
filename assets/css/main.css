@@ -555,3 +555,29 @@ button.bg-najmgreen,
 .border-najmgreen {
   border-color: #014439 !important;
 }
+
+/* ─── ADMIN MEDIA EDITING OVERLAYS & OUTLINES ─── */
+body.admin-media-edit-active img,
+body.admin-media-edit-active picture,
+body.admin-media-edit-active svg,
+body.admin-media-edit-active [data-media-path] {
+  transition: outline 0.15s ease, filter 0.15s ease;
+}
+
+body.admin-media-edit-active img:hover,
+body.admin-media-edit-active picture:hover,
+body.admin-media-edit-active svg:hover,
+body.admin-media-edit-active [data-media-path]:hover {
+  outline: 2px dashed rgba(16, 185, 129, 0.75) !important;
+  outline-offset: 2px;
+  cursor: pointer;
+}
+
+.v-media-changed,
+img[data-admin-changed="true"],
+[data-media-path][data-admin-changed="true"] {
+  outline: 2.5px solid rgba(245, 158, 11, 0.9) !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+

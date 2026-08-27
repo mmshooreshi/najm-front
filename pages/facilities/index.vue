@@ -112,13 +112,13 @@
               class="w-full py-3 rounded-2xl bg-najmback hover:bg-emerald-50 hover:text-najmgreen text-gray-700 text-xs font-bold transition flex items-center justify-center gap-2 border border-gray-200 cursor-pointer"
             >
               <Icon name="mdi:calculator" class="w-4 h-4" />
-              <span>استعلام ظرفیت این خط</span>
+              <span>{{ isRTL ? 'استعلام ظرفیت این خط' : 'Inquire Line Capacity' }}</span>
             </button>
           </div>
         </article>
 
         <!-- Placeholder Add Card -->
-        <AdminAddCardPlaceholder path="machines" label="افزودن دستگاه / خط تولید جدید" />
+        <AdminAddCardPlaceholder path="machines" :label="isRTL ? 'افزودن دستگاه / خط تولید جدید' : 'Add New Machine / Line'" />
       </div>
 
       <!-- Factory Consultation & Tour CTA -->

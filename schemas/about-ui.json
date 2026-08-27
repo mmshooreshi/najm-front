@@ -7,9 +7,8 @@
       { "id": "vision", "label": "چشم‌انداز و مقیاس" },
       { "id": "story", "label": "تیم و تخصص" },
       { "id": "facility", "label": "ماشین‌آلات صنعتی" },
-      { "id": "workflow", "label": "فرایند تولید استاندارد" },
       { "id": "timeline", "label": "مسیر تکامل" },
-      { "id": "values", "label": "ارزش‌ها و تعهدات" }
+      { "id": "aboutus", "label": "بازدید و مشاوره" }
     ],
     "metrics": [
       { "value": "+۲۵ سال", "label": "سابقه مستمر" },
@@ -42,9 +41,26 @@
     "facilityBadge": "ناوگان ماشین‌آلات صنعتی",
     "facilityTitle": "تجهیزات مدرن چاپ افست و خطوط تکمیلی",
     "facilityDescription": "سرمایه‌گذاری پیوسته در تکنولوژی‌های هایدلبرگ و بوبست ضامن دقت میکرونی و سرعت صنعتی در تحویل سفارشات است.",
-    "workflowBadge": "فرایند مهندسی تولید",
-    "workflowTitle": "مسیر صفر تا صد؛ از طراحی تا تحویل لجستیک",
-    "workflowDescription": "سیستم جامع نظارت کیفی در ۷ ایستگاه مستقل برای تضمین بی‌نقص بودن هر جعبه و بسته.",
+    "machines": [
+      {
+        "brand": "HEIDELBERG SPEEDMASTER",
+        "title": "چاپ افست ۵ رنگ ورقی",
+        "desc": "کنترل رنگ آنلاین Prinect و قابلیت چاپ همزمان رنگ‌های پنتون و ورنی.",
+        "image": "/images/about/machines-1.png"
+      },
+      {
+        "brand": "BOBST DIE-CUTTING",
+        "title": "دایکات و پوشال‌برداری اتوماتیک",
+        "desc": "تیغ‌زنی، خط‌تا و برجسته‌سازی انواع مقوای ایندربرد و فلوت‌دار با دقت بالا.",
+        "image": "/images/about/machines-2.png"
+      },
+      {
+        "brand": "HEIDELBERG SUPRASETTER",
+        "title": "خروجی مستقیم زینک حرارتی (CTP)",
+        "desc": "تولید زینک‌های بدون شیمیایی با تفکیک ترام ۱ الی ۹۹ درصد با رزولوشن ۲۵۴۰DPI.",
+        "image": "/images/about/machines-3.png"
+      }
+    ],
     "timelineTitle": "مسیر تکامل و پیشرفت تکنولوژی نجم",
     "timeline": [
       { "year": "۱۳۷۸", "title": "تاسیس و راه‌اندازی کارگاه افست", "desc": "شروع فعالیت با یک دستگاه چاپ ۲ رنگ و تمرکز بر کارهای تجاری." },
@@ -52,11 +68,10 @@
       { "year": "۱۳۹۶", "title": "احداث واحد تخصصی هاردباکس", "desc": "راه‌اندازی خطوط اتوماتیک جعبه‌های سخت و مقوای فشرده لوکس." },
       { "year": "۱۴۰۴", "title": "استقرار استاندارد‌های چاپ سبز و هوشمند", "desc": "به‌کارگیری مرکب‌های گیاهی، خطوط تمام اتوماتیک بازرسی چشمی و سیستم‌های مدیریت یکپارچه." }
     ],
-    "valuesBadge": "تعهدات بنیادین",
-    "valuesTitle": "ارزش‌هایی که خروجی هر پروژه را متمایز می‌کنند",
     "ctaTitle": "آماده‌اید بسته‌بندی محصول خود را به سطح بالاتری ببرید؟",
     "ctaDescription": "با مهندسان ساختار و کارشناسان رنگ نجم مشورت کنید و نمونه اولیه فیزیکی رایگان دریافت نمایید.",
-    "ctaBtn": "درخواست مشاوره و استعلام فنی"
+    "ctaBtn": "درخواست مشاوره و استعلام فنی",
+    "ctaCatalogBtn": "دانلود کاتالوگ جامع"
   },
   "EN": {
     "badge": "About Najm Printing & Packaging Complex",
@@ -66,14 +81,13 @@
       { "id": "vision", "label": "Vision & Scale" },
       { "id": "story", "label": "Team & Expertise" },
       { "id": "facility", "label": "Machinery Fleet" },
-      { "id": "workflow", "label": "Standard Workflow" },
-      { "id": "timeline", "label": "Our Timeline" },
-      { "id": "values", "label": "Core Values" }
+      { "id": "timeline", "label": "Timeline" },
+      { "id": "aboutus", "label": "Tour & Consultation" }
     ],
     "metrics": [
-      { "value": "25+ Years", "label": "Continuous Experience" },
-      { "value": "15M+", "label": "Annual Volume" },
-      { "value": "99.8%", "label": "Color Fidelity" }
+      { "value": "+25 Years", "label": "Continuous Experience" },
+      { "value": "+15M", "label": "Annual Run Volume" },
+      { "value": "99.8%", "label": "Color Fidelity Rate" }
     ],
     "teamBadge": "Human Capital & Engineering",
     "teamTitle": "Expert Team; Driving Quality Across Every Run",
@@ -101,9 +115,26 @@
     "facilityBadge": "Industrial Machinery Fleet",
     "facilityTitle": "Advanced Offset Printing & Finishing Equipment",
     "facilityDescription": "Continuous investment in Heidelberg and Bobst technologies guarantees micron-level accuracy and industrial throughput.",
-    "workflowBadge": "Engineering Workflow",
-    "workflowTitle": "End-to-End Production; From Design to Logistics",
-    "workflowDescription": "A comprehensive QA system across 7 independent inspection checkpoints to ensure zero defects.",
+    "machines": [
+      {
+        "brand": "HEIDELBERG SPEEDMASTER",
+        "title": "5-Color Sheetfed Offset Press",
+        "desc": "Prinect in-line color spectrophotometry with simultaneous Pantone and varnish coating.",
+        "image": "/images/about/machines-1.png"
+      },
+      {
+        "brand": "BOBST DIE-CUTTING",
+        "title": "Automatic Die-Cutting & Stripping",
+        "desc": "High-precision cutting, creasing, and embossing for SBS, greyback, and micro-flute board.",
+        "image": "/images/about/machines-2.png"
+      },
+      {
+        "brand": "HEIDELBERG SUPRASETTER",
+        "title": "Direct Thermal CTP Platesetter",
+        "desc": "Chemistry-free thermal plate imaging with 1–99% halftone reproduction at 2540 DPI.",
+        "image": "/images/about/machines-3.png"
+      }
+    ],
     "timelineTitle": "Najm Technological Evolution",
     "timeline": [
       { "year": "1999", "title": "Founding of Offset Printing Workshop", "desc": "Operations commenced with two-color offset machinery focusing on commercial print." },
@@ -111,11 +142,10 @@
       { "year": "2017", "title": "Dedicated Rigid Box Facility Commissioned", "desc": "Installation of automated luxury rigid box wrapping and grooving lines." },
       { "year": "2026", "title": "Smart Factory & Green Printing Standards", "desc": "Adoption of vegetable-based soy inks, automated vision inspection, and digital workflows." }
     ],
-    "valuesBadge": "Core Commitments",
-    "valuesTitle": "Values That Distinguish Every Packaging Project",
     "ctaTitle": "Ready to elevate your product packaging to the next level?",
     "ctaDescription": "Consult with Najm structural engineers and color specialists to receive your free physical prototype.",
-    "ctaBtn": "Request Technical Consultation"
+    "ctaBtn": "Request Technical Consultation",
+    "ctaCatalogBtn": "Download Full Catalog"
   },
   "AR": {
     "badge": "حول مجمع مطبعة وتغليف نجم",
@@ -125,9 +155,8 @@
       { "id": "vision", "label": "الرؤية والقدرة" },
       { "id": "story", "label": "فريق العمل" },
       { "id": "facility", "label": "الآلات الصناعية" },
-      { "id": "workflow", "label": "مراحل الإنتاج" },
       { "id": "timeline", "label": "مسيرة التطور" },
-      { "id": "values", "label": "قيمنا الأساسية" }
+      { "id": "aboutus", "label": "الزيارة والاستشارة" }
     ],
     "metrics": [
       { "value": "+25 عاماً", "label": "خبرة متواصلة" },
@@ -160,9 +189,26 @@
     "facilityBadge": "أسطول الماكينات الصناعية",
     "facilityTitle": "تجهيزات حديثة لطباعة الأوفست والتشطيب",
     "facilityDescription": "الاستثمار المستمر في تقنيات هايدلبرغ وبوبست يضمن دقة متناهية وسرعة صناعية في تسليم الطلبات.",
-    "workflowBadge": "هندسة مراحل الإنتاج",
-    "workflowTitle": "من البداية إلى النهاية؛ من التصميم حتى التسليم اللوجستي",
-    "workflowDescription": "نظام شامل لضبط الجودة عبر 7 محطات فحص مستقلة لضمان خلو العلب من أي عيب مصنعي.",
+    "machines": [
+      {
+        "brand": "HEIDELBERG SPEEDMASTER",
+        "title": "طباعة أوفست 5 ألوان ورقية",
+        "desc": "نظام تحكم لوني Prinect مع إمكانية طباعة ألوان بانتون والورنيش في مسار واحد.",
+        "image": "/images/about/machines-1.png"
+      },
+      {
+        "brand": "BOBST DIE-CUTTING",
+        "title": "قص وتفريغ آلي بالقوالب (بوبست)",
+        "desc": "قص وتكسير وبروز عالي الدقة لجميع أنواع كرتون الإنفربورد والمايكروفلوت.",
+        "image": "/images/about/machines-2.png"
+      },
+      {
+        "brand": "HEIDELBERG SUPRASETTER",
+        "title": "تجهيز صفائح الزنك الحرارية CTP",
+        "desc": "إنتاج صفائح حرارية خالية من المواد الكيميائية بدقة 2540 DPI وتفريق ترام فائق.",
+        "image": "/images/about/machines-3.png"
+      }
+    ],
     "timelineTitle": "مسيرة تطور ونمو تكنولوجيا نجم",
     "timeline": [
       { "year": "1999", "title": "تأسيس ورشة طباعة الأوفست", "desc": "انطلاق العمل بماكينات لونين والتركيز على المطبوعات التجارية." },
@@ -170,10 +216,9 @@
       { "year": "2017", "title": "تدشين وحدة العلب الصلبة (هاردبوكس)", "desc": "تشغيل خطوط الإنتاج الآلي للصناديق الفاخرة والكرتون المقوى." },
       { "year": "2026", "title": "تطبيق معايير الطباعة الخضراء الذكية", "desc": "اعتماد الأحبار النباتية وأنظمة الفحص البصري الآلي وإدارة الجودة الرقمية." }
     ],
-    "valuesBadge": "الالتزامات الأساسية",
-    "valuesTitle": "قيم تمنح كل مشروع تغليف تميزاً فريداً",
     "ctaTitle": "هل أنت مستعد للارتقاء بتغليف منتجاتك إلى مستوى أعلى؟",
     "ctaDescription": "استشر مهندسي هياكل التغليف وخبراء الألوان في نجم واحصل على نموذج أولي مجاناً.",
-    "ctaBtn": "طلب استشارة واستعلام فني"
+    "ctaBtn": "طلب استشارة واستعلام فني",
+    "ctaCatalogBtn": "تحميل الكتالوج الشامل"
   }
 }

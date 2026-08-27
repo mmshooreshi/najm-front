@@ -348,6 +348,7 @@ const dockTransformStyle = computed(() => {
 // --- Command Palette ---
 const commands = computed(() => [
   { id: 'toggle-edit', icon: 'pencil', label: state.editMode ? 'Disable Edit Mode (Preview)' : 'Enable Edit Mode', shortcut: '⌘E', action: () => (state.editMode = !state.editMode) },
+  { id: 'media-studio', icon: 'sparkles', label: 'Open Media Studio & Asset Manager', shortcut: '', action: () => { state.mediaStudioOpen = true; if (!state.activeMediaInitialUrl) state.activeMediaInitialUrl = '/images/sections/cards/01.png' } },
   { id: 'save', icon: 'save', label: 'Save Pending Changes', shortcut: '⌘S', action: () => saveDraft(true) },
   { id: 'inspector', icon: 'diff', label: 'Open Modified Fields Inspector', shortcut: '⌘K', action: () => (state.inspectorOpen = true) },
   { id: 'history', icon: 'history', label: 'View Revisions & History', shortcut: '', action: () => (state.historyOpen = true) },

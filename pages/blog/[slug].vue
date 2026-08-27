@@ -1,13 +1,13 @@
 <!-- pages/blog/[slug].vue -->
 <template>
-  <div dir="rtl" class="min-h-screen bg-najmback pb-28 text-gray-800">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback pb-28 text-gray-800">
     <!-- Article Header -->
-    <header class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6 text-right">
+    <header class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6" :class="isRTL ? 'text-right' : 'text-left'">
       <!-- Breadcrumbs -->
       <nav class="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
-        <NuxtLink to="/" class="hover:text-najmgreen">خانه</NuxtLink>
+        <NuxtLink to="/" class="hover:text-najmgreen transition">{{ isRTL ? 'خانه' : 'Home' }}</NuxtLink>
         <span>/</span>
-        <NuxtLink to="/blog" class="hover:text-najmgreen">وبلاگ</NuxtLink>
+        <NuxtLink to="/blog" class="hover:text-najmgreen transition">{{ isRTL ? 'وبلاگ' : 'Blog' }}</NuxtLink>
         <span>/</span>
         <span class="text-gray-900 font-bold text-d4 break-words" v-editable="'title'">{{ currentPost.title }}</span>
       </nav>
@@ -33,7 +33,7 @@
         <span>•</span>
         <div class="flex items-center gap-1.5">
           <Icon name="mdi:clock-outline" class="w-4 h-4" />
-          <span>زمان مطالعه: <span v-editable="'readTime'">{{ currentPost.readTime }}</span></span>
+          <span>{{ isRTL ? 'زمان مطالعه:' : 'Read Time:' }} <span v-editable="'readTime'">{{ currentPost.readTime }}</span></span>
         </div>
       </div>
     </header>

@@ -260,6 +260,147 @@ const props = withDefaults(defineProps<{
   </svg>
 
   <svg
+    v-else-if="name === 'crop'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M8 5v10a1 1 0 0 0 1 1h10" />
+    <path d="M5 8h10a1 1 0 0 1 1 1v10" />
+    <path d="M5 5v3" />
+    <path d="M19 19v-3" />
+    <path d="M19 8h-3" />
+    <path d="M5 16h3" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'photo' || name === 'image'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M15 8h.01" />
+    <path d="M4 4m0 3a3 3 0 0 1 3 -3h10a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3z" />
+    <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5" />
+    <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'adjustments' || name === 'sliders'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M6 4v4" />
+    <path d="M6 12v8" />
+    <path d="M10 16a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M12 4v10" />
+    <path d="M12 18v2" />
+    <path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+    <path d="M18 4v1" />
+    <path d="M18 9v11" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'upload' || name === 'cloud-upload'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+    <path d="M7 9l5 -5l5 5" />
+    <path d="M12 4l0 12" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'rotate' || name === 'rotate-clockwise'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'flip-horizontal'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M12 3l0 18" />
+    <path d="M16 7l4 10l-4 0z" />
+    <path d="M8 7l-4 10l4 0z" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'flip-vertical'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M3 12l18 0" />
+    <path d="M7 16l10 4l0 -4z" />
+    <path d="M7 8l10 -4l0 4z" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'sparkles' || name === 'wand'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2zm-7 3l-2.5 5.5l-5.5 2.5l5.5 2.5l2.5 5.5l2.5 -5.5l5.5 -2.5l-5.5 -2.5z" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'aspect-ratio'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M3 5m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
+    <path d="M7 12v-3h3" />
+    <path d="M17 12v3h-3" />
+  </svg>
+
+  <svg
     v-else
     :class="props.class"
     viewBox="0 0 24 24"

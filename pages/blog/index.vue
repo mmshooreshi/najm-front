@@ -57,11 +57,11 @@
             </NuxtLink>
 
             <!-- Content Details -->
-            <div class="p-5 sm:p-6 pt-0 space-y-2.5 sm:space-y-3 text-right">
+            <div class="p-5 sm:p-6 pt-0 space-y-2.5 sm:space-y-3" :class="isRTL ? 'text-right' : 'text-left'">
               <div class="flex items-center gap-2 text-[11px] text-gray-400">
                 <span v-editable="`posts.${pIdx}.date`">{{ post.date }}</span>
                 <span>•</span>
-                <span>زمان مطالعه: <span v-editable="`posts.${pIdx}.readTime`">{{ post.readTime }}</span></span>
+                <span>{{ isRTL ? 'زمان مطالعه:' : 'Read Time:' }} <span v-editable="`posts.${pIdx}.readTime`">{{ post.readTime }}</span></span>
               </div>
 
               <h2 class="text-sm sm:text-base lg:text-lg font-bold text-gray-900 text-d4 group-hover:text-najmgreen transition-colors leading-snug break-words" v-editable="`posts.${pIdx}.title`">
@@ -79,14 +79,14 @@
           <!-- Card Footer -->
           <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 flex items-center justify-between border-t border-gray-100 text-xs font-bold text-najmgreen text-d4">
             <NuxtLink :to="`/blog/${post.slug}`" class="hover:underline flex items-center gap-1">
-              <span>مطالعه کامل مقاله</span>
-              <Icon name="mdi:arrow-left" class="w-4 h-4" />
+              <span>{{ isRTL ? 'مطالعه کامل مقاله' : 'Read Full Article' }}</span>
+              <Icon :name="isRTL ? 'mdi:arrow-left' : 'mdi:arrow-right'" class="w-4 h-4" />
             </NuxtLink>
-            <span class="text-gray-400 font-normal text-[11px]">نویسنده: <span v-editable="`posts.${pIdx}.author`">{{ post.author }}</span></span>
+            <span class="text-gray-400 font-normal text-[11px]">{{ isRTL ? 'نویسنده:' : 'Author:' }} <span v-editable="`posts.${pIdx}.author`">{{ post.author }}</span></span>
           </div>
         </article>
 
-        <AdminAddCardPlaceholder path="posts" label="افزودن مقاله وبلاگ جدید" />
+        <AdminAddCardPlaceholder path="posts" :label="isRTL ? 'افزودن مقاله وبلاگ جدید' : 'Add New Blog Post'" />
       </div>
     </main>
   </div>

@@ -80,8 +80,8 @@
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
               <div class="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 text-white" :class="isRTL ? 'text-right' : 'text-left'">
-                <div class="text-xs font-bold text-d4">تیم متخصص مهندسی چاپ و تولید</div>
-                <div class="text-[10px] text-white/80">مجتمع تخصصی چاپ و بسته‌بندی نجم</div>
+                <div class="text-xs font-bold text-d4" v-editable="'heroStaffTitle'">{{ ui?.heroStaffTitle || (isRTL ? 'تیم متخصص مهندسی چاپ و تولید' : 'Technical Printing & Production Engineering Team') }}</div>
+                <div class="text-[10px] text-white/80" v-editable="'heroStaffSub'">{{ ui?.heroStaffSub || (isRTL ? 'مجتمع تخصصی چاپ و بسته‌بندی نجم' : 'Najm Printing & Packaging Complex') }}</div>
               </div>
             </div>
           </div>
@@ -146,34 +146,18 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="space-y-3 group">
+          <div
+            v-for="(machine, mIdx) in (ui?.machines || defaultMachines)"
+            :key="mIdx"
+            class="space-y-3 group"
+          >
             <div class="aspect-[16/10] rounded-3xl overflow-hidden shadow-sm bg-white p-2">
-              <img src="/images/about/machines-1.png" alt="Heidelberg Speedmaster" class="w-full h-full object-cover rounded-2xl group-hover:scale-104 transition-transform duration-500" loading="lazy" />
+              <img :src="machine.image" :alt="machine.title" class="w-full h-full object-cover rounded-2xl group-hover:scale-104 transition-transform duration-500" loading="lazy" />
             </div>
             <div class="space-y-1" :class="isRTL ? 'text-right' : 'text-left'">
-              <span class="text-[10px] font-bold text-najmgreen text-d4">HEIDELBERG SPEEDMASTER</span>
-              <h3 class="text-base font-bold text-gray-900 text-d4">چاپ افست ۵ رنگ ورقی</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">کنترل رنگ آنلاین Prinect و قابلیت چاپ همزمان رنگ‌های پنتون و ورنی.</p>
-            </div>
-          </div>
-          <div class="space-y-3 group">
-            <div class="aspect-[16/10] rounded-3xl overflow-hidden shadow-sm bg-white p-2">
-              <img src="/images/about/machines-2.png" alt="Bobst Die-Cutting" class="w-full h-full object-cover rounded-2xl group-hover:scale-104 transition-transform duration-500" loading="lazy" />
-            </div>
-            <div class="space-y-1" :class="isRTL ? 'text-right' : 'text-left'">
-              <span class="text-[10px] font-bold text-najmgreen text-d4">BOBST DIE-CUTTING</span>
-              <h3 class="text-base font-bold text-gray-900 text-d4">دایکات و پوشال‌برداری اتوماتیک</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">تیغ‌زنی، خط‌تا و برجسته‌سازی انواع مقوای ایندربرد و فلوت‌دار با دقت بالا.</p>
-            </div>
-          </div>
-          <div class="space-y-3 group">
-            <div class="aspect-[16/10] rounded-3xl overflow-hidden shadow-sm bg-white p-2">
-              <img src="/images/about/machines-3.png" alt="Heidelberg Suprasetter" class="w-full h-full object-cover rounded-2xl group-hover:scale-104 transition-transform duration-500" loading="lazy" />
-            </div>
-            <div class="space-y-1" :class="isRTL ? 'text-right' : 'text-left'">
-              <span class="text-[10px] font-bold text-najmgreen text-d4">HEIDELBERG SUPRASETTER</span>
-              <h3 class="text-base font-bold text-gray-900 text-d4">خروجی مستقیم زینک حرارتی (CTP)</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">تولید زینک‌های بدون شیمیایی با تفکیک ترام ۱ الی ۹۹ درصد با رزولوشن ۲۵۴۰DPI.</p>
+              <span class="text-[10px] font-bold text-najmgreen text-d4" v-editable="`machines.${mIdx}.brand`">{{ machine.brand }}</span>
+              <h3 class="text-base font-bold text-gray-900 text-d4" v-editable="`machines.${mIdx}.title`">{{ machine.title }}</h3>
+              <p class="text-xs text-gray-500 leading-relaxed" v-editable="`machines.${mIdx}.desc`">{{ machine.desc }}</p>
             </div>
           </div>
         </div>
@@ -204,7 +188,7 @@
             </div>
           </div>
 
-          <AdminAddCardPlaceholder path="timeline" label="افزودن رویداد زمانی جدید" />
+          <AdminAddCardPlaceholder path="timeline" :label="isRTL ? 'افزودن رویداد زمانی جدید' : 'Add New Timeline Event'" />
         </div>
       </section>
 
@@ -224,13 +208,14 @@
             class="px-8 py-4 rounded-2xl bg-white text-najmgreen font-bold text-xs sm:text-sm hover:bg-emerald-50 transition text-center shadow-xs whitespace-nowrap text-d4"
             v-editable="'ctaBtn'"
           >
-            {{ ui?.ctaBtn || 'درخواست مشاوره و استعلام فنی' }}
+            {{ ui?.ctaBtn || (isRTL ? 'درخواست مشاوره و استعلام فنی' : 'Request Technical Consultation') }}
           </NuxtLink>
           <NuxtLink
             to="/catalog"
             class="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition text-center border border-white/20 whitespace-nowrap text-d4"
+            v-editable="'ctaCatalogBtn'"
           >
-            دانلود کاتالوگ جامع
+            {{ ui?.ctaCatalogBtn || (isRTL ? 'دانلود کاتالوگ جامع' : 'Download Full Catalog') }}
           </NuxtLink>
         </div>
       </section>
@@ -281,6 +266,27 @@ const defaultTeam = [
     title: 'تست مقاومت و خطوط تکمیلی',
     desc: 'نظارت بر تیغ‌زنی بدون پلیسه، سلفون‌کشی حرارتی و چسب لاک‌باتم اتوماتیک با تست‌های آزمایشگاهی.',
     image: '/images/about/person-3.png'
+  }
+]
+
+const defaultMachines = [
+  {
+    brand: 'HEIDELBERG SPEEDMASTER',
+    title: 'چاپ افست ۵ رنگ ورقی',
+    desc: 'کنترل رنگ آنلاین Prinect و قابلیت چاپ همزمان رنگ‌های پنتون و ورنی.',
+    image: '/images/about/machines-1.png'
+  },
+  {
+    brand: 'BOBST DIE-CUTTING',
+    title: 'دایکات و پوشال‌برداری اتوماتیک',
+    desc: 'تیغ‌زنی، خط‌تا و برجسته‌سازی انواع مقوای ایندربرد و فلوت‌دار با دقت بالا.',
+    image: '/images/about/machines-2.png'
+  },
+  {
+    brand: 'HEIDELBERG SUPRASETTER',
+    title: 'خروجی مستقیم زینک حرارتی (CTP)',
+    desc: 'تولید زینک‌های بدون شیمیایی با تفکیک ترام ۱ الی ۹۹ درصد با رزولوشن ۲۵۴۰DPI.',
+    image: '/images/about/machines-3.png'
   }
 ]
 

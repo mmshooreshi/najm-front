@@ -65,15 +65,15 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 text-xs">
           <div class="p-3 bg-najmgrey/50 rounded-xl border border-najmborder/40">
-            <span class="block text-gray-400 text-[10px]">صفحات / Pages:</span>
+            <span class="block text-gray-400 text-[10px]">{{ isRTL ? 'تعداد صفحات:' : 'Pages Count:' }}</span>
             <span class="font-bold text-gray-800 break-words" v-editable="'featured.pagesCount'">{{ uiContent.featured.pagesCount }}</span>
           </div>
           <div class="p-3 bg-najmgrey/50 rounded-xl border border-najmborder/40">
-            <span class="block text-gray-400 text-[10px]">بازنگری / Edition:</span>
+            <span class="block text-gray-400 text-[10px]">{{ isRTL ? 'ویرایش و انتشار:' : 'Edition / Year:' }}</span>
             <span class="font-bold text-gray-800 break-words" v-editable="'featured.lastUpdate'">{{ uiContent.featured.lastUpdate }}</span>
           </div>
           <div class="p-3 bg-najmgrey/50 rounded-xl border border-najmborder/40 col-span-2 sm:col-span-1">
-            <span class="block text-gray-400 text-[10px]">وضوح / Res:</span>
+            <span class="block text-gray-400 text-[10px]">{{ isRTL ? 'کیفیت و رزولوشن:' : 'Print Resolution:' }}</span>
             <span class="font-bold text-gray-800 break-words" v-editable="'featured.resolution'">{{ uiContent.featured.resolution }}</span>
           </div>
         </div>
