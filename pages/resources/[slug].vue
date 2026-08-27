@@ -70,16 +70,21 @@
         <h2 class="text-xl font-bold text-gray-900 text-d4 break-words" v-editable="'guidelinesTitle'">
           {{ currentResource.guidelinesTitle || 'راهنمای استفاده و ضوابط اجرایی' }}
         </h2>
-        <ul class="space-y-3 text-xs sm:text-sm text-gray-600 list-disc list-inside">
+        <ul class="space-y-3 text-xs sm:text-sm text-gray-600">
           <li
             v-for="(guide, i) in (currentResource.guidelines || defaultGuidelines)"
             :key="i"
-            class="break-words"
-            v-editable="`guidelines.${i}`"
+            class="relative flex items-start gap-2 break-words group"
           >
-            {{ guide }}
+            <!-- In-place Item Action [+] / [-] -->
+            <AdminArrayItemActions path="guidelines" :index="i" />
+
+            <span class="w-1.5 h-1.5 rounded-full bg-najmgreen mt-2 shrink-0"></span>
+            <span class="flex-1" v-editable="`guidelines.${i}`">{{ guide }}</span>
           </li>
         </ul>
+
+        <AdminAddCardPlaceholder path="guidelines" label="افزودن بند راهنمای جدید" customClass="min-h-[60px] p-2" />
       </div>
 
       <!-- Contact CTA -->

@@ -190,6 +190,12 @@ const paginationPositionClasses = computed(() => {
   return classes.join(' ')
 })
 
+const swiperInstance = ref<any>(null)
+
+function onSwiper(swiper: any) {
+  swiperInstance.value = swiper
+}
+
 function onSlideChange(_swiper: any) {
   // Silent slide change
 }

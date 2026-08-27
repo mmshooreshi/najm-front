@@ -1,50 +1,35 @@
 <!-- components/atom/SearchBox.vue -->
 <template>
-  <div
-    @click="openSearch"
-    class="grid items-center bg-white rounded-2xl cursor-pointer p-2.5 min-w-12 overflow-hidden hover:bg-[#A8ABAE]/20 transition-all duration-300 border border-gray-100/50"
-    :style="{
-      gridTemplateColumns: searchOpen ? 'auto 1fr auto' : 'auto 0fr 0fr'
-    }"
-  >
-    <SearchIcon class="fill-current text-gray-700 flex-shrink-0 w-5 h-5 z-10" />
-
-    <input
-      v-model="searchQuery"
-      id="mobile-search-input"
-      type="text"
-      placeholder="جستجوی محصول، خدمات، کاتالوگ…"
-      @click.stop
-      @keydown.esc="closeSearch"
-      class="mr-2 w-full bg-transparent outline-none text-xs text-gray-800 transition-all duration-200 ease-in-out"
-      :class="searchOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'"
-    />
-
+  <div>
+    <!-- Interactive Search Button Trigger -->
     <button
-      v-if="searchOpen"
-      @click.stop="closeSearch"
-      class="text-gray-400 hover:text-gray-600 p-1 transition"
+      type="button"
+      @click="openSearch"
+      :title="searchBtnTooltip"
+      aria-label="Search"
+      class="flex items-center gap-2 px-3 py-2 rounded-2xl bg-white hover:bg-najmgrey transition-all duration-200 border border-gray-100/60 shadow-2xs group cursor-pointer"
     >
-      <Icon name="mdi:close" class="w-4 h-4" />
+      <Icon name="mdi:magnify" class="w-5 h-5 text-gray-700 group-hover:text-najmgreen transition-colors flex-shrink-0" />
+      <span class="hidden lg:inline-block text-xs text-gray-400 font-medium whitespace-nowrap">
+        {{ searchPromptText }}
+      </span>
+      <kbd class="hidden lg:inline-block px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-[10px] font-mono text-gray-400 group-hover:border-najmgreen/40 group-hover:text-najmgreen transition-colors">
+        ⌘K
+      </kbd>
     </button>
 
-    <!-- Teleport modal to body so it renders cleanly above header/pages without overflow issues -->
-    <Teleport to="body">
-      <div v-if="searchOpen" @click="closeSearch" class="fixed inset-0 bg-black/40 backdrop-blur-xs z-40"></div>
-      <SearchModal
-        :visible="searchOpen"
-        :query="searchQuery"
-        @update:query="searchQuery = $event"
-        @close="closeSearch"
-      />
-    </Teleport>
+    <!-- Modern Full Spotlight / Modal Search Experience -->
+    <SearchModal
+      :visible="searchOpen"
+      @close="closeSearch"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onUnmounted } from 'vue'
-import SearchIcon from '~/assets/icons/search-icon.svg'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import SearchModal from './SearchModal.vue'
+import { useLocale } from '~/composables/useLocale'
 
 const emit = defineEmits<{
   (e: 'update:searchOpen', open: boolean): void
@@ -52,20 +37,30 @@ const emit = defineEmits<{
 
 const props = defineProps<{ menuOpen?: boolean }>()
 const searchOpen = ref(false)
-const searchQuery = ref('')
+
+const { language } = useLocale()
+
+const searchPromptText = computed(() => {
+  const lang = (language.value || 'FA').toUpperCase()
+  if (lang === 'EN') return 'Search...'
+  if (lang === 'AR') return 'بحث...'
+  return 'جست‌وجو…'
+})
+
+const searchBtnTooltip = computed(() => {
+  const lang = (language.value || 'FA').toUpperCase()
+  if (lang === 'EN') return 'Search site (Ctrl+K / ⌘K)'
+  if (lang === 'AR') return 'البحث في الموقع (Ctrl+K)'
+  return 'جستجوی سریع در سایت (Ctrl+K)'
+})
 
 function openSearch() {
-  if (searchOpen.value) return
   searchOpen.value = true
   emit('update:searchOpen', true)
-  nextTick(() => {
-    document.getElementById('mobile-search-input')?.focus()
-  })
 }
 
 function closeSearch() {
   searchOpen.value = false
-  searchQuery.value = ''
   emit('update:searchOpen', false)
 }
 
@@ -80,10 +75,14 @@ function handleGlobalKeydown(e: KeyboardEvent) {
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', handleGlobalKeydown)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', handleGlobalKeydown)
+  }
 })
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleGlobalKeydown)
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keydown', handleGlobalKeydown)
+  }
 })
 </script>

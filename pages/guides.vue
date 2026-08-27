@@ -28,9 +28,12 @@
       <div
         v-for="(principle, idx) in uiContent.principles"
         :key="idx"
-        class="bg-white rounded-3xl p-5 sm:p-6 shadow-xs border border-najmborder/40 space-y-3"
+        class="relative bg-white rounded-3xl p-5 sm:p-6 shadow-xs border border-najmborder/40 space-y-3"
         :class="isRTL ? 'text-right' : 'text-left'"
       >
+        <!-- Card Action [+] / [-] -->
+        <AdminArrayItemActions path="principles" :index="idx" />
+
         <div class="w-12 h-12 rounded-2xl bg-najmgrey text-najmgreen flex items-center justify-center">
           <Icon :name="principle.icon || 'mdi:palette-swatch-outline'" class="w-6 h-6" />
         </div>
@@ -41,6 +44,8 @@
           {{ principle.desc }}
         </p>
       </div>
+
+      <AdminAddCardPlaceholder path="principles" label="افزودن اصل فنی جدید" />
     </div>
 
     <!-- Detailed Guides Breakdown -->
@@ -56,9 +61,12 @@
         <div
           v-for="(guide, idx) in uiContent.guides"
           :key="guide.id || idx"
-          class="bg-white rounded-3xl p-5 sm:p-8 shadow-xs border border-najmborder/40 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6 hover:shadow-md transition-all duration-300"
+          class="relative bg-white rounded-3xl p-5 sm:p-8 shadow-xs border border-najmborder/40 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6 hover:shadow-md transition-all duration-300"
           :class="isRTL ? 'text-right' : 'text-left'"
         >
+          <!-- Card Action [+] / [-] -->
+          <AdminArrayItemActions path="guides" :index="idx" />
+
           <div class="space-y-2 max-w-3xl">
             <div class="flex items-center gap-2 flex-wrap">
               <span class="px-2.5 py-0.5 rounded-lg text-[11px] font-bold bg-najmgrey text-gray-800 break-words" v-editable="`guides.${idx}.category`">
@@ -91,6 +99,8 @@
             </a>
           </div>
         </div>
+
+        <AdminAddCardPlaceholder path="guides" label="افزودن راهنمای فنی جدید" />
       </div>
     </div>
 

@@ -1,0 +1,152 @@
+{
+  "FA": {
+    "stats": "مرکز راهنما و پاسخ به سوالات متداول",
+    "title": "پرسش‌های متداول (FAQ)",
+    "subtitle": "پاسخ کامل به تمامی سوالات مرتبط با حداقل تیراژ، فرمت فایل‌های چاپی، زمان‌بندی تولید، نحوه ساخت ماکت اولیه و فرآیند ارسال سفارشات.",
+    "categories": [
+      { "id": "all", "label": "همه پرسش‌ها" },
+      { "id": "ordering", "label": "ثبت سفارش و تیراژ" },
+      { "id": "design", "label": "طراحی و فایل ارسالی" },
+      { "id": "production", "label": "تولید و نمونه‌گیری" },
+      { "id": "shipping", "label": "ارسال و لجستیک" }
+    ],
+    "faqs": [
+      {
+        "id": 1,
+        "category": "ordering",
+        "question": "حداقل تیراژ سفارش برای جعبه‌های مقوایی و هاردباکس چقدر است؟",
+        "answer": "برای جعبه‌های مقوایی افست (ایندربرد و پشت طوسی)، حداقل تیراژ اقتصادی ۱,۰۰۰ عدد و برای هاردباکس‌های سخت دست‌ساز و اتوماتیک حداقل تیراژ ۵۰۰ عدد می‌باشد. سفارش در تیراژهای بالاتر هزینه قالب و تنظیم لیتوگرافی را سرشکن کرده و قیمت واحد را به شدت کاهش می‌دهد."
+      },
+      {
+        "id": 2,
+        "category": "design",
+        "question": "فایل‌های چاپی باید با چه فرمت و مشخصاتی ارسال شوند؟",
+        "answer": "فایل‌ها ترجیحاً در فرمت PDF استاندارد چاپ (PDF/X-1a) یا فایل باز Adobe Illustrator (AI) ارسال شوند. رزولوشن تصاویر حداقل ۳۰۰DPI، سیستم رنگی حتماً CMYK، فونت‌ها به خطوط برداری تبدیل (Create Outlines) شده و خطوط تیغ و تا در یک لایه اختصاصی با رنگ اسپات مجزا قرار گیرند."
+      },
+      {
+        "id": 3,
+        "category": "design",
+        "question": "میزان لبه برش (Bleed) استاندارد چقدر باید در نظر گرفته شود؟",
+        "answer": "برای تمامی کارهای بسته‌بندی، ساک‌های دستی و کاتالوگ‌ها، حداقل ۳ الی ۵ میلیمتر لبه برش (Bleed) از هر طرف ضروری است تا در هنگام تیغ‌زنی و برش، سفیدی در لبه کار ایجاد نشود."
+      },
+      {
+        "id": 4,
+        "category": "production",
+        "question": "فرآیند ساخت ماکت و نمونه فیزیکی پیش از چاپ اصلی چگونه است؟",
+        "answer": "پیش از آغاز چاپ تیراژ، ماکت سه‌بعدی تیغ‌زده‌شده از متریال انتخابی (Mockup بدون چاپ) جهت تست ابعاد، جای‌گیری محصول و استحکام برای مشتری تولید و ارسال می‌گردد. همچنین در صورت نیاز، نمونه چاپی دیجیتال (پروف دیجیتال رنگ) برای تطابق تقریبی رنگ ارائه می‌شود."
+      },
+      {
+        "id": 5,
+        "category": "production",
+        "question": "زمان‌بندی معمول برای تولید و تحویل سفارشات چقدر است؟",
+        "answer": "سفارشات جعبه‌های مقوایی معمولاً بین ۵ الی ۷ روز کاری و سفارشات هاردباکس و ساختارهای خاص بین ۱۰ الی ۱۴ روز کاری پس از تایید نهایی طرح و ماکت تحویل داده می‌شوند. در صورت نیاز به تولید فوری، امکان هماهنگی شیفت ویژه وجود دارد."
+      },
+      {
+        "id": 6,
+        "category": "shipping",
+        "question": "نحوه بسته‌بندی و ارسال سفارشات به تهران و سایر استان‌ها چگونه است؟",
+        "answer": "تمامی سفارشات در کارتن‌های ۵ لایه مستحکم همراه با شرینک نایلونی بسته‌بندی می‌شوند تا در برابر ضربه و رطوبت کاملاً محافظت شوند. ارسال برای تهران با ناوگان اختصاصی و برای شهرستان‌ها از طریق باربری‌های معتبر و ترانزیت کانتینری انجام می‌پذیرد."
+      }
+    ]
+  },
+  "EN": {
+    "stats": "Help Center & Knowledge Base",
+    "title": "Frequently Asked Questions (FAQ)",
+    "subtitle": "Comprehensive answers regarding minimum order quantities (MOQ), pre-press file requirements, lead times, 3D prototyping, and secure logistics.",
+    "categories": [
+      { "id": "all", "label": "All Questions" },
+      { "id": "ordering", "label": "Orders & MOQ" },
+      { "id": "design", "label": "Design & Pre-Press" },
+      { "id": "production", "label": "Production & Mockups" },
+      { "id": "shipping", "label": "Shipping & Logistics" }
+    ],
+    "faqs": [
+      {
+        "id": 1,
+        "category": "ordering",
+        "question": "What is the Minimum Order Quantity (MOQ) for cartons and rigid boxes?",
+        "answer": "For folding carton boxes (SBS and greyback board), the economical MOQ is 1,000 units. For rigid luxury hardboxes, the MOQ is 500 units. Higher run lengths significantly lower the unit price by amortizing die-cutting and plate preparation costs."
+      },
+      {
+        "id": 2,
+        "category": "design",
+        "question": "What file formats and pre-press specifications are required?",
+        "answer": "Files should ideally be submitted in print-ready PDF/X-1a or vector Adobe Illustrator (AI). Images must be at least 300 DPI in CMYK color mode. Fonts should be outlined, and die-lines must be placed in a separate layer with dedicated spot colors."
+      },
+      {
+        "id": 3,
+        "category": "design",
+        "question": "What is the required standard bleed margin?",
+        "answer": "A minimum bleed of 3 to 5 mm on all perimeter edges is required for all packaging structures, paper bags, and brochures to prevent unprinted borders during die-cutting."
+      },
+      {
+        "id": 4,
+        "category": "production",
+        "question": "How does the physical mockup prototyping process work?",
+        "answer": "Prior to mass production, a CAD-cut structural 3D mockup (unprinted physical prototype) is produced to verify dimensions, product fit, and rigidity. Digital color proofs are also provided upon request."
+      },
+      {
+        "id": 5,
+        "category": "production",
+        "question": "What are typical production lead times?",
+        "answer": "Folding carton orders typically complete within 5–7 business days, while rigid boxes require 10–14 business days following final artwork and mockup approval. Rush shifts can be scheduled for urgent launches."
+      },
+      {
+        "id": 6,
+        "category": "shipping",
+        "question": "How are orders packed and shipped to domestic and export destinations?",
+        "answer": "All orders are palletized and packed in 5-ply heavy-duty corrugated cartons with shrink-wrap moisture barriers. We coordinate dedicated direct transport within Tehran and transit logistics for other provinces and exports."
+      }
+    ]
+  },
+  "AR": {
+    "stats": "مركز المساعدة والأسئلة الشائعة",
+    "title": "الأسئلة المتداولة (FAQ)",
+    "subtitle": "إجابات شاملة حول الحد الأدنى للكميات، متطلبات ملفات التصميم، المهل الزمنية للإنتاج، تصنيع النماذج الأولية والشحن.",
+    "categories": [
+      { "id": "all", "label": "جميع الأسئلة" },
+      { "id": "ordering", "label": "الطلب والكميات" },
+      { "id": "design", "label": "التصميم وما قبل الطباعة" },
+      { "id": "production", "label": "الإنتاج والعينات" },
+      { "id": "shipping", "label": "الشحن والخدمات اللوجستية" }
+    ],
+    "faqs": [
+      {
+        "id": 1,
+        "category": "ordering",
+        "question": "ما هو الحد الأدنى لكمية الطلب (MOQ) للعلب الكرتونية والصناديق الصلبة؟",
+        "answer": "الحد الأدنى الاقتصادي لعلب الكرتون هو 1,000 قطعة، وللصناديق الصلبة الفاخرة (هاردبوكس) 500 قطعة. الكميات الأكبر تخفض سعر القطعة بشكل ملحوظ لتوزيع تكاليف القوالب والصفائح."
+      },
+      {
+        "id": 2,
+        "category": "design",
+        "question": "ما هي صيغ الملفات والمواصفات الفنية المطلوبة للطباعة؟",
+        "answer": "يفضل إرسال الملفات بصيغة PDF/X-1a أو Adobe Illustrator (AI). دقة الصور لا تقل عن 300 DPI ونظام الألوان CMYK، مع تحويل الخطوط إلى مسارات وفصل خطوط السكين في طبقة خاصة."
+      },
+      {
+        "id": 3,
+        "category": "design",
+        "question": "كم تبلغ مساحة الهامش الإضافي (Bleed) المطلوبة للتصميم؟",
+        "answer": "يلزم ترك هامش إضافي بين 3 إلى 5 مم من جميع الجوانب لجميع هياكل التغليف لتفادي أي حواف بيضاء غير مطبوعة أثناء القص."
+      },
+      {
+        "id": 4,
+        "category": "production",
+        "question": "كيف تتم عملية تصنيع النموذج الأولي قبل طباعة الكمية الكاملة؟",
+        "answer": "قبل بدء الإنتاج، يتم تجهيز ماكت ثلاثي الأبعاد مقصوص بالقالب لاختبار المقاسات والمتانة، كما تتوفر بروفة رقمية لمطابقة الألوان التقريبية."
+      },
+      {
+        "id": 5,
+        "category": "production",
+        "question": "ما هي المواعيد المعتادة لتسليم الطلبات؟",
+        "answer": "تستغرق علب الكرتون ما بين 5 إلى 7 أيام عمل، بينما تتطلب الصناديق الصلبة من 10 إلى 14 يوم عمل بعد الاعتماد النهائي للتصميم والماكت."
+      },
+      {
+        "id": 6,
+        "category": "shipping",
+        "question": "كيف يتم تغليف وشحن الطلبيات إلى مختلف المدن والتصدير؟",
+        "answer": "تعبأ جميع المنتجات في كراتين 5 طبقات متينة مع تغليف نايلون حراري لحمايتها التامة من الصدمات والرطوبة، مع شحن مخصص للشاحنات والحاويات."
+      }
+    ]
+  }
+}

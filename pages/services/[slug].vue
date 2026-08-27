@@ -81,8 +81,11 @@
             <article
               v-for="(group, idx) in serviceIncludes.groups"
               :key="idx"
-              class="rounded-2xl bg-white/80 p-4 md:p-5 shadow-sm border border-gray-100"
+              class="relative rounded-2xl bg-white/80 p-4 md:p-5 shadow-sm border border-gray-100"
             >
+              <!-- Card Action [+] / [-] -->
+              <AdminArrayItemActions path="serviceIncludes.groups" :index="idx" />
+
               <h3
                 class="text-sm md:text-base font-semibold mb-2 text-gray-900 break-words text-d4"
                 v-editable="`serviceIncludes.groups.${idx}.title`"
@@ -107,6 +110,8 @@
                 </li>
               </ul>
             </article>
+
+            <AdminAddCardPlaceholder path="serviceIncludes.groups" label="افزودن گروه قابلیت جدید" customClass="min-h-[160px]" />
           </div>
         </div>
       </section>
@@ -229,8 +234,11 @@
           <details
             v-for="(item, idx) in faq.items"
             :key="idx"
-            class="rounded-2xl bg-white/80 p-4 md:p-5 border border-gray-100"
+            class="relative rounded-2xl bg-white/80 p-4 md:p-5 border border-gray-100 group"
           >
+            <!-- In-place Item Action [+] / [-] -->
+            <AdminArrayItemActions path="faq.items" :index="idx" />
+
             <summary class="cursor-pointer text-sm md:text-base font-medium text-gray-900 break-words" v-editable="`faq.items.${idx}.question`">
               {{ item.question }}
             </summary>
@@ -238,6 +246,8 @@
               {{ item.answer }}
             </p>
           </details>
+
+          <AdminAddCardPlaceholder path="faq.items" label="افزودن پرسش و پاسخ جدید" customClass="min-h-[70px] p-3" />
         </div>
       </section>
     </section>

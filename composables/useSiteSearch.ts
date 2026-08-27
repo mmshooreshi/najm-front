@@ -1,281 +1,366 @@
 // composables/useSiteSearch.ts
 import { ref, computed, onMounted } from 'vue'
 import MiniSearch from 'minisearch'
+import { useLocale } from '@/composables/useLocale'
 
 export interface SearchDoc {
+  id: string
+  titleFa: string
+  titleEn: string
+  titleAr: string
+  category: 'products' | 'services' | 'resources' | 'pages'
+  categoryLabelFa: string
+  categoryLabelEn: string
+  categoryLabelAr: string
+  descFa: string
+  descEn: string
+  descAr: string
+  url: string
+  keywords: string[]
+}
+
+export interface LocalizedSearchItem {
   id: string
   title: string
   category: 'products' | 'services' | 'resources' | 'pages'
   categoryLabel: string
-  description?: string
+  description: string
   url: string
-  keywords?: string[]
 }
 
 const searchDocuments: SearchDoc[] = [
   // Products - Packaging
   {
     id: 'prod-boxes',
-    title: 'انواع جعبه‌های مقوایی و هاردباکس',
+    titleFa: 'انواع جعبه‌های مقوایی و هاردباکس',
+    titleEn: 'Folding Cartons & Rigid Hardboxes',
+    titleAr: 'علب الكرتون والصناديق الصلبة الفاخرة',
     category: 'products',
-    categoryLabel: 'بسته‌بندی و جعبه',
-    description: 'تولید جعبه‌های دارویی، آرایشی، مواد غذایی و هاردباکس مگنتی',
+    categoryLabelFa: 'بسته‌بندی و جعبه',
+    categoryLabelEn: 'Packaging & Boxes',
+    categoryLabelAr: 'التغليف والعلب',
+    descFa: 'تولید جعبه‌های دارویی، آرایشی، مواد غذایی و هاردباکس مگنتی',
+    descEn: 'Manufacturing pharmaceutical, cosmetic, food boxes & magnetic rigid boxes',
+    descAr: 'تصنيع علب الأدوية ومستحضرات التجميل والأغذية والعلب المغناطيسية',
     url: '/products/packaging/boxes',
-    keywords: ['جعبه', 'هاردباکس', 'کارتن', 'مقوا', 'ایندربرد', 'باکس', 'لاک باتم']
+    keywords: ['جعبه', 'هاردباکس', 'کارتن', 'مقوا', 'ایندربرد', 'باکس', 'لاک باتم', 'box', 'boxes', 'carton', 'rigid', 'hardbox', 'علبة', 'علب', 'كرتون', 'هاردبوكس']
   },
   {
     id: 'prod-shopping-bags',
-    title: 'ساک دستی کاغذی و مقوایی (شاپینگ بگ)',
+    titleFa: 'ساک دستی کاغذی و مقوایی (شاپینگ بگ)',
+    titleEn: 'Paper & Cardboard Shopping Bags',
+    titleAr: 'أكياس التسوق الورقية والكرتونية',
     category: 'products',
-    categoryLabel: 'بسته‌بندی و جعبه',
-    description: 'ساک‌های تبلیغاتی و فروشگاهی گلاسه، کرافت و مقوای کارتی',
+    categoryLabelFa: 'بسته‌بندی و جعبه',
+    categoryLabelEn: 'Packaging & Boxes',
+    categoryLabelAr: 'التغليف والعلب',
+    descFa: 'ساک‌های تبلیغاتی و فروشگاهی گلاسه، کرافت و مقوای کارتی',
+    descEn: 'Premium retail and promotional coated, kraft and board gift bags',
+    descAr: 'أكياس دعائية وترويجية من ورق الكرافت والمقوى اللامع',
     url: '/products/packaging/shopping-bags',
-    keywords: ['ساک دستی', 'شاپینگ بگ', 'بگ', 'کرافت', 'کیسه کاغذی']
+    keywords: ['ساک دستی', 'شاپینگ بگ', 'بگ', 'کرافت', 'کیسه کاغذی', 'bag', 'bags', 'shopping bag', 'paper bag', 'kraft', 'كيس', 'أكياس', 'شوبينغ باغ']
   },
   {
     id: 'prod-rigid-boxes',
-    title: 'هاردباکس لوکس و جعبه‌های سخت',
+    titleFa: 'هاردباکس لوکس و جعبه‌های سخت هدیه',
+    titleEn: 'Luxury Rigid Boxes & Gift Packaging',
+    titleAr: 'صناديق الهدايا الفاخرة والعلب الصلبة',
     category: 'products',
-    categoryLabel: 'بسته‌بندی و جعبه',
-    description: 'جعبه‌های مگنتی، کشویی و کادویی لوکس با فوم لیزری',
+    categoryLabelFa: 'بسته‌بندی لوکس',
+    categoryLabelEn: 'Luxury Packaging',
+    categoryLabelAr: 'تغليف فاخر',
+    descFa: 'جعبه‌های مگنتی، کشویی و کادویی لوکس با روکش مخمل و فوم لیزری',
+    descEn: 'Magnetic, sliding and shoulder luxury boxes with custom EVA velvet inserts',
+    descAr: 'علب مغناطيسية ومنزلقة فاخرة مع حشوات إسفنجية وطلاء مخملي',
     url: '/products/packaging/boxes',
-    keywords: ['هاردباکس', 'جعبه سخت', 'لوکس', 'مگنتی', 'هدایا', 'عطر', 'طلا']
+    keywords: ['هاردباکس', 'جعبه سخت', 'لوکس', 'مگنتی', 'هدایا', 'عطر', 'طلا', 'luxury', 'rigid box', 'gift box', 'magnetic', 'صندوق', 'هدايا', 'فاخر']
   },
 
-  // Products - Commercial Printing
+  // Products - Commercial & Editorial
   {
     id: 'print-letterhead',
-    title: 'سربرگ و ست اداری',
+    titleFa: 'سربرگ و ست اوراق اداری',
+    titleEn: 'Corporate Letterhead & Stationery Sets',
+    titleAr: 'الأوراق الرسمية والقرطاسية المؤسسية',
     category: 'products',
-    categoryLabel: 'اوراق و چاپ اداری',
-    description: 'چاپ سربرگ A4 و A5 روی کاغذ تحریر، کتان و فانتزی',
+    categoryLabelFa: 'اوراق و چاپ اداری',
+    categoryLabelEn: 'Corporate Stationery',
+    categoryLabelAr: 'مطبوعات مكتبية',
+    descFa: 'چاپ سربرگ A4 و A5 روی کاغذ تحریر، کتان و فانتزی با رنگ اختصاصی پنتون',
+    descEn: 'A4 & A5 letterheads on bond, linen & fine textured stock with Pantone accuracy',
+    descAr: 'طباعة أوراق المراسلات الرسمية على ورق عادي وكتان بألوان بانتون دقيقة',
     url: '/products/printing/letterhead',
-    keywords: ['سربرگ', 'ست اداری', 'تحریر', 'کتان', 'کاغذ اداری', 'نامه']
+    keywords: ['سربرگ', 'ست اداری', 'تحریر', 'کتان', 'کاغذ اداری', 'نامه', 'letterhead', 'stationery', 'office', 'ورق رسمي', 'أوراق رسمية']
   },
   {
     id: 'print-envelopes',
-    title: 'پاکت‌نامه و پاکت اداری A4 و ملخی',
+    titleFa: 'پاکت‌نامه و پاکت اداری A4 و ملخی',
+    titleEn: 'Business Envelopes (A4, Pocket & Commercial)',
+    titleAr: 'مغلفات الرسائل والمراسلات التجارية',
     category: 'products',
-    categoryLabel: 'اوراق و چاپ اداری',
-    description: 'پاکت‌های اداری با چسب آماده و چاپ داخلی امنیتی',
+    categoryLabelFa: 'اوراق و چاپ اداری',
+    categoryLabelEn: 'Corporate Stationery',
+    categoryLabelAr: 'مطبوعات مكتبية',
+    descFa: 'پاکت‌های اداری با چسب سیلیکونی آماده و چاپ پترن امنیتی داخلی',
+    descEn: 'Peel-and-seal business envelopes with internal security tint pattern',
+    descAr: 'مغلفات مراسلات رسمية مع شريط لاصق وطباعة داخلية أمنية',
     url: '/products/printing/envelopes',
-    keywords: ['پاکت', 'پاکت نامه', 'پاکت A4', 'پاکت ملخی', 'پاکت پستی']
+    keywords: ['پاکت', 'پاکت نامه', 'پاکت A4', 'پاکت ملخی', 'envelope', 'envelopes', 'ظرف', 'مغلف', 'مغلفات']
   },
   {
     id: 'print-business-cards',
-    title: 'کارت ویزیت لوکس و مدیریتی',
+    titleFa: 'کارت ویزیت مدیریتی و لوکس',
+    titleEn: 'Executive & Luxury Business Cards',
+    titleAr: 'بطاقات العمل والزيارة الفاخرة',
     category: 'products',
-    categoryLabel: 'اوراق و چاپ اداری',
-    description: 'کارت ویزیت لمینت برجسته، سلفون مخملی و طلاکوب',
+    categoryLabelFa: 'اوراق و چاپ اداری',
+    categoryLabelEn: 'Corporate Stationery',
+    categoryLabelAr: 'مطبوعات مكتبية',
+    descFa: 'کارت ویزیت لمینت برجسته، سلفون مخملی سافت‌تاچ، طلاکوب و PVC',
+    descEn: 'Soft-touch matte velvet, spot UV, hot foil stamping & thick multilayer cards',
+    descAr: 'بطاقات عمل بطبقة مخملية وطلاء ذهبي وبروز موضعي وبطاقات PVC',
     url: '/products/printing/business-cards',
-    keywords: ['کارت ویزیت', 'لمینت', 'طلاکوب', 'سافت تاچ', 'مخملی', 'PVC']
+    keywords: ['کارت ویزیت', 'لمینت', 'طلاکوب', 'سافت تاچ', 'مخملی', 'business card', 'cards', 'foil', 'بطاقة عمل', 'كارت فيزيت']
   },
   {
     id: 'print-catalogs',
-    title: 'بروشور و کاتالوگ‌های صنعتی',
+    titleFa: 'بروشور و کاتالوگ‌های صنعتی',
+    titleEn: 'Industrial Brochures & Product Catalogs',
+    titleAr: 'الكتالوجات الصناعية والبروشورات الترويجية',
     category: 'products',
-    categoryLabel: 'کاتالوگ و بازاریابی',
-    description: 'چاپ کاتالوگ‌های چندصفحه‌ای با صحافی چسب گرم PUR و منگنه لوپ',
+    categoryLabelFa: 'کاتالوگ و بازاریابی',
+    categoryLabelEn: 'Catalogs & Marketing',
+    categoryLabelAr: 'كتالوجات وتسويق',
+    descFa: 'چاپ کاتالوگ‌های چندصفحه‌ای با صحافی چسب گرم PUR و منگنه لوپ',
+    descEn: 'Multi-page high-definition catalogs with PUR perfect binding & saddle stitching',
+    descAr: 'طباعة كتالوجات متعددة الصفحات مع تجليد حراري وملازم عالية الدقة',
     url: '/products/printing/brochures-catalogs',
-    keywords: ['کاتالوگ', 'بروشور', 'دفترچه', 'ژورنال', 'صحافی', 'چسب گرم']
+    keywords: ['کاتالوگ', 'بروشور', 'دفترچه', 'ژورنال', 'صحافی', 'چسب گرم', 'catalog', 'catalogue', 'brochure', 'booklet', 'كتالوج', 'بروشور']
   },
   {
     id: 'print-books',
-    title: 'کتاب، مجلات و نشریات سازمانی',
+    titleFa: 'کتاب، مجلات و نشریات سازمانی',
+    titleEn: 'Books, Journals & Corporate Publications',
+    titleAr: 'الكتب والمجلات والنشرات المؤسسية',
     category: 'products',
-    categoryLabel: 'چاپ و نشر',
-    description: 'چاپ تیراژ بالا انواع کتاب، فصلنامه و بولتن‌های تخصصی',
+    categoryLabelFa: 'چاپ و نشر',
+    categoryLabelEn: 'Publishing & Print',
+    categoryLabelAr: 'طباعة ونشر',
+    descFa: 'چاپ تیراژ بالا انواع کتاب، فصلنامه، سالنامه و بولتن‌های تخصصی',
+    descEn: 'High-volume book printing, corporate journals & quarterly magazines',
+    descAr: 'طباعة الكتب والمجلات الدورية والنشرات السنوية بكميات صناعية',
     url: '/products/printing/books-magazines',
-    keywords: ['کتاب', 'مجله', 'فصلنامه', 'نشریه', 'بولتن', 'چاپ کتاب']
+    keywords: ['کتاب', 'مجله', 'فصلنامه', 'نشریه', 'بولتن', 'book', 'magazine', 'journal', 'كتاب', 'مجلة', 'مطبوعات']
   },
   {
     id: 'print-calendars',
-    title: 'تقویم، سررسید و سالنامه',
+    titleFa: 'تقویم، سررسید و سالنامه اختصاصی',
+    titleEn: 'Custom Planners, Diaries & Desk Calendars',
+    titleAr: 'التقاويم المكتبية والأجندات السنوية',
     category: 'products',
-    categoryLabel: 'هدایای تبلیغاتی',
-    description: 'سررسید اختصاصی، تقویم رومیزی و دیواری با چاپ اختصاصی',
+    categoryLabelFa: 'هدایای تبلیغاتی',
+    categoryLabelEn: 'Promotional Gifts',
+    categoryLabelAr: 'هدايا دعائية',
+    descFa: 'سررسید چرمی اختصاصی، تقویم رومیزی پایه چوبی و دیواری',
+    descEn: 'Custom leather executive diaries, wooden desk calendars & wall planners',
+    descAr: 'أجندات جلدية فاخرة وتقاويم مكتبية وجدارية مطبوعة بشعار المنشأة',
     url: '/products/printing/calendars-planners',
-    keywords: ['تقویم', 'سررسید', 'سالنامه', 'تقویم رومیزی', 'هدایای نوروزی']
-  },
-  {
-    id: 'print-labels',
-    title: 'لیبل، برچسب و استیکر رول/شیت',
-    category: 'products',
-    categoryLabel: 'لیبل و برچسب',
-    description: 'لیبل‌های ضدآب، متالایز، شیشه‌ای و کاغذی با چسبندگی قوی',
-    url: '/products/printing/labels-stickers',
-    keywords: ['لیبل', 'برچسب', 'استیکر', 'متالایز', 'پشت چسبدار', 'رول']
-  },
-  {
-    id: 'print-folders',
-    title: 'فولدر و پوشه اسناد اداری',
-    category: 'products',
-    categoryLabel: 'اوراق و چاپ اداری',
-    description: 'فولدرهای مقوایی سلفونی با جیب اختصاصی کارت و CD',
-    url: '/products/printing/folders',
-    keywords: ['فولدر', 'پوشه', 'فولدر اداری', 'پوشه مدارک']
+    keywords: ['تقویم', 'سررسید', 'سالنامه', 'تقویم رومیزی', 'calendar', 'planner', 'diary', 'تقويم', 'أجندة', 'مفكرة']
   },
 
   // Services
   {
-    id: 'service-design',
-    title: 'طراحی، ماکت‌سازی و فرم‌بندی',
+    id: 'srv-printing-packaging',
+    titleFa: 'چاپ افست ۵ رنگ ورقی هایدلبرگ',
+    titleEn: 'Heidelberg 5-Color Sheet-fed Offset Printing',
+    titleAr: 'طباعة الأوفست 5 ألوان من هايدلبرغ',
     category: 'services',
-    categoryLabel: 'خدمات تخصصی',
-    description: 'طراحی ساختار جعبه، ساخت نمونه ماکت اولیه و فرم‌بندی استاندارد',
-    url: '/services/design-and-layout',
-    keywords: ['طراحی', 'ماکت سازی', 'فرم بندی', 'طراحی جعبه', 'قالب سازی']
-  },
-  {
-    id: 'service-lithography',
-    title: 'لیتوگرافی و زینک دیجیتال CTP',
-    category: 'services',
-    categoryLabel: 'خدمات تخصصی',
-    description: 'خروجی زینک حرارتی بدون خطا با تفکیک رنگ میکرونی',
-    url: '/services/lithography-and-plates',
-    keywords: ['لیتوگرافی', 'زینک', 'CTP', 'پلیت', 'تفکیک رنگ']
-  },
-  {
-    id: 'service-offset',
-    title: 'چاپ افست و چاپ بسته‌بندی صنعتی',
-    category: 'services',
-    categoryLabel: 'خدمات تخصصی',
-    description: 'چاپ افست ۵ رنگ و ۴ رنگ هایدلبرگ با کنترل رنگ آنلاین',
+    categoryLabelFa: 'خدمات چاپ',
+    categoryLabelEn: 'Printing Services',
+    categoryLabelAr: 'خدمات الطباعة',
+    descFa: 'سیستم‌های کنترل آنلاین اسپکتروفتومتری Prinect با سرعت ۱۵,۰۰۰ برگ در ساعت',
+    descEn: 'Prinect inline spectrophotometric closed-loop color control up to 15,000 sheets/hour',
+    descAr: 'أنظمة التحكم الطيفي المغلقة بسرعة تصل إلى 15,000 ورقة في الساعة',
     url: '/services/printing-and-packaging',
-    keywords: ['چاپ افست', 'هایدلبرگ', 'چاپ صنعتی', 'افست', 'چاپ ۵ رنگ']
+    keywords: ['چاپ افست', 'هایدلبرگ', '۵ رنگ', 'ورقی', 'پنتون', 'اسپکتوفتومتری', 'offset', 'heidelberg', 'offset printing', 'طباعة أوفست', 'هايدلبرغ']
   },
   {
-    id: 'service-finishing',
-    title: 'خدمات تکمیلی، سلفون‌کشی، طلاکوب و دایکات',
+    id: 'srv-finishing',
+    titleFa: 'خدمات تکمیلی، طلاکوب، برجسته‌سازی و سلفون',
+    titleEn: 'Post-Press Finishing, Hot Foiling & Lamination',
+    titleAr: 'خدمات ما بعد الطباعة والتذهيب الحراري والسلفنة',
     category: 'services',
-    categoryLabel: 'خدمات تخصصی',
-    description: 'سلفون مات/براق، یووی موضعی، طلاکوب گرم، دایکات بوبست و جعبه‌چسبانی',
+    categoryLabelFa: 'خدمات تکمیلی',
+    categoryLabelEn: 'Finishing Services',
+    categoryLabelAr: 'خدمات التشطيب',
+    descFa: 'سلفون حرارتی مات و براق، طلاکوب دیجیتال و لترپرس، یووی موضعی شنی و برجسته',
+    descEn: 'Thermal velvet matte & gloss lamination, precision hot foil stamping, textured spot UV',
+    descAr: 'سلفنة حرارية مخملية، تذهيب حراري دقيق، ورنيش موضعي بارز ونقش مجسم',
     url: '/services/finishing-services',
-    keywords: ['خدمات تکمیلی', 'سلفون', 'طلاکوب', 'یووی', 'دایکات', 'جعبه چسبانی']
+    keywords: ['خدمات تکمیلی', 'طلاکوب', 'سلفون', 'یووی', 'برجسته‌سازی', 'امبوس', 'finishing', 'foil', 'lamination', 'uv', 'emboss', 'تذهيب', 'سلفنة', 'ورنيش']
   },
   {
-    id: 'service-storage',
-    title: 'نگهداری و انبارداری محصولات چاپ‌شده',
+    id: 'srv-lithography',
+    titleFa: 'لیتوگرافی CTP و تفکیک رنگ دیجیتال',
+    titleEn: 'Digital CTP Lithography & Pre-Press Imaging',
+    titleAr: 'الليثوغرافيا الرقمية CTP وإعداد الصفائح',
     category: 'services',
-    categoryLabel: 'خدمات تخصصی',
-    description: 'انبارش ایمن سفارشات تیراژ بالا و ارسال پالت‌بندی شده مرحله‌ای',
-    url: '/services/storage-and-warehousing',
-    keywords: ['انبارداری', 'نگهداری', 'ارسال', 'پالت بندی', 'لجستیک']
-  },
-
-  // Industries
-  {
-    id: 'ind-food',
-    title: 'بسته‌بندی صنایع غذایی و رستورانی',
-    category: 'products',
-    categoryLabel: 'راهکار صنایع',
-    description: 'جعبه‌های فودگرید بهداشتی، ساک کرافت و بسته‌بندی بیرون‌بر',
-    url: '/products/industries/food-beverage-restaurant',
-    keywords: ['صنایع غذایی', 'رستوران', 'فست فود', 'شکلات', 'شیرینی', 'کافه']
-  },
-  {
-    id: 'ind-pharma',
-    title: 'بسته‌بندی دارویی و پزشکی',
-    category: 'products',
-    categoryLabel: 'راهکار صنایع',
-    description: 'جعبه دارو، خط بریل، بروشور داخل جعبه و پلمپ امنیتی',
-    url: '/products/industries/medical-pharmaceutical',
-    keywords: ['دارو', 'پزشکی', 'داروسازی', 'شربت', 'قرص', 'بریل']
-  },
-  {
-    id: 'ind-beauty',
-    title: 'بسته‌بندی آرایشی و بهداشتی',
-    category: 'products',
-    categoryLabel: 'راهکار صنایع',
-    description: 'جعبه‌های نفیس کرم، عطر، لوسیون و ماسک با جلوه‌های لوکس',
-    url: '/products/industries/beauty-health',
-    keywords: ['آرایشی', 'بهداشتی', 'عطر', 'ادکلن', 'کرم', 'پوستی']
+    categoryLabelFa: 'پیش از چاپ',
+    categoryLabelEn: 'Pre-Press Services',
+    categoryLabelAr: 'ما قبل الطباعة',
+    descFa: 'پلیت‌ستر هایدلبرگ Suprasetter با دقت ۲۵۴۰DPI و تهیه زینک بدون شیمیایی',
+    descEn: 'Heidelberg Suprasetter thermal laser platesetter at 2540 DPI with chemistry-free plates',
+    descAr: 'ماكينات تحضير الصفائح الحرارية بدقة 2540DPI بدون مواد كيميائية',
+    url: '/services/lithography-and-plates',
+    keywords: ['لیتوگرافی', 'پلیت', 'زینک', 'CTP', 'تفکیک رنگ', 'پروف دیجیتال', 'prepress', 'plates', 'litho', 'ليثوغرافيا', 'صفائح', 'زنك']
   },
 
   // Resources
   {
-    id: 'res-general-catalog',
-    title: 'کاتالوگ جامع محصولات و خدمات چاپ نجم (PDF)',
+    id: 'res-catalog',
+    titleFa: 'دانلود کاتالوگ جامع محصولات و مشخصات متریال (PDF)',
+    titleEn: 'Download Full PDF Product Catalog & Material Spec Sheet',
+    titleAr: 'تحميل الكتالوج الشامل لمنتجات ومواصفات الخامات (PDF)',
     category: 'resources',
-    categoryLabel: 'مرکز منابع',
-    description: 'دانلود کاتالوگ جامع معرفی خطوط چاپ و نمونه کارها',
-    url: '/resources/catalog-general-2026',
-    keywords: ['کاتالوگ جامع', 'دانلود کاتالوگ', 'پی دی اف', 'PDF', 'نمونه کار']
+    categoryLabelFa: 'کاتالوگ و راهنما',
+    categoryLabelEn: 'Catalogs & Guides',
+    categoryLabelAr: 'الكتالوجات والأدلة',
+    descFa: 'نسخه باکیفیت کاتالوگ جامع ۴۸ صفحه‌ای به همراه جدول گرماژ مقواها و خدمات تکمیلی',
+    descEn: '48-page high-resolution technical catalog with paperboard calipers & finishing samples',
+    descAr: 'نسخة رقمية عالية الدقة 48 صفحة مع جداول أوزان الورق وعينات التشطيب',
+    url: '/catalog',
+    keywords: ['دانلود کاتالوگ', 'پی دی اف', 'PDF', 'کاتالوگ جامع', 'مشخصات فنی', 'download', 'pdf', 'catalog', 'spec', 'تحميل', 'ملف']
   },
   {
-    id: 'res-cmyk-guide',
-    title: 'راهنمای آماده‌سازی فایل و پروفایل رنگی CMYK',
+    id: 'res-dielines',
+    titleFa: 'قالب‌های تیغ استاندارد و دایکات (Die-Lines)',
+    titleEn: 'Standard Packaging Die-Line Templates (AI / PDF)',
+    titleAr: 'قوالب سكاكين التغليف القياسية (Die-Lines)',
     category: 'resources',
-    categoryLabel: 'مرکز منابع',
-    description: 'دستورالعمل خروجی PDF/X-1a و رزولوشن ۳۰۰DPI',
-    url: '/resources/guide-cmyk-color-profile',
-    keywords: ['راهنمای رنگ', 'CMYK', 'سی ام وای کی', 'پروفایل رنگ', 'DPI', 'کیفیت چاپ']
-  },
-  {
-    id: 'res-diecut-templates',
-    title: 'قالب‌های تیغ استاندارد جعبه و ساک دستی',
-    category: 'resources',
-    categoryLabel: 'مرکز منابع',
-    description: 'فایل‌های برداری وکتور AI و PDF خطوط تیغ و خط‌تا',
-    url: '/resources/template-tuck-end-box',
-    keywords: ['قالب تیغ', 'دایکات', 'Die cut', 'تیغ جعبه', 'وکتور', 'Illustrator']
+    categoryLabelFa: 'قالب‌های تیغ',
+    categoryLabelEn: 'Die-Line Templates',
+    categoryLabelAr: 'قوالب السكاكين',
+    descFa: 'دانلود فایل‌های وکتور قالب تیغ جعبه دارویی، پاکت‌نامه و ساک دستی برای دیزاینرها',
+    descEn: 'Vector CAD die-line templates for cartons, folders, envelopes & shopping bags',
+    descAr: 'تحميل ملفات فيكتور لقوالب سكاكين العلب والمغلفات والأكياس للمصممين',
+    url: '/resources',
+    keywords: ['قالب تیغ', 'دایکات', 'وکتور', 'ایلستریتور', 'دیزاین', 'dieline', 'die-line', 'template', 'vector', 'قالب', 'سكين']
   },
 
-  // Pages
+  // Main Pages
+  {
+    id: 'page-facilities',
+    titleFa: 'کارخانه و ماشین‌آلات صنعتی چاپ و بسته‌بندی',
+    titleEn: 'Industrial Machinery & Production Facilities Showcase',
+    titleAr: 'المصنع وأسطول الماكينات الصناعية لإنتاج التغليف',
+    category: 'pages',
+    categoryLabelFa: 'صفحات وبسایت',
+    categoryLabelEn: 'Site Pages',
+    categoryLabelAr: 'صفحات الموقع',
+    descFa: 'معرفی خطوط ۵ رنگ هایدلبرگ، دایکات اتوماتیک بوبست، خطوط هاردباکس و آزمایشگاه QC',
+    descEn: 'Tour Heidelberg 5-color presses, Bobst die-cutters, rigid box lines & QC laboratory',
+    descAr: 'جولة تعريفية بماكينات هايدلبرغ وبوبست وخطوط الصناديق الصلبة ومختبر الجودة',
+    url: '/facilities',
+    keywords: ['کارخانه', 'تجهیزات', 'ماشین آلات', 'امکانات', 'بوبست', 'هایدلبرگ', 'facilities', 'factory', 'machines', 'equipment', 'المصنع', 'الآلات']
+  },
   {
     id: 'page-about',
-    title: 'درباره ما، داستان و تجهیزات چاپ نجم',
+    titleFa: 'درباره مجتمع چاپ و بسته‌بندی نجم',
+    titleEn: 'About Najm Printing & Packaging Complex',
+    titleAr: 'حول مجمع مطبعة وتغليف نجم',
     category: 'pages',
-    categoryLabel: 'صفحات سایت',
-    description: 'آشنایی با تاریخچه، ارزش‌ها، ظرفیت تولید و ماشین‌آلات نجم',
+    categoryLabelFa: 'صفحات وبسایت',
+    categoryLabelEn: 'Site Pages',
+    categoryLabelAr: 'صفحات الموقع',
+    descFa: 'بیش از دو دهه تجربه صنعتی، تیم مهندسی چاپ و تعهد به کیفیت پایدار',
+    descEn: 'Over 25 years of industrial experience, structural engineering & green print standards',
+    descAr: 'أكثر من عقدين من الخبرة الصناعية والهندسة الهيكلية ومعايير الطباعة المستدامة',
     url: '/about',
-    keywords: ['درباره ما', 'تاریخچه', 'هایدلبرگ', 'کارخانه', 'مجتمع چاپ']
+    keywords: ['درباره ما', 'تاریخچه', 'مجتمع نجم', 'تیم', 'رزومه', 'about', 'team', 'history', 'company', 'عن الشركة', 'من نحن']
   },
   {
     id: 'page-contact',
-    title: 'تماس با ما، نشانی و استعلام قیمت',
+    titleFa: 'تماس با ما، نشانی کارخانه و استعلام قیمت',
+    titleEn: 'Contact Us, Factory Location & Quote Estimation',
+    titleAr: 'اتصل بنا، موقع المصنع ونموذج استعلام الأسعار',
     category: 'pages',
-    categoryLabel: 'صفحات سایت',
-    description: 'راه‌های ارتباطی، شماره‌های تماس، لوکیشن کارخانه و فرم سفارش',
+    categoryLabelFa: 'صفحات وبسایت',
+    categoryLabelEn: 'Site Pages',
+    categoryLabelAr: 'صفحات الموقع',
+    descFa: 'شماره‌های تماس، آدرس دفتر مرکزی و کارخانه، فرم آنلاین استعلام تیراژ و نقشه گوگل',
+    descEn: 'Telephone numbers, factory address, online quote form & interactive map directions',
+    descAr: 'أرقام الهواتف، عنوان المصنع، نموذج الاستعلام المباشر وخريطة الموقع',
     url: '/contact',
-    keywords: ['تماس با ما', 'آدرس', 'تلفن', 'لوکیشن', 'استعلام قیمت', 'نقشه']
+    keywords: ['تماس با ما', 'آدرس', 'تلفن', 'استعلام', 'قیمت', 'نقشه', 'contact', 'phone', 'address', 'quote', 'اتصل بنا', 'عنوان', 'هاتف']
+  },
+  {
+    id: 'page-consultation',
+    titleFa: 'مشاوره تخصصی رایگان چاپ و بسته‌بندی',
+    titleEn: 'Free Packaging Engineering Consultation',
+    titleAr: 'استشارة هندسية وفنية مجانية في التغليف والطباعة',
+    category: 'pages',
+    categoryLabelFa: 'مشاوره رایگان',
+    categoryLabelEn: 'Free Advisory',
+    categoryLabelAr: 'استشارة مجانية',
+    descFa: 'رزرو جلسه مشاوره با مهندسان ساختار، بررسی گرماژ مقوا و ساخت ماکت فیزیکی رایگان',
+    descEn: 'Book a session with packaging engineers, review board caliper & request free prototypes',
+    descAr: 'حجز جلسة استشارية مع مهندسي الهياكل وفحص العينات وتصنيع ماكت مجاني',
+    url: '/consultation',
+    keywords: ['مشاوره', 'مشاوره رایگان', 'استعلام', 'مهندسی بسته بندی', 'consultation', 'advisory', 'free advice', 'استشارة', 'استشارة مجانية']
+  },
+  {
+    id: 'page-faq',
+    titleFa: 'مرکز راهنما و پرسش‌های متداول (FAQ)',
+    titleEn: 'Help Center & Frequently Asked Questions (FAQ)',
+    titleAr: 'مركز المساعدة والأسئلة الشائعة (FAQ)',
+    category: 'pages',
+    categoryLabelFa: 'مرکز راهنما',
+    categoryLabelEn: 'Help Center',
+    categoryLabelAr: 'مركز المساعدة',
+    descFa: 'پاسخ به سوالات حداقل تیراژ (MOQ)، فرمت فایل‌های چاپی، زمان‌بندی و لجستیک ارسال',
+    descEn: 'Answers regarding minimum order quantities, print file formats, timelines & shipping',
+    descAr: 'إجابات حول الحد الأدنى للكميات وصيغ الملفات والمهل الزمنية والشحن',
+    url: '/help/faq',
+    keywords: ['سوالات متداول', 'راهنما', 'تیراژ', 'فرمت فایل', 'faq', 'help', 'questions', 'أسئلة شائعة', 'مساعدة']
   }
 ]
 
-// Normalize Persian and Arabic text for exact indexing & fuzzy search
-function normalizePersianText(text: string): string {
-  if (!text) return ''
-  return text
-    .replace(/ي/g, 'ی')
-    .replace(/ك/g, 'ک')
-    .replace(/ة/g, 'ه')
-    .replace(/[\u064B-\u065F]/g, '') // remove Arabic diacritics
-    .trim()
-    .toLowerCase()
-}
-
 export function useSiteSearch() {
+  const { language } = useLocale()
   const query = ref('')
+  const activeCategory = ref<string>('all')
   const recentSearches = ref<string[]>([])
-  let miniSearchInstance: MiniSearch<SearchDoc> | null = null
+  let miniSearchInstance: MiniSearch | null = null
+
+  function normalizeSearchText(str: string): string {
+    return (str || '')
+      .toLowerCase()
+      .replace(/[يی]/g, 'ی')
+      .replace(/[كک]/g, 'ک')
+      .replace(/[\u064B-\u065F]/g, '') // remove Arabic diacritics
+      .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width spaces
+      .trim()
+  }
 
   function initSearchEngine() {
-    miniSearchInstance = new MiniSearch<SearchDoc>({
-      fields: ['title', 'description', 'keywords', 'categoryLabel'],
-      storeFields: ['id', 'title', 'category', 'categoryLabel', 'description', 'url'],
-      processTerm: (term) => normalizePersianText(term),
+    if (miniSearchInstance) return
+
+    miniSearchInstance = new MiniSearch({
+      fields: ['searchContent', 'keywordsStr'],
+      storeFields: ['id'],
       searchOptions: {
+        boost: { searchContent: 2, keywordsStr: 1.5 },
         prefix: true,
-        fuzzy: 0.2,
-        boost: { title: 3, keywords: 2, description: 1 }
+        fuzzy: 0.2
       }
     })
 
-    // Index documents
     const preparedDocs = searchDocuments.map(doc => ({
-      ...doc,
-      titleNorm: normalizePersianText(doc.title),
-      keywordsNorm: (doc.keywords || []).map(k => normalizePersianText(k)).join(' ')
+      id: doc.id,
+      searchContent: normalizeSearchText(
+        `${doc.titleFa} ${doc.titleEn} ${doc.titleAr} ${doc.descFa} ${doc.descEn} ${doc.descAr} ${doc.categoryLabelFa} ${doc.categoryLabelEn} ${doc.categoryLabelAr}`
+      ),
+      keywordsStr: normalizeSearchText((doc.keywords || []).join(' '))
     }))
 
     miniSearchInstance.addAll(preparedDocs)
@@ -322,16 +407,70 @@ export function useSiteSearch() {
     loadRecentSearches()
   })
 
-  const results = computed<SearchDoc[]>(() => {
+  function localizeDoc(doc: SearchDoc): LocalizedSearchItem {
+    const lang = (language.value || 'FA').toUpperCase()
+    if (lang === 'EN') {
+      return {
+        id: doc.id,
+        title: doc.titleEn || doc.titleFa,
+        category: doc.category,
+        categoryLabel: doc.categoryLabelEn || doc.categoryLabelFa,
+        description: doc.descEn || doc.descFa,
+        url: doc.url
+      }
+    } else if (lang === 'AR') {
+      return {
+        id: doc.id,
+        title: doc.titleAr || doc.titleFa,
+        category: doc.category,
+        categoryLabel: doc.categoryLabelAr || doc.categoryLabelFa,
+        description: doc.descAr || doc.descFa,
+        url: doc.url
+      }
+    }
+    return {
+      id: doc.id,
+      title: doc.titleFa,
+      category: doc.category,
+      categoryLabel: doc.categoryLabelFa,
+      description: doc.descFa,
+      url: doc.url
+    }
+  }
+
+  const results = computed<LocalizedSearchItem[]>(() => {
     const q = query.value.trim()
     if (!q) return []
     if (!miniSearchInstance) initSearchEngine()
 
-    const searchHits = miniSearchInstance?.search(normalizePersianText(q)) || []
-    return searchHits.map(hit => {
-      const original = searchDocuments.find(d => d.id === hit.id)
-      return (original || hit) as SearchDoc
-    })
+    const normalizedQuery = normalizeSearchText(q)
+    const searchHits = miniSearchInstance?.search(normalizedQuery) || []
+    
+    const mapped: LocalizedSearchItem[] = []
+    for (const hit of searchHits) {
+      const doc = searchDocuments.find(d => d.id === hit.id)
+      if (doc) {
+        mapped.push(localizeDoc(doc))
+      }
+    }
+
+    // Direct substring fallback if miniSearch yields 0 results for short/special queries
+    if (mapped.length === 0) {
+      for (const doc of searchDocuments) {
+        const fullContent = normalizeSearchText(
+          `${doc.titleFa} ${doc.titleEn} ${doc.titleAr} ${doc.descFa} ${doc.descEn} ${doc.descAr} ${(doc.keywords || []).join(' ')}`
+        )
+        if (fullContent.includes(normalizedQuery)) {
+          mapped.push(localizeDoc(doc))
+        }
+      }
+    }
+
+    if (activeCategory.value !== 'all') {
+      return mapped.filter(r => r.category === activeCategory.value)
+    }
+
+    return mapped
   })
 
   const categorizedResults = computed(() => {
@@ -346,6 +485,7 @@ export function useSiteSearch() {
 
   return {
     query,
+    activeCategory,
     results,
     categorizedResults,
     recentSearches,

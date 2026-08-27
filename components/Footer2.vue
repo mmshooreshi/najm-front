@@ -21,15 +21,24 @@
 
           <div class="grid gap-8 pt-8 md:pt-12 pb-0">
             <div class="flex flex-col gap-4 mb-8 md:mb-0">
-              <p
+              <div
                 v-for="(paragraph, index) in footerData.hero?.paragraphs"
                 :key="index"
-                class="leading-relaxed font-medium text-d4 text-xs break-words"
-                :class="isRTL ? 'text-right' : 'text-left'"
-                v-editable="`hero.paragraphs.${index}`"
+                class="relative group"
               >
-                {{ paragraph }}
-              </p>
+                <!-- Paragraph Action [+] / [-] -->
+                <AdminArrayItemActions path="hero.paragraphs" :index="index" position="top-left" />
+
+                <p
+                  class="leading-relaxed font-medium text-d4 text-xs break-words"
+                  :class="isRTL ? 'text-right' : 'text-left'"
+                  v-editable="`hero.paragraphs.${index}`"
+                >
+                  {{ paragraph }}
+                </p>
+              </div>
+
+              <AdminAddCardPlaceholder path="hero.paragraphs" label="افزودن پاراگراف معرفی جدید" customClass="min-h-[40px] p-2" />
             </div>
           </div>
         </div>
@@ -42,10 +51,14 @@
           <div
             v-for="(item, index) in footerData.contact?.items"
             :key="index"
-            class="flex flex-col"
+            class="flex flex-col relative group"
           >
             <div class="flex w-full justify-between items-center border-b border-white/10 border-b-0.5 py-3 gap-2">
-              <span class="text-demibold text-d4 text-xs sm:text-sm whitespace-nowrap" v-editable="`contact.items.${index}.name`">{{ item.name }}</span>
+              <div class="flex items-center gap-2">
+                <!-- Contact Item Action [+] / [-] -->
+                <AdminArrayItemActions path="contact.items" :index="index" position="inline" />
+                <span class="text-demibold text-d4 text-xs sm:text-sm whitespace-nowrap" v-editable="`contact.items.${index}.name`">{{ item.name }}</span>
+              </div>
               <a
                 v-if="item.slug"
                 :href="item.slug"
@@ -60,6 +73,8 @@
               </span>
             </div>
           </div>
+
+          <AdminAddCardPlaceholder path="contact.items" label="افزودن اطلاعات تماس جدید" customClass="min-h-[40px] p-2 my-2" />
         </div>
 
         <ClientOnly>

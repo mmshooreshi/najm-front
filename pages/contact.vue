@@ -37,7 +37,7 @@
           <h3 class="text-sm sm:text-base font-bold text-gray-900 mb-1 text-d4 break-words" v-editable="'phoneLabel'">
             {{ uiContent.phoneLabel || 'تماس تلفنی مستقیم' }}
           </h3>
-          <p class="text-xs text-gray-500 mb-3 sm:mb-4">پاسخگویی در ساعات کاری</p>
+          <p class="text-xs text-gray-500 mb-3 sm:mb-4" v-editable="'phoneSub'">{{ uiContent.phoneSub || 'پاسخگویی در ساعات کاری' }}</p>
         </div>
         <div class="space-y-2 border-t border-gray-100 pt-3 sm:pt-4">
           <a :href="`tel:${uiContent.phone || '02166229900'}`" class="block text-sm font-semibold text-gray-800 hover:text-najmgreen ltr font-mono" v-editable="'phone'">
@@ -58,7 +58,7 @@
           <h3 class="text-sm sm:text-base font-bold text-gray-900 mb-1 text-d4 break-words" v-editable="'emailLabel'">
             {{ uiContent.emailLabel || 'مکاتبه و ارسال فایل' }}
           </h3>
-          <p class="text-xs text-gray-500 mb-3 sm:mb-4">ارسال فایل‌های طراحی</p>
+          <p class="text-xs text-gray-500 mb-3 sm:mb-4" v-editable="'emailSub'">{{ uiContent.emailSub || 'ارسال فایل‌های طراحی' }}</p>
         </div>
         <div class="space-y-2 border-t border-gray-100 pt-3 sm:pt-4">
           <a :href="`mailto:${uiContent.email || 'info@chapenajm.com'}`" class="block text-xs font-semibold text-gray-800 hover:text-najmgreen ltr font-mono break-all" v-editable="'email'">
@@ -88,7 +88,7 @@
           class="w-full py-2 px-3 rounded-xl bg-najmgrey hover:bg-gray-200 text-gray-800 text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
         >
           <Icon :name="copied ? 'mdi:check' : 'mdi:content-copy'" class="w-4 h-4" />
-          <span>{{ copied ? 'کپی شد!' : 'کپی نشانی' }}</span>
+          <span>{{ copied ? (uiContent.copiedText || 'کپی شد!') : (uiContent.copyAddressBtn || 'کپی نشانی') }}</span>
         </button>
       </div>
 
@@ -109,9 +109,9 @@
           </p>
         </div>
         <div class="border-t border-gray-100 pt-3">
-          <span class="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-bold">
+          <span class="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-bold" v-editable="'hoursSub'">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            واحد فنی فعال است
+            {{ uiContent.hoursSub || 'واحد فنی فعال است' }}
           </span>
         </div>
       </div>
@@ -121,62 +121,94 @@
     <div class="bg-white rounded-3xl p-6 sm:p-12 shadow-xs border border-najmborder/40 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
       <!-- Quote Form -->
       <div class="lg:col-span-7 space-y-6" :class="isRTL ? 'text-right' : 'text-left'">
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 text-d4 break-words" v-editable="'form.title'">
-          {{ uiContent.form.title }}
-        </h2>
+        <div class="space-y-1">
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900 text-d4 break-words" v-editable="'form.title'">
+            {{ uiContent.form.title }}
+          </h2>
+          <p v-if="uiContent.form.subtitle" class="text-xs text-gray-500" v-editable="'form.subtitle'">
+            {{ uiContent.form.subtitle }}
+          </p>
+        </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              v-model="form.name"
-              type="text"
-              required
-              :placeholder="uiContent.form.namePlaceholder"
-              class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
-            />
-            <input
-              v-model="form.phone"
-              type="tel"
-              required
-              :placeholder="uiContent.form.phonePlaceholder"
-              class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
-            />
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.nameLabel'">
+                {{ uiContent.form.nameLabel || 'نام و نام خانوادگی *' }}
+              </label>
+              <input
+                v-model="form.name"
+                type="text"
+                required
+                :placeholder="uiContent.form.namePlaceholder"
+                class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.phoneLabel'">
+                {{ uiContent.form.phoneLabel || 'شماره تماس همراه *' }}
+              </label>
+              <input
+                v-model="form.phone"
+                type="tel"
+                inputmode="tel"
+                required
+                :placeholder="uiContent.form.phonePlaceholder"
+                class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition ltr text-right font-mono"
+              />
+            </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <input
-              v-model="form.company"
-              type="text"
-              :placeholder="uiContent.form.companyPlaceholder"
-              class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
-            />
-            <input
-              v-model="form.category"
-              type="text"
-              :placeholder="uiContent.form.servicePlaceholder"
-              class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
-            />
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.companyLabel'">
+                {{ uiContent.form.companyLabel || 'نام برند یا شرکت' }}
+              </label>
+              <input
+                v-model="form.company"
+                type="text"
+                :placeholder="uiContent.form.companyPlaceholder"
+                class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.categoryLabel'">
+                {{ uiContent.form.categoryLabel || 'نوع خدمت یا محصول' }}
+              </label>
+              <input
+                v-model="form.category"
+                type="text"
+                :placeholder="uiContent.form.categoryPlaceholder"
+                class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition"
+              />
+            </div>
           </div>
 
-          <textarea
-            v-model="form.message"
-            rows="4"
-            required
-            :placeholder="uiContent.form.messagePlaceholder"
-            class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition leading-relaxed resize-none"
-          ></textarea>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5" v-editable="'form.messageLabel'">
+              {{ uiContent.form.messageLabel || 'توضیحات و مشخصات پروژه *' }}
+            </label>
+            <textarea
+              v-model="form.message"
+              rows="4"
+              required
+              :placeholder="uiContent.form.messagePlaceholder"
+              class="w-full px-4 py-3 rounded-2xl bg-najmgrey/50 border border-najmborder/60 text-xs text-gray-900 focus:bg-white focus:border-najmgreen focus:outline-none transition leading-relaxed resize-none"
+            ></textarea>
+          </div>
 
           <button
             type="submit"
             :disabled="isSubmitting"
-            class="w-full py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition cursor-pointer disabled:opacity-50"
+            class="w-full py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition cursor-pointer disabled:opacity-50 text-d4"
           >
             <Icon v-if="isSubmitting" name="mdi:loading" class="w-4 h-4 animate-spin" />
-            <span v-editable="'form.submitButton'">{{ uiContent.form.submitButton }}</span>
+            <span v-editable="'form.submitBtn'">{{ isSubmitting ? (uiContent.form.submitting || 'در حال ارسال...') : (uiContent.form.submitBtn || 'ارسال درخواست استعلام') }}</span>
           </button>
 
-          <div v-if="submitted" class="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs text-center font-bold">
-            درخواست شما با موفقیت ثبت گردید. کارشناسان ما به زودی با شما تماس خواهند گرفت.
+          <div v-if="submitted" class="p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-2xl text-center space-y-1">
+            <div class="text-xs font-bold" v-editable="'form.successTitle'">{{ uiContent.form.successTitle || 'درخواست شما با موفقیت ثبت شد!' }}</div>
+            <div class="text-[11px] text-emerald-700" v-editable="'form.successDesc'">{{ uiContent.form.successDesc || 'کارشناسان مهندسی فروش چاپ نجم به زودی با شما تماس خواهند گرفت.' }}</div>
           </div>
         </form>
       </div>
@@ -201,6 +233,7 @@ import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
+  name: 'تماس با ما - چاپ و بسته‌بندی نجم',
   layout: 'default'
 })
 
@@ -214,29 +247,48 @@ const fallbackContact = {
   badge: 'راه‌های ارتباطی و مشاوره تخصصی',
   title: 'ارتباط مستقیم با کارشناسان چاپ و بسته‌بندی نجم',
   description: 'برای مشاوره انتخاب متریال، استعلام قیمت تیراژ، رزرو زمان چاپ یا هماهنگی بازدید حضوری از کارخانه با ما در تماس باشید.',
-  phoneLabel: 'تلفن مرکزی:',
+  phoneLabel: 'تماس تلفنی مستقیم',
+  phoneSub: 'پاسخگویی در ساعات کاری',
   phone: '۰۲۱-۶۶۲۲۹۹۰۰',
-  emailLabel: 'پست الکترونیک:',
+  emailLabel: 'مکاتبه و ارسال فایل',
+  emailSub: 'ارسال فایل‌های طراحی و پیش‌فاکتور',
   email: 'info@chapenajm.com',
-  addressLabel: 'نشانی دفتر مرکزی و کارخانه:',
+  addressLabel: 'دفتر مرکزی و کارخانه',
+  addressSub: 'بازدید و هماهنگی جلسه حضوری',
   address: 'تهران، جاده مخصوص کرج، کیلومتر ۱۱، خیابان صنعتی نجم، پلاک ۲۴',
-  hoursLabel: 'ساعات کاری:',
+  copyAddressBtn: 'کپی نشانی',
+  copiedText: 'نشانی کپی شد!',
+  hoursLabel: 'ساعات کاری و پذیرش',
+  hoursSub: 'روزهای کاری شنبه تا پنج‌شنبه',
   hours: 'شنبه تا چهارشنبه ۸:۰۰ الی ۱۷:۳۰ | پنجشنبه‌ها ۸:۰۰ الی ۱۳:۰۰',
   form: {
     title: 'فرم آنلاین استعلام قیمت و سفارش',
-    namePlaceholder: 'نام و نام خانوادگی',
-    phonePlaceholder: 'شماره تماس همراه',
-    companyPlaceholder: 'نام سازمان یا برند',
-    servicePlaceholder: 'نوع محصول یا خدمت مورد نیاز',
-    messagePlaceholder: 'توضیحات ابعاد، تیراژ تخمینی و ویژگی‌های مد نظر...',
-    submitButton: 'ارسال درخواست استعلام'
+    subtitle: 'مشخصات پروژه خود را وارد کنید تا کارشناسان فنی در کوتاه‌ترین زمان با شما تماس بگیرند.',
+    nameLabel: 'نام و نام خانوادگی *',
+    namePlaceholder: 'مثال: علی رضایی',
+    phoneLabel: 'شماره تماس همراه *',
+    phonePlaceholder: '۰۹۱۲...',
+    companyLabel: 'نام برند یا شرکت',
+    companyPlaceholder: 'نام برند، شرکت یا استارتاپ',
+    categoryLabel: 'نوع محصول یا خدمت مدنظر',
+    categoryPlaceholder: 'انتخاب کنید (جعبه مقوایی، هاردباکس، کاتالوگ...)',
+    messageLabel: 'توضیحات و مشخصات پروژه *',
+    messagePlaceholder: 'ابعاد، تیراژ تخمینی، نوع مقوا، خدمات طلاکوب/سلفون...',
+    submitBtn: 'ارسال درخواست استعلام',
+    submitting: 'در حال ارسال اطلاعات...',
+    successTitle: 'درخواست شما با موفقیت ثبت شد!',
+    successDesc: 'کارشناسان مهندسی فروش چاپ نجم به زودی با شما تماس خواهند گرفت.'
   }
 }
 
 const uiContent = computed(() => {
   return {
     ...fallbackContact,
-    ...(ui.value || {})
+    ...(ui.value || {}),
+    form: {
+      ...fallbackContact.form,
+      ...(ui.value?.form || {})
+    }
   }
 })
 

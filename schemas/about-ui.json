@@ -1,59 +1,179 @@
 {
-  "fa": {
+  "FA": {
     "badge": "درباره مجتمع چاپ و بسته‌بندی نجم",
     "title": "نوآوری در چاپ افست، مهندسی در ساختار بسته‌بندی",
     "story": "مجتمع چاپ نجم با اتکا به بیش از دو دهه سابقه صنعتی، تجهیز خطوط پیشرفته هایدلبرگ و سیستم‌های تمام‌اتوماتیک پس از چاپ، به عنوان بازوی اجرایی معتبرترین برندهای دارویی، آرایشی، غذایی و صادراتی کشور فعالیت می‌کند.",
+    "nav": [
+      { "id": "vision", "label": "چشم‌انداز و مقیاس" },
+      { "id": "story", "label": "تیم و تخصص" },
+      { "id": "facility", "label": "ماشین‌آلات صنعتی" },
+      { "id": "workflow", "label": "فرایند تولید استاندارد" },
+      { "id": "timeline", "label": "مسیر تکامل" },
+      { "id": "values", "label": "ارزش‌ها و تعهدات" }
+    ],
     "metrics": [
       { "value": "+۲۵ سال", "label": "سابقه مستمر" },
       { "value": "+۱۵M", "label": "تیراژ سالانه" },
       { "value": "۹۹.۸٪", "label": "انطباق رنگی" }
     ],
-    "missionTitle": "ماموریت و تعهد به کیفیت پایدار",
-    "missionDescription": "ما معتقدیم بسته‌بندی تنها یک لایه محافظ نیست، بلکه نخستین زبان ارتباطی برند شما با جهان است. با ترکیب هنر دیزاین، فناوری چاپ نوین و متریال‌های تجزیه‌پذیر، ارزش واقعی محصول شما را تجسم می‌بخشیم.",
+    "teamBadge": "سرمایه انسانی و تخصص فنی",
+    "teamTitle": "تیم متخصص؛ هدایت‌گران کیفیت در چاپ نجم",
+    "teamDescription": "از لیتوگرافی و تفکیک دقیق ترام‌های رنگی تا تنظیم دانسیته مرکب روی خطوط ۵ رنگ هایدلبرگ و نظارت بر تیغ‌زنی میکرونی دایکات.",
+    "team": [
+      {
+        "role": "پیش از چاپ",
+        "title": "واحد لیتوگرافی و تفکیک رنگ CTP",
+        "desc": "کنترل تفکیک رنگ‌های پنتون، تهیه زینک‌های حرارتی با ترام میکرونی و کالیبراسیون پروفایل چاپی.",
+        "image": "/images/about/person-1.png"
+      },
+      {
+        "role": "خطوط چاپ",
+        "title": "اپراتوری خطوط افست ۵ رنگ",
+        "desc": "پایش دانسیته مرکب، تنظیم تعادل آب و الکل و تثبیت کیفیت چاپ در تیراژهای میلیونی تجاری.",
+        "image": "/images/about/person-2.png"
+      },
+      {
+        "role": "پس از چاپ",
+        "title": "تست مقاومت و خطوط تکمیلی",
+        "desc": "نظارت بر تیغ‌زنی بدون پلیسه، سلفون‌کشی حرارتی و چسب لاک‌باتم اتوماتیک با تست‌های آزمایشگاهی.",
+        "image": "/images/about/person-3.png"
+      }
+    ],
+    "facilityBadge": "ناوگان ماشین‌آلات صنعتی",
+    "facilityTitle": "تجهیزات مدرن چاپ افست و خطوط تکمیلی",
+    "facilityDescription": "سرمایه‌گذاری پیوسته در تکنولوژی‌های هایدلبرگ و بوبست ضامن دقت میکرونی و سرعت صنعتی در تحویل سفارشات است.",
+    "workflowBadge": "فرایند مهندسی تولید",
+    "workflowTitle": "مسیر صفر تا صد؛ از طراحی تا تحویل لجستیک",
+    "workflowDescription": "سیستم جامع نظارت کیفی در ۷ ایستگاه مستقل برای تضمین بی‌نقص بودن هر جعبه و بسته.",
     "timelineTitle": "مسیر تکامل و پیشرفت تکنولوژی نجم",
     "timeline": [
       { "year": "۱۳۷۸", "title": "تاسیس و راه‌اندازی کارگاه افست", "desc": "شروع فعالیت با یک دستگاه چاپ ۲ رنگ و تمرکز بر کارهای تجاری." },
       { "year": "۱۳۸۸", "title": "توسعه خطوط بسته‌بندی جعبه‌های دارویی", "desc": "افزایش خطوط ۵ رنگ هایدلبرگ و ورود به صنعت سلامت و داروسازی." },
       { "year": "۱۳۹۶", "title": "احداث واحد تخصصی هاردباکس", "desc": "راه‌اندازی خطوط اتوماتیک جعبه‌های سخت و مقوای فشرده لوکس." },
       { "year": "۱۴۰۴", "title": "استقرار استاندارد‌های چاپ سبز و هوشمند", "desc": "به‌کارگیری مرکب‌های گیاهی، خطوط تمام اتوماتیک بازرسی چشمی و سیستم‌های مدیریت یکپارچه." }
-    ]
+    ],
+    "valuesBadge": "تعهدات بنیادین",
+    "valuesTitle": "ارزش‌هایی که خروجی هر پروژه را متمایز می‌کنند",
+    "ctaTitle": "آماده‌اید بسته‌بندی محصول خود را به سطح بالاتری ببرید؟",
+    "ctaDescription": "با مهندسان ساختار و کارشناسان رنگ نجم مشورت کنید و نمونه اولیه فیزیکی رایگان دریافت نمایید.",
+    "ctaBtn": "درخواست مشاوره و استعلام فنی"
   },
-  "en": {
+  "EN": {
     "badge": "About Najm Printing & Packaging Complex",
     "title": "Innovation in Offset Printing, Precision in Structural Packaging",
     "story": "Backed by over two decades of industrial expertise, cutting-edge Heidelberg multi-color presses, and automated post-press converting lines, Najm stands as the trusted production partner for leading pharmaceutical, cosmetic, food, and export brands.",
-    "metrics": [
-      { "value": "25+ Years", "label": "Industry Track Record" },
-      { "value": "15M+", "label": "Annual Output Volume" },
-      { "value": "99.8%", "label": "Color Fidelity Rate" }
+    "nav": [
+      { "id": "vision", "label": "Vision & Scale" },
+      { "id": "story", "label": "Team & Expertise" },
+      { "id": "facility", "label": "Machinery Fleet" },
+      { "id": "workflow", "label": "Standard Workflow" },
+      { "id": "timeline", "label": "Our Timeline" },
+      { "id": "values", "label": "Core Values" }
     ],
-    "missionTitle": "Our Mission & Sustainable Quality Commitment",
-    "missionDescription": "We believe packaging is more than protective encasing—it is your brand's primary visual handshake with the world. We elevate your product's market value by uniting structural engineering, state-of-the-art print technology, and eco-friendly certified materials.",
+    "metrics": [
+      { "value": "25+ Years", "label": "Continuous Experience" },
+      { "value": "15M+", "label": "Annual Volume" },
+      { "value": "99.8%", "label": "Color Fidelity" }
+    ],
+    "teamBadge": "Human Capital & Engineering",
+    "teamTitle": "Expert Team; Driving Quality Across Every Run",
+    "teamDescription": "From laser CTP lithography to in-line spectrophotometry density control on Heidelberg 5-color presses and precision die-cutting.",
+    "team": [
+      {
+        "role": "Pre-Press",
+        "title": "CTP Lithography & Color Separation",
+        "desc": "Pantone spot-color control, thermal plate imaging with micro halftones, and ISO color profile calibration.",
+        "image": "/images/about/person-1.png"
+      },
+      {
+        "role": "Press Hall",
+        "title": "5-Color Offset Press Operations",
+        "desc": "Continuous ink density monitoring, fountain solution balancing, and consistent color stability across high-volume runs.",
+        "image": "/images/about/person-2.png"
+      },
+      {
+        "role": "Post-Press",
+        "title": "Converting & Finishing Inspection",
+        "desc": "Supervising burr-free die-cutting, thermal velvet lamination, and automated crash-lock folder-gluers.",
+        "image": "/images/about/person-3.png"
+      }
+    ],
+    "facilityBadge": "Industrial Machinery Fleet",
+    "facilityTitle": "Advanced Offset Printing & Finishing Equipment",
+    "facilityDescription": "Continuous investment in Heidelberg and Bobst technologies guarantees micron-level accuracy and industrial throughput.",
+    "workflowBadge": "Engineering Workflow",
+    "workflowTitle": "End-to-End Production; From Design to Logistics",
+    "workflowDescription": "A comprehensive QA system across 7 independent inspection checkpoints to ensure zero defects.",
     "timelineTitle": "Najm Technological Evolution",
     "timeline": [
       { "year": "1999", "title": "Founding of Offset Printing Workshop", "desc": "Operations commenced with two-color offset machinery focusing on commercial print." },
       { "year": "2009", "title": "Expansion into Pharmaceutical Packaging", "desc": "Integration of 5-color Heidelberg presses and entering cleanroom health packaging." },
       { "year": "2017", "title": "Dedicated Rigid Box Facility Commissioned", "desc": "Installation of automated luxury rigid box wrapping and grooving lines." },
       { "year": "2026", "title": "Smart Factory & Green Printing Standards", "desc": "Adoption of vegetable-based soy inks, automated vision inspection, and digital workflows." }
-    ]
+    ],
+    "valuesBadge": "Core Commitments",
+    "valuesTitle": "Values That Distinguish Every Packaging Project",
+    "ctaTitle": "Ready to elevate your product packaging to the next level?",
+    "ctaDescription": "Consult with Najm structural engineers and color specialists to receive your free physical prototype.",
+    "ctaBtn": "Request Technical Consultation"
   },
-  "ar": {
+  "AR": {
     "badge": "حول مجمع مطبعة وتغليف نجم",
     "title": "ابتكار في طباعة الأوفست وهندسة دقيقة في هياكل التغليف",
     "story": "بفضل أكثر من عقدين من الخبرة الصناعية وامتلاك أحدث ماكينات هايدلبرغ وأنظمة ما بعد الطباعة المؤتمتة بالكامل، تعد مطبعة نجم الشريك المعتمد لأكبر العلامات التجارية في مجالات الأدوية والتجميل والأغذية والتصدير.",
+    "nav": [
+      { "id": "vision", "label": "الرؤية والقدرة" },
+      { "id": "story", "label": "فريق العمل" },
+      { "id": "facility", "label": "الآلات الصناعية" },
+      { "id": "workflow", "label": "مراحل الإنتاج" },
+      { "id": "timeline", "label": "مسيرة التطور" },
+      { "id": "values", "label": "قيمنا الأساسية" }
+    ],
     "metrics": [
       { "value": "+25 عاماً", "label": "خبرة متواصلة" },
       { "value": "+15M", "label": "إنتاج سنوي" },
-      { "value": "99.8%", "label": "دقة مطابقة الألوان" }
+      { "value": "99.8%", "label": "مطابقة الألوان" }
     ],
-    "missionTitle": "مهمتنا والالتزام بالجودة المستدامة",
-    "missionDescription": "نحن نؤمن بأن التغليف ليس مجرد غطاء واقٍ، بل هو لغة التواصل الأولى لعلامتك مع العالم. نجسد القيمة الحقيقية لمنتجك من خلال الجمع بين الهندسة الهيكلية والتقنيات الحديثة والمواد الصديقة للبيئة.",
+    "teamBadge": "الكوادر البشرية والخبرة الهندسية",
+    "teamTitle": "فريق متخصص؛ رواد الجودة في مطبعة نجم",
+    "teamDescription": "من الليثوغرافيا الدقيقة وفصل ألوان البانتون إلى مراقبة كثافة الحبر على ماكينات هايدلبرغ وضبط قوالب السكاكين بدقة ميكرونية.",
+    "team": [
+      {
+        "role": "ما قبل الطباعة",
+        "title": "وحدة الليثوغرافيا وفصل الألوان CTP",
+        "desc": "مراقبة ألوان البانتون وتجهيز صفائح الزنك الحرارية ومعايرة ملفات الألوان المعتمدة.",
+        "image": "/images/about/person-1.png"
+      },
+      {
+        "role": "خطوط الطباعة",
+        "title": "تشغيل خطوط الأوفست 5 ألوان",
+        "desc": "متابعة كثافة الحبر وثبات التوازن اللوني أثناء سحب الكميات التجارية الكبيرة.",
+        "image": "/images/about/person-2.png"
+      },
+      {
+        "role": "ما بعد الطباعة",
+        "title": "فحص المتانة وخطوط التشطيب",
+        "desc": "الإشراف على قص القوالب بدون زوائد والسلفنة المخملية ولصق العلب آلياً مع الفحص المخبري.",
+        "image": "/images/about/person-3.png"
+      }
+    ],
+    "facilityBadge": "أسطول الماكينات الصناعية",
+    "facilityTitle": "تجهيزات حديثة لطباعة الأوفست والتشطيب",
+    "facilityDescription": "الاستثمار المستمر في تقنيات هايدلبرغ وبوبست يضمن دقة متناهية وسرعة صناعية في تسليم الطلبات.",
+    "workflowBadge": "هندسة مراحل الإنتاج",
+    "workflowTitle": "من البداية إلى النهاية؛ من التصميم حتى التسليم اللوجستي",
+    "workflowDescription": "نظام شامل لضبط الجودة عبر 7 محطات فحص مستقلة لضمان خلو العلب من أي عيب مصنعي.",
     "timelineTitle": "مسيرة تطور ونمو تكنولوجيا نجم",
     "timeline": [
       { "year": "1999", "title": "تأسيس ورشة طباعة الأوفست", "desc": "انطلاق العمل بماكينات لونين والتركيز على المطبوعات التجارية." },
       { "year": "2009", "title": "التوسع نحو علب الأدوية والرعاية الصحية", "desc": "إضافة ماكينات هايدلبرغ 5 ألوان ودخول قطاع التغليف الصحي المعتمد." },
       { "year": "2017", "title": "تدشين وحدة العلب الصلبة (هاردبوكس)", "desc": "تشغيل خطوط الإنتاج الآلي للصناديق الفاخرة والكرتون المقوى." },
       { "year": "2026", "title": "تطبيق معايير الطباعة الخضراء الذكية", "desc": "اعتماد الأحبار النباتية وأنظمة الفحص البصري الآلي وإدارة الجودة الرقمية." }
-    ]
+    ],
+    "valuesBadge": "الالتزامات الأساسية",
+    "valuesTitle": "قيم تمنح كل مشروع تغليف تميزاً فريداً",
+    "ctaTitle": "هل أنت مستعد للارتقاء بتغليف منتجاتك إلى مستوى أعلى؟",
+    "ctaDescription": "استشر مهندسي هياكل التغليف وخبراء الألوان في نجم واحصل على نموذج أولي مجاناً.",
+    "ctaBtn": "طلب استشارة واستعلام فني"
   }
 }

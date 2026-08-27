@@ -1,6 +1,6 @@
 <!-- pages/help/faq.vue -->
 <template>
-  <div dir="rtl" class="min-h-screen bg-najmback pb-20 sm:pb-28 text-gray-800">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback pb-20 sm:pb-28 text-gray-800">
     <!-- Header -->
     <header class="pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-center space-y-3 sm:space-y-4">
       <span class="inline-block px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
@@ -89,11 +89,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useLocale } from '~/composables/useLocale'
 
 definePageMeta({
   name: 'مرکز راهنما و سوالات متداول - چاپ نجم',
   layout: 'default'
 })
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const { ui } = usePageUI('faq')
 const selectedCategory = ref('all')
@@ -103,55 +107,31 @@ function toggleFaq(idx: number) {
   openIndex.value = openIndex.value === idx ? null : idx
 }
 
-const categories = [
+const categories = computed(() => ui.value?.categories || [
   { id: 'all', label: 'همه سوالات' },
   { id: 'ordering', label: 'ثبت سفارش و تیراژ' },
   { id: 'design', label: 'فایل‌ها و آماده‌سازی چاپ' },
   { id: 'production', label: 'تولید و نمونه‌گیری' },
   { id: 'shipping', label: 'ارسال و لجستیک' }
-]
+])
 
-const faqs = [
+const faqsList = computed(() => ui.value?.faqs || [
   {
     id: 1,
     category: 'ordering',
     question: 'حداقل تیراژ سفارش برای جعبه‌های مقوایی و هاردباکس چقدر است؟',
-    answer: 'برای جعبه‌های مقوایی افست (ایندربرد و پشت طوسی)، حداقل تیراژ اقتصادی ۱,۰۰۰ عدد و برای هاردباکس‌های سخت دست‌ساز و اتوماتیک حداقل تیراژ ۵۰۰ عدد می‌باشد. سفارش در تیراژهای بالاتر هزینه قالب و تنظیم لیتوگرافی را سرشکن کرده و قیمت واحد را به شدت کاهش می‌دهد.'
+    answer: 'برای جعبه‌های مقوایی افست (ایندربرد و پشت طوسی)، حداقل تیراژ اقتصادی ۱,۰۰۰ عدد و برای هاردباکس‌های سخت دست‌ساز و اتوماتیک حداقل تیراژ ۵۰۰ عدد می‌باشد.'
   },
   {
     id: 2,
     category: 'design',
     question: 'فایل‌های چاپی باید با چه فرمت و مشخصاتی ارسال شوند؟',
-    answer: 'فایل‌ها ترجیحاً در فرمت PDF استاندارد چاپ (PDF/X-1a) یا فایل باز Adobe Illustrator (AI) ارسال شوند. رزولوشن تصاویر حداقل ۳۰۰DPI، سیستم رنگی حتماً CMYK، فونت‌ها به خطوط برداری تبدیل (Create Outlines) شده و خطوط تیغ و تا در یک لایه اختصاصی با رنگ اسپات مجزا قرار گیرند.'
-  },
-  {
-    id: 3,
-    category: 'design',
-    question: 'میزان لبه برش (Bleed) استاندارد چقدر باید در نظر گرفته شود؟',
-    answer: 'برای تمامی کارهای بسته‌بندی، ساک‌های دستی و کاتالوگ‌ها، حداقل ۳ الی ۵ میلیمتر لبه برش (Bleed) از هر طرف ضروری است تا در هنگام تیغ‌زنی و برش، سفیدی در لبه کار ایجاد نشود.'
-  },
-  {
-    id: 4,
-    category: 'production',
-    question: 'فرآیند ساخت ماکت و نمونه فیزیکی پیش از چاپ اصلی چگونه است؟',
-    answer: 'پیش از آغاز چاپ تیراژ، ماکت سه‌بعدی تیغ‌زده‌شده از متریال انتخابی (Mockup بدون چاپ) جهت تست ابعاد، جای‌گیری محصول و استحکام برای مشتری تولید و ارسال می‌گردد. همچنین در صورت نیاز، نمونه چاپی دیجیتال (پروف دیجیتال رنگ) برای تطابق تقریبی رنگ ارائه می‌شود.'
-  },
-  {
-    id: 5,
-    category: 'production',
-    question: 'زمان‌بندی معمول برای تولید و تحویل سفارشات چقدر است؟',
-    answer: 'سفارشات جعبه‌های مقوایی معمولاً بین ۵ الی ۷ روز کاری و سفارشات هاردباکس و ساختارهای خاص بین ۱۰ الی ۱۴ روز کاری پس از تایید نهایی طرح و ماکت تحویل داده می‌شوند. در صورت نیاز به تولید فوری، امکان هماهنگی شیفت ویژه وجود دارد.'
-  },
-  {
-    id: 6,
-    category: 'shipping',
-    question: 'نحوه بسته‌بندی و ارسال سفارشات به تهران و سایر استان‌ها چگونه است؟',
-    answer: 'تمامی سفارشات در کارتن‌های ۵ لایه مستحکم همراه با شرینک نایلونی بسته‌بندی می‌شوند تا در برابر ضربه و رطوبت کاملاً محافظت شوند. ارسال برای تهران با ناوگان اختصاصی و برای شهرستان‌ها از طریق باربری‌های معتبر و ترانزیت کانتینری انجام می‌پذیرد.'
+    answer: 'فایل‌ها ترجیحاً در فرمت PDF استاندارد چاپ (PDF/X-1a) یا فایل باز Adobe Illustrator (AI) ارسال شوند. رزولوشن تصاویر حداقل ۳۰۰DPI و CMYK باشد.'
   }
-]
+])
 
 const filteredFaqs = computed(() => {
-  if (selectedCategory.value === 'all') return faqs
-  return faqs.filter(f => f.category === selectedCategory.value)
+  if (selectedCategory.value === 'all') return faqsList.value
+  return faqsList.value.filter((f: any) => f.category === selectedCategory.value)
 })
 </script>

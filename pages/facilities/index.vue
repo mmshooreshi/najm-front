@@ -22,7 +22,7 @@
           class="text-sm sm:text-base text-gray-600 leading-relaxed max-w-3xl mx-auto"
           v-editable="'description'"
         >
-          {{ ui.description || 'مجموعه‌ای یکپارچه از پیشرفته‌ترین ماشین‌آلات چاپ افست، لیتوگرافی هوشمند CTP، خطوط تمام‌اتوماتیک دایکات بوبست و خدمات تکمیلی پس از چاپ.' }}
+          {{ ui.description || 'مجموعه‌ای یکپارچه از پیشرفته‌ترین ماشین‌آلات چاپ افست، لیتوگرافی هوشمند CTP، خطوط تمام‌اتوماتیک دایکات بوبست و خدمات تکمیلی پس از چاپ با بالاترین استانداردهای کیفی جهانی.' }}
         </p>
 
         <!-- Stats Bar -->
@@ -64,8 +64,11 @@
         <article
           v-for="(m, idx) in filteredMachines"
           :key="m.id || idx"
-          class="bg-white rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
+          class="relative bg-white rounded-3xl overflow-hidden border border-gray-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
         >
+          <!-- In-place Card Actions (+ / -) -->
+          <AdminArrayItemActions path="machines" :index="idx" />
+
           <div>
             <!-- Image / Media Container -->
             <div class="relative h-56 sm:h-64 bg-gray-100 overflow-hidden">
@@ -81,22 +84,22 @@
 
             <!-- Content Details -->
             <div class="p-6 space-y-3.5 text-start">
-              <h3 class="text-base sm:text-lg font-bold text-gray-900 group-hover:text-najmgreen transition-colors text-d4">
+              <h3 class="text-base sm:text-lg font-bold text-gray-900 group-hover:text-najmgreen transition-colors text-d4" v-editable="`machines.${idx}.title`">
                 {{ m.title }}
               </h3>
               
               <div class="space-y-1.5 text-xs text-gray-600">
                 <div class="flex items-center gap-1.5 text-emerald-800 font-semibold">
                   <Icon name="mdi:tune-variant" class="w-4 h-4 text-najmgreen shrink-0" />
-                  <span>{{ m.spec }}</span>
+                  <span v-editable="`machines.${idx}.spec`">{{ m.spec }}</span>
                 </div>
                 <div class="flex items-center gap-1.5 text-gray-500">
                   <Icon name="mdi:speedometer" class="w-4 h-4 text-gray-400 shrink-0" />
-                  <span>{{ m.speed }}</span>
+                  <span v-editable="`machines.${idx}.speed`">{{ m.speed }}</span>
                 </div>
               </div>
 
-              <p class="text-xs text-gray-600 leading-relaxed pt-1">
+              <p class="text-xs text-gray-600 leading-relaxed pt-1" v-editable="`machines.${idx}.description`">
                 {{ m.description }}
               </p>
             </div>
@@ -108,11 +111,14 @@
               @click="openModal()"
               class="w-full py-3 rounded-2xl bg-najmback hover:bg-emerald-50 hover:text-najmgreen text-gray-700 text-xs font-bold transition flex items-center justify-center gap-2 border border-gray-200 cursor-pointer"
             >
-              <span>مشاوره و هماهنگی تولید با این تجهیزات</span>
-              <Icon name="mdi:arrow-left" class="w-4 h-4" />
+              <Icon name="mdi:calculator" class="w-4 h-4" />
+              <span>استعلام ظرفیت این خط</span>
             </button>
           </div>
         </article>
+
+        <!-- Placeholder Add Card -->
+        <AdminAddCardPlaceholder path="machines" label="افزودن دستگاه / خط تولید جدید" />
       </div>
 
       <!-- Factory Consultation & Tour CTA -->

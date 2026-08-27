@@ -110,9 +110,12 @@
         <div
           v-for="(cat, idx) in uiContent.catalogs"
           :key="cat.id || idx"
-          class="bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
+          class="relative bg-white rounded-3xl p-6 shadow-xs border border-najmborder/40 flex flex-col justify-between hover:shadow-md transition-all duration-300 group"
           :class="isRTL ? 'text-right' : 'text-left'"
         >
+          <!-- In-place Card Array Actions (+ / -) -->
+          <AdminArrayItemActions path="catalogs" :index="idx" />
+
           <div>
             <div class="flex items-center justify-between mb-4">
               <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-najmgrey text-gray-700 break-words" v-editable="`catalogs.${idx}.badge`">
@@ -139,11 +142,14 @@
               download
               class="w-full py-2.5 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold flex items-center justify-center gap-1.5 transition"
             >
-              <Icon name="mdi:download" class="w-4 h-4" />
-              <span>دانلود / Download</span>
+              <Icon name="mdi:download" class="w-3.5 h-3.5" />
+              <span>دانلود نسخه PDF</span>
             </a>
           </div>
         </div>
+
+        <!-- Add New Catalog Card Placeholder -->
+        <AdminAddCardPlaceholder path="catalogs" label="افزودن کاتالوگ جدید" />
       </div>
     </div>
 
