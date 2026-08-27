@@ -3,6 +3,7 @@
     "badge": "کاتالوگ و نمونه‌کارهای رسمی",
     "title": "کاتالوگ جامع محصولات چاپ و بسته‌بندی نجم",
     "description": "مشاهده و دریافت نسخه دیجیتال (PDF) تمامی لاین‌های تولیدی، جعبه‌های دارویی، هاردباکس‌های لوکس، ساک‌های دستی و نمونه‌های چاپ افست.",
+    "downloadPdfBtn": "دانلود نسخه PDF",
     "featured": {
       "badge": "مجموعه کامل ۲۰۲۶",
       "tag": "نسخه ۲۰۲۶",
@@ -27,6 +28,7 @@
         "desc": "نمونه ساختارهای مگنتی، کشویی، روکش‌های مخمل و جلوه‌های طلاکوب اختصاصی مناسب برندهای لوکس.",
         "size": "۱۸.۵ مگابایت",
         "icon": "mdi:package-variant-closed",
+        "downloadBtn": "دانلود نسخه PDF",
         "downloadUrl": "#"
       },
       {
@@ -36,6 +38,7 @@
         "desc": "استانداردهای مقوای ایندربرد بهداشتی، خطوط بریل (Braille) و سیستم‌های کنترل اصالت محصول.",
         "size": "۹.۴ مگابایت",
         "icon": "mdi:medical-bag",
+        "downloadBtn": "دانلود نسخه PDF",
         "downloadUrl": "#"
       },
       {
@@ -45,6 +48,7 @@
         "desc": "انواع ساک‌های خرید گلاسه و کرافت، بندهای فانتزی و تحمل وزن تا ۵ کیلوگرم ویژه فروشگاه‌ها.",
         "size": "۶.۸ مگابایت",
         "icon": "mdi:shopping-outline",
+        "downloadBtn": "دانلود نسخه PDF",
         "downloadUrl": "#"
       }
     ],
@@ -58,6 +62,7 @@
     "badge": "Official Catalogs & Portfolio",
     "title": "Najm Comprehensive Printing & Packaging Catalog",
     "description": "Browse and download official digital PDF catalogs for all production lines, folding cartons, luxury rigid boxes, shopping bags, and offset print solutions.",
+    "downloadPdfBtn": "Download PDF Catalog",
     "featured": {
       "badge": "2026 Collection",
       "tag": "2026 Edition",
@@ -82,6 +87,7 @@
         "desc": "Magnetic closure boxes, sliding drawer styles, textured specialty coverings, and precision foil stamping.",
         "size": "18.5 MB",
         "icon": "mdi:package-variant-closed",
+        "downloadBtn": "Download PDF Version",
         "downloadUrl": "#"
       },
       {
@@ -91,6 +97,7 @@
         "desc": "Certified hygienic SBS/FBB boards, precision Braille embossing, and anti-counterfeiting security integration.",
         "size": "9.4 MB",
         "icon": "mdi:medical-bag",
+        "downloadBtn": "Download PDF Version",
         "downloadUrl": "#"
       },
       {
@@ -100,43 +107,46 @@
         "desc": "Art-paper and virgin kraft paper retail shopping bags with reinforced handles supporting up to 5kg.",
         "size": "6.8 MB",
         "icon": "mdi:shopping-outline",
+        "downloadBtn": "Download PDF Version",
         "downloadUrl": "#"
       }
     ],
     "cta": {
-      "title": "Request a Free Physical Sample Box",
-      "description": "Experience our paperboard textures, inspect hot foil and UV finishes firsthand, and evaluate die-cutting precision for your brand.",
-      "button": "Order Sample Kit"
+      "title": "Request a Free Physical Sample Kit",
+      "description": "Touch paperboard textures, inspect foil and velvet lamination finishes, and review die-cutting tolerances with our corporate sample kit.",
+      "button": "Order Physical Sample Kit"
     }
   },
   "ar": {
-    "badge": "الكتالوجات والنماذج الرسمية",
-    "title": "الكتالوج الشامل لمنتجات الطباعة والتغليف من مطبعة نجم",
-    "description": "استعراض وتحميل النسخة الرقمية (PDF) لجميع خطوط الإنتاج والعلب الدوائية والعلب الصلبة الفاخرة والأكياس الورقية والطباعة الأوفست.",
+    "badge": "الكتالوجات ونماذج الأعمال الرسمية",
+    "title": "كتالوج مجمع مطبعة وتغليف نجم الشامل",
+    "description": "استعرض وحمّل النسخ الرقمية (PDF) لجميع خطوط الإنتاج والعلب الدوائية والصناديق الصلبة الفاخرة وأكياس التسوق.",
+    "downloadPdfBtn": "تحميل نسخة PDF",
     "featured": {
-      "badge": "مجموعة 2026 الكاملة",
+      "badge": "تشكيلة عام 2026",
       "tag": "إصدار 2026",
-      "coverTitle": "كتالوج مطبعة نجم الشامل",
+      "coverTitle": "كتالوج نجم الشامل",
       "title": "الكتالوج الشامل لخطوط الإنتاج ومواصفات الخامات",
-      "description": "دليل فني لاختيار أنواع وسماكات الكرتون (إنفربورد، دوبلكس، كرافت)، ومقارنة الخدمات التكميلية (سلوفان مطفي، بصمة حرارية، يو في بارز) ونماذج العلب الدوائية والغذائية.",
+      "description": "دليل مرجعي متكامل لاختيار جراماج الورق والكرتون (إنفربورد، دوبلكس، كرافت) ومقارنة خدمات التشطيب (سلفنة مخملية، تذهيب حراري، يو في موضعي).",
       "fileSize": "14.2 ميجابايت",
       "fileFormat": "PDF",
-      "pagesCount": "48 صفحة ملونة بالكامل",
+      "pagesCount": "48 صفحة بالألوان الكاملة",
       "lastUpdate": "ربيع 2026",
-      "resolution": "دقة عالية 300 DPI",
-      "downloadBtn": "تحميل ملف الكتالوج مباشرة (PDF)",
-      "sampleBtn": "طلب عينات فيزيائية (Sample Kit)",
+      "resolution": "300 DPI High-Res",
+      "downloadBtn": "تحميل الكتالوج الشامل (PDF)",
+      "sampleBtn": "طلب عينات حقيقية (Sample Kit)",
       "downloadUrl": "#"
     },
-    "gridTitle": "كتالوجات التخصصات والقطاعات",
+    "gridTitle": "كتالوجات القطاعات المتخصصة",
     "catalogs": [
       {
         "id": 1,
-        "badge": "تغليف صلب",
-        "title": "كتالوج العلب الصلبة والتغليف الفاخر",
-        "desc": "نماذج علب مغناطيسية وانزلاقية وتجليدات مخملية وبصمات ذهبية ملائمة للعلامات الراقية.",
+        "badge": "التغليف الفاخر",
+        "title": "كتالوج العلب الصلبة (هاردبوكس)",
+        "desc": "نماذج الإغلاق المغناطيسي والأدراج المنزلقة والأغطية المخملية مع التذهيب الدقيق للعلامات الفاخرة.",
         "size": "18.5 ميجابايت",
         "icon": "mdi:package-variant-closed",
+        "downloadBtn": "تحميل نسخة PDF",
         "downloadUrl": "#"
       },
       {
@@ -146,22 +156,24 @@
         "desc": "معايير الكرتون الصحي وخطوط بريل للمكفوفين وأنظمة مراقبة الجودة والباركود الدوائي.",
         "size": "9.4 ميجابايت",
         "icon": "mdi:medical-bag",
+        "downloadBtn": "تحميل نسخة PDF",
         "downloadUrl": "#"
       },
       {
         "id": 3,
-        "badge": "تجارة وتسوق",
-        "title": "كتالوج الأكياس الورقية وأكياس الكرافت",
-        "desc": "أكياس ورقية كوشيه وكرافت مع أشرطة وحبال متينة تتحمل حتى 5 كجم للمحلات والعلامات التجارية.",
+        "badge": "الدعاية والتجزئة",
+        "title": "كتالوج أكياس التسوق الورقية ومغلفات الكرافت",
+        "desc": "أكياس الكوشيه والكرافت بمقابض قماشية متينة تتحمل أوزاناً حتى 5 كجم للمتاجر.",
         "size": "6.8 ميجابايت",
         "icon": "mdi:shopping-outline",
+        "downloadBtn": "تحميل نسخة PDF",
         "downloadUrl": "#"
       }
     ],
     "cta": {
-      "title": "طلب صندوق العينات والنماذج الفيزيائية",
-      "description": "لمعاينة ملمس الورق واختبار المؤثرات التكميلية والقص، اطلب صندوق العينات المجاني لمؤسستك.",
-      "button": "طلب صندوق العينات"
+      "title": "طلب حقيبة العينات الفعلية (Sample Kit)",
+      "description": "لمعاينة ملمس الكرتون وسماكة الورق واختبار السلفنة وجودة التكسير، اطلب حقيبة العينات المجانية لشركتك.",
+      "button": "طلب حقيبة العينات"
     }
   }
 }

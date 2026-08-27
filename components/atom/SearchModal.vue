@@ -202,7 +202,7 @@
                   {{ t.keyEnter }}
                 </span>
               </div>
-              <span class="font-bold text-najmgreen">چاپ و بسته‌بندی نجم</span>
+              <span class="font-bold text-najmgreen">{{ t.brandTitle }}</span>
             </div>
           </div>
         </transition>
@@ -296,7 +296,8 @@ const t = computed(() => {
       resultsCount: 'Matching Results',
       navigateHint: 'Use Arrow Keys to navigate',
       keySelect: 'Navigate',
-      keyEnter: 'Open'
+      keyEnter: 'Open',
+      brandTitle: 'Najm Printing & Packaging'
     }
   } else if (lang === 'AR') {
     return {
@@ -310,7 +311,8 @@ const t = computed(() => {
       resultsCount: 'النتائج المطابقة',
       navigateHint: 'استخدم الأسهم للتنقل',
       keySelect: 'تنقل',
-      keyEnter: 'فتح'
+      keyEnter: 'فتح',
+      brandTitle: 'مجمع مطبعة وتغليف نجم'
     }
   }
   return {
@@ -324,7 +326,8 @@ const t = computed(() => {
     resultsCount: 'نتایج یافت شده',
     navigateHint: 'کلیدهای جهت‌نما برای انتخاب',
     keySelect: 'پیمایش',
-    keyEnter: 'مشاهده'
+    keyEnter: 'مشاهده',
+    brandTitle: 'چاپ و بسته‌بندی نجم'
   }
 })
 

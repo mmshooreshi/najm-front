@@ -4,8 +4,8 @@ import { watch, type DirectiveBinding } from 'vue'
 import {
   adminEditState as state,
   ensureBaseline,
-  isMediaUrl,
-  isChanged
+  selectMediaElement,
+  clearMediaSelection
 } from '@/store/adminEditStore'
 import { logger } from '@/utils/logger'
 
@@ -33,25 +33,28 @@ export default defineNuxtPlugin(nuxtApp => {
         ensureBaseline(path, lang, initialUrl)
       }
 
-      const onMouseEnter = () => {
-        if (!state.canEdit || !state.editMode) return
+      const onMouseEnter = (e: MouseEvent) => {
+        if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
         window.dispatchEvent(new CustomEvent('admin:media-hover', {
           detail: { el, path, url: initialUrl }
         }))
       }
 
-      const onMouseLeave = () => {
-        window.dispatchEvent(new CustomEvent('admin:media-leave', {
-          detail: { el, path }
+      const onClick = (e: MouseEvent) => {
+        if (!state.canEdit || !state.editMode) return
+        e.stopPropagation()
+        selectMediaElement(el, path)
+        window.dispatchEvent(new CustomEvent('admin:media-hover', {
+          detail: { el, path, url: initialUrl, locked: true }
         }))
       }
 
       el.addEventListener('mouseenter', onMouseEnter)
-      el.addEventListener('mouseleave', onMouseLeave)
+      el.addEventListener('click', onClick)
 
       ;(el as any)._adminMediaCleanup = () => {
         el.removeEventListener('mouseenter', onMouseEnter)
-        el.removeEventListener('mouseleave', onMouseLeave)
+        el.removeEventListener('click', onClick)
       }
     },
 
@@ -66,37 +69,53 @@ export default defineNuxtPlugin(nuxtApp => {
     }
   })
 
-  // 2. Global Smart Media Auto-Scanner (Mouse & Mutation Tracking in Edit Mode)
+  // 2. Global Smart Media Auto-Scanner (Mouse, Click & Selection Tracking in Edit Mode)
   if (typeof window !== 'undefined') {
     let currentHoveredMedia: HTMLElement | null = null
 
+    function isInsideAdminUI(target: HTMLElement | null): boolean {
+      if (!target) return false
+      return !!(
+        target.closest('[data-admin-ui="true"]') ||
+        target.closest('.admin-media-overlay-hud') ||
+        target.closest('.media-hud') ||
+        target.closest('.admin-floating-dock') ||
+        target.closest('.admin-hover-badge') ||
+        target.closest('.admin-modal') ||
+        target.closest('.toast-container')
+      )
+    }
+
     function scanElementForMedia(target: HTMLElement): { el: HTMLElement; path: string; url: string } | null {
+      if (isInsideAdminUI(target)) return null
+
       // Find closest media element
       let mediaEl: HTMLElement | null = null
 
-      if (target instanceof HTMLImageElement || target.tagName === 'IMG' || target.tagName === 'SVG' || target.tagName === 'VIDEO') {
+      if (target instanceof HTMLImageElement || target.tagName === 'IMG' || target.tagName === 'PICTURE' || target.tagName === 'VIDEO') {
         mediaEl = target
       } else if (target.hasAttribute('data-media-path')) {
         mediaEl = target
       } else {
-        const directImg = target.querySelector('img, svg, video')
-        if (directImg && (target.clientWidth <= directImg.clientWidth + 20)) {
+        // Check for direct child img
+        const directImg = target.querySelector('img, picture, video')
+        if (directImg && (target.clientWidth <= directImg.clientWidth + 24)) {
           mediaEl = directImg as HTMLElement
         }
       }
 
-      if (!mediaEl) return null
+      if (!mediaEl || isInsideAdminUI(mediaEl)) return null
 
       // Check for explicit or inherited edit path
       let path = mediaEl.getAttribute('data-media-path') || mediaEl.getAttribute('data-edit-path')
       if (!path) {
         const parentWithEditPath = mediaEl.closest('[data-edit-path], [data-media-path]')
-        if (parentWithEditPath) {
+        if (parentWithEditPath && !isInsideAdminUI(parentWithEditPath as HTMLElement)) {
           path = parentWithEditPath.getAttribute('data-media-path') || parentWithEditPath.getAttribute('data-edit-path')
         }
       }
 
-      // If still no path, construct a readable path from ID, class, or src filename
+      // If still no path, construct a readable path from src filename
       let url = ''
       if (mediaEl instanceof HTMLImageElement) {
         url = mediaEl.currentSrc || mediaEl.src
@@ -106,7 +125,6 @@ export default defineNuxtPlugin(nuxtApp => {
       }
 
       if (!path && url) {
-        // e.g. "image:01.png"
         const cleanName = url.split('/').pop()?.split('?')[0] || 'media'
         path = `media.${cleanName}`
       }
@@ -122,10 +140,7 @@ export default defineNuxtPlugin(nuxtApp => {
       if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
 
       const target = e.target as HTMLElement
-      if (!target) return
-
-      // Don't trigger if hovering over admin docks or overlays
-      if (target.closest('.admin-floating-dock, .media-hud, .admin-hover-badge')) return
+      if (!target || isInsideAdminUI(target)) return
 
       const scanned = scanElementForMedia(target)
       if (scanned && scanned.el !== currentHoveredMedia) {
@@ -136,12 +151,35 @@ export default defineNuxtPlugin(nuxtApp => {
       }
     }
 
+    const onGlobalClick = (e: MouseEvent) => {
+      if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
+
+      const target = e.target as HTMLElement
+      if (!target || isInsideAdminUI(target)) return
+
+      const scanned = scanElementForMedia(target)
+      if (scanned) {
+        selectMediaElement(scanned.el, scanned.path)
+        window.dispatchEvent(new CustomEvent('admin:media-hover', {
+          detail: { el: scanned.el, path: scanned.path, url: scanned.url, locked: true }
+        }))
+      } else {
+        // Clicked outside media: clear selection
+        clearMediaSelection()
+        window.dispatchEvent(new CustomEvent('admin:media-leave', {}))
+      }
+    }
+
     window.addEventListener('mousemove', onGlobalMouseMove, { passive: true })
+    window.addEventListener('click', onGlobalClick, { capture: true })
 
     // Watch for edit mode toggle
     watch(() => state.editMode, (editMode) => {
       if (typeof document !== 'undefined') {
         document.body.classList.toggle('admin-media-edit-active', editMode)
+        if (!editMode) {
+          clearMediaSelection()
+        }
       }
       if (process.dev && editMode) {
         logger.info('Admin:Media', 'Global Media Auto-Scanner Active')

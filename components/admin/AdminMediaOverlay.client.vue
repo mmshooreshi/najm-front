@@ -1,20 +1,24 @@
 <!-- components/admin/AdminMediaOverlay.client.vue -->
 <template>
-  <div v-if="state.canEdit && state.editMode">
+  <div v-if="state.canEdit && state.editMode" data-admin-ui="true">
     <teleport to="body">
-      <!-- Floating Media In-Place HUD Pill -->
+      <!-- Floating Media In-Place HUD Overlay -->
       <transition name="media-hud">
         <div
           v-if="isVisible && targetEl"
           ref="overlayEl"
-          class="fixed z-[999995] select-none pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-xl transition-all duration-150"
+          data-admin-ui="true"
+          class="admin-media-overlay-hud media-hud fixed z-[999995] select-none pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-xl transition-all duration-150"
           :style="hudStyle"
           @mouseenter="onOverlayEnter"
           @mouseleave="onOverlayLeave"
         >
           <!-- Media Tag & Format Badge -->
           <div class="flex items-center gap-1.5 px-2 py-1 rounded-xl bg-white/5 border border-white/10 text-[11px] font-mono">
-            <span class="w-2 h-2 rounded-full" :class="isModified ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'"></span>
+            <span
+              class="w-2 h-2 rounded-full"
+              :class="isModified ? 'bg-amber-400 animate-pulse' : (isSelected ? 'bg-emerald-400 ring-2 ring-emerald-400/40' : 'bg-emerald-400')"
+            ></span>
             <span class="font-bold text-zinc-200 uppercase">{{ mediaFormat }}</span>
             <span v-if="dimensions.w" class="text-zinc-400 text-[10px]">{{ dimensions.w }}×{{ dimensions.h }}</span>
           </div>
@@ -24,7 +28,7 @@
             type="button"
             class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-xs shadow-emerald-900/40 transition-all cursor-pointer"
             title="Open In-Place Media Studio (Crop, Filters, Lighting, Compression)"
-            @click="handleOpenStudio('adjust')"
+            @click.stop="handleOpenStudio('adjust')"
           >
             <AdminIcon name="sparkles" class="w-3.5 h-3.5" />
             <span>Studio</span>
@@ -35,7 +39,7 @@
             type="button"
             class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
             title="Crop & Resize Geometry"
-            @click="handleOpenStudio('crop')"
+            @click.stop="handleOpenStudio('crop')"
           >
             <AdminIcon name="crop" class="w-3.5 h-3.5" />
           </button>
@@ -45,7 +49,7 @@
             type="button"
             class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
             title="Upload New Media (Dropzone with Live Progress)"
-            @click="handleOpenStudio('upload')"
+            @click.stop="handleOpenStudio('upload')"
           >
             <AdminIcon name="upload" class="w-3.5 h-3.5" />
           </button>
@@ -55,7 +59,7 @@
             type="button"
             class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
             title="Select from PocketBase Media Gallery"
-            @click="handleOpenStudio('gallery')"
+            @click.stop="handleOpenStudio('gallery')"
           >
             <AdminIcon name="photo" class="w-3.5 h-3.5" />
           </button>
@@ -66,7 +70,7 @@
             type="button"
             class="flex items-center gap-1 px-2 py-1 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[11px] font-semibold transition-colors cursor-pointer"
             title="Revert to Original First Version"
-            @click="handleRevert"
+            @click.stop="handleRevert"
           >
             <AdminIcon name="undo" class="w-3 h-3" />
             <span>Revert</span>
@@ -78,7 +82,7 @@
             type="button"
             class="p-1.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer"
             :title="`Copy path: ${currentPath}`"
-            @click="handleCopyPath"
+            @click.stop="handleCopyPath"
           >
             <AdminIcon name="copy" class="w-3.5 h-3.5" />
           </button>
@@ -89,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, reactive, watch, onMounted, onBeforeUnmount } from 'vue'
 import {
   adminEditState as state,
   openMediaStudio,
@@ -101,6 +105,7 @@ import AdminIcon from '~/components/admin/AdminIcon.vue'
 const overlayEl = ref<HTMLElement | null>(null)
 const targetEl = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
+const isLocked = ref(false)
 const currentPath = ref('')
 const currentUrl = ref('')
 const mediaFormat = ref('IMAGE')
@@ -113,6 +118,10 @@ const isModified = computed(() => {
   return isChanged(currentPath.value, state.language || 'fa')
 })
 
+const isSelected = computed(() => {
+  return targetEl.value && state.selectedMediaElement === targetEl.value
+})
+
 const hudStyle = reactive({
   top: '0px',
   left: '0px',
@@ -123,36 +132,48 @@ function updatePosition() {
   if (!targetEl.value) return
   const rect = targetEl.value.getBoundingClientRect()
   if (rect.width === 0 && rect.height === 0) {
-    isVisible.value = false
+    if (!isLocked.value) isVisible.value = false
     return
   }
 
-  // Anchor to top-left of image with boundary safety
   const margin = 8
-  const hudW = overlayEl.value?.offsetWidth || 280
-  const hudH = overlayEl.value?.offsetHeight || 38
+  const hudW = overlayEl.value?.offsetWidth || 300
+  const hudH = overlayEl.value?.offsetHeight || 40
 
-  let top = rect.top - hudH - 8
-  if (top < margin) {
-    // If overflowing above viewport, place inside top of image
-    top = Math.max(margin, rect.top + 8)
+  let top = 0
+  let left = 0
+
+  // If media is tall enough, overlay inside top of image directly
+  if (rect.height >= 60 && rect.width >= 180) {
+    top = rect.top + 8
+    // Center overlay horizontally over the media
+    left = rect.left + (rect.width - hudW) / 2
+  } else {
+    // If small, float above media
+    top = rect.top - hudH - 8
+    if (top < margin) {
+      top = rect.bottom + 8
+    }
+    left = rect.left + 4
   }
 
-  let left = rect.left + 8
+  // Clamping within viewport
   if (left + hudW > window.innerWidth - margin) {
     left = window.innerWidth - hudW - margin
   }
   left = Math.max(margin, left)
+  top = Math.max(margin, Math.min(window.innerHeight - hudH - margin, top))
 
   hudStyle.top = `${Math.round(top)}px`
   hudStyle.left = `${Math.round(left)}px`
 }
 
-function showForElement(el: HTMLElement, path = '', url = '') {
+function showForElement(el: HTMLElement, path = '', url = '', locked = false) {
   if (!state.canEdit || !state.editMode) return
   if (hideTimeout) clearTimeout(hideTimeout)
 
   targetEl.value = el
+  if (locked) isLocked.value = true
   currentPath.value = path || el.getAttribute('data-media-path') || el.getAttribute('data-edit-path') || ''
 
   // Determine media URL
@@ -194,13 +215,14 @@ function showForElement(el: HTMLElement, path = '', url = '') {
 }
 
 function scheduleHide() {
+  if (isLocked.value || (state.selectedMediaElement && state.selectedMediaElement === targetEl.value)) return
   if (hideTimeout) clearTimeout(hideTimeout)
   hideTimeout = setTimeout(() => {
-    if (!isHoveringOverlay) {
+    if (!isHoveringOverlay && !isLocked.value && !state.selectedMediaElement) {
       isVisible.value = false
       targetEl.value = null
     }
-  }, 180)
+  }, 220)
 }
 
 function onOverlayEnter() {
@@ -241,12 +263,23 @@ function handleCopyPath() {
   }
 }
 
+// Watch selected element in admin store
+watch(() => state.selectedMediaElement, (selEl) => {
+  if (selEl) {
+    isLocked.value = true
+    showForElement(selEl, state.selectedMediaPath || '', '', true)
+  } else {
+    isLocked.value = false
+    scheduleHide()
+  }
+})
+
 // Global Event Listeners
 onMounted(() => {
   const onMediaHover = (e: any) => {
     const detail = e.detail || {}
     if (detail.el) {
-      showForElement(detail.el, detail.path, detail.url)
+      showForElement(detail.el, detail.path, detail.url, !!detail.locked)
     }
   }
 
@@ -285,6 +318,6 @@ onBeforeUnmount(() => {
 .media-hud-enter-from,
 .media-hud-leave-to {
   opacity: 0;
-  transform: translateY(4px) scale(0.96);
+  transform: translateY(-4px) scale(0.96);
 }
 </style>

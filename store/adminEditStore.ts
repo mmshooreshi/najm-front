@@ -53,6 +53,7 @@ export interface AdminEditState {
   language: LangCode
   changes: ChangeMap
   allLangUI: Record<LangCode, Record<string, any>> // full UI snapshots per lang
+  clientOverrides: Record<string, Record<string, any>> // slug -> lang -> live UI overrides
   versions: VersionsMap // path -> lang -> versions
   lastSavedAt: string | null
   saving: boolean
@@ -71,6 +72,8 @@ export interface AdminEditState {
   activeMediaInitialUrl: string
   activeMediaMetadata: MediaMetadata | null
   mediaDrafts: Record<PathKey, { original: string; draft?: string; meta?: MediaMetadata }>
+  selectedMediaElement: HTMLElement | null
+  selectedMediaPath: string | null
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -80,6 +83,7 @@ export const adminEditState = reactive<AdminEditState>({
   language: '',
   changes: {},
   allLangUI: {},
+  clientOverrides: {},
   versions: {},
   lastSavedAt: null,
   saving: false,
@@ -96,8 +100,19 @@ export const adminEditState = reactive<AdminEditState>({
   activeMediaElement: null,
   activeMediaInitialUrl: '',
   activeMediaMetadata: null,
-  mediaDrafts: {}
+  mediaDrafts: {},
+  selectedMediaElement: null,
+  selectedMediaPath: null
 })
+
+// Enable admin in development or when localStorage flag is set
+if (typeof window !== 'undefined') {
+  const dev = process.env.NODE_ENV === 'development' || (window as any).__NUXT__?.dev
+  const flag = localStorage.getItem('admin_can_edit')
+  adminEditState.canEdit = dev || flag === 'true'
+  const savedEditMode = localStorage.getItem('admin_edit_mode')
+  adminEditState.editMode = savedEditMode === 'true'
+}
 
 export function setEditingActive(path: string | null, active: boolean) {
   adminEditState.activeEditingPath = active ? path : null
@@ -111,11 +126,11 @@ export function setEditingActive(path: string | null, active: boolean) {
   }
 }
 
-/** ---------- String Normalization Helpers ---------- **/
-export function normalize(s: any): string {
-  return String(s ?? '')
-    .replace(/\u00A0/g, ' ')               // NBSP → space
-    .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width spaces
+/** ---------- Helpers ---------- **/
+export function normalize(str: string | null | undefined): string {
+  if (str == null) return ''
+  return String(str)
+    .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -141,6 +156,25 @@ export function getByPath(obj: any, path: string): any {
     if (!Number.isNaN(idx) && String(idx) === seg) return acc?.[idx]
     return acc?.[seg]
   }, obj)
+}
+
+/** Dot-path setter supporting array indices like "a.b.0.c" */
+export function setByPath(obj: any, path: string, value: any): void {
+  if (!obj || !path) return
+  const segments = path.split('.')
+  let curr = obj
+  for (let i = 0; i < segments.length - 1; i++) {
+    const seg = segments[i]
+    const nextSeg = segments[i + 1]
+    const nextIsNum = !Number.isNaN(Number(nextSeg)) && String(Number(nextSeg)) === nextSeg
+
+    if (curr[seg] === undefined || curr[seg] === null || typeof curr[seg] !== 'object') {
+      curr[seg] = nextIsNum ? [] : {}
+    }
+    curr = curr[seg]
+  }
+  const lastSeg = segments[segments.length - 1]
+  curr[lastSeg] = value
 }
 
 function normForCompare(v: any, lang: LangCode): string {
@@ -180,21 +214,21 @@ export function captureLanguageSnapshot(lang: LangCode, ui: Record<string, any>)
 export function addVersion(path: PathKey, lang: LangCode, value: string, type: VersionType) {
   if (!adminEditState.versions[path]) adminEditState.versions[path] = {}
   if (!adminEditState.versions[path][lang]) adminEditState.versions[path][lang] = []
+
   const list = adminEditState.versions[path][lang]
   const last = list[list.length - 1]
-  const nVal = normalize(value)
-  const nowIso = new Date().toISOString()
-  const nowMs = Date.parse(nowIso)
+  // Don't push duplicate consecutive values of same type
+  if (last && last.value === value && last.type === type) return
 
-  // Throttle drafts: update inside a 30s window if consecutive draft
-  if (type === 'draft' && last && last.type === 'draft' && (nowMs - Date.parse(last.date)) < 30_000) {
-    last.value = value
-    last.date = nowIso
-    return
-  }
+  list.push({
+    type,
+    value,
+    date: new Date().toISOString()
+  })
 
-  if (!last || normalize(last.value) !== nVal || last.type !== type) {
-    list.push({ type, value, date: nowIso })
+  // Keep last 30 versions per field
+  if (list.length > 30) {
+    list.shift()
   }
 }
 
@@ -202,9 +236,7 @@ export function getVersions(path: PathKey, lang: LangCode): VersionEntry[] {
   return adminEditState.versions[path]?.[lang] ?? []
 }
 
-/**
- * Apply snapshot to baselines for a language without touching modified fields.
- */
+/** Hydrate baselines from allLangUI snapshot */
 export function applySnapshotToBaselines(lang: LangCode) {
   const snap = adminEditState.allLangUI[lang]
   if (!snap) return
@@ -213,20 +245,24 @@ export function applySnapshotToBaselines(lang: LangCode) {
     if (!obj || typeof obj !== 'object') return
     for (const [k, v] of Object.entries(obj)) {
       const fullPath = prefix ? `${prefix}.${k}` : k
-      if (v !== null && typeof v === 'object') {
-        walk(v, fullPath)
-      } else {
-        const text = String(v ?? '')
+      if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+        const strVal = String(v)
         if (!adminEditState.changes[fullPath]) adminEditState.changes[fullPath] = {}
         const rec = adminEditState.changes[fullPath][lang]
-
         if (!rec) {
-          adminEditState.changes[fullPath][lang] = { original: text, value: text }
-          addVersion(fullPath, lang, text, 'original')
-        } else if (!isChanged(fullPath, lang)) {
-          rec.original = text
-          rec.value = text
+          adminEditState.changes[fullPath][lang] = {
+            original: strVal,
+            value: strVal,
+            updatedAt: new Date().toISOString()
+          }
+          addVersion(fullPath, lang, strVal, 'original')
+        } else if (!rec.original) {
+          rec.original = strVal
+          rec.value = strVal
+          addVersion(fullPath, lang, strVal, 'original')
         }
+      } else if (typeof v === 'object' && v !== null) {
+        walk(v, fullPath)
       }
     }
   }
@@ -256,7 +292,6 @@ export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: str
   }
 }
 
-
 export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
@@ -267,6 +302,19 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
   rec.draft = newValue
   rec.updatedAt = new Date().toISOString()
   addVersion(path, lang, newValue, 'draft')
+
+  // Keep clientOverrides updated for real-time reactivity
+  const slug = adminEditState.slug || 'home'
+  if (slug) {
+    const upper = lang.toUpperCase()
+    const lower = lang.toLowerCase()
+    if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
+    if (!adminEditState.clientOverrides[slug][upper]) adminEditState.clientOverrides[slug][upper] = deepClone(adminEditState.allLangUI[upper] || {})
+    if (!adminEditState.clientOverrides[slug][lower]) adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || {})
+
+    setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
+    setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
+  }
 
   if (process.dev) {
     logger.debug('Admin:Edit', `Draft updated on "${path}" [${lang.toUpperCase()}]: "${newValue.slice(0, 40)}${newValue.length > 40 ? '...' : ''}"`)
@@ -295,7 +343,6 @@ export function isChanged(path: PathKey, lang: LangCode): boolean {
   return normForCompare(rec.value, lang) !== normForCompare(rec.original, lang)
 }
 
-
 /** Build save payload for a given language */
 export function buildChangesPayload(lang: LangCode): { path: string; value: string }[] {
   const out: { path: string; value: string }[] = []
@@ -319,61 +366,38 @@ export function buildChangesPayload(lang: LangCode): { path: string; value: stri
 export function recordSavedVersions(lang: LangCode, paths: string[]) {
   for (const path of paths) {
     const rec = adminEditState.changes[path]?.[lang]
-    if (rec) {
-      const finalVal = rec.draft ?? rec.value
-      addVersion(path, lang, finalVal, 'saved')
-      rec.original = finalVal
-      rec.value = finalVal
-      rec.draft = undefined
-    }
-  }
-  if (process.dev) {
-    logger.success('Admin:Sync', `Committed and baseline-recorded ${paths.length} saved fields for [${lang.toUpperCase()}]`)
+    if (!rec) continue
+    const savedVal = rec.draft ?? rec.value
+    rec.original = savedVal
+    rec.value = savedVal
+    rec.draft = undefined
+    addVersion(path, lang, savedVal, 'saved')
   }
 }
 
-/** Revert a single path back to its original baseline */
+/** Total modified fields for a language */
+export function changedCountForLang(lang: LangCode): number {
+  let c = 0
+  for (const [p] of Object.entries(adminEditState.changes)) {
+    if (isChanged(p, lang)) c++
+  }
+  return c
+}
+
+/** Revert a single path */
 export function revertPath(path: PathKey, lang: LangCode) {
   const rec = adminEditState.changes[path]?.[lang]
   if (!rec) return
-
   rec.draft = undefined
   rec.value = rec.original
 
-  // Update DOM element directly
   if (typeof document !== 'undefined') {
-    // Text elements
     document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
       .forEach(el => {
         el.textContent = rec.original ?? ''
         el.classList.remove('v-editable--changed')
         el.removeAttribute('data-admin-changed')
       })
-
-    // Media / Image elements
-    document.querySelectorAll<HTMLElement>(`[data-media-path="${CSS.escape(path)}"], [data-edit-path="${CSS.escape(path)}"]`)
-      .forEach(el => {
-        if (el instanceof HTMLImageElement) {
-          el.src = rec.original ?? ''
-        } else if (el.tagName === 'IMG') {
-          (el as HTMLImageElement).src = rec.original ?? ''
-        }
-        const img = el.querySelector('img')
-        if (img) {
-          img.src = rec.original ?? ''
-        }
-        el.classList.remove('v-media-changed')
-        el.removeAttribute('data-admin-changed')
-      })
-
-    window.dispatchEvent(new CustomEvent('admin:media-changed', {
-      detail: { path, url: rec.original, lang, action: 'revert' }
-    }))
-  }
-
-  addVersion(path, lang, rec.original, 'draft')
-  if (process.dev) {
-    logger.info('Admin:Edit', `Reverted "${path}" [${lang.toUpperCase()}] back to baseline: "${rec.original}"`)
   }
 }
 
@@ -398,6 +422,14 @@ export function discardAllChanges(lang: LangCode) {
         })
     }
   }
+
+  // Clear client overrides
+  const slug = adminEditState.slug
+  if (slug && adminEditState.clientOverrides[slug]) {
+    delete adminEditState.clientOverrides[slug][lang.toUpperCase()]
+    delete adminEditState.clientOverrides[slug][lang.toLowerCase()]
+  }
+
   if (process.dev) {
     logger.warn('Admin:Edit', `Discarded all pending drafts for [${lang.toUpperCase()}]`)
   }
@@ -423,49 +455,103 @@ export function restoreVersion(path: PathKey, lang: LangCode, value: string) {
   }
 }
 
-/** Add a new item to an array */
-export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode) {
-  const snap = adminEditState.allLangUI[lang]
-  if (!snap) return
+/** Add a new item to an array with instant reactive DOM feedback */
+export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+  const upper = lang.toUpperCase()
+  const lower = lang.toLowerCase()
 
-  const arr = getByPath(snap, arrayPath)
-  if (!Array.isArray(arr)) return
+  if (!adminEditState.clientOverrides[currentSlug]) {
+    adminEditState.clientOverrides[currentSlug] = {}
+  }
 
-  let newItem: any = 'آیتم جدید'
-  if (arr.length > 0) {
-    const template = arr[atIndex] ?? arr[arr.length - 1]
+  let currentUI = adminEditState.clientOverrides[currentSlug][upper] || adminEditState.clientOverrides[currentSlug][lower]
+  if (!currentUI || Object.keys(currentUI).length === 0) {
+    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower] || {}
+    currentUI = deepClone(snap)
+  } else {
+    currentUI = deepClone(currentUI)
+  }
+
+  let targetArr = getByPath(currentUI, arrayPath)
+  if (!Array.isArray(targetArr)) {
+    targetArr = []
+    setByPath(currentUI, arrayPath, targetArr)
+  }
+
+  // Create clean placeholder item with proper fields
+  let newItem: any = 'آیتم جدید (کلیک برای ویرایش)'
+  if (targetArr.length > 0) {
+    const templateIndex = atIndex >= 0 ? atIndex : targetArr.length - 1
+    const template = targetArr[templateIndex]
     if (typeof template === 'object' && template !== null) {
       newItem = deepClone(template)
       for (const k of Object.keys(newItem)) {
         if (typeof newItem[k] === 'string') {
-          newItem[k] = newItem[k] + ' (جدید)'
+          if (k.toLowerCase().includes('id') || k.toLowerCase().includes('slug')) {
+            newItem[k] = `item-${Date.now().toString(36)}`
+          } else if (k.toLowerCase().includes('image') || k.toLowerCase().includes('icon')) {
+            // keep template icon or image
+          } else {
+            newItem[k] = `${newItem[k]} (جدید)`
+          }
+        } else if (Array.isArray(newItem[k])) {
+          newItem[k] = newItem[k].map((sub: any) => typeof sub === 'string' ? `${sub} (جدید)` : sub)
         }
       }
     } else if (typeof template === 'string') {
-      newItem = template + ' (جدید)'
+      newItem = `${template} (جدید)`
+    }
+  } else {
+    newItem = {
+      title: 'عنوان جدید (ویرایش کنید)',
+      desc: 'توضیحات مورد نظر را اینجا وارد کنید',
+      question: 'پرسش جدید (برای ویرایش کلیک کنید)',
+      answer: 'پاسخ پرسش را در این قسمت وارد نمایید.'
     }
   }
 
-  const insertPos = atIndex >= 0 ? atIndex + 1 : arr.length
-  arr.splice(insertPos, 0, newItem)
+  const insertPos = atIndex >= 0 ? atIndex + 1 : targetArr.length
+  targetArr.splice(insertPos, 0, newItem)
+
+  // Save live reactive state
+  adminEditState.clientOverrides[currentSlug][upper] = currentUI
+  adminEditState.clientOverrides[currentSlug][lower] = currentUI
+  adminEditState.allLangUI[upper] = currentUI
+  adminEditState.allLangUI[lower] = currentUI
   applySnapshotToBaselines(lang)
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('admin:array-changed', {
-      detail: { arrayPath, action: 'add', atIndex: insertPos, lang }
+      detail: { arrayPath, action: 'add', atIndex: insertPos, lang, slug: currentSlug }
     }))
     window.dispatchEvent(new CustomEvent('toast', {
-      detail: { type: 'success', text: `آیتم جدید به «${arrayPath}» افزوده شد` }
+      detail: { type: 'success', text: `+ آیتم جدید به «${arrayPath}» افزوده شد` }
     }))
   }
 }
 
-/** Remove an item from an array */
-export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCode) {
-  const snap = adminEditState.allLangUI[lang]
-  if (!snap) return
+/** Remove an item from an array with instant reactive DOM feedback */
+export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+  const upper = lang.toUpperCase()
+  const lower = lang.toLowerCase()
 
-  const arr = getByPath(snap, arrayPath)
+  if (!adminEditState.clientOverrides[currentSlug]) {
+    adminEditState.clientOverrides[currentSlug] = {}
+  }
+
+  let currentUI = adminEditState.clientOverrides[currentSlug][upper] || adminEditState.clientOverrides[currentSlug][lower]
+  if (!currentUI || Object.keys(currentUI).length === 0) {
+    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower] || {}
+    currentUI = deepClone(snap)
+  } else {
+    currentUI = deepClone(currentUI)
+  }
+
+  const arr = getByPath(currentUI, arrayPath)
   if (!Array.isArray(arr) || arr.length <= 1) {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('toast', {
@@ -476,14 +562,20 @@ export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCo
   }
 
   arr.splice(atIndex, 1)
+
+  // Save live reactive state
+  adminEditState.clientOverrides[currentSlug][upper] = currentUI
+  adminEditState.clientOverrides[currentSlug][lower] = currentUI
+  adminEditState.allLangUI[upper] = currentUI
+  adminEditState.allLangUI[lower] = currentUI
   applySnapshotToBaselines(lang)
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('admin:array-changed', {
-      detail: { arrayPath, action: 'remove', atIndex, lang }
+      detail: { arrayPath, action: 'remove', atIndex, lang, slug: currentSlug }
     }))
     window.dispatchEvent(new CustomEvent('toast', {
-      detail: { type: 'info', text: `آیتم از «${arrayPath}» حذف شد` }
+      detail: { type: 'info', text: `- آیتم از «${arrayPath}» حذف شد` }
     }))
   }
 }
@@ -521,30 +613,11 @@ export function getAllLangs(): string[] {
   return Array.from(a)
 }
 
-export function changedCountForLang(lang: LangCode): number {
-  let count = 0
-  for (const p of Object.keys(adminEditState.changes)) {
-    if (isChanged(p, lang)) count++
-  }
-  return count
-}
-
-/** ---------- Media In-Place Management Helpers ---------- **/
-
-export function isMediaUrl(val: any): boolean {
-  if (typeof val !== 'string') return false
-  const s = val.trim().toLowerCase()
-  if (s.startsWith('data:image/') || s.startsWith('blob:')) return true
-  const extMatch = s.match(/\.(png|jpe?g|webp|avif|gif|svg|ico|bmp|tiff?|pdf|psd|ai)(\?.*)?$/i)
-  if (extMatch) return true
-  if (s.includes('/api/files/') || s.includes('/images/') || s.includes('/media/')) return true
-  return false
-}
-
+/** Media Studio In-Place Handlers */
 export function openMediaStudio(target: {
   path?: string
-  el?: HTMLElement | null
-  url: string
+  url?: string
+  el?: HTMLElement
   meta?: MediaMetadata
 }) {
   adminEditState.activeMediaPath = target.path || null
@@ -575,10 +648,8 @@ export function setMediaDraftValue(
 ) {
   if (!path || !lang) return
 
-  // Register in main change store
   setDraftValue(path, lang, newUrl)
 
-  // Track media-specific metadata
   if (!adminEditState.mediaDrafts[path]) {
     const orig = adminEditState.changes[path]?.[lang]?.original || newUrl
     adminEditState.mediaDrafts[path] = { original: orig }
@@ -588,7 +659,6 @@ export function setMediaDraftValue(
     adminEditState.mediaDrafts[path].meta = meta
   }
 
-  // Update matching DOM elements directly for immediate real-time feedback
   if (typeof document !== 'undefined') {
     const escaped = CSS.escape(path)
     document.querySelectorAll<HTMLElement>(`[data-media-path="${escaped}"], [data-edit-path="${escaped}"]`)
@@ -614,4 +684,26 @@ export function setMediaDraftValue(
   if (process.dev) {
     logger.success('Admin:Media', `Applied in-place media draft for "${path}": ${newUrl.slice(0, 60)}...`)
   }
+}
+
+export function selectMediaElement(el: HTMLElement | null, path: string | null = null) {
+  if (typeof document !== 'undefined') {
+    // Remove previous selection classes
+    document.querySelectorAll('.v-media-selected, [data-media-selected="true"]').forEach(node => {
+      node.classList.remove('v-media-selected')
+      node.removeAttribute('data-media-selected')
+    })
+
+    if (el) {
+      el.classList.add('v-media-selected')
+      el.setAttribute('data-media-selected', 'true')
+    }
+  }
+
+  adminEditState.selectedMediaElement = el
+  adminEditState.selectedMediaPath = path
+}
+
+export function clearMediaSelection() {
+  selectMediaElement(null, null)
 }

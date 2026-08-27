@@ -143,13 +143,13 @@
               class="w-full py-2.5 rounded-xl bg-najmgrey hover:bg-najmgreen hover:text-white text-gray-800 text-xs font-bold flex items-center justify-center gap-1.5 transition"
             >
               <Icon name="mdi:download" class="w-3.5 h-3.5" />
-              <span>{{ isRTL ? 'دانلود نسخه PDF' : 'Download PDF' }}</span>
+              <span v-editable="`catalogs.${idx}.downloadBtn`">{{ cat.downloadBtn || uiContent.downloadPdfBtn || (isArabic ? 'تحميل نسخة PDF' : (isRTL ? 'دانلود نسخه PDF' : 'Download PDF Version')) }}</span>
             </a>
           </div>
         </div>
 
         <!-- Add New Catalog Card Placeholder -->
-        <AdminAddCardPlaceholder path="catalogs" :label="isRTL ? 'افزودن کاتالوگ جدید' : 'Add New Catalog'" />
+        <AdminAddCardPlaceholder path="catalogs" :label="isArabic ? 'إضافة كتالوج جديد' : (isRTL ? 'افزودن کاتالوگ جدید' : 'Add New Catalog')" />
       </div>
     </div>
 
@@ -184,7 +184,9 @@ definePageMeta({
 })
 
 const { language } = useLocale()
-const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const isArabic = computed(() => (language.value || '').toUpperCase() === 'AR')
+const isFarsi = computed(() => (language.value || '').toUpperCase() === 'FA')
+const isRTL = computed(() => isFarsi.value || isArabic.value)
 
 const { ui, allUi } = usePageUI('catalog')
 useAdminEditable('catalog', allUi)

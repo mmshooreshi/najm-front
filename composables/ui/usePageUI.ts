@@ -3,25 +3,28 @@ import { useFetch } from '#app'
 import { computed, type ComputedRef, watch } from 'vue'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
+import { adminEditState } from '@/store/adminEditStore'
 
 type UiForLang = Record<string, any>
 type AllUi = Record<string, UiForLang>
 
 /**
  * Returns CURRENT language UI plus ALL languages for the slug.
- * Remote-first with local JSON fallback per-language.
+ * Remote-first with local JSON fallback and live admin clientOverrides per-language.
  */
 function deepMerge(target: any, source: any): any {
   if (!target || typeof target !== 'object') return source ?? target
   if (!source || typeof source !== 'object') return target ?? source
-  if (Array.isArray(target) && Array.isArray(source)) {
-    return source.length > 0 ? source : target
+  if (Array.isArray(source)) {
+    return [...source]
   }
   const result = { ...target }
   for (const key of Object.keys(source)) {
     if (source[key] !== undefined && source[key] !== null) {
       if (typeof source[key] === 'object' && !Array.isArray(source[key])) {
         result[key] = deepMerge(target[key] || {}, source[key])
+      } else if (Array.isArray(source[key])) {
+        result[key] = [...source[key]]
       } else {
         result[key] = source[key]
       }
@@ -61,15 +64,17 @@ export function usePageUI(
     }
   )
 
-  // Build a complete language->UI map with remote-first, local-fallback per-language
+  // Build a complete language->UI map with remote-first, local-fallback, and live admin overrides
   const allUi = computed<AllUi>(() => {
     const remoteAll: AllUi = data.value?.uiData ?? {}
+    const clientOverride = adminEditState.clientOverrides?.[slug] ?? {}
 
-    // Union of languages present in remote and local
+    // Union of languages present in remote, local, and live clientOverrides
     const langs = new Set<string>([
       'fa', 'en', 'ar', 'FA', 'EN', 'AR',
       ...Object.keys(remoteAll || {}),
-      ...Object.keys(local || {})
+      ...Object.keys(local || {}),
+      ...Object.keys(clientOverride || {})
     ])
 
     const out: AllUi = {}
@@ -78,19 +83,15 @@ export function usePageUI(
       const upper = lang.toUpperCase()
       const remoteUI = remoteAll?.[lower] || remoteAll?.[upper] || remoteAll?.[lang] || {}
       const localUI = local?.[lower] || local?.[upper] || local?.[lang] || {}
+      const overrideUI = clientOverride?.[lower] || clientOverride?.[upper] || clientOverride?.[lang] || {}
 
-      const chosen = deepMerge(localUI, remoteUI)
+      let chosen = deepMerge(localUI, remoteUI)
+      if (overrideUI && Object.keys(overrideUI).length > 0) {
+        chosen = deepMerge(chosen, overrideUI)
+      }
+
       out[lower] = chosen
       out[upper] = chosen
-    }
-
-    if (process.dev) {
-      const availableLangs = Array.from(new Set(Object.keys(out).map(l => l.toUpperCase())))
-      logger.group('Content:Hydrate', `Hydrated UI schema for "${slug}" [${availableLangs.join(', ')}]`, () => {
-        logger.debug('Content:Hydrate', 'Remote Source Status:', data.value?.ok ? '✓ Remote PocketBase OK' : '⚠ Fallback Schema Applied')
-        logger.debug('Content:Hydrate', 'Available Languages:', availableLangs)
-        logger.debug('Content:Hydrate', 'Schema Keys Summary:', Object.keys(out.fa || out.FA || {}))
-      })
     }
 
     return out
