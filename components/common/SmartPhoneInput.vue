@@ -1,9 +1,9 @@
 <!-- components/common/SmartPhoneInput.vue -->
 <template>
-  <div class="smart-phone-input-wrapper space-y-1.5 text-start w-full" dir="rtl">
+  <div class="smart-phone-input-wrapper space-y-1.5 w-full" :class="isRTL ? 'text-right' : 'text-left'" :dir="isRTL ? 'rtl' : 'ltr'">
     <label v-if="label" class="block text-xs font-bold text-gray-700">
       {{ cleanLabel }}
-      <span v-if="required && !cleanLabel.includes('*')" class="text-rose-500 mr-0.5">*</span>
+      <span v-if="required && !cleanLabel.includes('*')" class="text-rose-500 mx-0.5">*</span>
     </label>
 
     <div
@@ -16,10 +16,10 @@
             : 'border-gray-200/90 hover:border-gray-300'
       ]"
     >
-      <!-- Main Input with Persian Digits Display -->
+      <!-- Main Input with Locale-Aware Digits Display -->
       <input
         ref="inputRef"
-        :value="persianDisplay"
+        :value="displayValue"
         @input="handleInput"
         @focus="isFocused = true"
         @blur="handleBlur"
@@ -27,19 +27,20 @@
         type="tel"
         inputmode="numeric"
         autocomplete="tel"
-        :placeholder="placeholder || '۰۹۱۲۳۴۵۶۷۸۹'"
-        dir="rtl"
-        class="w-full py-3 px-4 text-sm font-semibold text-gray-900 bg-transparent focus:outline-none placeholder:text-gray-400 placeholder:font-normal text-right tracking-normal"
+        :placeholder="placeholder || (isRTL ? '۰۹۱۲۳۴۵۶۷۸۹' : '09123456789')"
+        :dir="isRTL ? 'rtl' : 'ltr'"
+        class="w-full py-3 px-4 text-sm font-semibold text-gray-900 bg-transparent focus:outline-none placeholder:text-gray-400 placeholder:font-normal tracking-normal"
+        :class="isRTL ? 'text-right' : 'text-left'"
         :required="required"
       />
 
       <!-- Clear / Status Icon -->
-      <div v-if="rawDigits" class="flex items-center pl-3 shrink-0">
+      <div v-if="rawDigits" class="flex items-center px-3 shrink-0">
         <button
           type="button"
           @click="clearInput"
           class="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 flex items-center justify-center text-[10px] transition cursor-pointer"
-          title="پاک کردن"
+          :title="isRTL ? 'پاک کردن' : 'Clear'"
         >
           ✕
         </button>
@@ -48,13 +49,14 @@
 
     <!-- Friendly Validation Warning -->
     <p v-if="hasError && rawDigits.length > 3" class="text-[11px] text-rose-500 font-medium pt-0.5">
-      شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.
+      {{ errorMessage }}
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useLocale } from '~/composables/useLocale'
 
 const props = withDefaults(defineProps<{
   modelValue?: string
@@ -64,7 +66,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   modelValue: '',
   label: '',
-  placeholder: '۰۹۱۲۳۴۵۶۷۸۹',
+  placeholder: '',
   required: false
 })
 
@@ -72,6 +74,10 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
   (e: 'valid', isValid: boolean): void
 }>()
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const isFarsi = computed(() => (language.value || '').toUpperCase() === 'FA')
 
 const inputRef = ref<HTMLInputElement | null>(null)
 const isFocused = ref(false)
@@ -107,7 +113,12 @@ function cleanIranianMobile(digits: string): string {
   return d.slice(0, 11)
 }
 
-const persianDisplay = computed(() => toPersianDigits(rawDigits.value))
+const displayValue = computed(() => {
+  if (isFarsi.value) {
+    return toPersianDigits(rawDigits.value)
+  }
+  return rawDigits.value
+})
 
 const isValid = computed(() => {
   const d = rawDigits.value
@@ -118,6 +129,13 @@ const hasError = computed(() => {
   if (!rawDigits.value) return false
   if (isFocused.value) return false
   return !isValid.value
+})
+
+const errorMessage = computed(() => {
+  const lang = (language.value || 'FA').toUpperCase()
+  if (lang === 'EN') return 'Mobile number must be 11 digits starting with 09.'
+  if (lang === 'AR') return 'يجب أن يتكون رقم الجوال من 11 رقماً ويبدأ بـ 09.'
+  return 'شماره موبایل باید ۱۱ رقم و با ۰۹ شروع شود.'
 })
 
 function handleInput(e: Event) {

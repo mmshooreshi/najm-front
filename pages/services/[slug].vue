@@ -84,7 +84,7 @@
               class="relative rounded-2xl bg-white/80 p-4 md:p-5 shadow-sm border border-gray-100"
             >
               <!-- Card Action [+] / [-] -->
-              <AdminArrayItemActions path="serviceIncludes.groups" :index="idx" />
+              <AdminArrayItemActions path="serviceIncludes.groups" :index="idx" :slug="pageKey" />
 
               <h3
                 class="text-sm md:text-base font-semibold mb-2 text-gray-900 break-words text-d4"
@@ -111,7 +111,7 @@
               </ul>
             </article>
 
-            <AdminAddCardPlaceholder path="serviceIncludes.groups" label="افزودن گروه قابلیت جدید" customClass="min-h-[160px]" />
+            <AdminAddCardPlaceholder path="serviceIncludes.groups" :slug="pageKey" label="افزودن گروه قابلیت جدید" customClass="min-h-[160px]" />
           </div>
         </div>
       </section>
@@ -148,7 +148,7 @@
           <div class="flex flex-col gap-2 mt-3 md:mt-0 md:flex-row">
             <NuxtLink
               to="/contact"
-              class="h-10 md:h-11 px-5 rounded-xl !bg-najmgrey text-black text-xs sm:text-sm font-semibold flex items-center justify-center whitespace-nowrap"
+              class="px-5 py-2.5 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm transition text-center shadow-xs"
             >
               <span v-editable="'midCta.primaryCta.label'">{{ midCta.primaryCta?.label || 'استعلام و مشاوره' }}</span>
             </NuxtLink>
@@ -156,12 +156,8 @@
         </div>
       </section>
 
-      <!-- Packages + industries / use-cases -->
-      <section
-        v-if="packages?.items?.length || industries?.items?.length"
-        class="space-y-6 md:space-y-8"
-        :class="isRTL ? 'text-right' : 'text-left'"
-      >
+      <!-- Packages & Industries -->
+      <section v-if="packages || industries" class="space-y-6 md:space-y-8" :class="isRTL ? 'text-right' : 'text-left'">
         <div
           v-if="packages?.items?.length"
           class="space-y-3 md:space-y-4"
@@ -176,15 +172,28 @@
           >
             {{ packages.description }}
           </p>
-          <div class="flex flex-wrap gap-2">
-            <span
-              v-for="(tag, idx) in packages.items"
-              :key="tag.key || idx"
-              class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 text-xs md:text-sm border border-gray-200 break-words"
-              v-editable="`packages.items.${idx}.label`"
+          <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+            <div
+              v-for="(pkg, idx) in packages.items"
+              :key="pkg.name || idx"
+              class="relative rounded-2xl bg-white/90 p-4 border border-gray-200/80 shadow-2xs flex flex-col justify-between"
             >
-              {{ tag.label || tag }}
-            </span>
+              <div class="space-y-1.5">
+                <span class="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 break-words" v-editable="`packages.items.${idx}.badge`">
+                  {{ pkg.badge || 'پکیج تولید' }}
+                </span>
+                <h3 class="text-sm font-bold text-gray-900 break-words text-d4" v-editable="`packages.items.${idx}.name`">
+                  {{ pkg.name }}
+                </h3>
+                <p class="text-xs text-gray-600 leading-relaxed break-words" v-editable="`packages.items.${idx}.description`">
+                  {{ pkg.description }}
+                </p>
+              </div>
+              <div class="pt-3 border-t border-gray-100 mt-3 flex items-center justify-between text-xs">
+                <span class="text-gray-400">حداقل تیراژ:</span>
+                <span class="font-bold text-gray-800" v-editable="`packages.items.${idx}.minQty`">{{ pkg.minQty || '۱۰۰۰ عدد' }}</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -237,7 +246,7 @@
             class="relative rounded-2xl bg-white/80 p-4 md:p-5 border border-gray-100 group"
           >
             <!-- In-place Item Action [+] / [-] -->
-            <AdminArrayItemActions path="faq.items" :index="idx" />
+            <AdminArrayItemActions path="faq.items" :index="idx" :slug="pageKey" />
 
             <summary class="cursor-pointer text-sm md:text-base font-medium text-gray-900 break-words" v-editable="`faq.items.${idx}.question`">
               {{ item.question }}
@@ -247,7 +256,7 @@
             </p>
           </details>
 
-          <AdminAddCardPlaceholder path="faq.items" label="افزودن پرسش و پاسخ جدید" customClass="min-h-[70px] p-3" />
+          <AdminAddCardPlaceholder path="faq.items" :slug="pageKey" label="افزودن پرسش و پاسخ جدید" customClass="min-h-[70px] p-3" />
         </div>
       </section>
     </section>

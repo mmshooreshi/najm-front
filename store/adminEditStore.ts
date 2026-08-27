@@ -2,6 +2,7 @@
 import { reactive, computed } from 'vue'
 import { toLocalizedDigits } from '~/utils/digits'
 import { logger } from '~/utils/logger'
+import { getBaseSchemaForSlugAndLang } from '~/composables/ui/schemaRegistry'
 
 /** ---------- Types ---------- **/
 export type LangCode = string
@@ -72,8 +73,6 @@ export interface AdminEditState {
   activeMediaInitialUrl: string
   activeMediaMetadata: MediaMetadata | null
   mediaDrafts: Record<PathKey, { original: string; draft?: string; meta?: MediaMetadata }>
-  selectedMediaElement: HTMLElement | null
-  selectedMediaPath: string | null
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -100,9 +99,7 @@ export const adminEditState = reactive<AdminEditState>({
   activeMediaElement: null,
   activeMediaInitialUrl: '',
   activeMediaMetadata: null,
-  mediaDrafts: {},
-  selectedMediaElement: null,
-  selectedMediaPath: null
+  mediaDrafts: {}
 })
 
 // Enable admin in development or when localStorage flag is set
@@ -112,18 +109,6 @@ if (typeof window !== 'undefined') {
   adminEditState.canEdit = dev || flag === 'true'
   const savedEditMode = localStorage.getItem('admin_edit_mode')
   adminEditState.editMode = savedEditMode === 'true'
-}
-
-export function setEditingActive(path: string | null, active: boolean) {
-  adminEditState.activeEditingPath = active ? path : null
-  adminEditState.isEditingActive = active
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(
-      new CustomEvent('najm:admin-editing-state', {
-        detail: { active, path }
-      })
-    )
-  }
 }
 
 /** ---------- Helpers ---------- **/
@@ -199,15 +184,12 @@ export function syncLanguage(lang: LangCode) {
 export function captureLanguageSnapshot(lang: LangCode, ui: Record<string, any>) {
   if (!ui || Object.keys(ui).length === 0) return
 
-  const prev = adminEditState.allLangUI[lang]
+  const upper = lang.toUpperCase()
+  const lower = lang.toLowerCase()
   const snap = deepClone(ui)
 
-  // Deduplicate
-  if (prev && JSON.stringify(prev) === JSON.stringify(snap)) {
-    return
-  }
-
-  adminEditState.allLangUI[lang] = snap
+  adminEditState.allLangUI[upper] = snap
+  adminEditState.allLangUI[lower] = snap
 }
 
 /** Versions helpers */
@@ -217,7 +199,6 @@ export function addVersion(path: PathKey, lang: LangCode, value: string, type: V
 
   const list = adminEditState.versions[path][lang]
   const last = list[list.length - 1]
-  // Don't push duplicate consecutive values of same type
   if (last && last.value === value && last.type === type) return
 
   list.push({
@@ -226,7 +207,6 @@ export function addVersion(path: PathKey, lang: LangCode, value: string, type: V
     date: new Date().toISOString()
   })
 
-  // Keep last 30 versions per field
   if (list.length > 30) {
     list.shift()
   }
@@ -238,7 +218,7 @@ export function getVersions(path: PathKey, lang: LangCode): VersionEntry[] {
 
 /** Hydrate baselines from allLangUI snapshot */
 export function applySnapshotToBaselines(lang: LangCode) {
-  const snap = adminEditState.allLangUI[lang]
+  const snap = adminEditState.allLangUI[lang] || adminEditState.allLangUI[lang.toUpperCase()] || adminEditState.allLangUI[lang.toLowerCase()]
   if (!snap) return
 
   function walk(obj: any, prefix = '') {
@@ -270,7 +250,7 @@ export function applySnapshotToBaselines(lang: LangCode) {
   walk(snap)
 }
 
-/** Ensure baseline exists for this path+lang (called on directive mount) */
+/** Ensure baseline exists for this path+lang */
 export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: string) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
@@ -309,8 +289,14 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
     const upper = lang.toUpperCase()
     const lower = lang.toLowerCase()
     if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
-    if (!adminEditState.clientOverrides[slug][upper]) adminEditState.clientOverrides[slug][upper] = deepClone(adminEditState.allLangUI[upper] || {})
-    if (!adminEditState.clientOverrides[slug][lower]) adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || {})
+    if (!adminEditState.clientOverrides[slug][upper]) {
+      const base = getBaseSchemaForSlugAndLang(slug, upper)
+      adminEditState.clientOverrides[slug][upper] = deepClone(adminEditState.allLangUI[upper] || base)
+    }
+    if (!adminEditState.clientOverrides[slug][lower]) {
+      const base = getBaseSchemaForSlugAndLang(slug, lower)
+      adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || base)
+    }
 
     setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
     setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
@@ -329,7 +315,7 @@ export function setValueSilently(path: PathKey, lang: LangCode, newValue: string
     return
   }
   const rec = adminEditState.changes[path][lang]
-  if (rec.draft != null) return // don't overwrite user's active draft
+  if (rec.draft != null) return
   rec.value = newValue
 }
 
@@ -353,11 +339,6 @@ export function buildChangesPayload(lang: LangCode): { path: string; value: stri
     if (normForCompare(candidate, lang) !== normForCompare(lr.original, lang)) {
       out.push({ path, value: candidate })
     }
-  }
-  if (process.dev && out.length > 0) {
-    logger.group('Admin:Sync', `Changes Payload generated for [${lang.toUpperCase()}] (${out.length} items)`, () => {
-      out.forEach(item => logger.debug('Admin:Sync', `↳ ${item.path} → "${item.value}"`))
-    })
   }
   return out
 }
@@ -455,7 +436,20 @@ export function restoreVersion(path: PathKey, lang: LangCode, value: string) {
   }
 }
 
-/** Add a new item to an array with instant reactive DOM feedback */
+/** Active editing focus state management */
+export function setEditingActive(path: string | null, active: boolean) {
+  adminEditState.activeEditingPath = active ? path : null
+  adminEditState.isEditingActive = active
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('najm:admin-editing-state', {
+        detail: { active, path }
+      })
+    )
+  }
+}
+
+/** Add a new item to an array with 100% preservation of all existing items */
 export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
   const currentSlug = targetSlug || adminEditState.slug || 'home'
   if (!lang) lang = adminEditState.language || 'FA'
@@ -466,33 +460,46 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
     adminEditState.clientOverrides[currentSlug] = {}
   }
 
+  // 1. Get current full UI, falling back to base schema to ensure all existing items are present
   let currentUI = adminEditState.clientOverrides[currentSlug][upper] || adminEditState.clientOverrides[currentSlug][lower]
   if (!currentUI || Object.keys(currentUI).length === 0) {
-    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower] || {}
-    currentUI = deepClone(snap)
+    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
+    if (snap && getByPath(snap, arrayPath)) {
+      currentUI = deepClone(snap)
+    } else {
+      const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
+      currentUI = deepClone(base)
+    }
   } else {
     currentUI = deepClone(currentUI)
   }
 
+  // 2. Locate target array, preserving all existing items
   let targetArr = getByPath(currentUI, arrayPath)
-  if (!Array.isArray(targetArr)) {
-    targetArr = []
+  if (!Array.isArray(targetArr) || targetArr.length === 0) {
+    const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
+    const baseArr = getByPath(base, arrayPath)
+    if (Array.isArray(baseArr) && baseArr.length > 0) {
+      targetArr = deepClone(baseArr)
+    } else {
+      targetArr = targetArr || []
+    }
     setByPath(currentUI, arrayPath, targetArr)
   }
 
-  // Create clean placeholder item with proper fields
+  // 3. Create clean placeholder item with proper fields by cloning an existing item
   let newItem: any = 'آیتم جدید (کلیک برای ویرایش)'
   if (targetArr.length > 0) {
-    const templateIndex = atIndex >= 0 ? atIndex : targetArr.length - 1
+    const templateIndex = (atIndex >= 0 && atIndex < targetArr.length) ? atIndex : targetArr.length - 1
     const template = targetArr[templateIndex]
     if (typeof template === 'object' && template !== null) {
       newItem = deepClone(template)
       for (const k of Object.keys(newItem)) {
         if (typeof newItem[k] === 'string') {
-          if (k.toLowerCase().includes('id') || k.toLowerCase().includes('slug')) {
+          if (k.toLowerCase().includes('id') || k.toLowerCase().includes('slug') || k.toLowerCase().includes('key')) {
             newItem[k] = `item-${Date.now().toString(36)}`
           } else if (k.toLowerCase().includes('image') || k.toLowerCase().includes('icon')) {
-            // keep template icon or image
+            // keep template icon/image
           } else {
             newItem[k] = `${newItem[k]} (جدید)`
           }
@@ -512,10 +519,11 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
     }
   }
 
+  // 4. SPLICE IN THE NEW ITEM without destroying existing items!
   const insertPos = atIndex >= 0 ? atIndex + 1 : targetArr.length
   targetArr.splice(insertPos, 0, newItem)
 
-  // Save live reactive state
+  // 5. Store back into clientOverrides for both upper and lower case keys
   adminEditState.clientOverrides[currentSlug][upper] = currentUI
   adminEditState.clientOverrides[currentSlug][lower] = currentUI
   adminEditState.allLangUI[upper] = currentUI
@@ -527,12 +535,12 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
       detail: { arrayPath, action: 'add', atIndex: insertPos, lang, slug: currentSlug }
     }))
     window.dispatchEvent(new CustomEvent('toast', {
-      detail: { type: 'success', text: `+ آیتم جدید به «${arrayPath}» افزوده شد` }
+      detail: { type: 'success', text: `+ آیتم جدید به «${arrayPath}» افزوده شد (مجموع: ${targetArr.length})` }
     }))
   }
 }
 
-/** Remove an item from an array with instant reactive DOM feedback */
+/** Remove an item from an array with 100% preservation of remaining items */
 export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
   const currentSlug = targetSlug || adminEditState.slug || 'home'
   if (!lang) lang = adminEditState.language || 'FA'
@@ -545,14 +553,30 @@ export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCo
 
   let currentUI = adminEditState.clientOverrides[currentSlug][upper] || adminEditState.clientOverrides[currentSlug][lower]
   if (!currentUI || Object.keys(currentUI).length === 0) {
-    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower] || {}
-    currentUI = deepClone(snap)
+    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
+    if (snap && getByPath(snap, arrayPath)) {
+      currentUI = deepClone(snap)
+    } else {
+      const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
+      currentUI = deepClone(base)
+    }
   } else {
     currentUI = deepClone(currentUI)
   }
 
-  const arr = getByPath(currentUI, arrayPath)
-  if (!Array.isArray(arr) || arr.length <= 1) {
+  let targetArr = getByPath(currentUI, arrayPath)
+  if (!Array.isArray(targetArr)) {
+    const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
+    const baseArr = getByPath(base, arrayPath)
+    if (Array.isArray(baseArr)) {
+      targetArr = deepClone(baseArr)
+      setByPath(currentUI, arrayPath, targetArr)
+    } else {
+      return
+    }
+  }
+
+  if (targetArr.length <= 1) {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('toast', {
         detail: { type: 'warning', text: 'امکان حذف آخرین آیتم باقی‌مانده وجود ندارد' }
@@ -561,9 +585,8 @@ export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCo
     return
   }
 
-  arr.splice(atIndex, 1)
+  targetArr.splice(atIndex, 1)
 
-  // Save live reactive state
   adminEditState.clientOverrides[currentSlug][upper] = currentUI
   adminEditState.clientOverrides[currentSlug][lower] = currentUI
   adminEditState.allLangUI[upper] = currentUI
@@ -575,7 +598,7 @@ export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCo
       detail: { arrayPath, action: 'remove', atIndex, lang, slug: currentSlug }
     }))
     window.dispatchEvent(new CustomEvent('toast', {
-      detail: { type: 'info', text: `- آیتم از «${arrayPath}» حذف شد` }
+      detail: { type: 'info', text: `- آیتم از «${arrayPath}» حذف شد (باقی‌مانده: ${targetArr.length})` }
     }))
   }
 }
@@ -640,6 +663,20 @@ export function closeMediaStudio() {
   adminEditState.activeMediaMetadata = null
 }
 
+export function selectMediaElement(el: HTMLElement, path: string, url?: string, meta?: MediaMetadata) {
+  adminEditState.activeMediaElement = el
+  adminEditState.activeMediaPath = path
+  if (url) adminEditState.activeMediaInitialUrl = url
+  if (meta) adminEditState.activeMediaMetadata = meta
+}
+
+export function clearMediaSelection() {
+  adminEditState.activeMediaElement = null
+  adminEditState.activeMediaPath = null
+  adminEditState.activeMediaInitialUrl = ''
+  adminEditState.activeMediaMetadata = null
+}
+
 export function setMediaDraftValue(
   path: PathKey,
   lang: LangCode,
@@ -684,26 +721,4 @@ export function setMediaDraftValue(
   if (process.dev) {
     logger.success('Admin:Media', `Applied in-place media draft for "${path}": ${newUrl.slice(0, 60)}...`)
   }
-}
-
-export function selectMediaElement(el: HTMLElement | null, path: string | null = null) {
-  if (typeof document !== 'undefined') {
-    // Remove previous selection classes
-    document.querySelectorAll('.v-media-selected, [data-media-selected="true"]').forEach(node => {
-      node.classList.remove('v-media-selected')
-      node.removeAttribute('data-media-selected')
-    })
-
-    if (el) {
-      el.classList.add('v-media-selected')
-      el.setAttribute('data-media-selected', 'true')
-    }
-  }
-
-  adminEditState.selectedMediaElement = el
-  adminEditState.selectedMediaPath = path
-}
-
-export function clearMediaSelection() {
-  selectMediaElement(null, null)
 }

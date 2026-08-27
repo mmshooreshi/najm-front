@@ -4,6 +4,7 @@ import { computed, type ComputedRef, watch } from 'vue'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
 import { adminEditState } from '@/store/adminEditStore'
+import { getLocalSchema } from '@/composables/ui/schemaRegistry'
 
 type UiForLang = Record<string, any>
 type AllUi = Record<string, UiForLang>
@@ -43,17 +44,8 @@ export function usePageUI(
 } {
   const { language } = useLocale()
 
-  // Local fallback schemas (eager so they're available at build/runtime without extra fetch)
-  const localData = import.meta.glob<{ default: AllUi }>(
-    '@/schemas/*-ui.json',
-    { eager: true }
-  )
-
-  // Robustly find the local JSON matching `${slug}-ui.json` regardless of Vite's key format
-  const local: AllUi = (() => {
-    const entry = Object.entries(localData).find(([key]) => key.endsWith(`/${slug}-ui.json`))
-    return (entry?.[1]?.default ?? {}) as AllUi
-  })()
+  // Local fallback schemas from schemaRegistry
+  const local: AllUi = getLocalSchema(slug)
 
   // Fetch from unified Nuxt server endpoint connecting to live PocketBase
   const { data, pending, refresh } = useFetch<{ ok: boolean, uiData: AllUi, title?: string }>(

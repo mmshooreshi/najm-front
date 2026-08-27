@@ -224,6 +224,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import Map from '~/components/map.vue'
+import SmartPhoneInput from '~/components/common/SmartPhoneInput.vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
