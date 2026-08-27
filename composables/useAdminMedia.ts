@@ -42,7 +42,10 @@ export function useAdminMedia() {
   function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const img = new Image()
-      img.crossOrigin = 'anonymous'
+      const isCrossOrigin = src.startsWith('http://') || src.startsWith('https://')
+      if (isCrossOrigin && typeof window !== 'undefined' && !src.startsWith(window.location.origin)) {
+        img.crossOrigin = 'anonymous'
+      }
       img.onload = () => resolve(img)
       img.onerror = () => {
         // Fallback without crossOrigin

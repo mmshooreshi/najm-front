@@ -899,40 +899,65 @@ async function loadActiveMedia(url: string) {
     const img = await loadImage(url)
     originalImage.value = img
     const meta = await getImageMetadata(url)
-    imageMeta.width = meta.width
-    imageMeta.height = meta.height
+    imageMeta.width = meta.width || img.naturalWidth || 600
+    imageMeta.height = meta.height || img.naturalHeight || 600
     imageMeta.size = meta.size || 0
 
     cropRect.x = 0
     cropRect.y = 0
-    cropRect.width = meta.width
-    cropRect.height = meta.height
+    cropRect.width = imageMeta.width
+    cropRect.height = imageMeta.height
 
+    // Reset adjustments for fresh image edit session
+    adj.brightness = 100
+    adj.contrast = 100
+    adj.saturation = 100
+    adj.exposure = 0
+    adj.hueRotate = 0
+    adj.blur = 0
+    adj.rotation = 0
+    adj.flipH = false
+    adj.flipV = false
+    cropEnabled.value = false
+    selectedRatio.value = 'free'
     zoomLevel.value = 1.0
+
+    isLoadingMedia.value = false
     await nextTick()
     await renderLive()
     calculateTargetSize()
   } catch (err) {
-  } finally {
+    console.error('[AdminMediaStudio] Error loading image:', err)
     isLoadingMedia.value = false
   }
 }
 
-watch(() => state.activeMediaUrl, (newUrl) => {
-  if (newUrl) {
-    currentMediaUrl.value = newUrl
-    loadActiveMedia(newUrl)
-  }
-})
+// Watch both modal open state and active media URLs
+watch(
+  () => [state.mediaStudioOpen, state.activeMediaInitialUrl, state.activeMediaUrl],
+  async ([isOpen, initialUrl, activeUrl]) => {
+    if (isOpen) {
+      const url = (initialUrl || activeUrl) as string
+      if (url) {
+        currentMediaUrl.value = url
+        await nextTick()
+        await loadActiveMedia(url)
+      }
+    }
+  },
+  { immediate: true }
+)
 
 watch(() => showOriginal.value, () => {
   renderLive()
 })
 
-onMounted(() => {
-  if (state.activeMediaUrl) {
-    currentMediaUrl.value = state.activeMediaUrl
-    loadActiveMedia(state.activeMediaUrl)
+onMounted(async () => {
+  const url = state.activeMediaInitialUrl || state.activeMediaUrl
+  if (state.mediaStudioOpen && url) {
+    currentMediaUrl.value = url
+    await nextTick()
+    await loadActiveMedia(url)
   }
 
   fetchGalleryItems()

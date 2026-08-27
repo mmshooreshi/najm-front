@@ -71,6 +71,7 @@ export interface AdminEditState {
   activeMediaPath: string | null
   activeMediaElement: HTMLElement | null
   activeMediaInitialUrl: string
+  activeMediaUrl: string
   activeMediaMetadata: MediaMetadata | null
   mediaDrafts: Record<PathKey, { original: string; draft?: string; meta?: MediaMetadata }>
   selectedMediaElement: HTMLElement | null
@@ -106,6 +107,7 @@ export const adminEditState = reactive<AdminEditState>({
   activeMediaPath: null,
   activeMediaElement: null,
   activeMediaInitialUrl: '',
+  activeMediaUrl: '',
   activeMediaMetadata: null,
   mediaDrafts: {},
   selectedMediaElement: null,
@@ -805,6 +807,7 @@ export function openMediaStudio(target: {
   adminEditState.activeMediaPath = target.path || null
   adminEditState.activeMediaElement = target.el || null
   adminEditState.activeMediaInitialUrl = target.url || ''
+  adminEditState.activeMediaUrl = target.url || ''
   adminEditState.activeMediaMetadata = target.meta || null
   adminEditState.mediaStudioOpen = true
 
@@ -819,6 +822,7 @@ export function closeMediaStudio() {
   adminEditState.activeMediaPath = null
   adminEditState.activeMediaElement = null
   adminEditState.activeMediaInitialUrl = ''
+  adminEditState.activeMediaUrl = ''
   adminEditState.activeMediaMetadata = null
 }
 
