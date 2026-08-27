@@ -2,92 +2,55 @@
 <template>
   <div v-if="state.canEdit && state.editMode" data-admin-ui="true">
     <teleport to="body">
-      <!-- Floating Media In-Place HUD Overlay -->
-      <transition name="media-hud">
+      <!-- Media Foreground Pattern Mask + Minimal Centered Pencil -->
+      <div
+        v-if="isVisible && targetEl && !state.mediaStudioOpen"
+        ref="overlayContainerEl"
+        data-admin-ui="true"
+        class="admin-media-overlay-hud media-hud fixed z-[999990] pointer-events-auto flex items-center justify-center select-none cursor-pointer"
+        :style="containerStyle"
+        @mouseenter="onOverlayEnter"
+        @mouseleave="onOverlayLeave"
+        @click.stop="openStudioDirectly"
+      >
+        <!-- Subtle Green/Amber Overlay Mask with Cool Modern Diagonal Pattern Stripes -->
         <div
-          v-if="isVisible && targetEl"
-          ref="overlayEl"
-          data-admin-ui="true"
-          class="admin-media-overlay-hud media-hud fixed z-[999995] select-none pointer-events-auto flex items-center gap-1.5 p-1 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-xl transition-all duration-150"
-          :style="hudStyle"
-          @mouseenter="onOverlayEnter"
-          @mouseleave="onOverlayLeave"
-        >
-          <!-- Media Tag & Format Badge -->
-          <div class="flex items-center gap-1.5 px-2 py-1 rounded-xl bg-white/5 border border-white/10 text-[11px] font-mono">
-            <span
-              class="w-2 h-2 rounded-full"
-              :class="isModified ? 'bg-amber-400 animate-pulse' : (isSelected ? 'bg-emerald-400 ring-2 ring-emerald-400/40' : 'bg-emerald-400')"
-            ></span>
-            <span class="font-bold text-zinc-200 uppercase">{{ mediaFormat }}</span>
-            <span v-if="dimensions.w" class="text-zinc-400 text-[10px]">{{ dimensions.w }}×{{ dimensions.h }}</span>
-          </div>
+          class="absolute inset-0 rounded-2xl transition-opacity duration-200 pointer-events-none"
+          :class="isModified
+            ? 'admin-media-pattern-amber opacity-90'
+            : 'admin-media-pattern-green opacity-80'"
+        ></div>
 
-          <!-- Quick Action 1: Open Full Media Studio -->
+        <!-- Centered Glowing Pencil Badge & Format -->
+        <div class="relative z-10 flex items-center gap-2" @click.stop="openStudioDirectly">
           <button
             type="button"
-            class="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-xs shadow-emerald-900/40 transition-all cursor-pointer"
-            title="Open In-Place Media Studio (Crop, Filters, Lighting, Compression)"
-            @click.stop="handleOpenStudio('adjust')"
+            class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-xl border border-white/25"
+            :class="isModified
+              ? 'bg-amber-500/90 text-zinc-950 shadow-amber-500/30'
+              : 'bg-najmgreen/90 text-white shadow-emerald-950/50 hover:bg-najmgreen'"
+            :title="isModified ? 'تصویر تغییر یافته • برای ویرایش کلیک کنید' : 'ویرایش تصویر (کلیک کنید)'"
           >
-            <AdminIcon name="sparkles" class="w-3.5 h-3.5" />
-            <span>Studio</span>
+            <AdminIcon name="pencil" class="w-5 h-5" />
           </button>
 
-          <!-- Quick Action 2: Crop -->
-          <button
-            type="button"
-            class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-            title="Crop & Resize Geometry"
-            @click.stop="handleOpenStudio('crop')"
-          >
-            <AdminIcon name="crop" class="w-3.5 h-3.5" />
-          </button>
+          <!-- Format Tag (Subtle pill next to pencil) -->
+          <span class="px-2 py-1 rounded-xl bg-zinc-950/80 border border-white/15 text-[10px] font-mono font-bold text-zinc-200 backdrop-blur-md">
+            {{ mediaFormat }}
+          </span>
 
-          <!-- Quick Action 3: Quick Upload / Replace -->
-          <button
-            type="button"
-            class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-            title="Upload New Media (Dropzone with Live Progress)"
-            @click.stop="handleOpenStudio('upload')"
-          >
-            <AdminIcon name="upload" class="w-3.5 h-3.5" />
-          </button>
-
-          <!-- Quick Action 4: Media Gallery -->
-          <button
-            type="button"
-            class="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-            title="Select from PocketBase Media Gallery"
-            @click.stop="handleOpenStudio('gallery')"
-          >
-            <AdminIcon name="photo" class="w-3.5 h-3.5" />
-          </button>
-
-          <!-- Quick Action 5: Revert to Original Baseline (if modified) -->
+          <!-- Quick Revert (if modified) -->
           <button
             v-if="isModified"
             type="button"
-            class="flex items-center gap-1 px-2 py-1 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[11px] font-semibold transition-colors cursor-pointer"
-            title="Revert to Original First Version"
             @click.stop="handleRevert"
+            class="p-2 rounded-full bg-rose-500/80 text-white hover:bg-rose-600 transition-colors shadow-lg cursor-pointer"
+            title="بازگشت به تصویر اولیه"
           >
-            <AdminIcon name="undo" class="w-3 h-3" />
-            <span>Revert</span>
-          </button>
-
-          <!-- Quick Action 6: Copy Path -->
-          <button
-            v-if="currentPath"
-            type="button"
-            class="p-1.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-white/5 transition-colors cursor-pointer"
-            :title="`Copy path: ${currentPath}`"
-            @click.stop="handleCopyPath"
-          >
-            <AdminIcon name="copy" class="w-3.5 h-3.5" />
+            <AdminIcon name="undo" class="w-3.5 h-3.5" />
           </button>
         </div>
-      </transition>
+      </div>
     </teleport>
   </div>
 </template>
@@ -98,85 +61,74 @@ import {
   adminEditState as state,
   openMediaStudio,
   revertPath,
-  isChanged
+  isChanged,
+  clearMediaSelection
 } from '@/store/adminEditStore'
+import { useAdminMotionControl } from '@/composables/useAdminMotionControl'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
 
-const overlayEl = ref<HTMLElement | null>(null)
+const { freezeMotion, unfreezeMotion } = useAdminMotionControl()
+
+const overlayContainerEl = ref<HTMLElement | null>(null)
 const targetEl = ref<HTMLElement | null>(null)
 const isVisible = ref(false)
-const isLocked = ref(false)
 const currentPath = ref('')
 const currentUrl = ref('')
-const mediaFormat = ref('IMAGE')
+const mediaFormat = ref('IMG')
 const dimensions = reactive({ w: 0, h: 0 })
 let hideTimeout: any = null
-let isHoveringOverlay = false
+let isHovering = false
+let animFrameId: number | null = null
 
 const isModified = computed(() => {
   if (!currentPath.value) return false
   return isChanged(currentPath.value, state.language || 'fa')
 })
 
-const isSelected = computed(() => {
-  return targetEl.value && state.selectedMediaElement === targetEl.value
-})
-
-const hudStyle = reactive({
+const containerStyle = reactive({
   top: '0px',
   left: '0px',
-  transform: 'translate3d(0, 0, 0)'
+  width: '0px',
+  height: '0px'
 })
 
 function updatePosition() {
   if (!targetEl.value) return
   const rect = targetEl.value.getBoundingClientRect()
   if (rect.width === 0 && rect.height === 0) {
-    if (!isLocked.value) isVisible.value = false
+    isVisible.value = false
     return
   }
 
-  const margin = 8
-  const hudW = overlayEl.value?.offsetWidth || 300
-  const hudH = overlayEl.value?.offsetHeight || 40
-
-  let top = 0
-  let left = 0
-
-  // If media is tall enough, overlay inside top of image directly
-  if (rect.height >= 60 && rect.width >= 180) {
-    top = rect.top + 8
-    // Center overlay horizontally over the media
-    left = rect.left + (rect.width - hudW) / 2
-  } else {
-    // If small, float above media
-    top = rect.top - hudH - 8
-    if (top < margin) {
-      top = rect.bottom + 8
-    }
-    left = rect.left + 4
-  }
-
-  // Clamping within viewport
-  if (left + hudW > window.innerWidth - margin) {
-    left = window.innerWidth - hudW - margin
-  }
-  left = Math.max(margin, left)
-  top = Math.max(margin, Math.min(window.innerHeight - hudH - margin, top))
-
-  hudStyle.top = `${Math.round(top)}px`
-  hudStyle.left = `${Math.round(left)}px`
+  // Snap directly to the element's exact bounding box with NO sliding glide across the screen
+  containerStyle.top = `${Math.round(rect.top)}px`
+  containerStyle.left = `${Math.round(rect.left)}px`
+  containerStyle.width = `${Math.round(rect.width)}px`
+  containerStyle.height = `${Math.round(rect.height)}px`
 }
 
-function showForElement(el: HTMLElement, path = '', url = '', locked = false) {
-  if (!state.canEdit || !state.editMode) return
+function startTracking() {
+  if (animFrameId) cancelAnimationFrame(animFrameId)
+  const track = () => {
+    if (isVisible.value && targetEl.value) {
+      updatePosition()
+      animFrameId = requestAnimationFrame(track)
+    }
+  }
+  animFrameId = requestAnimationFrame(track)
+}
+
+function showForElement(el: HTMLElement, path = '', url = '') {
+  if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
   if (hideTimeout) clearTimeout(hideTimeout)
 
   targetEl.value = el
-  if (locked) isLocked.value = true
   currentPath.value = path || el.getAttribute('data-media-path') || el.getAttribute('data-edit-path') || ''
 
-  // Determine media URL
+  // Freeze motion on this element and parents while interacting
+  freezeMotion(el, true)
+
+  // Resolve media URL & dimensions
   let resolvedUrl = url
   if (!resolvedUrl) {
     if (el instanceof HTMLImageElement) {
@@ -189,19 +141,12 @@ function showForElement(el: HTMLElement, path = '', url = '', locked = false) {
         resolvedUrl = img.currentSrc || img.src
         dimensions.w = img.naturalWidth || img.width
         dimensions.h = img.naturalHeight || img.height
-      } else {
-        const bg = window.getComputedStyle(el).backgroundImage
-        if (bg && bg !== 'none') {
-          const match = bg.match(/url\(['"]?(.*?)['"]?\)/)
-          if (match) resolvedUrl = match[1]
-        }
       }
     }
   }
 
   currentUrl.value = resolvedUrl
 
-  // Format detection
   const clean = (resolvedUrl || '').split('?')[0].toLowerCase()
   const ext = clean.split('.').pop()
   if (ext && ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'svg', 'psd', 'ai', 'pdf'].includes(ext)) {
@@ -210,33 +155,14 @@ function showForElement(el: HTMLElement, path = '', url = '', locked = false) {
     mediaFormat.value = 'IMG'
   }
 
+  updatePosition()
   isVisible.value = true
-  requestAnimationFrame(updatePosition)
+  startTracking()
 }
 
-function scheduleHide() {
-  if (isLocked.value || (state.selectedMediaElement && state.selectedMediaElement === targetEl.value)) return
-  if (hideTimeout) clearTimeout(hideTimeout)
-  hideTimeout = setTimeout(() => {
-    if (!isHoveringOverlay && !isLocked.value && !state.selectedMediaElement) {
-      isVisible.value = false
-      targetEl.value = null
-    }
-  }, 220)
-}
-
-function onOverlayEnter() {
-  isHoveringOverlay = true
-  if (hideTimeout) clearTimeout(hideTimeout)
-}
-
-function onOverlayLeave() {
-  isHoveringOverlay = false
-  scheduleHide()
-}
-
-function handleOpenStudio(initialTab = 'adjust') {
+function openStudioDirectly() {
   if (!targetEl.value && !currentUrl.value) return
+  isVisible.value = false
   openMediaStudio({
     path: currentPath.value,
     el: targetEl.value,
@@ -247,39 +173,56 @@ function handleOpenStudio(initialTab = 'adjust') {
       height: dimensions.h
     }
   })
-  window.dispatchEvent(new CustomEvent('admin:media-studio-tab', { detail: { tab: initialTab } }))
 }
 
 function handleRevert() {
   if (!currentPath.value) return
   revertPath(currentPath.value, state.language || 'fa')
-  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `Reverted media "${currentPath.value}"` } }))
+  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `تصویر "${currentPath.value}" به نسخه اولیه بازگشت.` } }))
 }
 
-function handleCopyPath() {
-  if (navigator.clipboard?.writeText && currentPath.value) {
-    navigator.clipboard.writeText(currentPath.value)
-    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Copied path: ${currentPath.value}` } }))
-  }
+function scheduleHide() {
+  if (hideTimeout) clearTimeout(hideTimeout)
+  hideTimeout = setTimeout(() => {
+    if (!isHovering && !state.selectedMediaElement) {
+      if (targetEl.value) {
+        unfreezeMotion(targetEl.value, false)
+      }
+      isVisible.value = false
+      targetEl.value = null
+      if (animFrameId) cancelAnimationFrame(animFrameId)
+    }
+  }, 200)
+}
+
+function onOverlayEnter() {
+  isHovering = true
+  if (hideTimeout) clearTimeout(hideTimeout)
+}
+
+function onOverlayLeave() {
+  isHovering = false
+  scheduleHide()
 }
 
 // Watch selected element in admin store
 watch(() => state.selectedMediaElement, (selEl) => {
   if (selEl) {
-    isLocked.value = true
-    showForElement(selEl, state.selectedMediaPath || '', '', true)
-  } else {
-    isLocked.value = false
-    scheduleHide()
+    showForElement(selEl, state.selectedMediaPath || '', '')
+  } else if (!isHovering) {
+    if (targetEl.value) {
+      unfreezeMotion(targetEl.value, false)
+    }
+    isVisible.value = false
+    targetEl.value = null
   }
 })
 
-// Global Event Listeners
 onMounted(() => {
   const onMediaHover = (e: any) => {
     const detail = e.detail || {}
     if (detail.el) {
-      showForElement(detail.el, detail.path, detail.url, !!detail.locked)
+      showForElement(detail.el, detail.path, detail.url)
     }
   }
 
@@ -287,20 +230,13 @@ onMounted(() => {
     scheduleHide()
   }
 
-  const onScrollOrResize = () => {
-    if (isVisible.value) updatePosition()
-  }
-
   window.addEventListener('admin:media-hover', onMediaHover)
   window.addEventListener('admin:media-leave', onMediaLeave)
-  window.addEventListener('scroll', onScrollOrResize, { passive: true })
-  window.addEventListener('resize', onScrollOrResize, { passive: true })
 
   ;(window as any)._adminMediaOverlayCleanup = () => {
     window.removeEventListener('admin:media-hover', onMediaHover)
     window.removeEventListener('admin:media-leave', onMediaLeave)
-    window.removeEventListener('scroll', onScrollOrResize)
-    window.removeEventListener('resize', onScrollOrResize)
+    if (animFrameId) cancelAnimationFrame(animFrameId)
   }
 })
 
@@ -310,14 +246,29 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.media-hud-enter-active,
-.media-hud-leave-active {
-  transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+/* Cool Subtle Emerald Diagonal Pattern Stripes */
+.admin-media-pattern-green {
+  background-color: rgba(1, 68, 57, 0.4);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(16, 185, 129, 0.18) 0,
+    rgba(16, 185, 129, 0.18) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  backdrop-filter: blur(1.5px);
 }
 
-.media-hud-enter-from,
-.media-hud-leave-to {
-  opacity: 0;
-  transform: translateY(-4px) scale(0.96);
+/* Subtle Amber Diagonal Pattern Stripes when modified */
+.admin-media-pattern-amber {
+  background-color: rgba(180, 83, 9, 0.4);
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(245, 158, 11, 0.22) 0,
+    rgba(245, 158, 11, 0.22) 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  backdrop-filter: blur(1.5px);
 }
 </style>

@@ -1,21 +1,30 @@
 
 
-html{
-
-	/* scroll-behavior: smooth; */
-	
-
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+  height: 100%;
 }
+
 :root {
-    interpolate-size: allow-keywords;
+  interpolate-size: allow-keywords;
+}
+
+body {
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body, [dir="rtl"], .font-sans {
-    font-family: IRANSansX, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: IRANSansX, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 [dir="rtl"] .font-mono {
-    font-family: 'IRANSansX-d4', IRANSansX, monospace !important;
+  font-family: 'IRANSansX-d4', IRANSansX, monospace !important;
 }
 
 .animdur{
@@ -556,44 +565,31 @@ button.bg-najmgreen,
   border-color: #014439 !important;
 }
 
-/* ─── ADMIN MEDIA EDITING OVERLAYS & OUTLINES ─── */
+/* ─── ADMIN MEDIA EDITING STYLES ─── */
 body.admin-media-edit-active img,
 body.admin-media-edit-active picture,
-body.admin-media-edit-active svg,
 body.admin-media-edit-active [data-media-path] {
-  transition: outline 0.15s ease, filter 0.15s ease;
-}
-
-body.admin-media-edit-active img:hover,
-body.admin-media-edit-active picture:hover,
-body.admin-media-edit-active svg:hover,
-body.admin-media-edit-active [data-media-path]:hover {
-  outline: 2px dashed rgba(16, 185, 129, 0.75) !important;
-  outline-offset: 2px;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .v-media-changed,
 img[data-admin-changed="true"],
 [data-media-path][data-admin-changed="true"] {
-  outline: 2.5px solid rgba(245, 158, 11, 0.9) !important;
-  outline-offset: 2px;
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.7) !important;
+  border-radius: 8px !important;
 }
 
-/* ─── SELECTED MEDIA STATE (High-Visibility Glow & Ring) ─── */
-.v-media-selected,
-img[data-media-selected="true"],
-picture[data-media-selected="true"],
-[data-media-path][data-media-selected="true"] {
-  outline: 3px solid #10b981 !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.3), 0 12px 30px rgba(0, 0, 0, 0.5) !important;
-  border-radius: 12px !important;
-  position: relative !important;
-  z-index: 30 !important;
-  transform: scale(1.01) !important;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, outline 0.2s ease !important;
+/* ─── ADMIN MOTION FREEZING ENGINE ─── */
+.admin-motion-paused,
+.admin-motion-paused *,
+.admin-motion-paused *::before,
+.admin-motion-paused *::after,
+body.admin-all-motions-paused *,
+body.admin-all-motions-paused *::before,
+body.admin-all-motions-paused *::after {
+  animation-play-state: paused !important;
 }
+
 
 

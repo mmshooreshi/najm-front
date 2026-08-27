@@ -97,7 +97,7 @@ onMounted(async () => {
   border: 0px solid teal;;
   position: relative;              /* make ::before sit on top */
   
-  min-height: calc(100vh - 64px);
+  min-height: calc(100dvh - 64px);
 }
 
 .section-snap.debug-grid::before {

@@ -26,7 +26,9 @@
         "children": [
           { "id": "about",   "name": "درباره ما", "slug": "/about" },
           { "id": "contact", "name": "تماس با ما", "slug": "/contact" },
-          { "id": "catalog", "name": "کاتالوگ جامع", "slug": "/catalog" }
+          { "id": "blog",    "name": "وبلاگ و مقالات تخصصی", "slug": "/blog" },
+          { "id": "catalog", "name": "کاتالوگ جامع", "slug": "/catalog" },
+          { "id": "news",    "name": "اخبار و رویدادها", "slug": "/news" }
         ]
       },
       {
@@ -88,7 +90,9 @@
         "children": [
           { "id": "about",   "name": "About Us", "slug": "/about" },
           { "id": "contact", "name": "Contact Us", "slug": "/contact" },
-          { "id": "catalog", "name": "Product Catalog", "slug": "/catalog" }
+          { "id": "catalog", "name": "Product Catalog", "slug": "/catalog" },
+          { "id": "blog",    "name": "Articles & Blog", "slug": "/blog" },
+          { "id": "news",    "name": "Company News & Events", "slug": "/news" }
         ]
       },
       {
@@ -150,7 +154,9 @@
         "children": [
           { "id": "about",   "name": "من نحن", "slug": "/about" },
           { "id": "contact", "name": "اتصل بنا", "slug": "/contact" },
-          { "id": "catalog", "name": "الكتالوج الشامل", "slug": "/catalog" }
+          { "id": "catalog", "name": "الكتالوج الشامل", "slug": "/catalog" },
+          { "id": "blog",    "name": "المدونة والمقالات", "slug": "/blog" },
+          { "id": "news",    "name": "الأخبار والفعاليات", "slug": "/news" }
         ]
       },
       {

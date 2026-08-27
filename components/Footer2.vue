@@ -1,13 +1,17 @@
 <!-- components/Footer2.vue -->
 <template>
-  <footer :dir="isRTL ? 'rtl' : 'ltr'" class="bg-najmgreen/100 rounded-t-[15px] text-center items-center text-white/100 pt-16 pb-16">
-    <div class="grid-cols-2 grid w-full">
-      <logoWhite class="col-span-2 mx-auto" />
+  <footer :dir="isRTL ? 'rtl' : 'ltr'" class="bg-najmgreen text-white rounded-t-2xl pt-14 pb-20">
+    <!-- Top Centered Brand Logo -->
+    <div class="flex justify-center pb-10">
+      <logoWhite class="h-10 sm:h-12 w-auto" />
     </div>
 
-    <div class="max-w-screen-xl px-0 grid grid-cols-1 md:grid-cols-2 items-baseline mx-auto">
-      <div class="col-span-1 px-6 sm:px-10 md:mt-16 md:max-h-[60vh]">
-        <div class="max-w-xl mx-auto md:px-10 flex flex-col-reverse md:flex-col gap-1">
+    <!-- Main 2-Column Responsive Grid -->
+    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-start">
+      <!-- Left Column: Accordion Navigation, Brand Intro Text, Desktop Trust Badge -->
+      <div class="flex flex-col space-y-6 w-full max-w-xl mx-auto md:mx-0">
+        <!-- Accordion Navigation -->
+        <div class="flex flex-col space-y-1.5">
           <BaseFooterAccordion
             v-for="(section, sIdx) in accordionSections"
             :key="section.id || sIdx"
@@ -18,79 +22,98 @@
             :modelValue="openAccordionId === section.id"
             @toggle="handleAccordionToggle"
           />
-
-          <div class="grid gap-8 pt-8 md:pt-12 pb-0">
-            <div class="flex flex-col gap-4 mb-8 md:mb-0">
-              <div
-                v-for="(paragraph, index) in footerData.hero?.paragraphs"
-                :key="index"
-                class="relative group"
-              >
-                <!-- Paragraph Action [+] / [-] -->
-                <AdminArrayItemActions path="hero.paragraphs" :index="index" position="top-left" />
-
-                <p
-                  class="leading-relaxed font-medium text-d4 text-xs break-words"
-                  :class="isRTL ? 'text-right' : 'text-left'"
-                  v-editable="`hero.paragraphs.${index}`"
-                >
-                  {{ paragraph }}
-                </p>
-              </div>
-
-              <AdminAddCardPlaceholder path="hero.paragraphs" label="افزودن پاراگراف معرفی جدید" customClass="min-h-[40px] p-2" />
-            </div>
-          </div>
         </div>
 
-        <NuxtImg class="hidden md:block max-w-sm mx-auto w-[80%] mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" alt="Trust" />
-      </div>
-
-      <div class="max-w-screen-xl overflow-hidden col-span-1 px-6 sm:px-10">
-        <div class="flex flex-col w-full max-w-xl mx-auto md:px-10 gap-0 text-sm pt-8 md:pt-12 pb-2">
-          <div
-            v-for="(item, index) in footerData.contact?.items"
+        <!-- Brand Story Paragraphs -->
+        <div class="pt-4 space-y-3 border-t border-white/10">
+          <p
+            v-for="(paragraph, index) in localizedParagraphs"
             :key="index"
-            class="flex flex-col relative group"
+            class="leading-relaxed font-medium text-d4 text-xs text-white/90 break-words"
+            :class="isRTL ? 'text-right' : 'text-left'"
           >
-            <div class="flex w-full justify-between items-center border-b border-white/10 border-b-0.5 py-3 gap-2">
-              <div class="flex items-center gap-2">
-                <!-- Contact Item Action [+] / [-] -->
-                <AdminArrayItemActions path="contact.items" :index="index" position="inline" />
-                <span class="text-demibold text-d4 text-xs sm:text-sm whitespace-nowrap" v-editable="`contact.items.${index}.name`">{{ item.name }}</span>
-              </div>
-              <a
-                v-if="item.slug"
-                :href="item.slug"
-                class="font-mono text-demibold text-d4 text-xs sm:text-sm break-all"
-                :class="[item.ltr ? 'ltr' : 'rtl']"
-                v-editable="`contact.items.${index}.value`"
-              >
-                {{ item.value }}
-              </a>
-              <span v-else class="break-words text-xs sm:text-sm" :class="isRTL ? 'text-right' : 'text-left'" v-editable="`contact.items.${index}.value`">
-                <div v-html="item.value" />
-              </span>
-            </div>
-          </div>
-
-          <AdminAddCardPlaceholder path="contact.items" label="افزودن اطلاعات تماس جدید" customClass="min-h-[40px] p-2 my-2" />
+            {{ paragraph }}
+          </p>
         </div>
 
-        <ClientOnly>
-          <Map />
-        </ClientOnly>
+        <!-- Trust Badges (Desktop) -->
+        <div class="hidden md:block pt-2">
+          <NuxtImg
+            class="max-w-[260px] w-auto h-auto opacity-95 hover:opacity-100 transition-opacity"
+            src="/images/sections/footer/trust.png"
+            alt="مجوزها و نماد اعتماد"
+            loading="lazy"
+          />
+        </div>
+      </div>
 
-        <NuxtImg class="block md:hidden max-w-sm mx-auto w-full mt-4 mb-4 px-2 py-0" src="/images/sections/footer/trust.png" alt="Trust" />
+      <!-- Right Column: Contact Details, Map, Mobile Trust Badge -->
+      <div class="flex flex-col space-y-6 w-full max-w-xl mx-auto md:mx-0">
+        <!-- Contact Items List -->
+        <div class="flex flex-col divide-y divide-white/10 text-xs sm:text-sm">
+          <div
+            v-for="(item, index) in contactItemsList"
+            :key="index"
+            class="flex items-center justify-between py-3 gap-2"
+          >
+            <span class="text-white/95 font-bold font-d4 shrink-0">
+              {{ item.name }}
+            </span>
+            <a
+              v-if="item.slug"
+              :href="item.slug"
+              class="font-mono text-emerald-200 hover:text-white transition-colors truncate"
+              dir="ltr"
+            >
+              {{ item.value }}
+            </a>
+            <span
+              v-else
+              class="break-words text-xs sm:text-sm text-white/90 truncate"
+              :class="isRTL ? 'text-right' : 'text-left'"
+            >
+              <div v-html="item.value" />
+            </span>
+          </div>
+        </div>
+
+        <!-- Interactive Map Component -->
+        <div class="w-full">
+          <ClientOnly>
+            <Map />
+          </ClientOnly>
+        </div>
+
+        <!-- Trust Badges (Mobile) -->
+        <div class="block md:hidden pt-2 flex justify-center">
+          <NuxtImg
+            class="max-w-[240px] w-auto h-auto opacity-95"
+            src="/images/sections/footer/trust.png"
+            alt="مجوزها و نماد اعتماد"
+            loading="lazy"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="max-w-sm md:max-w-screen mx-12 overflow-hidden h-px bg-white/20 mx-auto mt-6"></div>
-
-    <div class="max-w-screen-xl mx-auto px-6 sm:px-12 flex flex-col items-center justify-between gap-2 py-4 text-xs md:flex-row">
-      <span class="break-words" v-editable="'copyright'">{{ footerData.copyright || 'کلیه حقوق این سایت متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد.' }}</span>
-      <span class="ltr font-mono">&copy; {{ year }} NajmPrint Complex</span>
+    <!-- Divider Line -->
+    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 my-6">
+      <div class="h-px bg-white/20 w-full"></div>
     </div>
+
+    <!-- Bottom Copyright & Brand Bar (Always Guaranteed Visible) -->
+    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/90 font-d4">
+      <span 
+        class="text-center sm:text-right leading-relaxed font-medium break-words" 
+        v-editable="'copyright'"
+      >
+        {{ currentCopyrightText || 'تمامی حقوق متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد.' }}
+      </span>
+      <span class="font-mono text-xs shrink-0 text-center sm:text-left font-semibold text-white/90" dir="ltr">
+        &copy; {{ year }} ChapNajm
+      </span>
+    </div>
+
   </footer>
 </template>
 
@@ -98,94 +121,40 @@
 import { ref, computed } from 'vue'
 import logoWhite from '~/assets/icons/najm-logo-white.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
-import { usePageUI } from '~/composables/ui/usePageUI'
-import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { usefooterUIData } from '~/composables/ui/footerUI' // Use your UI Composable
 import Map from '~/components/map.vue'
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-const { ui, allUi } = usePageUI('footer')
-useAdminEditable('footer', allUi)
-
-const fallbackFooter = {
-  hero: {
-    paragraphs: [
-      'در دنیای رقابتی امروز، چاپ و بسته‌بندی دیگر فقط یک مرحله از تولید نیست؛ بلکه اولین نقطه تماس برند شما با مشتریان است. ما باور داریم که هر پروژه یک داستان است. داستانی که باید به‌طور ویژه و با دقت روایت شود.',
-      'از طراحی تا اجرا، همه چیز در یک مجموعه. با راهکارهای خلاقانه و انعطاف‌پذیر ما اینجا هستیم تا داستان شما را تبدیل به یک تجربه‌ی ماندگار کنیم.'
-    ]
-  },
-  sections: [
-    {
-      id: 'services',
-      name: 'خدمات',
-      type: 'accordion',
-      children: [
-        { id: 'packaging', name: 'بسته‌بندی و جعبه‌سازی', slug: '/services/printing-and-packaging' },
-        { id: 'printing', name: 'چاپ افست ۵ رنگ', slug: '/services/printing-and-packaging' },
-        { id: 'finishing', name: 'خدمات تکمیلی و طلاکوب', slug: '/services/finishing-services' }
-      ]
-    },
-    {
-      id: 'najm-collection',
-      name: 'مجموعه نجم',
-      type: 'accordion',
-      children: [
-        { id: 'about', name: 'درباره ما', slug: '/about' },
-        { id: 'contact', name: 'تماس با ما', slug: '/contact' },
-        { id: 'catalog', name: 'کاتالوگ جامع', slug: '/catalog' }
-      ]
-    },
-    {
-      id: 'customer-service',
-      name: 'سرویس مشتریان',
-      type: 'accordion',
-      children: [
-        { id: 'faq', name: 'سؤالات متداول', slug: '/contact' },
-        { id: 'guides', name: 'راهنماهای فنی چاپ', slug: '/guides' }
-      ]
-    },
-    {
-      id: 'latest',
-      name: 'منابع و فایل‌ها',
-      type: 'accordion',
-      children: [
-        { id: 'resources', name: 'مرکز دانلود قالب‌ها', slug: '/resources' },
-        { id: 'cmyk', name: 'پروفایل رنگی CMYK', slug: '/resources/guide-cmyk-color-profile' }
-      ]
-    }
-  ],
-  contact: {
-    items: [
-      { id: 'phone', name: 'تلفن مستقیم', value: '+98 21 6679 7911', slug: 'tel:+982166797911', ltr: true },
-      { id: 'fax', name: 'فکس کارخانه', value: '+98 21 0053 6712', slug: 'fax:+982100536712', ltr: true },
-      { id: 'email', name: 'پست الکترونیک', value: 'info@najmprint.com', slug: 'mailto:info@najmprint.com', ltr: true },
-      { id: 'hours1', name: 'ساعت‌های کاری', value: 'شنبه تا چهارشنبه: ۹ الی ۱۸ | پنج‌شنبه‌ها: ۹ الی ۱۴' }
-    ]
-  },
-  copyright: 'کلیه حقوق مادی و معنوی این وب‌سایت متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد.'
-}
-
-const footerData = computed(() => {
-  return {
-    ...fallbackFooter,
-    ...(ui.value || {})
-  }
+const activeLang = computed(() => {
+  const l = (language.value || 'fa').toLowerCase()
+  return (l === 'en' || l === 'ar' ? l : 'fa') as 'fa' | 'en' | 'ar'
 })
 
-const openAccordionId = ref<string | null>(null)
+// 1. Fetch the data dynamically from backend (falls back to local JSON)
+const { footerUIData } = usefooterUIData()
 
-const accordionSections = computed(() =>
-  (footerData.value.sections ?? []).filter((section: any) => section.type === 'accordion' || !section.type)
-)
+// 2. Select the specific data tree for the current active language
+const currentUiData = computed(() => {
+  // Try to grab the data for the active language, fallback to 'fa'
+  return footerUIData.value[activeLang.value] || footerUIData.value.fa
+})
+
+// 3. Map the data directly to the computed properties for the template
+const accordionSections = computed(() => currentUiData.value.sections || [])
+const localizedParagraphs = computed(() => currentUiData.value.hero?.paragraphs || [])
+const contactItemsList = computed(() => currentUiData.value.contact?.items || [])
+const currentCopyrightText = computed(() => currentUiData.value.copyright || '')
+
+const openAccordionId = ref<string | null>(null)
 
 function handleAccordionToggle(id: string) {
   openAccordionId.value = openAccordionId.value === id ? null : id
 }
 
 const year = new Date().getFullYear()
-const isDesktop = useMediaQuery('(min-width: 768px)')
 </script>
 
 <style scoped>

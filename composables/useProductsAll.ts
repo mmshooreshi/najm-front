@@ -1,5 +1,6 @@
 // composables/useProductsAll.ts
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useLocale } from '@/composables/useLocale'
 
 export interface Product {
   id: number
@@ -10,387 +11,124 @@ export interface Product {
   price: string
   buttonText: string
   type: 'printing' | 'packaging'
-  group:
-    | 'پاکت CD و DVD'
-    | 'کارت ضمانت'
-    | 'دفترچه‌راهنما'
-    | 'اوراق و اسناد مالی و اداری'
-    | 'فولدر و پوشه'
-    | 'کارت دعوت و یادبود'
-    | 'بنر و استند مناسبتی'
-    | 'سررسید و تقویم'
-    | 'لیبل و استیکر'
-    | 'پوستر و تراکت'
-    | 'تقویم و سررسید'
-    | 'کتاب و مجلات'
-    | 'بروشورو کاتالوگ'
-    | 'کارت‌ویزیت'
-    | 'پاکت‌نامه'
-    | 'سربرگ'
-
-
+  group: string
 }
 
-const defaultProducts = ref<Product[]>([
-    {
-      "id": 1,
-      "type": "packaging",
-      "group": "پاکت CD و DVD",
-      "slug": "/products/pack_cd_packaging",
-      "name": "پاکت CD بسته‌بندی",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۱۲۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 2,
-      "type": "packaging",
-      "group": "کارت ضمانت",
-      "slug": "/products/waranty_packaging",
-      "name": "جعبه کارت ضمانت",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۲۵۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    },
-    {
-      "id": 3,
-      "type": "packaging",
-      "group": "دفترچه‌راهنما",
-      "slug": "/products/manual_packaging",
-      "name": "جعبه دفترچه‌راهنما",
-      "subtitle": "حداقل ۳۰۰ عدد",
-      "price": "قیمت: ۳۵۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/3.png"
-    },
-    {
-      "id": 4,
-      "type": "packaging",
-      "group": "اوراق و اسناد مالی و اداری",
-      "slug": "/products/doc_packaging",
-      "name": "جعبه اسناد مالی",
-      "subtitle": "حداقل ۱۵۰ عدد",
-      "price": "قیمت: ۴۰۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/4.png"
-    },
-    {
-      "id": 5,
-      "type": "packaging",
-      "group": "فولدر و پوشه",
-      "slug": "/products/folder_packaging",
-      "name": "جعبه فولدر",
-      "subtitle": "حداقل ۲۵۰ عدد",
-      "price": "قیمت: ۲۲۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/5.png"
-    },
-    {
-      "id": 6,
-      "type": "packaging",
-      "group": "کارت دعوت و یادبود",
-      "slug": "/products/invite_packaging",
-      "name": "جعبه کارت دعوت",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۳۰۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 7,
-      "type": "packaging",
-      "group": "بنر و استند مناسبتی",
-      "slug": "/products/banner_packaging",
-      "name": "جعبه استند بنر",
-      "subtitle": "حداقل ۵۰ عدد",
-      "price": "قیمت: ۵۰۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    },
-    {
-      "id": 8,
-      "type": "packaging",
-      "group": "سررسید و تقویم",
-      "slug": "/products/diary_packaging",
-      "name": "جعبه سررسید",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۳۸۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/3.png"
-    },
-    {
-      "id": 9,
-      "type": "packaging",
-      "group": "لیبل و استیکر",
-      "slug": "/products/sticker_packaging",
-      "name": "جعبه استیکر",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۱۰۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/4.png"
-    },
-    {
-      "id": 10,
-      "type": "packaging",
-      "group": "پوستر و تراکت",
-      "slug": "/products/leaflet_packaging",
-      "name": "جعبه تراکت",
-      "subtitle": "حداقل ۱۰۰۰ عدد",
-      "price": "قیمت: ۲۸۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/5.png"
-    },
-    {
-      "id": 11,
-      "type": "packaging",
-      "group": "تقویم و سررسید",
-      "slug": "/products/calendar_packaging",
-      "name": "جعبه تقویم",
-      "subtitle": "حداقل ۱۵۰ عدد",
-      "price": "قیمت: ۳۴۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 12,
-      "type": "packaging",
-      "group": "کتاب و مجلات",
-      "slug": "/products/booklet_packaging",
-      "name": "جعبه کتاب",
-      "subtitle": "حداقل ۱۰۰ عدد",
-      "price": "قیمت: ۴۵۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    },
-    {
-      "id": 13,
-      "type": "packaging",
-      "group": "بروشورو کاتالوگ",
-      "slug": "/products/catalog_packaging",
-      "name": "جعبه کاتالوگ",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۳۲۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/3.png"
-    },
-    {
-      "id": 14,
-      "type": "packaging",
-      "group": "کارت‌ویزیت",
-      "slug": "/products/cardpack_packaging",
-      "name": "جعبه کارت‌ویزیت",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۲۷۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/4.png"
-    },
-    {
-      "id": 15,
-      "type": "packaging",
-      "group": "پاکت‌نامه",
-      "slug": "/products/envelope_packaging",
-      "name": "پاکت‌نامه بسته‌بندی",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۱۸۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/5.png"
-    },
-    {
-      "id": 16,
-      "type": "packaging",
-      "group": "سربرگ",
-      "slug": "/products/letterhead_packaging",
-      "name": "جعبه سربرگ",
-      "subtitle": "حداقل ۳۰۰ عدد",
-      "price": "قیمت: ۲۹۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 101,
-      "type": "printing",
-      "group": "پاکت CD و DVD",
-      "slug": "/products/pack_cd_print",
-      "name": "چاپ پاکت CD",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۹۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    },
-    {
-      "id": 102,
-      "type": "printing",
-      "group": "کارت ضمانت",
-      "slug": "/products/waranty_print",
-      "name": "چاپ کارت ضمانت",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۱۸۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/3.png"
-    },
-    {
-      "id": 103,
-      "type": "printing",
-      "group": "دفترچه‌راهنما",
-      "slug": "/products/manual_print",
-      "name": "چاپ دفترچه‌راهنما",
-      "subtitle": "حداقل ۳۰۰ عدد",
-      "price": "قیمت: ۲۲۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/4.png"
-    },
-    {
-      "id": 104,
-      "type": "printing",
-      "group": "اوراق و اسناد مالی و اداری",
-      "slug": "/products/doc_print",
-      "name": "چاپ اسناد مالی",
-      "subtitle": "حداقل ۱۵۰ عدد",
-      "price": "قیمت: ۲۵۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/5.png"
-    },
-    {
-      "id": 105,
-      "type": "printing",
-      "group": "فولدر و پوشه",
-      "slug": "/products/folder_print",
-      "name": "چاپ پوشه گلاسه",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۲۱۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 106,
-      "type": "printing",
-      "group": "کارت دعوت و یادبود",
-      "slug": "/products/invite_print",
-      "name": "چاپ کارت دعوت",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۲۷۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    },
-    {
-      "id": 107,
-      "type": "printing",
-      "group": "بنر و استند مناسبتی",
-      "slug": "/products/banner_print",
-      "name": "چاپ بنر",
-      "subtitle": "حداقل ۵۰ عدد",
-      "price": "قیمت: ۴۵۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/3.png"
-    },
-    {
-      "id": 108,
-      "type": "printing",
-      "group": "سررسید و تقویم",
-      "slug": "/products/diary_print",
-      "name": "چاپ سررسید",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۳۵۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/4.png"
-    },
-    {
-      "id": 109,
-      "type": "printing",
-      "group": "لیبل و استیکر",
-      "slug": "/products/sticker_print",
-      "name": "چاپ لیبل",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۷۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/5.png"
-    },
-    {
-      "id": 110,
-      "type": "printing",
-      "group": "پوستر و تراکت",
-      "slug": "/products/leaflet_print",
-      "name": "چاپ تراکت A5",
-      "subtitle": "حداقل ۱۰۰۰ عدد",
-      "price": "قیمت: ۸۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 111,
-      "type": "printing",
-      "group": "تقویم و سررسید",
-      "slug": "/products/calendar_print",
-      "name": "چاپ تقویم رومیزی",
-      "subtitle": "حداقل ۱۵۰ عدد",
-      "price": "قیمت: ۳۲۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    },
-    {
-      "id": 112,
-      "type": "printing",
-      "group": "کتاب و مجلات",
-      "slug": "/products/booklet_print",
-      "name": "چاپ کتابچه",
-      "subtitle": "حداقل ۱۰۰ عدد",
-      "price": "قیمت: ۲۸۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/3.png"
-    },
-    {
-      "id": 113,
-      "type": "printing",
-      "group": "بروشورو کاتالوگ",
-      "slug": "/products/catalog_print",
-      "name": "چاپ کاتالوگ",
-      "subtitle": "حداقل ۲۰۰ عدد",
-      "price": "قیمت: ۳۰۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/4.png"
-    },
-    {
-      "id": 114,
-      "type": "printing",
-      "group": "کارت‌ویزیت",
-      "slug": "/products/cardprint_print",
-      "name": "چاپ کارت‌ویزیت فوری",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۱۲۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/5.png"
-    },
-    {
-      "id": 115,
-      "type": "printing",
-      "group": "پاکت‌نامه",
-      "slug": "/products/envelope_print",
-      "name": "چاپ پاکت‌نامه",
-      "subtitle": "حداقل ۵۰۰ عدد",
-      "price": "قیمت: ۱۱۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/1.png"
-    },
-    {
-      "id": 116,
-      "type": "printing",
-      "group": "سربرگ",
-      "slug": "/products/letterhead_print",
-      "name": "چاپ سربرگ اداری",
-      "subtitle": "حداقل ۳۰۰ عدد",
-      "price": "قیمت: ۲۰۰,۰۰۰ تومان",
-      "buttonText": "نمایش ابعاد",
-      "image": "/images/products/2.png"
-    }
-  ]
-  )
+const baseProducts: Product[] = [
+  { id: 1, type: 'printing', group: 'پاکت CD و DVD', slug: '/products/pack_cd', name: 'چاپ پاکت CD و DVD', subtitle: 'حداقل ۵۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/2.png' },
+  { id: 2, type: 'printing', group: 'کارت ضمانت', slug: '/products/warranty_card', name: 'چاپ کارت ضمانت و گارانتی', subtitle: 'حداقل ۲۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/3.png' },
+  { id: 3, type: 'printing', group: 'دفترچه‌راهنما', slug: '/products/manual_booklet', name: 'چاپ دفترچه‌راهنمای محصول', subtitle: 'حداقل ۳۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/4.png' },
+  { id: 4, type: 'printing', group: 'اوراق و اسناد مالی و اداری', slug: '/products/financial_docs', name: 'چاپ اسناد مالی و اداری', subtitle: 'حداقل ۱۵۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/5.png' },
+  { id: 5, type: 'printing', group: 'فولدر و پوشه', slug: '/products/folder', name: 'چاپ فولدر گلاسه و مدیریتی', subtitle: 'حداقل ۲۵۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/1.png' },
+  { id: 6, type: 'printing', group: 'کارت دعوت و یادبود', slug: '/products/invitation', name: 'چاپ کارت دعوت و همایش', subtitle: 'حداقل ۲۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/2.png' },
+  { id: 7, type: 'printing', group: 'بنر و استند مناسبتی', slug: '/products/banner', name: 'چاپ بنر و استند سازمانی', subtitle: 'حداقل ۵۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/3.png' },
+  { id: 8, type: 'printing', group: 'سررسید و تقویم', slug: '/products/calendar', name: 'چاپ سررسید و تقویم دیواری', subtitle: 'حداقل ۲۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/4.png' },
+  { id: 9, type: 'printing', group: 'لیبل و استیکر', slug: '/products/label', name: 'چاپ لیبل رول و شیت', subtitle: 'حداقل ۵۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/5.png' },
+  { id: 10, type: 'printing', group: 'پوستر و تراکت', slug: '/products/flyer', name: 'چاپ تراکت تبلیغاتی A5', subtitle: 'حداقل ۱۰۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/1.png' },
+  { id: 11, type: 'printing', group: 'کتاب و مجلات', slug: '/products/booklet', name: 'چاپ کتابچه و ژورنال', subtitle: 'حداقل ۱۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/2.png' },
+  { id: 12, type: 'printing', group: 'بروشورو کاتالوگ', slug: '/products/catalog', name: 'چاپ کاتالوگ و بروشور چندلت', subtitle: 'حداقل ۲۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/3.png' },
+  { id: 13, type: 'printing', group: 'کارت‌ویزیت', slug: '/products/business_card', name: 'چاپ کارت‌ویزیت فوری لوکس', subtitle: 'حداقل ۵۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/4.png' },
+  { id: 14, type: 'printing', group: 'پاکت‌نامه', slug: '/products/envelope', name: 'چاپ پاکت‌نامه و ملخی', subtitle: 'حداقل ۵۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/5.png' },
+  { id: 15, type: 'printing', group: 'سربرگ', slug: '/products/letterhead', name: 'چاپ سربرگ رسمی A4 و A5', subtitle: 'حداقل ۳۰۰ عدد', price: '', buttonText: 'سفارش آنلاین', image: '/images/products/1.png' }
+]
 
-
+const productTranslations: Record<number, Record<'fa' | 'en' | 'ar', { name: string; subtitle: string; group: string }>> = {
+  1: {
+    fa: { name: 'چاپ پاکت CD و DVD', subtitle: 'حداقل ۵۰۰ عدد', group: 'پاکت CD و DVD' },
+    en: { name: 'CD & DVD Sleeve Printing', subtitle: 'Min. 500 pcs', group: 'CD & DVD Pouch' },
+    ar: { name: 'طباعة ظرف الأقراص المدمجة', subtitle: 'الحد الأدنى ٥۰۰ قطعة', group: 'ظرف الأقراص CD' }
+  },
+  2: {
+    fa: { name: 'چاپ کارت ضمانت و گارانتی', subtitle: 'حداقل ۲۰۰ عدد', group: 'کارت ضمانت' },
+    en: { name: 'Warranty & Guarantee Card', subtitle: 'Min. 200 pcs', group: 'Warranty Card' },
+    ar: { name: 'طباعة بطاقات الضمان المعتمدة', subtitle: 'الحد الأدنى ۲۰۰ قطعة', group: 'بطاقة الضمان' }
+  },
+  3: {
+    fa: { name: 'چاپ دفترچه‌راهنمای محصول', subtitle: 'حداقل ۳۰۰ عدد', group: 'دفترچه‌راهنما' },
+    en: { name: 'Product User Manual Booklet', subtitle: 'Min. 300 pcs', group: 'User Manual' },
+    ar: { name: 'طباعة كتيب إرشادات الاستخدام', subtitle: 'الحد الأدنى ۳۰۰ قطعة', group: 'كتيب الإرشادات' }
+  },
+  4: {
+    fa: { name: 'چاپ اسناد مالی و اداری', subtitle: 'حداقل ۱۵۰ عدد', group: 'اوراق و اسناد مالی و اداری' },
+    en: { name: 'Financial & Corporate Forms', subtitle: 'Min. 150 pcs', group: 'Financial Documents' },
+    ar: { name: 'طباعة الوثائق المالية والرسمية', subtitle: 'الحد الأدنى ۱۵۰ قطعة', group: 'الوثائق المالية' }
+  },
+  5: {
+    fa: { name: 'چاپ فولدر گلاسه و مدیریتی', subtitle: 'حداقل ۲۵۰ عدد', group: 'فولدر و پوشه' },
+    en: { name: 'Executive Presentation Folder', subtitle: 'Min. 250 pcs', group: 'Corporate Folder' },
+    ar: { name: 'طباعة مجلد وحافظة أوراق فاخرة', subtitle: 'الحد الأدنى ۲۵۰ قطعة', group: 'مجلد الملفات' }
+  },
+  6: {
+    fa: { name: 'چاپ کارت دعوت و همایش', subtitle: 'حداقل ۲۰۰ عدد', group: 'کارت دعوت و یادبود' },
+    en: { name: 'Event & Invitation Cards', subtitle: 'Min. 200 pcs', group: 'Invitation Card' },
+    ar: { name: 'طباعة بطاقات الدعوة والمناسبات', subtitle: 'الحد الأدنى ۲۰۰ قطعة', group: 'بطاقات الدعوة' }
+  },
+  7: {
+    fa: { name: 'چاپ بنر و استند سازمانی', subtitle: 'حداقل ۵۰ عدد', group: 'بنر و استند مناسبتی' },
+    en: { name: 'Corporate Banner & Stand', subtitle: 'Min. 50 pcs', group: 'Banner & Stand' },
+    ar: { name: 'طباعة رول آب وبانر المعارض', subtitle: 'الحد الأدنى ۵۰ قطعة', group: 'بانر وستاند' }
+  },
+  8: {
+    fa: { name: 'چاپ سررسید و تقویم دیواری', subtitle: 'حداقل ۲۰۰ عدد', group: 'سررسید و تقویم' },
+    en: { name: 'Executive Planner & Calendar', subtitle: 'Min. 200 pcs', group: 'Planner & Calendar' },
+    ar: { name: 'طباعة التقويم والمفكرة السنوية', subtitle: 'الحد الأدنى ۲۰۰ قطعة', group: 'تقويم ومفكرة' }
+  },
+  9: {
+    fa: { name: 'چاپ لیبل رول و شیت', subtitle: 'حداقل ۵۰۰ عدد', group: 'لیبل و استیکر' },
+    en: { name: 'Roll & Sheet Adhesive Labels', subtitle: 'Min. 500 pcs', group: 'Labels & Stickers' },
+    ar: { name: 'طباعة الملصقات والاستيكر المقاوم', subtitle: 'الحد الأدنى ۵۰۰ قطعة', group: 'ملصقات واستيكر' }
+  },
+  10: {
+    fa: { name: 'چاپ تراکت تبلیغاتی A5', subtitle: 'حداقل ۱۰۰۰ عدد', group: 'پوستر و تراکت' },
+    en: { name: 'Promotional Flyer & Leaflet A5', subtitle: 'Min. 1000 pcs', group: 'Flyer & Poster' },
+    ar: { name: 'طباعة النشرات الدعائية والبوستر', subtitle: 'الحد الأدنى ۱۰۰۰ قطعة', group: 'نشرات وبوستر' }
+  },
+  11: {
+    fa: { name: 'چاپ کتابچه و ژورنال', subtitle: 'حداقل ۱۰۰ عدد', group: 'کتاب و مجلات' },
+    en: { name: 'Booklet & Journal Printing', subtitle: 'Min. 100 pcs', group: 'Books & Journals' },
+    ar: { name: 'طباعة الكتيبات والمجلات الدورية', subtitle: 'الحد الأدنى ۱۰۰ قطعة', group: 'كتب ومجلات' }
+  },
+  12: {
+    fa: { name: 'چاپ کاتالوگ و بروشور چندلت', subtitle: 'حداقل ۲۰۰ عدد', group: 'بروشورو کاتالوگ' },
+    en: { name: 'Multi-Fold Brochure & Catalog', subtitle: 'Min. 200 pcs', group: 'Brochure & Catalog' },
+    ar: { name: 'طباعة الكتالوجات والبروشورات', subtitle: 'الحد الأدنى ۲۰۰ قطعة', group: 'بروشور وكتالوج' }
+  },
+  13: {
+    fa: { name: 'چاپ کارت‌ویزیت فوری لوکس', subtitle: 'حداقل ۵۰۰ عدد', group: 'کارت‌ویزیت' },
+    en: { name: 'Luxury Business Cards', subtitle: 'Min. 500 pcs', group: 'Business Cards' },
+    ar: { name: 'طباعة بطاقات العمل الفاخرة', subtitle: 'الحد الأدنى ۵۰۰ قطعة', group: 'بطاقات عمل' }
+  },
+  14: {
+    fa: { name: 'چاپ پاکت‌نامه و ملخی', subtitle: 'حداقل ۵۰۰ عدد', group: 'پاکت‌نامه' },
+    en: { name: 'Official Envelopes & Mailers', subtitle: 'Min. 500 pcs', group: 'Envelopes' },
+    ar: { name: 'طباعة أظرف المراسلات الرسمية', subtitle: 'الحد الأدنى ۵۰۰ قطعة', group: 'أظرف بريدية' }
+  },
+  15: {
+    fa: { name: 'چاپ سربرگ رسمی A4 و A5', subtitle: 'حداقل ۳۰۰ عدد', group: 'سربرگ' },
+    en: { name: 'Corporate Letterheads A4/A5', subtitle: 'Min. 300 pcs', group: 'Letterheads' },
+    ar: { name: 'طباعة الترويسات الرسمية للشركات', subtitle: 'الحد الأدنى ۳۰۰ قطعة', group: 'ترويسة رسمية' }
+  }
+}
 
 export const useProductsAll = () => {
-  // you can swap ref() for useState() if you need it to be global across pages
-  const products = ref(defaultProducts)
+  const { language } = useLocale()
+
+  const products = computed<Product[]>(() => {
+    const rawLang = (language.value || 'FA').toLowerCase()
+    const lang = (rawLang === 'en' || rawLang === 'ar' ? rawLang : 'fa') as 'fa' | 'en' | 'ar'
+
+    return baseProducts.map((p) => {
+      const trans = productTranslations[p.id]?.[lang] || productTranslations[p.id]?.['fa']
+      return {
+        ...p,
+        name: trans?.name || p.name,
+        subtitle: trans?.subtitle || p.subtitle,
+        group: trans?.group || p.group
+      }
+    })
+  })
+
   return { products }
 }
+
+export default baseProducts

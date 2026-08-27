@@ -31,13 +31,15 @@ export function useMenuUIData() {
         },
         links: {
           id: 1,
-          name: 'Resources',
+          name: 'Resources & Articles',
           slug: '',
           type: 'hidden',
           order: 3,
           children: [
-            { id: 1, name: 'Catalog', slug: '/catalog', type: 'link-simple', order: 1, children: [] },
-            { id: 2, name: 'Guides', slug: '/guides', type: 'link-simple', order: 2, children: [] }
+            { id: 1, name: 'Product Catalog', slug: '/catalog', type: 'link-simple', order: 1, children: [] },
+            { id: 2, name: 'Articles & Blog', slug: '/blog', type: 'link-simple', order: 2, children: [] },
+            { id: 3, name: 'News & Events', slug: '/news', type: 'link-simple', order: 3, children: [] },
+            { id: 4, name: 'Technical Guides', slug: '/guides', type: 'link-simple', order: 4, children: [] }
           ]
         },
         contact: {
@@ -74,13 +76,15 @@ export function useMenuUIData() {
         },
         links: {
           id: 1,
-          name: 'المصادر',
+          name: 'المصادر والمقالات',
           slug: '',
           type: 'hidden',
           order: 3,
           children: [
-            { id: 1, name: 'الكتالوج', slug: '/catalog', type: 'link-simple', order: 1, children: [] },
-            { id: 2, name: 'الأدلة الفنية', slug: '/guides', type: 'link-simple', order: 2, children: [] }
+            { id: 1, name: 'الكتالوج الشامل', slug: '/catalog', type: 'link-simple', order: 1, children: [] },
+            { id: 2, name: 'المدونة والمقالات', slug: '/blog', type: 'link-simple', order: 2, children: [] },
+            { id: 3, name: 'الأخبار والفعاليات', slug: '/news', type: 'link-simple', order: 3, children: [] },
+            { id: 4, name: 'الأدلة الفنية', slug: '/guides', type: 'link-simple', order: 4, children: [] }
           ]
         },
         contact: {

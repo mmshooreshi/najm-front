@@ -7,6 +7,7 @@
     <AdminEditBar />
     <AdminMediaOverlay />
     <AdminMediaStudioModal />
+    <AdminMotionPill />
     <ConsultationModal />
   </ClientOnly>
 </template>
@@ -18,6 +19,7 @@ import '@unocss/reset/tailwind.css'
 import AdminEditBar from '~/components/admin/AdminEditBar.client.vue'
 import AdminMediaOverlay from '~/components/admin/AdminMediaOverlay.client.vue'
 import AdminMediaStudioModal from '~/components/admin/AdminMediaStudioModal.client.vue'
+import AdminMotionPill from '~/components/admin/AdminMotionPill.client.vue'
 import ConsultationModal from '~/components/consultation/ConsultationModal.vue'
 
 const route = useRoute()

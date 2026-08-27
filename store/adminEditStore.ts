@@ -73,6 +73,14 @@ export interface AdminEditState {
   activeMediaInitialUrl: string
   activeMediaMetadata: MediaMetadata | null
   mediaDrafts: Record<PathKey, { original: string; draft?: string; meta?: MediaMetadata }>
+  selectedMediaElement: HTMLElement | null
+  selectedMediaPath: string | null
+  // Motion & Animation Freeze State
+  isMotionPausedGlobally: boolean
+  activeMotionElement: HTMLElement | null
+  pausedMotionElements: Set<HTMLElement>
+  // Array Archive Store (slug -> arrayPath -> items)
+  archives: Record<string, Record<PathKey, any[]>>
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -99,7 +107,13 @@ export const adminEditState = reactive<AdminEditState>({
   activeMediaElement: null,
   activeMediaInitialUrl: '',
   activeMediaMetadata: null,
-  mediaDrafts: {}
+  mediaDrafts: {},
+  selectedMediaElement: null,
+  selectedMediaPath: null,
+  isMotionPausedGlobally: false,
+  activeMotionElement: null,
+  pausedMotionElements: new Set(),
+  archives: {}
 })
 
 // Enable admin in development or when localStorage flag is set
@@ -259,8 +273,8 @@ export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: str
 
   const snapText = getByPath(adminEditState.allLangUI[lang], path)
   const hasSnap = snapText !== undefined && snapText !== null
-  const original = hasSnap ? String(snapText) : currentElText
-  const value = hasSnap ? String(snapText) : currentElText
+  const original = hasSnap ? (typeof snapText === 'object' ? JSON.stringify(snapText) : String(snapText)) : currentElText
+  const value = original
 
   adminEditState.changes[path][lang] = {
     original,
@@ -276,7 +290,7 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
   if (!adminEditState.changes[path][lang]) {
-    adminEditState.changes[path][lang] = { original: newValue, value: newValue }
+    adminEditState.changes[path][lang] = { original: '', value: '' }
   }
   const rec = adminEditState.changes[path][lang]
   rec.draft = newValue
@@ -298,8 +312,20 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
       adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || base)
     }
 
-    setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
-    setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
+    // If newValue is JSON object/array, parse it before setting
+    if (typeof newValue === 'string' && (newValue.startsWith('[') || newValue.startsWith('{'))) {
+      try {
+        const parsed = JSON.parse(newValue)
+        setByPath(adminEditState.clientOverrides[slug][upper], path, parsed)
+        setByPath(adminEditState.clientOverrides[slug][lower], path, parsed)
+      } catch {
+        setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
+        setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
+      }
+    } else {
+      setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
+      setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
+    }
   }
 
   if (process.dev) {
@@ -365,12 +391,36 @@ export function changedCountForLang(lang: LangCode): number {
   return c
 }
 
-/** Revert a single path */
+/** Revert a single path (supports text, media, and arrays) */
 export function revertPath(path: PathKey, lang: LangCode) {
   const rec = adminEditState.changes[path]?.[lang]
   if (!rec) return
   rec.draft = undefined
   rec.value = rec.original
+
+  const slug = adminEditState.slug
+  if (slug && adminEditState.clientOverrides[slug]) {
+    const upper = lang.toUpperCase()
+    const lower = lang.toLowerCase()
+    try {
+      if (typeof rec.original === 'string' && (rec.original.startsWith('[') || rec.original.startsWith('{'))) {
+        const parsed = JSON.parse(rec.original)
+        if (adminEditState.clientOverrides[slug][upper]) setByPath(adminEditState.clientOverrides[slug][upper], path, parsed)
+        if (adminEditState.clientOverrides[slug][lower]) setByPath(adminEditState.clientOverrides[slug][lower], path, parsed)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('admin:array-changed', {
+            detail: { arrayPath: path, action: 'revert', lang, slug }
+          }))
+        }
+      } else {
+        if (adminEditState.clientOverrides[slug][upper]) setByPath(adminEditState.clientOverrides[slug][upper], path, rec.original)
+        if (adminEditState.clientOverrides[slug][lower]) setByPath(adminEditState.clientOverrides[slug][lower], path, rec.original)
+      }
+    } catch {
+      if (adminEditState.clientOverrides[slug][upper]) setByPath(adminEditState.clientOverrides[slug][upper], path, rec.original)
+      if (adminEditState.clientOverrides[slug][lower]) setByPath(adminEditState.clientOverrides[slug][lower], path, rec.original)
+    }
+  }
 
   if (typeof document !== 'undefined') {
     document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
@@ -404,11 +454,17 @@ export function discardAllChanges(lang: LangCode) {
     }
   }
 
-  // Clear client overrides
+  // Clear client overrides and reset UI live
   const slug = adminEditState.slug
   if (slug && adminEditState.clientOverrides[slug]) {
     delete adminEditState.clientOverrides[slug][lang.toUpperCase()]
     delete adminEditState.clientOverrides[slug][lang.toLowerCase()]
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('admin:array-changed', {
+      detail: { arrayPath: '*', action: 'reset', lang, slug }
+    }))
   }
 
   if (process.dev) {
@@ -449,45 +505,91 @@ export function setEditingActive(path: string | null, active: boolean) {
   }
 }
 
-/** Add a new item to an array with 100% preservation of all existing items */
-export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
-  const currentSlug = targetSlug || adminEditState.slug || 'home'
-  if (!lang) lang = adminEditState.language || 'FA'
+/** Helper: Load active working copy of UI schema */
+function getActiveWorkingUI(slug: string, lang: LangCode): { currentUI: any; baseSchema: any } {
   const upper = lang.toUpperCase()
   const lower = lang.toLowerCase()
 
-  if (!adminEditState.clientOverrides[currentSlug]) {
-    adminEditState.clientOverrides[currentSlug] = {}
+  if (!adminEditState.clientOverrides[slug]) {
+    adminEditState.clientOverrides[slug] = {}
   }
 
-  // 1. Get current full UI, falling back to base schema to ensure all existing items are present
-  let currentUI = adminEditState.clientOverrides[currentSlug][upper] || adminEditState.clientOverrides[currentSlug][lower]
+  const baseSchema = getBaseSchemaForSlugAndLang(slug, lang)
+  let currentUI = adminEditState.clientOverrides[slug][upper] || adminEditState.clientOverrides[slug][lower]
+
   if (!currentUI || Object.keys(currentUI).length === 0) {
     const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
-    if (snap && getByPath(snap, arrayPath)) {
+    if (snap && Object.keys(snap).length > 0) {
       currentUI = deepClone(snap)
     } else {
-      const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
-      currentUI = deepClone(base)
+      currentUI = deepClone(baseSchema)
     }
   } else {
     currentUI = deepClone(currentUI)
   }
 
-  // 2. Locate target array, preserving all existing items
+  return { currentUI, baseSchema }
+}
+
+/** Helper: Commit modified UI and update changes store */
+function commitArrayMutation(slug: string, lang: LangCode, arrayPath: string, targetArr: any[], baseSchema: any, actionName: string) {
+  const upper = lang.toUpperCase()
+  const lower = lang.toLowerCase()
+
+  // Ensure baseline change record exists
+  const originalArr = getByPath(baseSchema, arrayPath) || []
+  if (!adminEditState.changes[arrayPath]) adminEditState.changes[arrayPath] = {}
+  if (!adminEditState.changes[arrayPath][lang] || !adminEditState.changes[arrayPath][lang].original) {
+    adminEditState.changes[arrayPath][lang] = {
+      original: JSON.stringify(originalArr),
+      value: JSON.stringify(originalArr),
+      updatedAt: new Date().toISOString()
+    }
+  }
+
+  // Register array draft change in changes store
+  const newArrStr = JSON.stringify(targetArr)
+  adminEditState.changes[arrayPath][lang].draft = newArrStr
+  adminEditState.changes[arrayPath][lang].updatedAt = new Date().toISOString()
+  addVersion(arrayPath, lang, newArrStr, 'draft')
+
+  // Store back into clientOverrides for real-time reactivity
+  if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
+  adminEditState.clientOverrides[slug][upper] = adminEditState.clientOverrides[slug][upper] || {}
+  adminEditState.clientOverrides[slug][lower] = adminEditState.clientOverrides[slug][lower] || {}
+  setByPath(adminEditState.clientOverrides[slug][upper], arrayPath, targetArr)
+  setByPath(adminEditState.clientOverrides[slug][lower], arrayPath, targetArr)
+
+  if (adminEditState.allLangUI[upper]) setByPath(adminEditState.allLangUI[upper], arrayPath, targetArr)
+  if (adminEditState.allLangUI[lower]) setByPath(adminEditState.allLangUI[lower], arrayPath, targetArr)
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('admin:array-changed', {
+      detail: { arrayPath, action: actionName, lang, slug }
+    }))
+  }
+}
+
+/** Add a new item to an array at a specific index */
+export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+
+  const { currentUI, baseSchema } = getActiveWorkingUI(currentSlug, lang)
+
+  // Locate target array
   let targetArr = getByPath(currentUI, arrayPath)
   if (!Array.isArray(targetArr) || targetArr.length === 0) {
-    const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
-    const baseArr = getByPath(base, arrayPath)
+    const baseArr = getByPath(baseSchema, arrayPath)
     if (Array.isArray(baseArr) && baseArr.length > 0) {
       targetArr = deepClone(baseArr)
     } else {
-      targetArr = targetArr || []
+      targetArr = []
     }
     setByPath(currentUI, arrayPath, targetArr)
   }
 
-  // 3. Create clean placeholder item with proper fields by cloning an existing item
+  // Create clean placeholder item with proper fields by cloning template
   let newItem: any = 'آیتم جدید (کلیک برای ویرایش)'
   if (targetArr.length > 0) {
     const templateIndex = (atIndex >= 0 && atIndex < targetArr.length) ? atIndex : targetArr.length - 1
@@ -499,7 +601,7 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
           if (k.toLowerCase().includes('id') || k.toLowerCase().includes('slug') || k.toLowerCase().includes('key')) {
             newItem[k] = `item-${Date.now().toString(36)}`
           } else if (k.toLowerCase().includes('image') || k.toLowerCase().includes('icon')) {
-            // keep template icon/image
+            // preserve image
           } else {
             newItem[k] = `${newItem[k]} (جدید)`
           }
@@ -519,62 +621,112 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
     }
   }
 
-  // 4. SPLICE IN THE NEW ITEM without destroying existing items!
   const insertPos = atIndex >= 0 ? atIndex + 1 : targetArr.length
   targetArr.splice(insertPos, 0, newItem)
 
-  // 5. Store back into clientOverrides for both upper and lower case keys
-  adminEditState.clientOverrides[currentSlug][upper] = currentUI
-  adminEditState.clientOverrides[currentSlug][lower] = currentUI
-  adminEditState.allLangUI[upper] = currentUI
-  adminEditState.allLangUI[lower] = currentUI
-  applySnapshotToBaselines(lang)
+  commitArrayMutation(currentSlug, lang, arrayPath, targetArr, baseSchema, 'add')
 
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('admin:array-changed', {
-      detail: { arrayPath, action: 'add', atIndex: insertPos, lang, slug: currentSlug }
-    }))
     window.dispatchEvent(new CustomEvent('toast', {
       detail: { type: 'success', text: `+ آیتم جدید به «${arrayPath}» افزوده شد (مجموع: ${targetArr.length})` }
     }))
   }
 }
 
-/** Remove an item from an array with 100% preservation of remaining items */
+/** Move / Reorder an item in an array */
+export function moveArrayItem(arrayPath: string, fromIndex: number, toIndex: number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+
+  const { currentUI, baseSchema } = getActiveWorkingUI(currentSlug, lang)
+  let targetArr = getByPath(currentUI, arrayPath)
+  if (!Array.isArray(targetArr) || fromIndex === toIndex || fromIndex < 0 || toIndex < 0 || fromIndex >= targetArr.length || toIndex >= targetArr.length) {
+    return
+  }
+
+  const [movedItem] = targetArr.splice(fromIndex, 1)
+  targetArr.splice(toIndex, 0, movedItem)
+
+  commitArrayMutation(currentSlug, lang, arrayPath, targetArr, baseSchema, 'move')
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'info', text: `موقعیت آیتم در «${arrayPath}» تغییر یافت` }
+    }))
+  }
+}
+
+/** Archive an item in an array */
+export function archiveArrayItem(arrayPath: string, index: number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+
+  const { currentUI, baseSchema } = getActiveWorkingUI(currentSlug, lang)
+  let targetArr = getByPath(currentUI, arrayPath)
+  if (!Array.isArray(targetArr) || index < 0 || index >= targetArr.length) return
+
+  if (targetArr.length <= 1) {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('toast', {
+        detail: { type: 'warning', text: 'امکان آرشیو کردن آخرین آیتم باقی‌مانده وجود ندارد' }
+      }))
+    }
+    return
+  }
+
+  // Extract item
+  const [archivedItem] = targetArr.splice(index, 1)
+
+  // Store into archives store
+  if (!adminEditState.archives[currentSlug]) adminEditState.archives[currentSlug] = {}
+  if (!adminEditState.archives[currentSlug][arrayPath]) adminEditState.archives[currentSlug][arrayPath] = []
+  adminEditState.archives[currentSlug][arrayPath].push(archivedItem)
+
+  commitArrayMutation(currentSlug, lang, arrayPath, targetArr, baseSchema, 'archive')
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'info', text: `📦 آیتم به آرشیو منتقل شد (مجموع در آرشیو: ${adminEditState.archives[currentSlug][arrayPath].length})` }
+    }))
+  }
+}
+
+/** Restore an archived item back to active array */
+export function restoreArchivedItem(arrayPath: string, archiveIndex: number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+
+  const archiveList = adminEditState.archives[currentSlug]?.[arrayPath]
+  if (!archiveList || archiveIndex < 0 || archiveIndex >= archiveList.length) return
+
+  const [restoredItem] = archiveList.splice(archiveIndex, 1)
+  const { currentUI, baseSchema } = getActiveWorkingUI(currentSlug, lang)
+  let targetArr = getByPath(currentUI, arrayPath) || []
+  targetArr.push(restoredItem)
+
+  commitArrayMutation(currentSlug, lang, arrayPath, targetArr, baseSchema, 'restore')
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'success', text: `✓ آیتم از آرشیو بازگردانی شد` }
+    }))
+  }
+}
+
+/** Get archived items list for an array */
+export function getArchivedItems(arrayPath: string, targetSlug?: string): any[] {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  return adminEditState.archives[currentSlug]?.[arrayPath] || []
+}
+
+/** Delete an item permanently with 100% preservation of remaining items */
 export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
   const currentSlug = targetSlug || adminEditState.slug || 'home'
   if (!lang) lang = adminEditState.language || 'FA'
-  const upper = lang.toUpperCase()
-  const lower = lang.toLowerCase()
 
-  if (!adminEditState.clientOverrides[currentSlug]) {
-    adminEditState.clientOverrides[currentSlug] = {}
-  }
-
-  let currentUI = adminEditState.clientOverrides[currentSlug][upper] || adminEditState.clientOverrides[currentSlug][lower]
-  if (!currentUI || Object.keys(currentUI).length === 0) {
-    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
-    if (snap && getByPath(snap, arrayPath)) {
-      currentUI = deepClone(snap)
-    } else {
-      const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
-      currentUI = deepClone(base)
-    }
-  } else {
-    currentUI = deepClone(currentUI)
-  }
-
+  const { currentUI, baseSchema } = getActiveWorkingUI(currentSlug, lang)
   let targetArr = getByPath(currentUI, arrayPath)
-  if (!Array.isArray(targetArr)) {
-    const base = getBaseSchemaForSlugAndLang(currentSlug, lang)
-    const baseArr = getByPath(base, arrayPath)
-    if (Array.isArray(baseArr)) {
-      targetArr = deepClone(baseArr)
-      setByPath(currentUI, arrayPath, targetArr)
-    } else {
-      return
-    }
-  }
+  if (!Array.isArray(targetArr) || atIndex < 0 || atIndex >= targetArr.length) return
 
   if (targetArr.length <= 1) {
     if (typeof window !== 'undefined') {
@@ -587,16 +739,9 @@ export function removeArrayItem(arrayPath: string, atIndex: number, lang: LangCo
 
   targetArr.splice(atIndex, 1)
 
-  adminEditState.clientOverrides[currentSlug][upper] = currentUI
-  adminEditState.clientOverrides[currentSlug][lower] = currentUI
-  adminEditState.allLangUI[upper] = currentUI
-  adminEditState.allLangUI[lower] = currentUI
-  applySnapshotToBaselines(lang)
+  commitArrayMutation(currentSlug, lang, arrayPath, targetArr, baseSchema, 'remove')
 
   if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('admin:array-changed', {
-      detail: { arrayPath, action: 'remove', atIndex, lang, slug: currentSlug }
-    }))
     window.dispatchEvent(new CustomEvent('toast', {
       detail: { type: 'info', text: `- آیتم از «${arrayPath}» حذف شد (باقی‌مانده: ${targetArr.length})` }
     }))
@@ -610,11 +755,25 @@ export function getChangedDetails(lang: LangCode): ChangedFieldDetail[] {
     const rec = perLang[lang]
     if (!rec) continue
     if (isChanged(path, lang)) {
+      let orig = rec.original ?? ''
+      let curr = rec.draft ?? rec.value ?? ''
+
+      // Clean presentation for array/object JSON in Changes Drawer
+      if (orig.startsWith('[') && orig.endsWith(']')) {
+        try {
+          const origLen = JSON.parse(orig).length
+          const currLen = JSON.parse(curr).length
+          const diff = currLen - origLen
+          orig = `${origLen} آیتم`
+          curr = `${currLen} آیتم (${diff > 0 ? `+${diff}` : diff} تغییر)`
+        } catch {}
+      }
+
       list.push({
         path,
         lang,
-        original: rec.original ?? '',
-        current: rec.draft ?? rec.value ?? '',
+        original: orig,
+        current: curr,
         hasDraft: rec.draft !== undefined,
         isChanged: true
       })
@@ -721,4 +880,35 @@ export function setMediaDraftValue(
   if (process.dev) {
     logger.success('Admin:Media', `Applied in-place media draft for "${path}": ${newUrl.slice(0, 60)}...`)
   }
+}
+
+/** Motion & Animation Freeze API */
+export function pauseMotionElement(el: HTMLElement) {
+  if (!el) return
+  adminEditState.pausedMotionElements.add(el)
+  el.classList.add('admin-motion-paused')
+  el.setAttribute('data-motion-paused', 'true')
+}
+
+export function resumeMotionElement(el: HTMLElement) {
+  if (!el) return
+  adminEditState.pausedMotionElements.delete(el)
+  el.classList.remove('admin-motion-paused')
+  el.removeAttribute('data-motion-paused')
+}
+
+export function setGlobalMotionPaused(paused: boolean) {
+  adminEditState.isMotionPausedGlobally = paused
+  if (typeof document !== 'undefined') {
+    document.body.classList.toggle('admin-global-motion-paused', paused)
+  }
+}
+
+export function toggleGlobalMotionPaused() {
+  setGlobalMotionPaused(!adminEditState.isMotionPausedGlobally)
+}
+
+export function isElementMotionPaused(el: HTMLElement | null): boolean {
+  if (!el) return false
+  return adminEditState.pausedMotionElements.has(el) || adminEditState.isMotionPausedGlobally
 }

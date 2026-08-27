@@ -1423,9 +1423,43 @@ const defaultPackages =[
 /**
  * Nuxt 3 composable to get all the packages.
  */
+
+const packageTranslations: Record<number, Record<'fa' | 'en' | 'ar', { name: string }>> = {
+  1: { fa: { name: 'پکیج نمایشگاهی و رویدادی' }, en: { name: 'Exhibition & Event Package' }, ar: { name: 'باقة المعارض والفعاليات' } },
+  2: { fa: { name: 'پکیج صنعتی و فنی' }, en: { name: 'Industrial & Technical Package' }, ar: { name: 'باقة الصناعة والتقنية' } },
+  3: { fa: { name: 'پکیج خرده‌فروشی و شاپ' }, en: { name: 'Retail & Store Package' }, ar: { name: 'باقة التجزئة والمتاجر' } },
+  4: { fa: { name: 'پکیج سازمانی و اداری' }, en: { name: 'Corporate & Office Package' }, ar: { name: 'باقة الشركات والمكاتب' } },
+  5: { fa: { name: 'پکیج بسته‌بندی پستی' }, en: { name: 'Postal & Shipping Package' }, ar: { name: 'باقة الشحن والبريد' } },
+  6: { fa: { name: 'پکیج پزشکی و دارویی' }, en: { name: 'Medical & Pharma Package' }, ar: { name: 'باقة الأدوية والصيدلة' } },
+  7: { fa: { name: 'پکیج مواد غذایی و رستوران' }, en: { name: 'Food & Restaurant Package' }, ar: { name: 'باقة الأغذية والمطاعم' } },
+  8: { fa: { name: 'پکیج لوکس و هدیه' }, en: { name: 'Luxury & Gift Package' }, ar: { name: 'باقة الهدايا الفاخرة' } },
+  9: { fa: { name: 'پکیج سازمانی و اداری' }, en: { name: 'Corporate & Office Package' }, ar: { name: 'باقة الشركات والمكاتب' } },
+  10: { fa: { name: 'پکیج سازمانی و اداری' }, en: { name: 'Corporate & Office Package' }, ar: { name: 'باقة الشركات والمكاتب' } },
+  11: { fa: { name: 'پکیج لوکس و هدیه' }, en: { name: 'Luxury & Gift Package' }, ar: { name: 'باقة الهدايا الفاخرة' } },
+  12: { fa: { name: 'پکیج آموزشی و فرهنگی' }, en: { name: 'Educational & Cultural Package' }, ar: { name: 'باقة التعليم والثقافة' } },
+  13: { fa: { name: 'پکیج لوکس و هدیه' }, en: { name: 'Luxury & Gift Package' }, ar: { name: 'باقة الهدايا الفاخرة' } },
+  14: { fa: { name: 'پکیج لوکس و هدیه' }, en: { name: 'Luxury & Gift Package' }, ar: { name: 'باقة الهدايا الفاخرة' } }
+};
+
+import { computed } from 'vue';
+import { useLocale } from '@/composables/useLocale';
+
 export const usePackages = () => {
-  // you can swap ref() for useState() if you need it to be global across pages
-  const packages = ref(defaultPackages)
+  const { language } = useLocale();
+
+  const packages = computed(() => {
+    const rawLang = (language.value || 'FA').toLowerCase();
+    const lang = (rawLang === 'en' || rawLang === 'ar' ? rawLang : 'fa') as 'fa' | 'en' | 'ar';
+
+    return defaultPackages.map((pkg) => {
+      const trans = packageTranslations[pkg.id]?.[lang] || packageTranslations[pkg.id]?.['fa'];
+      return {
+        ...pkg,
+        name: trans?.name || pkg.name
+      };
+    });
+  });
+
   const examplePackages = ref(examplePackagesArr)
   return { examplePackages, packages }
 }

@@ -19,10 +19,14 @@
               :duration="150"
               class="object-cover w-full h-auto rounded-[1.5rem] max-h-[267px]"
             />
-            <div class="m-1 mt-4 flex flex-col gap-1">
-              <div class="font-bold text-d4 text-md" v-editable="`sceneProducts.items.${idx}.name`">{{ product.name }}</div>
-              <div class="text-d4 text-xs" v-editable="`sceneProducts.items.${idx}.subtitle`">{{ product.subtitle }}</div>
-              <div class="text-d4 text-xs" v-editable="`sceneProducts.items.${idx}.type`">{{ product.type }}</div>
+            <div class="m-1 mt-4 flex flex-col gap-1.5">
+              <div class="font-bold text-d4 text-sm text-zinc-900 leading-snug" v-editable="`sceneProducts.items.${idx}.name`">{{ product.name }}</div>
+              <div class="text-d4 text-xs text-zinc-500 font-medium" v-editable="`sceneProducts.items.${idx}.subtitle`">{{ product.subtitle }}</div>
+              <div class="mt-1 flex items-center justify-between">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 font-d4">
+                  {{ getLocalizedType(product.type) }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -75,26 +79,41 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue'
-  import EmblaCarousel from 'embla-carousel'
-  
-  interface Product {
-    id: number
-    image: string
-    name: string
-    subtitle: string
-    price: string
-    buttonText: string
-    group: string
-    type: string
+import { ref, onMounted, computed } from 'vue'
+import EmblaCarousel from 'embla-carousel'
+import { useLocale } from '@/composables/useLocale'
+
+interface Product {
+  id: number
+  image: string
+  name: string
+  subtitle: string
+  price: string
+  buttonText: string
+  group: string
+  type: string
+}
+
+const { language } = useLocale()
+
+function getLocalizedType(type: string): string {
+  const lang = (language.value || 'FA').toLowerCase()
+  if (type === 'printing') {
+    if (lang === 'en') return 'Offset Printing'
+    if (lang === 'ar') return 'طباعة أوفست'
+    return 'خدمات چاپ افست'
   }
-  
-  const props = defineProps<{
-    products: Product[]
-    controls?: 'all' | 'arrows' | 'dots' | 'none'
-    position?: 'default' | 'reverse' | 'center'
-    selectedType?: string
-  }>()
+  if (lang === 'en') return 'Custom Packaging'
+  if (lang === 'ar') return 'تغليف مخصص'
+  return 'بسته‌بندی اختصاصی'
+}
+
+const props = defineProps<{
+  products: Product[]
+  controls?: 'all' | 'arrows' | 'dots' | 'none'
+  position?: 'default' | 'reverse' | 'center'
+  selectedType?: string
+}>()
   
   const showArrows = computed(
     () => props.controls === 'all' || props.controls === 'arrows'

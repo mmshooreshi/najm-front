@@ -10,6 +10,25 @@ import {
 import { logger } from '@/utils/logger'
 
 export default defineNuxtPlugin(nuxtApp => {
+  // Helper to check if an element is inside any admin UI or control
+  function isInsideAdminUI(target: HTMLElement | null): boolean {
+    if (!target) return false
+    return !!(
+      target.closest('[data-admin-ui="true"]') ||
+      target.closest('.admin-media-overlay-hud') ||
+      target.closest('.media-hud') ||
+      target.closest('.admin-floating-dock') ||
+      target.closest('.admin-edit-bar') ||
+      target.closest('.admin-hover-badge') ||
+      target.closest('.admin-modal') ||
+      target.closest('.toast-container') ||
+      target.closest('.admin-item-actions') ||
+      target.closest('.admin-add-placeholder') ||
+      target.closest('button') ||
+      target.closest('.iconify')
+    )
+  }
+
   // 1. Explicit Directive: v-media-editable="path"
   nuxtApp.vueApp.directive('media-editable', {
     mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
@@ -34,16 +53,16 @@ export default defineNuxtPlugin(nuxtApp => {
       }
 
       const onMouseEnter = (e: MouseEvent) => {
-        if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
+        if (!state.canEdit || !state.editMode || state.mediaStudioOpen || isInsideAdminUI(el)) return
         window.dispatchEvent(new CustomEvent('admin:media-hover', {
           detail: { el, path, url: initialUrl }
         }))
       }
 
       const onClick = (e: MouseEvent) => {
-        if (!state.canEdit || !state.editMode) return
+        if (!state.canEdit || !state.editMode || isInsideAdminUI(el)) return
         e.stopPropagation()
-        selectMediaElement(el, path)
+        selectMediaElement(el, path, initialUrl)
         window.dispatchEvent(new CustomEvent('admin:media-hover', {
           detail: { el, path, url: initialUrl, locked: true }
         }))
@@ -73,40 +92,33 @@ export default defineNuxtPlugin(nuxtApp => {
   if (typeof window !== 'undefined') {
     let currentHoveredMedia: HTMLElement | null = null
 
-    function isInsideAdminUI(target: HTMLElement | null): boolean {
-      if (!target) return false
-      return !!(
-        target.closest('[data-admin-ui="true"]') ||
-        target.closest('.admin-media-overlay-hud') ||
-        target.closest('.media-hud') ||
-        target.closest('.admin-floating-dock') ||
-        target.closest('.admin-hover-badge') ||
-        target.closest('.admin-modal') ||
-        target.closest('.toast-container')
-      )
-    }
-
     function scanElementForMedia(target: HTMLElement): { el: HTMLElement; path: string; url: string } | null {
       if (isInsideAdminUI(target)) return null
 
-      // Find closest media element
+      // Exclude standalone icons, SVGs or small glyphs
+      if (target.tagName === 'svg' || target.classList.contains('iconify') || target.tagName === 'path') {
+        return null
+      }
+
       let mediaEl: HTMLElement | null = null
 
       if (target instanceof HTMLImageElement || target.tagName === 'IMG' || target.tagName === 'PICTURE' || target.tagName === 'VIDEO') {
-        mediaEl = target
+        // Exclude tiny icon-sized images
+        if (target.clientWidth > 24 && target.clientHeight > 24) {
+          mediaEl = target
+        }
       } else if (target.hasAttribute('data-media-path')) {
         mediaEl = target
       } else {
         // Check for direct child img
         const directImg = target.querySelector('img, picture, video')
-        if (directImg && (target.clientWidth <= directImg.clientWidth + 24)) {
+        if (directImg && directImg.clientWidth > 32 && (target.clientWidth <= directImg.clientWidth + 24)) {
           mediaEl = directImg as HTMLElement
         }
       }
 
       if (!mediaEl || isInsideAdminUI(mediaEl)) return null
 
-      // Check for explicit or inherited edit path
       let path = mediaEl.getAttribute('data-media-path') || mediaEl.getAttribute('data-edit-path')
       if (!path) {
         const parentWithEditPath = mediaEl.closest('[data-edit-path], [data-media-path]')
@@ -115,7 +127,6 @@ export default defineNuxtPlugin(nuxtApp => {
         }
       }
 
-      // If still no path, construct a readable path from src filename
       let url = ''
       if (mediaEl instanceof HTMLImageElement) {
         url = mediaEl.currentSrc || mediaEl.src
@@ -159,14 +170,10 @@ export default defineNuxtPlugin(nuxtApp => {
 
       const scanned = scanElementForMedia(target)
       if (scanned) {
-        selectMediaElement(scanned.el, scanned.path)
+        selectMediaElement(scanned.el, scanned.path, scanned.url)
         window.dispatchEvent(new CustomEvent('admin:media-hover', {
           detail: { el: scanned.el, path: scanned.path, url: scanned.url, locked: true }
         }))
-      } else {
-        // Clicked outside media: clear selection
-        clearMediaSelection()
-        window.dispatchEvent(new CustomEvent('admin:media-leave', {}))
       }
     }
 

@@ -343,6 +343,8 @@ async function handleSubmit() {
 
   isSubmitting.value = true
   try {
+    const { getAttribution } = useAnalyticsTracker()
+    const attr = getAttribution()
     await submitRequest({
       category: selectedCategory.value,
       quantity: selectedQuantity.value,
@@ -351,6 +353,12 @@ async function handleSubmit() {
       phone: form.phone,
       company: form.company,
       mockupRequested: form.mockupRequested,
+      sourcePage: attr.path,
+      referer: attr.referer,
+      device: attr.device,
+      timeOnSite: attr.timeOnSite,
+      journey: attr.journey,
+      productContext: attr.productContext || selectedCategory.value,
       createdAt: new Date().toISOString()
     })
     submitted.value = true

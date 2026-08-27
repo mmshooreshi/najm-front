@@ -78,38 +78,38 @@
           </p>
 
           <div class="grid gap-4 md:gap-6 md:grid-cols-2">
-            <article
-              v-for="(group, idx) in serviceIncludes.groups"
-              :key="idx"
-              class="relative rounded-2xl bg-white/80 p-4 md:p-5 shadow-sm border border-gray-100"
-            >
-              <!-- Card Action [+] / [-] -->
-              <AdminArrayItemActions path="serviceIncludes.groups" :index="idx" :slug="pageKey" />
+            <template v-for="(group, idx) in serviceIncludes.groups" :key="idx">
+              <article
+                class="relative rounded-2xl bg-white/80 p-4 md:p-5 shadow-sm border border-gray-100 group/card"
+              >
+                <!-- Card Action (Move, Drag, Archive, Delete) -->
+                <AdminArrayItemActions path="serviceIncludes.groups" :index="idx" :total="serviceIncludes.groups.length" :slug="pageKey" />
 
-              <h3
-                class="text-sm md:text-base font-semibold mb-2 text-gray-900 break-words text-d4"
-                v-editable="`serviceIncludes.groups.${idx}.title`"
-              >
-                {{ group.title }}
-              </h3>
-              <p
-                v-if="group.description"
-                class="text-xs md:text-sm text-gray-600 mb-3 break-words"
-                v-editable="`serviceIncludes.groups.${idx}.description`"
-              >
-                {{ group.description }}
-              </p>
-              <ul class="space-y-1.5 text-xs md:text-sm text-gray-700 list-disc" :class="isRTL ? 'pr-5' : 'pl-5'">
-                <li
-                  v-for="(item, i) in group.items"
-                  :key="i"
-                  class="break-words"
-                  v-editable="`serviceIncludes.groups.${idx}.items.${i}`"
+                <h3
+                  class="text-sm md:text-base font-semibold mb-2 text-gray-900 break-words text-d4"
+                  v-editable="`serviceIncludes.groups.${idx}.title`"
                 >
-                  {{ item }}
-                </li>
-              </ul>
-            </article>
+                  {{ group.title }}
+                </h3>
+                <p
+                  v-if="group.description"
+                  class="text-xs md:text-sm text-gray-600 mb-3 break-words"
+                  v-editable="`serviceIncludes.groups.${idx}.description`"
+                >
+                  {{ group.description }}
+                </p>
+                <ul class="space-y-1.5 text-xs md:text-sm text-gray-700 list-disc" :class="isRTL ? 'pr-5' : 'pl-5'">
+                  <li
+                    v-for="(item, i) in group.items"
+                    :key="i"
+                    class="break-words"
+                    v-editable="`serviceIncludes.groups.${idx}.items.${i}`"
+                  >
+                    {{ item }}
+                  </li>
+                </ul>
+              </article>
+            </template>
 
             <AdminAddCardPlaceholder path="serviceIncludes.groups" :slug="pageKey" label="افزودن گروه قابلیت جدید" customClass="min-h-[160px]" />
           </div>
@@ -240,21 +240,24 @@
         </div>
 
         <div class="space-y-3">
-          <details
-            v-for="(item, idx) in faq.items"
-            :key="idx"
-            class="relative rounded-2xl bg-white/80 p-4 md:p-5 border border-gray-100 group"
-          >
-            <!-- In-place Item Action [+] / [-] -->
-            <AdminArrayItemActions path="faq.items" :index="idx" :slug="pageKey" />
+          <template v-for="(item, idx) in faq.items" :key="idx">
+            <!-- Subtle insertion line between items -->
+            <AdminArrayInsertLine path="faq.items" :insertIndex="idx" :slug="pageKey" />
 
-            <summary class="cursor-pointer text-sm md:text-base font-medium text-gray-900 break-words" v-editable="`faq.items.${idx}.question`">
-              {{ item.question }}
-            </summary>
-            <p class="mt-2 text-xs md:text-sm text-gray-700 leading-relaxed break-words" v-editable="`faq.items.${idx}.answer`">
-              {{ item.answer }}
-            </p>
-          </details>
+            <details
+              class="relative rounded-2xl bg-white/80 p-4 md:p-5 border border-gray-100 group"
+            >
+              <!-- In-place Item Action (Move, Drag, Archive, Delete) -->
+              <AdminArrayItemActions path="faq.items" :index="idx" :total="faq.items.length" :slug="pageKey" />
+
+              <summary class="cursor-pointer text-sm md:text-base font-medium text-gray-900 break-words" v-editable="`faq.items.${idx}.question`">
+                {{ item.question }}
+              </summary>
+              <p class="mt-2 text-xs md:text-sm text-gray-700 leading-relaxed break-words" v-editable="`faq.items.${idx}.answer`">
+                {{ item.answer }}
+              </p>
+            </details>
+          </template>
 
           <AdminAddCardPlaceholder path="faq.items" :slug="pageKey" label="افزودن پرسش و پاسخ جدید" customClass="min-h-[70px] p-3" />
         </div>

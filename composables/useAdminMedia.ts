@@ -18,7 +18,7 @@ export interface Adjustments {
 }
 
 export interface CropRect {
-  x: number // in percentage 0..100 or pixels
+  x: number
   y: number
   width: number
   height: number
@@ -38,22 +38,18 @@ export function useAdminMedia() {
   const isProcessing = ref(false)
   const uploadProgress = ref(0)
 
-  /** Load an HTMLImageElement with crossOrigin set */
+  /** Load an HTMLImageElement safely with fallback */
   function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'
       img.onload = () => resolve(img)
-      img.onerror = (e) => {
-        // Retry without crossOrigin for local/data/blob URLs if needed
-        if (src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('/')) {
-          const fallbackImg = new Image()
-          fallbackImg.onload = () => resolve(fallbackImg)
-          fallbackImg.onerror = () => reject(new Error(`Failed to load image: ${src}`))
-          fallbackImg.src = src
-        } else {
-          reject(new Error(`Failed to load image: ${src}`))
-        }
+      img.onerror = () => {
+        // Fallback without crossOrigin
+        const fallbackImg = new Image()
+        fallbackImg.onload = () => resolve(fallbackImg)
+        fallbackImg.onerror = () => reject(new Error(`Failed to load image: ${src}`))
+        fallbackImg.src = src
       }
       img.src = src
     })
@@ -67,7 +63,7 @@ export function useAdminMedia() {
     format: string
     size?: number
   }> {
-    let format = 'unknown'
+    let format = 'png'
     const cleanSrc = src.split('?')[0].split('#')[0]
     const extMatch = cleanSrc.match(/\.([a-z0-9]+)$/i)
     if (extMatch) {
@@ -84,21 +80,28 @@ export function useAdminMedia() {
         const len = headRes.headers.get('content-length')
         if (len) size = parseInt(len, 10)
       } else if (src.startsWith('data:')) {
-        // Approximate base64 length in bytes
         const base64Len = src.length - src.indexOf(',') - 1
         size = Math.round((base64Len * 3) / 4)
       }
-    } catch {
-      // Ignored
-    }
+    } catch {}
 
-    const img = await loadImage(src)
-    return {
-      width: img.naturalWidth || img.width,
-      height: img.naturalHeight || img.height,
-      aspectRatio: (img.naturalWidth || 1) / (img.naturalHeight || 1),
-      format,
-      size: size > 0 ? size : undefined
+    try {
+      const img = await loadImage(src)
+      return {
+        width: img.naturalWidth || img.width || 600,
+        height: img.naturalHeight || img.height || 600,
+        aspectRatio: (img.naturalWidth || 1) / (img.naturalHeight || 1),
+        format,
+        size: size > 0 ? size : undefined
+      }
+    } catch {
+      return {
+        width: 600,
+        height: 600,
+        aspectRatio: 1,
+        format,
+        size: size > 0 ? size : undefined
+      }
     }
   }
 
@@ -110,16 +113,15 @@ export function useAdminMedia() {
     targetWidth?: number,
     targetHeight?: number
   ): HTMLCanvasElement {
-    const origW = img.naturalWidth || img.width
-    const origH = img.naturalHeight || img.height
+    const origW = img.naturalWidth || img.width || 600
+    const origH = img.naturalHeight || img.height || 600
 
-    // Calculate crop coordinates in source image space
     let sx = 0
     let sy = 0
     let sw = origW
     let sh = origH
 
-    if (crop) {
+    if (crop && crop.width > 0 && crop.height > 0) {
       if (crop.unit === 'percent') {
         sx = Math.max(0, (crop.x / 100) * origW)
         sy = Math.max(0, (crop.y / 100) * origH)
@@ -133,12 +135,10 @@ export function useAdminMedia() {
       }
     }
 
-    // Determine final output size
     let destW = Math.round(targetWidth || sw)
     let destH = Math.round(targetHeight || (sh / sw) * destW)
 
-    // Handle 90/270 deg rotation swapping dimensions
-    const isSideways = Math.abs(adjustments.rotation % 180) === 90
+    const isSideways = Math.abs((adjustments.rotation || 0) % 180) === 90
     const canvasW = isSideways ? destH : destW
     const canvasH = isSideways ? destW : destH
 
@@ -148,22 +148,17 @@ export function useAdminMedia() {
     const ctx = canvas.getContext('2d')!
 
     ctx.save()
-
-    // Move to canvas center for rotation & scale
     ctx.translate(canvas.width / 2, canvas.height / 2)
 
-    // Rotation
     if (adjustments.rotation) {
       ctx.rotate((adjustments.rotation * Math.PI) / 180)
     }
 
-    // Flips
     ctx.scale(adjustments.flipH ? -1 : 1, adjustments.flipV ? -1 : 1)
 
-    // CSS Filters
-    const b = adjustments.brightness
-    const c = adjustments.contrast
-    const s = adjustments.saturation
+    const b = adjustments.brightness || 100
+    const c = adjustments.contrast || 100
+    const s = adjustments.saturation || 100
     const exp = 100 + (adjustments.exposure || 0)
     const hue = adjustments.hueRotate || 0
     const blur = adjustments.blur || 0
@@ -173,10 +168,9 @@ export function useAdminMedia() {
 
     ctx.filter = `brightness(${b * (exp / 100)}%) contrast(${c}%) saturate(${s}%) hue-rotate(${hue}deg) grayscale(${gray}%) sepia(${sepia}%) invert(${inv}%) blur(${blur}px)`
 
-    // Draw the cropped source image centered
     ctx.drawImage(img, sx, sy, sw, sh, -destW / 2, -destH / 2, destW, destH)
-
     ctx.restore()
+
     return canvas
   }
 
@@ -184,19 +178,30 @@ export function useAdminMedia() {
   function compressCanvas(
     canvas: HTMLCanvasElement,
     format: 'webp' | 'avif' | 'png' | 'jpeg' = 'webp',
-    quality = 0.82
+    quality = 0.85,
+    maxDimension = 0
   ): Promise<CompressionResult> {
     return new Promise((resolve, reject) => {
+      let finalCanvas = canvas
+      if (maxDimension > 0 && (canvas.width > maxDimension || canvas.height > maxDimension)) {
+        const ratio = Math.min(maxDimension / canvas.width, maxDimension / canvas.height)
+        const resized = document.createElement('canvas')
+        resized.width = Math.round(canvas.width * ratio)
+        resized.height = Math.round(canvas.height * ratio)
+        const rCtx = resized.getContext('2d')!
+        rCtx.drawImage(canvas, 0, 0, resized.width, resized.height)
+        finalCanvas = resized
+      }
+
       let mime = 'image/webp'
       if (format === 'avif') mime = 'image/avif'
       else if (format === 'png') mime = 'image/png'
       else if (format === 'jpeg') mime = 'image/jpeg'
 
-      canvas.toBlob(
+      finalCanvas.toBlob(
         (blob) => {
           if (!blob) {
-            // Fallback to jpeg/png if avif/webp not supported by browser canvas
-            canvas.toBlob(
+            finalCanvas.toBlob(
               (fallbackBlob) => {
                 if (!fallbackBlob) return reject(new Error('Canvas export failed'))
                 const url = URL.createObjectURL(fallbackBlob)
@@ -204,8 +209,8 @@ export function useAdminMedia() {
                   blob: fallbackBlob,
                   url,
                   size: fallbackBlob.size,
-                  width: canvas.width,
-                  height: canvas.height,
+                  width: finalCanvas.width,
+                  height: finalCanvas.height,
                   format: 'jpeg'
                 })
               },
@@ -214,14 +219,13 @@ export function useAdminMedia() {
             )
             return
           }
-
           const url = URL.createObjectURL(blob)
           resolve({
             blob,
             url,
             size: blob.size,
-            width: canvas.width,
-            height: canvas.height,
+            width: finalCanvas.width,
+            height: finalCanvas.height,
             format
           })
         },
@@ -231,89 +235,23 @@ export function useAdminMedia() {
     })
   }
 
-  /** Upload a file or blob with live progress tracking */
-  async function uploadMedia(
-    fileOrBlob: File | Blob,
-    filename: string,
-    path = '',
-    onProgress?: (percent: number) => void
-  ): Promise<{
-    success: boolean
-    url: string
-    filename: string
-    format: string
-    size: number
-    width: number
-    height: number
-  }> {
-    isProcessing.value = true
-    uploadProgress.value = 0
-
+  /** Upload media via server endpoint */
+  async function uploadMedia(file: File, onProgress?: (percent: number) => void): Promise<{ url: string; id?: string }> {
     const formData = new FormData()
-    const file = fileOrBlob instanceof File
-      ? fileOrBlob
-      : new File([fileOrBlob], filename, { type: fileOrBlob.type || 'image/webp' })
-
     formData.append('file', file)
-    formData.append('filename', filename)
-    formData.append('path', path)
 
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest()
-      xhr.open('POST', '/api/admin/media/upload', true)
-
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          const percent = Math.round((e.loaded / e.total) * 100)
-          uploadProgress.value = percent
-          onProgress?.(percent)
-        }
-      }
-
-      xhr.onload = () => {
-        isProcessing.value = false
-        if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            const data = JSON.parse(xhr.responseText)
-            uploadProgress.value = 100
-            onProgress?.(100)
-            resolve(data)
-          } catch (err) {
-            reject(err)
-          }
-        } else {
-          // If server upload failed, fallback to client-side object URL for immediate test preview
-          logger.warn('Admin:Media', 'Server upload endpoint returned error, falling back to local client URL')
-          const localUrl = URL.createObjectURL(file)
-          resolve({
-            success: true,
-            url: localUrl,
-            filename: file.name,
-            format: file.type.split('/')[1] || 'webp',
-            size: file.size,
-            width: 0,
-            height: 0
-          })
-        }
-      }
-
-      xhr.onerror = () => {
-        isProcessing.value = false
-        // Client fallback
-        const localUrl = URL.createObjectURL(file)
-        resolve({
-          success: true,
-          url: localUrl,
-          filename: file.name,
-          format: file.type.split('/')[1] || 'webp',
-          size: file.size,
-          width: 0,
-          height: 0
-        })
-      }
-
-      xhr.send(formData)
-    })
+    onProgress?.(30)
+    try {
+      const res: any = await $fetch('/api/admin/media/upload', {
+        method: 'POST',
+        body: formData
+      })
+      onProgress?.(100)
+      return { url: res?.url || res?.item?.url || '', id: res?.item?.id }
+    } catch (err: any) {
+      logger.error('AdminMedia', 'Upload failed', err)
+      throw err
+    }
   }
 
   function formatBytes(bytes: number, decimals = 1): string {
@@ -322,7 +260,7 @@ export function useAdminMedia() {
     const dm = decimals < 0 ? 0 : decimals
     const sizes = ['B', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
   }
 
   return {

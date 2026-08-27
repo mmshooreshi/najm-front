@@ -86,6 +86,19 @@ function getOrCreateHoverBadge(): HTMLDivElement {
 
 function showHoverBadge(el: HTMLElement, path: string) {
   if (!state.canEdit || !state.editMode) return
+  if (
+    !el ||
+    el.closest('[data-admin-ui="true"]') ||
+    el.closest('.admin-media-overlay-hud') ||
+    el.closest('.media-hud') ||
+    el.closest('.admin-edit-bar') ||
+    el.closest('.admin-floating-dock') ||
+    el.closest('.admin-item-actions') ||
+    el.closest('.admin-add-placeholder') ||
+    el.closest('.admin-hover-badge')
+  ) {
+    return
+  }
   if (hideBadgeTimer) {
     clearTimeout(hideBadgeTimer)
     hideBadgeTimer = null

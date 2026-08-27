@@ -319,8 +319,11 @@ const animate = () => {
   const dtSec = dt / 1000
   lastFrameTime = now
 
-    // ✅ Skip animation if not visible
-  if (!isVisible.value) {
+  // Skip animation if not visible or if admin motion is paused
+  if (
+    !isVisible.value ||
+    (slider.value && (slider.value.classList.contains('admin-motion-paused') || document.body.classList.contains('admin-all-motions-paused')))
+  ) {
     animationFrameId = requestAnimationFrame(animate)
     return
   }

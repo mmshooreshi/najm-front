@@ -3,46 +3,45 @@
   <div class="group relative w-full h-[500px] z-50 overflow-hidden rounded-3xl">
     <!-- Base slot content -->
     <div class="w-full h-full absolute z-50">
-
       <slot />
 
       <div :class="[toFade ? 'scale-0' : '']" class="transition-all duration-200 easeflex flex-col h-full justify-between p-6">
-        <div class="flex justify-between items-center  h-10">
+        <div class="flex justify-between items-center h-10">
           <button
             class="h-10 text-nowrap text-black hover:scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white rounded-[25px] py-2 px-4 text-d4 text-demibold text-sm"
             v-editable="editPath ? `${editPath}.name` : ''"
           >
-            {{name}}
+            {{ name }}
           </button>
-          <div class="transform   opacity-0  group-hover:opacity-100 transition-all duration-200 ease-out">
-           <HaArrow />
+          <div class="transform opacity-0 group-hover:opacity-100 transition-all duration-200 ease-out">
+            <HaArrow />
+          </div>
         </div>
-        </div>
-        <div class="flex justify-between items-center">
-          <!-- <HaArrow/><HaArrow/><HaArrow/> -->
-        </div>
-        <div class="flex justify-between items-center">
-          <!-- <HaArrow/><HaArrow/><HaArrow/> -->
-          <button class="transform scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100  transition-all duration-200 ease-out  text-black  hover:!scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white   rounded-[25px] py-2 px-4 mt-2  text-d4 font-medium text-xs">{{toPersianDigits(items.length)}} آیتم</button>
 
+        <div class="flex justify-between items-center">
+          <button class="transform scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-200 ease-out text-black hover:!scale-105 transition-all cursor-pointer bg-white/80 hover:bg-white rounded-[25px] py-2 px-4 mt-2 text-d4 font-medium text-xs">
+            {{ itemCountLabel }}
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Overlay items -->
-    <div
-      v-for="item in items"
-      :key="item.id"
-      class="absolute pointer-events-auto cursor-pointer"
-      :style="getStyle(item.specs)"
+    <div dir="ltr" class="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+      <div
+        v-for="item in items"
+        :key="item.id"
+        class="absolute pointer-events-auto cursor-pointer"
+        :style="getStyle(item.specs)"
       >
-      <!-- @click="editItem(item)" -->
-      <NuxtImg
-        :src="item.image"
-        :alt="item.alt ?? item.name"
-        :class="editingItem?.id === item.id ? 'border border-teal rounded-3xl' : ''"
-        class="w-full h-full object-contain"
-      />
+        <!-- @click="editItem(item)" -->
+        <NuxtImg
+          :src="item.image"
+          :alt="item.alt ?? item.name"
+          :class="editingItem?.id === item.id ? 'border border-teal rounded-3xl' : ''"
+          class="w-full h-full object-contain pointer-events-none select-none"
+        />
+      </div>
     </div>
 
     <!-- Editor pane -->
@@ -88,9 +87,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import HaArrow from '@/components/Base/HaArrow.vue'
 import { toPersianDigits } from '~/utils/digits'
+import { useLocale } from '@/composables/useLocale'
 
 interface Specs {
   x: number
@@ -112,6 +112,16 @@ interface Item {
 type SpecKey = keyof Specs
 
 const props = defineProps<{ items: Item[], name: String , currentPackage: Number, toFade: Boolean, editPath?: string }>()
+
+const { language } = useLocale()
+
+const itemCountLabel = computed(() => {
+  const count = props.items?.length || 0
+  const lang = (language.value || 'FA').toLowerCase()
+  if (lang === 'en') return `${count} Items`
+  if (lang === 'ar') return `${toPersianDigits(count)} عناصر`
+  return `${toPersianDigits(count)} آیتم`
+})
 
 const editingItem = ref<Item | null>(null)
 const defaultSpecs = ref<Specs | null>(null)
@@ -159,6 +169,7 @@ function closeEditor() {
 
 // Only append units to true numbers; pass other strings through unchanged
 function getStyle(specs: Specs) {
+  if (!specs) return {}
   const toCss = (
     val: number | string,
     unit: 'px' | '%' = 'px'

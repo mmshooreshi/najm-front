@@ -505,7 +505,7 @@
       {
         "id": 1,
         "name": "کاتالوگ",
-        "slug": "/resources",
+        "slug": "/catalog",
         "type": "link-simple",
         "order": 1,
         "children": []
@@ -513,9 +513,9 @@
       {
         "id": 2,
         "name": "فایل‌های راهنما",
-        "slug": "/resources/guides",
+        "slug": "/resources",
         "type": "link-simple",
-        "order": 2,
+        "order": 4,
         "children": []
       }
     ]

@@ -11,7 +11,8 @@ import {
   buildChangesPayload,
   recordSavedVersions,
   changedCountForLang,
-  discardAllChanges
+  discardAllChanges,
+  toggleGlobalMotionPaused
 } from '@/store/adminEditStore'
 
 const { setLocale, language } = useLocale()
@@ -348,6 +349,7 @@ const dockTransformStyle = computed(() => {
 // --- Command Palette ---
 const commands = computed(() => [
   { id: 'toggle-edit', icon: 'pencil', label: state.editMode ? 'Disable Edit Mode (Preview)' : 'Enable Edit Mode', shortcut: '⌘E', action: () => (state.editMode = !state.editMode) },
+  { id: 'toggle-motion', icon: state.isMotionPausedGlobally ? 'play' : 'pause', label: state.isMotionPausedGlobally ? 'Resume All Animations & Motions' : 'Pause / Freeze All Animations & Motions', shortcut: '⌘P', action: () => toggleGlobalMotionPaused() },
   { id: 'media-studio', icon: 'sparkles', label: 'Open Media Studio & Asset Manager', shortcut: '', action: () => { state.mediaStudioOpen = true; if (!state.activeMediaInitialUrl) state.activeMediaInitialUrl = '/images/sections/cards/01.png' } },
   { id: 'save', icon: 'save', label: 'Save Pending Changes', shortcut: '⌘S', action: () => saveDraft(true) },
   { id: 'inspector', icon: 'diff', label: 'Open Modified Fields Inspector', shortcut: '⌘K', action: () => (state.inspectorOpen = true) },
@@ -579,6 +581,19 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             title="Open Revision History"
           >
             <AdminIcon name="history" class="w-4 h-4" />
+          </button>
+
+          <!-- Motion Freeze / Pause Toggle -->
+          <button
+            type="button"
+            class="w-8 h-8 rounded-xl border flex items-center justify-center transition-colors cursor-pointer"
+            :class="state.isMotionPausedGlobally
+              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 ring-1 ring-amber-500/30'
+              : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/5'"
+            @click="toggleGlobalMotionPaused"
+            :title="state.isMotionPausedGlobally ? 'Resume All Motions & Animations (Play)' : 'Pause / Freeze All Motions & Animations (Pause)'"
+          >
+            <AdminIcon :name="state.isMotionPausedGlobally ? 'play' : 'pause'" class="w-3.5 h-3.5" />
           </button>
 
           <!-- Discard All -->
