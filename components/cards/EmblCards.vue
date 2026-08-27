@@ -1,30 +1,16 @@
 <!-- components/cards/EmblCards.vue -->
 <template>
-  <div :dir="isRTL ? 'rtl' : 'ltr'" ref="emblContainer" class="relative overflow-x-visible absolute py-6">
+  <div :key="isRTL" :dir="isRTL ? 'rtl' : 'ltr'" ref="emblContainer" class="relative overflow-x-visible absolute py-6">
     <div class="overflow-visible w-full" ref="viewportRef">
       <div class="flex">
-        <div
-          v-for="(card, idx) in cards"
-          :key="card.id"
-          :data-id="card.id"
-          :class="[isRTL ? 'rtl' : 'ltr']"
-          class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]"
-        >
-          <img
-            v-gsap.magnetic
-            :src="card.loop"
-            :alt="card.text"
-            :duration="100"
+        <div v-for="(card, idx) in cards" :key="card.id" :data-id="card.id" :class="[isRTL ? 'rtl' : 'ltr']"
+          class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]">
+          <img v-gsap.magnetic :src="card.loop" :alt="card.text" :duration="100"
             v-media-editable="`sceneProjects.cards.${idx}.loop`"
-            class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8"
-          />
+            class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8" />
 
-          <div
-            v-gsap.magnetic
-            :class="[isRTL ? 'right-6' : 'left-6']"
-            :duration="100"
-            class="projects-intro absolute z-10 bottom-6 bg-[#D6E6E3]/40 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px] max-w-[210px] md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4"
-          >
+          <div v-gsap.magnetic :class="[isRTL ? 'right-6' : 'left-6']" :duration="100"
+            class="projects-intro absolute z-10 bottom-6 bg-[#D6E6E3]/40 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px] max-w-[210px] md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">
             <span v-editable="`sceneProjects.cards.${idx}.text`">{{ card.text }}</span>
           </div>
         </div>
@@ -33,48 +19,40 @@
 
     <div class="flex justify-between items-center mt-6 projects-intro">
       <div class="flex gap-2">
+        <!-- PREV BUTTON (Left Arrow) -->
         <button
           class="bg-white/60 active:scale-105 active:bg-white hover:bg-white rounded-xl p-3 disabled:opacity-30 disabled:cursor-default w-10 h-10 flex items-center justify-center cursor-pointer"
-          :disabled="!canScrollPrev"
-          @click="scrollPrev"
-          aria-label="Prev Slide"
-        >
-          <svg :class="[isRTL ? '' : 'rotate-180']" class="transition-transform" viewBox="0 0 532 532" height="16">
-            <path fill="#014439" d="M176.34 520.646c-13.793 13.805-36.208 13.805-50.001 0-13.785-13.804-13.785-36.238 0-50.034L330.78 266 126.34 61.391c-13.785-13.805-13.785-36.239 0-50.044 13.793-13.796 36.208-13.796 50.002 0 22.928 22.947 206.395 206.507 229.332 229.454a35.065 35.065 0 0 1 10.326 25.126c0 9.2-3.393 18.26-10.326 25.2-45.865 45.901-206.404 206.564-229.332 229.52Z" />
+          :disabled="!canScrollPrev" @click="scrollPrev" aria-label="Prev Slide">
+          <svg :class="[isRTL ? 'rotate-180' : '']" class="transition-transform" viewBox="0 0 24 24" height="16">
+            <path fill="#014439" fill-rule="evenodd" clip-rule="evenodd"
+              d="M15.28 5.22a.75.75 0 0 1 0 1.06L9.56 12l5.72 5.72a.75.75 0 1 1-1.06 1.06l-6.25-6.25a.75.75 0 0 1 0-1.06l6.25-6.25a.75.75 0 0 1 1.06 0Z" />
           </svg>
         </button>
 
+        <!-- NEXT BUTTON (Right Arrow) -->
         <button
           class="bg-white/60 active:scale-105 active:bg-white hover:bg-white rounded-xl p-3 disabled:opacity-10 disabled:cursor-default w-10 h-10 flex items-center justify-center cursor-pointer"
-          :disabled="!canScrollNext"
-          @click="scrollNext"
-          aria-label="Next slide"
-        >
-          <svg :class="[isRTL ? '' : 'rotate-180']" class="transition-transform" viewBox="0 0 532 532" height="16">
-            <path fill="#014439" d="M355.66 11.354c13.793-13.805 36.208-13.805 50.001 0 13.785 13.804 13.785 36.238 0 50.034L201.22 266l204.442 204.61c13.785 13.805 13.785 36.239 0 50.044-13.793 13.796-36.208 13.796-50.002 0 22.928-22.947 206.395-206.507 229.332-229.454a35.065 35.065 0 0 0 10.326-25.126c0-9.2-3.393-18.26-10.326-25.2C172.192 194.973 332.731 34.31 355.66 11.354Z" />
+          :disabled="!canScrollNext" @click="scrollNext" aria-label="Next slide">
+          <svg :class="[isRTL ? 'rotate-180' : '']" class="transition-transform" viewBox="0 0 24 24" height="16">
+            <path fill="#014439" fill-rule="evenodd" clip-rule="evenodd"
+              d="M8.72 5.22a.75.75 0 0 1 1.06 0l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 1 1-1.06-1.06L14.44 12 8.72 6.28a.75.75 0 0 1 0-1.06Z" />
           </svg>
         </button>
       </div>
 
       <div ref="dotsContainerRef" class="flex gap-2 items-center justify-center h-4" :dir="isRTL ? 'rtl' : 'ltr'">
-        <button
-          v-for="(card, index) in cards"
-          :key="card.id"
-          @click="scrollTo(index)"
-          v-show="shouldShowDot(index)"
+        <button v-for="(card, index) in cards" :key="card.id" @click="scrollTo(index)" v-show="shouldShowDot(index)"
           :class="[
             'rounded-full transition-all duration-300 ease-out border-none cursor-pointer hover:!bg-najmgreen',
             getDotClasses(index)
-          ]"
-          :aria-label="`Go to slide ${index + 1}`"
-        />
+          ]" :aria-label="`Go to slide ${index + 1}`" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import EmblaCarousel from 'embla-carousel'
 import Autoplay from 'embla-carousel-autoplay'
 import { useLocale } from '@/composables/useLocale'
@@ -192,6 +170,12 @@ const initializeEmbla = () => {
   embla.value.on('select', onSelect)
   onSelect()
 }
+
+// Watch for RTL changes, wait for the new HTML to render, then restart Embla
+watch(isRTL, async () => {
+  await nextTick() // Wait for Vue to finish swapping the HTML elements
+  initializeEmbla() // Re-attach Embla to the new HTML
+})
 
 onMounted(() => {
   initializeEmbla()

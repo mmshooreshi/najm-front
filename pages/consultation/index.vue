@@ -144,7 +144,7 @@
                   :class="[
                     selectedQuantity === qty
                       ? 'bg-najmgreen text-white shadow-2xs scale-102'
-                      : 'bg-najmback text-gray-700 hover:bg-gray-200 border border-gray-200/80'
+                      : '!bg-najmback text-gray-700 hover:bg-gray-200 border border-gray-200/80'
                   ]"
                 >
                   <span v-editable="`quantities.${qIdx}`">{{ qty }}</span>
@@ -166,8 +166,8 @@
                   class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
                   :class="[
                     selectedTimeSlot === time
-                      ? 'bg-neutral-800 text-white shadow-2xs'
-                      : 'bg-najmback text-gray-600 hover:bg-gray-200 border border-gray-200/80'
+                      ? '!bg-neutral-800 text-white shadow-2xs'
+                      : '!bg-najmback text-gray-600 hover:bg-gray-200 border border-gray-200/80'
                   ]"
                 >
                   <Icon name="mdi:clock-outline" class="w-3.5 h-3.5" />

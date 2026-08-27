@@ -1,27 +1,12 @@
 <!-- components/Main/HighlightedMotion.vue -->
 <template>
   <div>
-    <!-- border-t-2 border-red-500 -->
-    <!-- <div class="border-t-2 border-red-500 fixed top-[65px] left-0 w-full  z-[9999] pointer-events-none">
-  <p class="text-red-500 text-xs ml-2">rootMargin top (-200px)</p>
-</div> -->
-
-    <!-- <div class="fixed bottom-4 right-4 bg-white/90 p-4 rounded-xl shadow-md text-xs text-black z-50">
-      <p><strong>Debug:</strong></p>
-      <p><code>initialDelay</code>: {{ initialDelay }}</p>
-      <p><code>Speed</code>: {{ speed }}</p>
-
-      <p><code>isVisible</code>: {{ isVisible }}</p>
-      <p><code>intersectionRatio</code>: {{ intersectionRatio.toFixed(2) }}</p>
-      <p><code>playedOnce</code>: {{ playedOnce }}</p>
-    </div> -->
     <section
       ref="sectionRef"
       :dir="isRTL ? 'rtl' : 'ltr'"
       :class="[isRTL ? 'rtl text-right' : 'ltr text-left']"
       class="max-w-xl mx-auto space-y-0 p-0 sm:p-2 leading-relaxed flex flex-wrap justify-center w-full "
     >
-      <!--top classes can get these added tO: border border-4 border-black rounded-3xl -->
       <template v-for="(h, i) in highlights" :key="i">
         <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
         <div v-else class="flex flex-row justify-start items-center text-nowrap">
@@ -132,8 +117,6 @@ gsap.globalTimeline.timeScale(props.speed)
 // Centralized animation settings
 const animationConfig = {
   eases: {
-    // highlight: { forward: "springIn", backward: "springOut" },
-    // lines:     { forward: springEase,    backward: "power1.in" }
     highlight: { forward: "easeHighlightIn", backward: "easeHighlightOut" },
     lines: { forward: "easeLineIn", backward: "power1.in" }
   },
@@ -165,6 +148,7 @@ const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 let playedOnce = false
+let stInstance: ScrollTrigger | null = null // 1. Added variable to track ScrollTrigger
 let tlHighlights = gsap.timeline({
   defaults: { ease: animationConfig.eases.highlight.forward },
   paused: true,
@@ -178,6 +162,11 @@ function runHighlightAnimation() {
   }
 
   tlHighlights.pause(0).clear()
+
+  // 2. Kill the old ScrollTrigger if it exists before creating a new one
+  if (stInstance) {
+    stInstance.kill()
+  }
 
   function splitAndAnimateLines(
     type: 'full' | 'vertical',
@@ -217,8 +206,8 @@ function runHighlightAnimation() {
     })
   }
 
-  // overall timeline scroll trigger
-  ScrollTrigger.create({
+  // 3. Assign the new ScrollTrigger to our tracker variable
+  stInstance = ScrollTrigger.create({
     trigger: sectionRef.value,
     start: start,
     scrub: scrub,
@@ -312,11 +301,29 @@ function resetAndRerun() {
   // Revert any existing splits
   typedRefs.value.forEach(el => (el as any)?._split?.revert())
   paragraphRefs.value.forEach(el => (el as any)?._split?.revert())
+  
   // Clear timeline & fade out
   if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
   tlHighlights.pause(0).clear()
   playedOnce = false
-  nextTick(() => runHighlightAnimation())
+  
+  nextTick(() => {
+    runHighlightAnimation()
+    
+    // 4. Force play the animation directly so it doesn't wait for a scroll trigger
+    if (sectionRef.value && !playedOnce) {
+      gsap.set(sectionRef.value, { opacity: 1 })
+      // gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 }) 
+
+      // Wait 0.5 seconds (adjust this number as needed) before playing
+      gsap.delayedCall(0.5, () => {
+        tlHighlights.play()
+      })
+      
+      playedOnce = true
+    }
+
+  })
 }
 
 // Rebuild cleanly on language change too
@@ -331,16 +338,23 @@ onMounted(async () => {
   await nextTick()
   runHighlightAnimation()
 
-  if (sectionRef.value && !playedOnce) {
-    gsap.set(sectionRef.value, { opacity: 1 })
-    tlHighlights.play()
-    playedOnce = true
-  }
+    if (sectionRef.value && !playedOnce) {
+      gsap.set(sectionRef.value, { opacity: 1 })
+      // gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 }) 
+
+      // Wait 0.5 seconds (adjust this number as needed) before playing
+      gsap.delayedCall(0.5, () => {
+        tlHighlights.play()
+      })
+      
+      playedOnce = true
+    }
 
   window.addEventListener('admin-edit-discarded', resetAndRerun)
 })
 
 onBeforeUnmount(() => {
+  if (stInstance) stInstance.kill() // Cleanup ScrollTrigger on component unmount
   window.removeEventListener('admin-edit-discarded', resetAndRerun)
 })
 </script>
@@ -355,7 +369,7 @@ section {
   overflow: hidden;
 }
 
-.split-wor {
+.split-word {
   display: inline-block;
   /* or block if you need each word on its own line */
   overflow: hidden;
