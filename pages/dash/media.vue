@@ -83,21 +83,31 @@
 
     <!-- MAIN TWO-COLUMN WORKSPACE: FOLDER TREE (Left) + FILE EXPLORER (Right) -->
     <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-      <!-- 1. FOLDER TREE NAVIGATION SIDEBAR (4 Cols) -->
+      <!-- 1. HIERARCHICAL COLLAPSIBLE FOLDER TREE (4 Cols) -->
       <div class="md:col-span-4 lg:col-span-3 bg-zinc-900/90 rounded-3xl border border-white/10 p-4 space-y-3 shadow-lg">
         <div class="flex items-center justify-between pb-3 border-b border-white/10">
           <div class="flex items-center gap-2">
             <AdminIcon name="folder" class="w-4 h-4 text-emerald-400" />
-            <h3 class="font-bold text-xs text-white font-d4">پوشه‌ها و مسیرها</h3>
+            <h3 class="font-bold text-xs text-white font-d4">ساختار درختی پوشه‌ها</h3>
           </div>
-          <button
-            type="button"
-            @click="openNewFolderModal"
-            class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-emerald-400 transition-colors cursor-pointer"
-            title="ایجاد پوشه جدید"
-          >
-            <AdminIcon name="plus" class="w-3.5 h-3.5" />
-          </button>
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              @click="toggleExpandAll"
+              class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-semibold transition-colors cursor-pointer font-d4"
+              :title="allExpanded ? 'بستن همه پوشه‌ها' : 'باز کردن همه پوشه‌ها'"
+            >
+              {{ allExpanded ? 'بستن همه' : 'باز کردن همه' }}
+            </button>
+            <button
+              type="button"
+              @click="openNewFolderModal"
+              class="p-1 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 transition-colors cursor-pointer"
+              title="ایجاد پوشه جدید"
+            >
+              <AdminIcon name="plus" class="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         <!-- Folder Search Input -->
@@ -105,14 +115,14 @@
           <input
             v-model="folderSearchQuery"
             type="text"
-            placeholder="فیلتر پوشه‌ها..."
+            placeholder="جستجو در ساختار پوشه‌ها..."
             class="w-full h-8 pr-7 pl-2.5 rounded-xl bg-zinc-950 border border-white/10 text-[11px] text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 font-mono"
             dir="ltr"
           />
           <AdminIcon name="search" class="w-3 h-3 text-zinc-500 absolute right-2 top-2.5 pointer-events-none" />
         </div>
 
-        <!-- Folders List -->
+        <!-- Hierarchical Tree Container -->
         <div class="space-y-1 max-h-[500px] overflow-y-auto custom-scrollbar pr-0.5">
           <!-- Root / All Files -->
           <div
@@ -125,40 +135,30 @@
               : 'text-zinc-300 hover:text-white hover:bg-white/5 border-transparent'"
           >
             <div class="flex items-center gap-2 truncate">
-              <AdminIcon name="folder" class="w-4 h-4 shrink-0 text-emerald-400" />
-              <span class="truncate font-d4">همه فایل‌ها (/root)</span>
+              <AdminIcon name="folder-open" class="w-4 h-4 shrink-0 text-emerald-400" />
+              <span class="truncate font-d4">ریشه اصلی (/root)</span>
             </div>
             <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono bg-white/10 shrink-0">
               {{ items.length }}
             </span>
           </div>
 
-          <!-- Dynamic Folder Tree Items -->
-          <div
-            v-for="folder in filteredFolders"
-            :key="folder.path"
-            @click="currentFolder = folder.path"
-            @dragover.prevent
-            @drop.prevent="onDropOnFolder(folder.path)"
-            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all border group"
-            :class="currentFolder === folder.path
-              ? 'bg-najmgreen text-white font-bold border-emerald-500 shadow-xs'
-              : 'text-zinc-300 hover:text-white hover:bg-white/5 border-transparent'"
-            :title="folder.path"
-          >
-            <div class="flex items-center gap-2 truncate">
-              <AdminIcon name="folder" class="w-4 h-4 shrink-0 text-amber-400 group-hover:text-emerald-400 transition-colors" />
-              <span class="truncate font-mono text-[11px]" dir="ltr">/{{ folder.path }}</span>
-            </div>
-            <span class="px-1.5 py-0.5 rounded-md text-[10px] font-mono bg-white/10 shrink-0">
-              {{ folder.count }}
-            </span>
-          </div>
+          <!-- Recursive Hierarchical Collapsible Nodes -->
+          <FolderTreeNode
+            v-for="rootNode in hierarchicalFolderTree"
+            :key="rootNode.path"
+            :node="rootNode"
+            :selected-path="currentFolder"
+            :expanded-paths="expandedFolders"
+            @select="currentFolder = $event"
+            @toggle="toggleFolderExpand($event)"
+            @drop-file="onDropOnFolder($event)"
+          />
         </div>
 
         <!-- Quick Folder Utility Buttons -->
         <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-zinc-400">
-          <span>کل پوشه‌ها: {{ allFolderPaths.length }}</span>
+          <span>{{ allFolderPaths.length }} پوشه ثبت شده</span>
           <button
             type="button"
             @click="copyCurrentPath"
@@ -722,10 +722,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { openMediaStudio } from '@/store/adminEditStore'
 import { useAdminMedia } from '@/composables/useAdminMedia'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
+import FolderTreeNode, { type FolderNode } from '~/components/admin/FolderTreeNode.vue'
 
 definePageMeta({
   layout: 'dash'
@@ -746,6 +747,32 @@ const fileInputRef = ref<HTMLInputElement | null>(null)
 const currentFolder = ref('')
 const customFolders = ref<string[]>([])
 const selectedFileIds = ref<string[]>([])
+
+// Collapsible Folders State
+const expandedFolders = ref<Set<string>>(new Set(['images', 'images/sections']))
+
+function toggleFolderExpand(path: string) {
+  if (expandedFolders.value.has(path)) {
+    expandedFolders.value.delete(path)
+  } else {
+    expandedFolders.value.add(path)
+  }
+}
+
+const allExpanded = computed(() => {
+  if (allFolderPaths.value.length === 0) return false
+  return allFolderPaths.value.every(p => expandedFolders.value.has(p))
+})
+
+function toggleExpandAll() {
+  if (allExpanded.value) {
+    expandedFolders.value.clear()
+  } else {
+    for (const p of allFolderPaths.value) {
+      expandedFolders.value.add(p)
+    }
+  }
+}
 
 // Modals
 const showNewFolderModal = ref(false)
@@ -785,20 +812,90 @@ const allFolderPaths = computed(() => {
   return Array.from(set).sort()
 })
 
-const filteredFolders = computed(() => {
-  let list = allFolderPaths.value.map(f => ({
-    path: f,
-    count: items.value.filter(i => {
-      const itemFolder = i.folder || extractFolderFromPath(i.path || i.url)
-      return itemFolder === f || itemFolder.startsWith(`${f}/`)
-    }).length
-  }))
+/**
+ * Builds a hierarchical tree of FolderNode objects from flat paths
+ */
+const hierarchicalFolderTree = computed<FolderNode[]>(() => {
+  const fullPathSet = new Set<string>()
+  for (const p of allFolderPaths.value) {
+    if (!p) continue
+    const parts = p.split('/')
+    let curr = ''
+    for (const part of parts) {
+      curr = curr ? `${curr}/${part}` : part
+      fullPathSet.add(curr)
+    }
+  }
 
+  const sortedPaths = Array.from(fullPathSet).sort((a, b) => a.localeCompare(b))
+  const nodeMap = new Map<string, FolderNode>()
+
+  for (const p of sortedPaths) {
+    const parts = p.split('/')
+    const name = parts[parts.length - 1]
+    const depth = parts.length - 1
+
+    const count = items.value.filter(i => {
+      const itemFolder = i.folder || extractFolderFromPath(i.path || i.url)
+      return itemFolder === p
+    }).length
+
+    const totalCount = items.value.filter(i => {
+      const itemFolder = i.folder || extractFolderFromPath(i.path || i.url)
+      return itemFolder === p || itemFolder.startsWith(`${p}/`)
+    }).length
+
+    const node: FolderNode = {
+      name,
+      path: p,
+      depth,
+      count,
+      totalCount,
+      children: []
+    }
+    nodeMap.set(p, node)
+  }
+
+  // Connect child nodes to parent nodes
+  const rootNodes: FolderNode[] = []
+  for (const [pathStr, node] of nodeMap.entries()) {
+    const lastSlash = pathStr.lastIndexOf('/')
+    if (lastSlash === -1) {
+      rootNodes.push(node)
+    } else {
+      const parentPath = pathStr.slice(0, lastSlash)
+      const parentNode = nodeMap.get(parentPath)
+      if (parentNode) {
+        parentNode.children.push(node)
+      } else {
+        rootNodes.push(node)
+      }
+    }
+  }
+
+  // If user searched in folder search, filter tree and auto-expand matches
   if (folderSearchQuery.value) {
     const q = folderSearchQuery.value.toLowerCase()
-    list = list.filter(f => f.path.toLowerCase().includes(q))
+    function filterNode(n: FolderNode): FolderNode | null {
+      const matchSelf = n.name.toLowerCase().includes(q) || n.path.toLowerCase().includes(q)
+      const matchingChildren = n.children
+        .map(c => filterNode(c))
+        .filter(Boolean) as FolderNode[]
+
+      if (matchSelf || matchingChildren.length > 0) {
+        expandedFolders.value.add(n.path)
+        return {
+          ...n,
+          children: matchingChildren
+        }
+      }
+      return null
+    }
+
+    return rootNodes.map(r => filterNode(r)).filter(Boolean) as FolderNode[]
   }
-  return list
+
+  return rootNodes
 })
 
 const breadcrumbSegments = computed(() => {
