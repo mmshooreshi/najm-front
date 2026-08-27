@@ -196,30 +196,43 @@ const initialSeedResources = [
   }
 ]
 
+let inMemoryResources: any[] = [...initialSeedResources]
+
 function ensureStorageDir() {
-  const dir = path.dirname(RESOURCES_FILE_PATH)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  if (!fs.existsSync(RESOURCES_FILE_PATH)) {
-    fs.writeFileSync(RESOURCES_FILE_PATH, JSON.stringify(initialSeedResources, null, 2), 'utf-8')
+  try {
+    const dir = path.dirname(RESOURCES_FILE_PATH)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    if (!fs.existsSync(RESOURCES_FILE_PATH)) {
+      fs.writeFileSync(RESOURCES_FILE_PATH, JSON.stringify(initialSeedResources, null, 2), 'utf-8')
+    }
+  } catch (err) {
+    // Read-only filesystem in serverless environments (e.g. Vercel)
   }
 }
 
 export function readLocalResources(): any[] {
-  ensureStorageDir()
   try {
-    const raw = fs.readFileSync(RESOURCES_FILE_PATH, 'utf-8')
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : initialSeedResources
-  } catch {
-    return initialSeedResources
+    ensureStorageDir()
+    if (fs.existsSync(RESOURCES_FILE_PATH)) {
+      const raw = fs.readFileSync(RESOURCES_FILE_PATH, 'utf-8')
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        inMemoryResources = parsed
+        return parsed
+      }
+    }
+  } catch (err) {
+    // Read-only filesystem or read failure
   }
+  return inMemoryResources
 }
 
 export function writeLocalResources(items: any[]) {
-  ensureStorageDir()
+  inMemoryResources = items
   try {
+    ensureStorageDir()
     fs.writeFileSync(RESOURCES_FILE_PATH, JSON.stringify(items, null, 2), 'utf-8')
   } catch (err) {}
 }

@@ -7,32 +7,48 @@ const PB_SUPERUSER_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9
 
 const LEADS_FILE_PATH = path.resolve(process.cwd(), '.data', 'leads.json')
 
+// In-memory fallback for serverless environments (Vercel, AWS Lambda) where fs is read-only
+let inMemoryLeads: any[] = []
+
 function ensureStorageDir() {
-  const dir = path.dirname(LEADS_FILE_PATH)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  if (!fs.existsSync(LEADS_FILE_PATH)) {
-    fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify([]), 'utf-8')
+  try {
+    const dir = path.dirname(LEADS_FILE_PATH)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    if (!fs.existsSync(LEADS_FILE_PATH)) {
+      fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify([]), 'utf-8')
+    }
+  } catch (err) {
+    // Read-only filesystem in serverless environments (e.g. Vercel)
   }
 }
 
 export function readLocalLeads(): any[] {
-  ensureStorageDir()
   try {
-    const raw = fs.readFileSync(LEADS_FILE_PATH, 'utf-8')
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
+    ensureStorageDir()
+    if (fs.existsSync(LEADS_FILE_PATH)) {
+      const raw = fs.readFileSync(LEADS_FILE_PATH, 'utf-8')
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        inMemoryLeads = parsed
+        return parsed
+      }
+    }
+  } catch (err) {
+    // Filesystem read failed or read-only environment
   }
+  return inMemoryLeads
 }
 
 export function writeLocalLeads(leads: any[]) {
-  ensureStorageDir()
+  inMemoryLeads = leads
   try {
+    ensureStorageDir()
     fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), 'utf-8')
-  } catch (err) {}
+  } catch (err) {
+    // Filesystem write failed in read-only environment
+  }
 }
 
 export async function getAllLeads(): Promise<any[]> {
@@ -94,7 +110,7 @@ export async function createLead(lead: any): Promise<any> {
     timestamp: Date.now()
   }
 
-  // Save to local
+  // Save to local / in-memory
   localLeads.unshift(newLead)
   writeLocalLeads(localLeads)
 
