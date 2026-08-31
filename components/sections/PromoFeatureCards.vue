@@ -28,14 +28,14 @@ const cardsPrev: FeatureCard[] = [
     id: 1,
     title: 'طراحی ما، محصول تو!',
     buttonLabel: 'طراحی گرافیکی سفارشی',
-    bgImage: '/images/sections/promo-feature-cards/opened-boxes.gif',
+    bgImage: '/images/sections/promo-feature-cards/opened-boxes.webp',
     minHeight: 'min-h-[270px]'
   },
   {
     id: 2,
     title: 'ساختار ما، بسته‌بندی تو!',
     buttonLabel: 'طراحی ساختار سفارشی',
-    bgImage: '/images/sections/promo-feature-cards/box.gif',
+    bgImage: '/images/sections/promo-feature-cards/box.webp',
     minHeight: 'min-h-[270px]]'
   },
   {

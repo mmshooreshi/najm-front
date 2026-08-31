@@ -476,7 +476,7 @@
             "محصول تو!"
           ],
           "buttonLabel": "طراحی گرافیکی سفارشی",
-          "bgImage": "/images/sections/promo-feature-cards/opened-boxes.gif",
+          "bgImage": "/images/sections/promo-feature-cards/opened-boxes.webp",
           "minHeight": "min-h-[270px]"
         },
         {
@@ -486,7 +486,7 @@
             "بسته‌بندی تو!"
           ],
           "buttonLabel": "طراحی ساختار سفارشی",
-          "bgImage": "/images/sections/promo-feature-cards/box.gif",
+          "bgImage": "/images/sections/promo-feature-cards/box.webp",
           "minHeight": "min-h-[270px]]"
         },
         {
@@ -1260,7 +1260,7 @@
             "منتجك!"
           ],
           "buttonLabel": "تصميم جرافيكي مخصص",
-          "bgImage": "/images/sections/promo-feature-cards/opened-boxes.gif",
+          "bgImage": "/images/sections/promo-feature-cards/opened-boxes.webp",
           "minHeight": "min-h-[270px]"
         },
         {
@@ -1270,7 +1270,7 @@
             "تغليفك!"
           ],
           "buttonLabel": "تصميم هيكلي مخصص",
-          "bgImage": "/images/sections/promo-feature-cards/box.gif",
+          "bgImage": "/images/sections/promo-feature-cards/box.webp",
           "minHeight": "min-h-[270px]]"
         },
         {
@@ -2044,7 +2044,7 @@
             "your product!"
           ],
           "buttonLabel": "Custom Graphic Design",
-          "bgImage": "/images/sections/promo-feature-cards/opened-boxes.gif",
+          "bgImage": "/images/sections/promo-feature-cards/opened-boxes.webp",
           "minHeight": "min-h-[270px]"
         },
         {
@@ -2054,7 +2054,7 @@
             "your packaging!"
           ],
           "buttonLabel": "Custom Structural Design",
-          "bgImage": "/images/sections/promo-feature-cards/box.gif",
+          "bgImage": "/images/sections/promo-feature-cards/box.webp",
           "minHeight": "min-h-[270px]]"
         },
         {

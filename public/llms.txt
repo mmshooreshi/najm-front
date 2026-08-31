@@ -1,0 +1,17 @@
+# Najm Printing & Packaging Complex
+
+> Najm Printing & Packaging Complex is a premier industrial offset printing and packaging manufacturer based in Tehran, Iran, specializing in high-speed Heidelberg offset printing, luxury hard boxes, pharmaceutical and cosmetic folding cartons, food packaging, and precision dieline engineering.
+
+## Main Pages & Services
+
+- [Home](https://najm-front.vercel.app/): Main company overview, printing capabilities, 5-color Heidelberg Speedmaster fleet, and real-time dieline showcase.
+- [Catalog](https://najm-front.vercel.app/catalog): Industrial packaging catalog, custom folding carton templates, dieline files, and finish samples.
+- [About Us](https://najm-front.vercel.app/about): Company history since 1999, quality management systems, color calibration (99.8% accuracy), and factory tour.
+- [Contact & Consultation](https://najm-front.vercel.app/contact): Price inquiries, consultation requests, factory address, contact numbers, and working hours.
+- [Guides & Resources](https://najm-front.vercel.app/resources): Downloadable die-cut templates (PDF/AI), standard packaging guidelines, and technical file preparation manuals.
+- [FAQ](https://najm-front.vercel.app/faq): Frequently asked questions on order turnaround, minimum quantities, UV/foil finishing, and shipping.
+
+## Optional & Editorial Content
+
+- [Blog & News](https://najm-front.vercel.app/blog): Technical articles on sustainable packaging, ISO color standards, and luxury carton manufacturing.
+- [API Health](https://najm-front.vercel.app/api/admin/pb/health): System status and API health monitoring endpoint.

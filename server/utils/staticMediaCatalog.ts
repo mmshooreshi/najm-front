@@ -1665,20 +1665,20 @@ export const staticMediaCatalog = [
     "mime": "image/gif",
     "category": "image",
     "size": 671356,
-    "url": "/images/sections/promo-feature-cards/box.gif",
-    "path": "/images/sections/promo-feature-cards/box.gif",
+    "url": "/images/sections/promo-feature-cards/box.webp",
+    "path": "/images/sections/promo-feature-cards/box.webp",
     "source": "static"
   },
   {
     "id": "local-L2ltYWdlcy9zZWN0aW9ucy9wcm9tby1mZWF0dXJlLWNhcmRzL29wZW5lZC1ib3hlcy5naWY",
-    "filename": "opened-boxes.gif",
-    "file": "opened-boxes.gif",
+    "filename": "opened-boxes.webp",
+    "file": "opened-boxes.webp",
     "format": "GIF",
     "mime": "image/gif",
     "category": "image",
     "size": 520384,
-    "url": "/images/sections/promo-feature-cards/opened-boxes.gif",
-    "path": "/images/sections/promo-feature-cards/opened-boxes.gif",
+    "url": "/images/sections/promo-feature-cards/opened-boxes.webp",
+    "path": "/images/sections/promo-feature-cards/opened-boxes.webp",
     "source": "static"
   },
   {
