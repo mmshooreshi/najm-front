@@ -17,7 +17,7 @@
               :initial="{ scale: 0.8 }"
               :visible="{ scale: 1 }"
               :duration="150"
-              class="object-cover w-full h-auto rounded-[1.5rem] max-h-[267px]"
+              class="object-contain w-full h-auto rounded-[1.5rem] max-h-[267px]"
             />
             <div class="m-1 mt-4 flex flex-col gap-1.5">
               <div class="font-bold text-d4 text-sm text-zinc-900 leading-snug" v-editable="`sceneProducts.items.${idx}.name`">{{ product.name }}</div>
