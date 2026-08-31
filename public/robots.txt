@@ -1,0 +1,11 @@
+# robots.txt for Najm Printing & Packaging (https://chapenajm.com)
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-login
+Disallow: /dashboard
+Disallow: /dash
+Disallow: /api/admin/
+
+# Sitemap location for Google Search Console & search engines
+Sitemap: https://chapenajm.com/sitemap.xml
