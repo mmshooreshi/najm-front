@@ -9,6 +9,7 @@ import { useLocale } from '@/composables/useLocale'
 import {
   adminEditState as state,
   buildChangesPayload,
+  buildChangesPayloadBySlug,
   recordSavedVersions,
   changedCountForLang,
   discardAllChanges,
@@ -60,16 +61,22 @@ async function saveDraft(manual = false) {
   saving.value = true
   lastError.value = null
   const currentLang = lang.value
-  const payload = buildChangesPayload(currentLang)
+  const payloadBySlug = buildChangesPayloadBySlug(currentLang)
 
+  let totalSaved = 0
   try {
-    await $fetch('/api/admin/ui/save-draft', {
-      method: 'POST',
-      body: { slug: state.slug, language: currentLang, changes: payload }
-    })
+    for (const [slugKey, changes] of Object.entries(payloadBySlug)) {
+      if (!changes || changes.length === 0) continue
+      await $fetch('/api/admin/ui/save-draft', {
+        method: 'POST',
+        body: { slug: slugKey, language: currentLang, changes }
+      })
 
-    recordSavedVersions(currentLang, payload.map(p => p.path))
-    invalidatePageUI(state.slug)
+      recordSavedVersions(currentLang, changes.map(p => p.path))
+      invalidatePageUI(slugKey)
+      totalSaved += changes.length
+    }
+
     state.lastSavedAt = new Date().toISOString()
 
     // Flash green indicator on saved fields
@@ -80,7 +87,7 @@ async function saveDraft(manual = false) {
       })
     }
 
-    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Saved ${payload.length} changes successfully!` } }))
+    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Saved ${totalSaved} changes successfully across pages & footer!` } }))
   } catch (e: any) {
     const msg = e?.data?.message || e?.message || 'Failed to save draft'
     lastError.value = msg

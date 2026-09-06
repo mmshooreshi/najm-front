@@ -267,9 +267,14 @@ export function applySnapshotToBaselines(lang: LangCode) {
 }
 
 /** Ensure baseline exists for this path+lang */
-export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: string) {
+/** Ensure baseline exists for this path+lang */
+export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: string, targetSlug?: string) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
+  
+  const effectiveSlug = targetSlug || adminEditState.slug || 'home'
+  ;(adminEditState.changes[path] as any).slug = effectiveSlug
+
   const rec = adminEditState.changes[path][lang]
   if (rec && rec.original != null && rec.original !== '') return
 
@@ -288,9 +293,46 @@ export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: str
   }
 }
 
-export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
+/** Update clientOverrides for real-time reactivity without lag during typing */
+export function updateClientOverride(path: PathKey, lang: LangCode, newValue: string, targetSlug?: string) {
+  const slug = targetSlug || (adminEditState.changes[path] as any)?.slug || adminEditState.slug || 'home'
+  if (!slug) return
+
+  const upper = lang.toUpperCase()
+  const lower = lang.toLowerCase()
+  if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
+  if (!adminEditState.clientOverrides[slug][upper]) {
+    const base = getBaseSchemaForSlugAndLang(slug, upper)
+    adminEditState.clientOverrides[slug][upper] = deepClone(adminEditState.allLangUI[upper] || base)
+  }
+  if (!adminEditState.clientOverrides[slug][lower]) {
+    const base = getBaseSchemaForSlugAndLang(slug, lower)
+    adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || base)
+  }
+
+  // If newValue is JSON object/array, parse it before setting
+  if (typeof newValue === 'string' && (newValue.startsWith('[') || newValue.startsWith('{'))) {
+    try {
+      const parsed = JSON.parse(newValue)
+      setByPath(adminEditState.clientOverrides[slug][upper], path, parsed)
+      setByPath(adminEditState.clientOverrides[slug][lower], path, parsed)
+    } catch {
+      setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
+      setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
+    }
+  } else {
+    setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
+    setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
+  }
+}
+
+export function setDraftValue(path: PathKey, lang: LangCode, newValue: string, targetSlug?: string, syncOverrides = true) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
+  
+  const effectiveSlug = targetSlug || (adminEditState.changes[path] as any)?.slug || adminEditState.slug || 'home'
+  ;(adminEditState.changes[path] as any).slug = effectiveSlug
+
   if (!adminEditState.changes[path][lang]) {
     adminEditState.changes[path][lang] = { original: '', value: '' }
   }
@@ -299,35 +341,10 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
   rec.updatedAt = new Date().toISOString()
   addVersion(path, lang, newValue, 'draft')
 
-  // Keep clientOverrides updated for real-time reactivity
-  const slug = adminEditState.slug || 'home'
-  if (slug) {
-    const upper = lang.toUpperCase()
-    const lower = lang.toLowerCase()
-    if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
-    if (!adminEditState.clientOverrides[slug][upper]) {
-      const base = getBaseSchemaForSlugAndLang(slug, upper)
-      adminEditState.clientOverrides[slug][upper] = deepClone(adminEditState.allLangUI[upper] || base)
-    }
-    if (!adminEditState.clientOverrides[slug][lower]) {
-      const base = getBaseSchemaForSlugAndLang(slug, lower)
-      adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || base)
-    }
-
-    // If newValue is JSON object/array, parse it before setting
-    if (typeof newValue === 'string' && (newValue.startsWith('[') || newValue.startsWith('{'))) {
-      try {
-        const parsed = JSON.parse(newValue)
-        setByPath(adminEditState.clientOverrides[slug][upper], path, parsed)
-        setByPath(adminEditState.clientOverrides[slug][lower], path, parsed)
-      } catch {
-        setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
-        setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
-      }
-    } else {
-      setByPath(adminEditState.clientOverrides[slug][upper], path, newValue)
-      setByPath(adminEditState.clientOverrides[slug][lower], path, newValue)
-    }
+  // Only update reactive clientOverrides when syncOverrides is true (e.g. on blur or programmatic commit)
+  // This guarantees 0ms typing lag and completely prevents cursor jumps
+  if (syncOverrides) {
+    updateClientOverride(path, lang, newValue, effectiveSlug)
   }
 
   if (process.dev) {
@@ -335,9 +352,13 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string) {
   }
 }
 
-export function setValueSilently(path: PathKey, lang: LangCode, newValue: string) {
+export function setValueSilently(path: PathKey, lang: LangCode, newValue: string, targetSlug?: string) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
+  
+  const effectiveSlug = targetSlug || (adminEditState.changes[path] as any)?.slug || adminEditState.slug || 'home'
+  ;(adminEditState.changes[path] as any).slug = effectiveSlug
+
   if (!adminEditState.changes[path][lang]) {
     adminEditState.changes[path][lang] = { original: newValue, value: newValue }
     return
@@ -355,6 +376,22 @@ export function isChanged(path: PathKey, lang: LangCode): boolean {
   }
   if (!rec.original) return false
   return normForCompare(rec.value, lang) !== normForCompare(rec.original, lang)
+}
+
+/** Build save payload grouped by slug */
+export function buildChangesPayloadBySlug(lang: LangCode): Record<string, { path: string; value: string }[]> {
+  const out: Record<string, { path: string; value: string }[]> = {}
+  for (const [path, rec] of Object.entries(adminEditState.changes)) {
+    const lr = rec?.[lang]
+    if (!lr) continue
+    const candidate = lr.draft ?? lr.value
+    if (normForCompare(candidate, lang) !== normForCompare(lr.original, lang)) {
+      const slug = (rec as any).slug || adminEditState.slug || 'home'
+      if (!out[slug]) out[slug] = []
+      out[slug].push({ path, value: candidate })
+    }
+  }
+  return out
 }
 
 /** Build save payload for a given language */

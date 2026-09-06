@@ -6,6 +6,7 @@ import {
   getChangedDetails,
   revertPath,
   buildChangesPayload,
+  buildChangesPayloadBySlug,
   recordSavedVersions,
   changedCountForLang,
   discardAllChanges
@@ -60,19 +61,25 @@ async function handleSaveAll() {
   if (isSaving.value || changedItems.value.length === 0) return
   isSaving.value = true
   const currentLang = lang.value
-  const payload = buildChangesPayload(currentLang)
+  const payloadBySlug = buildChangesPayloadBySlug(currentLang)
 
+  let totalSaved = 0
   try {
-    await $fetch('/api/admin/ui/save-draft', {
-      method: 'POST',
-      body: { slug: state.slug, language: currentLang, changes: payload }
-    })
+    for (const [slugKey, changes] of Object.entries(payloadBySlug)) {
+      if (!changes || changes.length === 0) continue
+      await $fetch('/api/admin/ui/save-draft', {
+        method: 'POST',
+        body: { slug: slugKey, language: currentLang, changes }
+      })
 
-    recordSavedVersions(currentLang, payload.map(p => p.path))
-    invalidatePageUI(state.slug)
+      recordSavedVersions(currentLang, changes.map(p => p.path))
+      invalidatePageUI(slugKey)
+      totalSaved += changes.length
+    }
+
     state.lastSavedAt = new Date().toISOString()
 
-    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Successfully saved ${payload.length} changes!` } }))
+    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Successfully saved ${totalSaved} changes!` } }))
     close()
   } catch (e: any) {
     const msg = e?.data?.message || e?.message || 'Failed to save changes'

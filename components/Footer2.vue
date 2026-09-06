@@ -1,6 +1,10 @@
 <!-- components/Footer2.vue -->
 <template>
-  <footer :dir="isRTL ? 'rtl' : 'ltr'" class="bg-najmgreen text-white rounded-t-2xl pt-14 pb-20">
+  <footer
+    data-admin-slug="footer"
+    :dir="isRTL ? 'rtl' : 'ltr'"
+    class="bg-najmgreen text-white rounded-t-2xl pt-14 pb-28 md:pb-24 select-text"
+  >
     <!-- Top Centered Brand Logo -->
     <div class="flex justify-center pb-10">
       <logoWhite class="h-10 sm:h-12 w-auto" />
@@ -31,6 +35,7 @@
             :key="index"
             class="leading-relaxed font-medium text-d4 text-xs text-white/90 break-words"
             :class="isRTL ? 'text-right' : 'text-left'"
+            v-editable="`hero.paragraphs.${index}`"
           >
             {{ paragraph }}
           </p>
@@ -49,14 +54,17 @@
 
       <!-- Right Column: Contact Details, Map, Mobile Trust Badge -->
       <div class="flex flex-col space-y-6 w-full max-w-xl mx-auto md:mx-0">
-        <!-- Contact Items List -->
+        <!-- Contact Items List (Fully in-place editable) -->
         <div class="flex flex-col divide-y divide-white/10 text-xs sm:text-sm">
           <div
             v-for="(item, index) in contactItemsList"
             :key="index"
             class="flex items-center justify-between py-3 gap-2"
           >
-            <span class="text-white/95 font-bold font-d4 shrink-0">
+            <span
+              class="text-white/95 font-bold font-d4 shrink-0"
+              v-editable="`contact.items.${index}.name`"
+            >
               {{ item.name }}
             </span>
             <a
@@ -64,6 +72,7 @@
               :href="item.slug"
               class="font-mono text-emerald-200 hover:text-white transition-colors truncate"
               dir="ltr"
+              v-editable="`contact.items.${index}.value`"
             >
               {{ item.value }}
             </a>
@@ -71,6 +80,7 @@
               v-else
               class="break-words text-xs sm:text-sm text-white/90 truncate"
               :class="isRTL ? 'text-right' : 'text-left'"
+              v-editable="`contact.items.${index}.value`"
             >
               <div v-html="item.value" />
             </span>
@@ -101,16 +111,16 @@
       <div class="h-px bg-white/20 w-full"></div>
     </div>
 
-    <!-- Bottom Copyright & Brand Bar (Always Guaranteed Visible) -->
-    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/90 font-d4">
+    <!-- Bottom Copyright & Brand Bar (Guaranteed visible with proper contrast & breathing room) -->
+    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/95 font-d4">
       <span 
         class="text-center sm:text-right leading-relaxed font-medium break-words" 
         v-editable="'copyright'"
       >
-        {{ currentCopyrightText || 'تمامی حقوق متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد.' }}
+        {{ currentCopyrightText }}
       </span>
       <span class="font-mono text-xs shrink-0 text-center sm:text-left font-semibold text-white/90" dir="ltr">
-        &copy; {{ year }} ChapNajm
+        &copy; {{ toLocalizedDigits(year) }} ChapNajm
       </span>
     </div>
 
@@ -122,31 +132,39 @@ import { ref, computed } from 'vue'
 import logoWhite from '~/assets/icons/najm-logo-white.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import { useLocale } from '~/composables/useLocale'
-import { usefooterUIData } from '~/composables/ui/footerUI' // Use your UI Composable
+import { usePageUI } from '~/composables/ui/usePageUI'
+import { toLocalizedDigits } from '~/utils/digits'
 import Map from '~/components/map.vue'
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const isArabic = computed(() => language.value === 'AR')
 
-const activeLang = computed(() => {
-  const l = (language.value || 'fa').toLowerCase()
-  return (l === 'en' || l === 'ar' ? l : 'fa') as 'fa' | 'en' | 'ar'
+// Connect directly to live content engine with dual local + remote persistence
+const { ui } = usePageUI('footer')
+
+const fallbackHero = [
+  'در دنیای پررقابت امروز، بسته‌بندی دیگر تنها یک محافظ کالا نیست، بلکه شناسنامه بصری برند شماست.',
+  'از طراحی ساختاری و مهندسی خطوط تیغ تا چاپ ۵ رنگ افست هایدلبرگ و خدمات تکمیلی مدرن؛ همه زیر یک سقف در مجتمع چاپ و بسته‌بندی نجم.'
+]
+
+const fallbackContact = [
+  { name: 'تلفن مستقیم', value: '+98 21 6679 7911', slug: 'tel:+982166797911' },
+  { name: 'فکس کارخانه', value: '+98 21 0053 6712', slug: 'fax:+982100536712' },
+  { name: 'پست الکترونیک', value: 'info@najmprint.com', slug: 'mailto:info@najmprint.com' },
+  { name: 'ساعت‌های کاری', value: 'شنبه تا چهارشنبه: ۹ الی ۱۸ | پنج‌شنبه‌ها: ۹ الی ۱۴' }
+]
+
+const accordionSections = computed(() => ui.value?.sections || [])
+const localizedParagraphs = computed(() => ui.value?.hero?.paragraphs || fallbackHero)
+const contactItemsList = computed(() => ui.value?.contact?.items || fallbackContact)
+
+const currentCopyrightText = computed(() => {
+  if (ui.value?.copyright) return ui.value.copyright
+  if (isArabic.value) return 'جميع الحقوق محفوظة لمجمع نجم المتخصص للطباعة والتغليف الصناعي.'
+  if (isRTL.value) return 'تمامی حقوق متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد.'
+  return 'All rights reserved by Najm Printing and Packaging Complex.'
 })
-
-// 1. Fetch the data dynamically from backend (falls back to local JSON)
-const { footerUIData } = usefooterUIData()
-
-// 2. Select the specific data tree for the current active language
-const currentUiData = computed(() => {
-  // Try to grab the data for the active language, fallback to 'fa'
-  return footerUIData.value[activeLang.value] || footerUIData.value.fa
-})
-
-// 3. Map the data directly to the computed properties for the template
-const accordionSections = computed(() => currentUiData.value.sections || [])
-const localizedParagraphs = computed(() => currentUiData.value.hero?.paragraphs || [])
-const contactItemsList = computed(() => currentUiData.value.contact?.items || [])
-const currentCopyrightText = computed(() => currentUiData.value.copyright || '')
 
 const openAccordionId = ref<string | null>(null)
 

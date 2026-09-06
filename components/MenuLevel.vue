@@ -68,7 +68,7 @@
             <Icon v-else name="mdi:checkbox-blank-outline"  class="w-6 h-6 text-[#A8ABAE] hover:text-gray-500" />
             
             <div :class="{'!text-black':item.value}" class="text-xs text-demibold group-hover:text-black/80 text-black/50">{{ item.name }}</div>
-            <div class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+            <div class="text-xs text-demibold text-[#A8ABAE]">({{toLocalizedDigits(item.count)}} {{ countSuffix }})</div>
 
         </div>
 
@@ -79,7 +79,7 @@
           class="py-0 my-6 px-6 flex gap-2 justify-start items-center"
         >
           <div  class="text-sm text-d4 text-demibold ">{{ item.name }}</div>
-          <div v-if="item.count" class="text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+          <div v-if="item.count" class="text-demibold text-[#A8ABAE]">({{toLocalizedDigits(item.count)}} {{ countSuffix }})</div>
 
         </NuxtLink>
         <NuxtLink
@@ -88,7 +88,7 @@
           class="py-0 my-6 px-3 sm:px-6 flex gap-2 justify-start items-center"
         >
           <div  class="text-xs text-demibold hover:text-black/80 text-black">{{ item.name }}</div>
-          <div v-if="item.count" class="text-xs text-demibold text-[#A8ABAE]">({{toPersianDigits(item.count)}} مدل)</div>
+          <div v-if="item.count" class="text-xs text-demibold text-[#A8ABAE]">({{toLocalizedDigits(item.count)}} {{ countSuffix }})</div>
 
         </NuxtLink>
 
@@ -98,9 +98,19 @@
   </template>
   
   <script setup lang="ts">
+  import { computed } from 'vue'
   import BaseAccordionGroupNew from '~/components/Base/BaseAccordionGroupNew.vue'
   import MenuLevel from '~/components/MenuLevel.vue'
-  import { toPersianDigits } from '~/utils/digits'
+  import { toLocalizedDigits } from '~/utils/digits'
+  import { useLocale } from '~/composables/useLocale'
+
+  const { language } = useLocale()
+  const countSuffix = computed(() => {
+    const l = (language.value || 'fa').toLowerCase()
+    if (l === 'en') return 'models'
+    if (l === 'ar') return 'موديل'
+    return 'مدل'
+  })
 
   const props = defineProps<{
     items?: Array<any>

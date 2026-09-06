@@ -43,53 +43,13 @@
         />
       </div>
     </div>
-
-    <!-- Editor pane -->
-    <Teleport v-if="editingItem" to="body">
-
-      {{editingItem}}
-
-      <div class="fixed bottom-0 w-full bg-white/90 p-4 border-t backdrop-blur">
-        <h4 class="font-medium mb-2">Edit Specs — {{ editingItem.name }}</h4>
-        <div class="flex flex-wrap gap-6">
-          {{editingItem.specs}}
-          {{imageNumber}}
-          <!-- <div v-for="field in fields" :key="field.key" class="flex flex-col">
-            <label class="text-sm font-semibold">{{ field.label }}</label>
-            <div class="flex items-center gap-2">
-              <input
-                v-model.number="editingItem.specs[field.key]"
-                type="number"
-                class="border p-1 rounded w-16"
-              />
-              <input
-                type="range"
-                :min="field.min"
-                :max="field.max"
-                :step="field.step"
-                v-model.number="editingItem.specs[field.key]"
-                class="flex-1"
-              />
-            </div>
-          </div> -->
-        </div>
-        <div class="mt-4 flex justify-end gap-2">
-          <button @click="resetSpecs" class="px-3 py-1 bg-gray-500 text-white rounded">
-            Reset
-          </button>
-          <button @click="closeEditor" class="px-3 py-1 bg-blue-600 text-white rounded">
-            Done
-          </button>
-        </div>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import HaArrow from '@/components/Base/HaArrow.vue'
-import { toPersianDigits } from '~/utils/digits'
+import { toLocalizedDigits } from '~/utils/digits'
 import { useLocale } from '@/composables/useLocale'
 
 interface Specs {
@@ -118,9 +78,9 @@ const { language } = useLocale()
 const itemCountLabel = computed(() => {
   const count = props.items?.length || 0
   const lang = (language.value || 'FA').toLowerCase()
-  if (lang === 'en') return `${count} Items`
-  if (lang === 'ar') return `${toPersianDigits(count)} عناصر`
-  return `${toPersianDigits(count)} آیتم`
+  if (lang === 'en') return `${toLocalizedDigits(count)} Items`
+  if (lang === 'ar') return `${toLocalizedDigits(count)} عناصر`
+  return `${toLocalizedDigits(count)} آیتم`
 })
 
 const editingItem = ref<Item | null>(null)

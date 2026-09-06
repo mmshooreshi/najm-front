@@ -392,13 +392,31 @@ const dataStore = reactive<Record<'fa' | 'en' | 'ar', Record<string, string>>>({
   }
 })
 
-function saveContent() {
+async function saveContent() {
   const currentLangData = dataStore[activeLang.value]
-  for (const [path, val] of Object.entries(currentLangData)) {
-    if (path.startsWith(activeSlug.value)) {
-      setDraftValue(path, activeLang.value, val)
+  const prefix = `${activeSlug.value}.`
+  const changes: { path: string; value: any }[] = []
+
+  for (const [fullKey, val] of Object.entries(currentLangData)) {
+    if (fullKey.startsWith(prefix)) {
+      const cleanPath = fullKey.slice(prefix.length)
+      changes.push({ path: cleanPath, value: val })
+      setDraftValue(cleanPath, activeLang.value, val as string, activeSlug.value, true)
     }
   }
-  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `متن‌های ${activePage.value.title} (${activeLang.value.toUpperCase()}) با موفقیت ذخیره شدند.` } }))
+
+  try {
+    await $fetch('/api/admin/ui/save-draft', {
+      method: 'POST',
+      body: {
+        slug: activeSlug.value,
+        language: activeLang.value,
+        changes
+      }
+    })
+    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `متن‌های ${activePage.value.title} (${activeLang.value.toUpperCase()}) با موفقیت در سرور و حافظه پایدار ذخیره شدند.` } }))
+  } catch (err: any) {
+    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', text: `خطا در ذخیره: ${err?.message || 'مشکل در ارتباط با سرور'}` } }))
+  }
 }
 </script>

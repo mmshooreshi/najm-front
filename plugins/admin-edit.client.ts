@@ -19,9 +19,21 @@ import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
 
 /** ---------- ContentEditable helpers ---------- **/
+/** ---------- ContentEditable helpers ---------- **/
 function setEditable(el: HTMLElement, on: boolean) {
-  el.setAttribute('contenteditable', on ? 'true' : 'false')
-  el.setAttribute('spellcheck', 'false')
+  if (on) {
+    try {
+      el.setAttribute('contenteditable', 'plaintext-only')
+    } catch {
+      el.setAttribute('contenteditable', 'true')
+    }
+    el.setAttribute('spellcheck', 'false')
+    el.setAttribute('autocomplete', 'off')
+    el.setAttribute('autocorrect', 'off')
+    el.setAttribute('autocapitalize', 'off')
+  } else {
+    el.setAttribute('contenteditable', 'false')
+  }
   el.classList.toggle('v-editable--active', on)
   if (!on && document.activeElement === el) {
     el.blur()
@@ -246,22 +258,37 @@ export default defineNuxtPlugin(nuxtApp => {
   // Directive: v-editable="path"
   nuxtApp.vueApp.directive('editable', {
     mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
-      const path = binding.value
-      if (!path || path.startsWith('undefined') || path.startsWith('null')) return
+      const rawPath = binding.value
+      if (!rawPath || rawPath.startsWith('undefined') || rawPath.startsWith('null')) return
+
+      let path = rawPath
+      let targetSlug =
+        el.dataset.adminSlug ||
+        el.closest('[data-admin-slug]')?.getAttribute('data-admin-slug') ||
+        state.slug ||
+        'home'
+
+      // Allow inline path with slug prefix like "footer:contact.items.0.value"
+      if (rawPath.includes(':')) {
+        const parts = rawPath.split(':')
+        targetSlug = parts[0]
+        path = parts.slice(1).join(':')
+      }
 
       el.dataset.editPath = path
+      el.dataset.adminSlug = targetSlug
       el.classList.add('v-editable')
 
       // Set initial editable state
       setEditable(el, state.canEdit && state.editMode)
-      ensureBaseline(path, state.language, getText(el))
+      ensureBaseline(path, state.language, getText(el), targetSlug)
       updateElementState(el, path, state.language)
 
-      // Clean, non-destructive input handler
-      let inputTimer: any = null
+      // Zero-lag, non-destructive input handler
       const onInput = () => {
         const text = getText(el)
-        setDraftValue(path, state.language, text)
+        // syncOverrides = false during typing guarantees 0ms lag and prevents cursor jumping!
+        setDraftValue(path, state.language, text, targetSlug, false)
         updateElementState(el, path, state.language)
 
         if (hoverActiveTarget === el) {
@@ -270,18 +297,21 @@ export default defineNuxtPlugin(nuxtApp => {
       }
 
       const onFocus = () => {
+        (el as any)._isFocused = true
         if (state.canEdit && state.editMode) {
           setEditingActive(path, true)
         }
       }
 
       const onBlur = () => {
+        (el as any)._isFocused = false
         setEditingActive(null, false)
         const text = getText(el)
         if (state.editMode) {
-          setDraftValue(path, state.language, text)
+          // On blur, sync to clientOverrides so reactive inspectors & other components update safely
+          setDraftValue(path, state.language, text, targetSlug, true)
         } else {
-          setValueSilently(path, state.language, text)
+          setValueSilently(path, state.language, text, targetSlug)
         }
         updateElementState(el, path, state.language)
       }
@@ -325,7 +355,6 @@ export default defineNuxtPlugin(nuxtApp => {
       el.addEventListener('paste', onPaste)
 
       ;(el as any)._adminCleanup = () => {
-        clearTimeout(inputTimer)
         el.removeEventListener('input', onInput)
         el.removeEventListener('focus', onFocus)
         el.removeEventListener('blur', onBlur)
@@ -337,11 +366,26 @@ export default defineNuxtPlugin(nuxtApp => {
       }
     },
 
-
     updated(el: HTMLElement, binding: DirectiveBinding<string>) {
-      const path = binding.value
-      if (!path) return
+      const rawPath = binding.value
+      if (!rawPath) return
+
+      let path = rawPath
+      let targetSlug =
+        el.dataset.adminSlug ||
+        el.closest('[data-admin-slug]')?.getAttribute('data-admin-slug') ||
+        state.slug ||
+        'home'
+
+      if (rawPath.includes(':')) {
+        const parts = rawPath.split(':')
+        targetSlug = parts[0]
+        path = parts.slice(1).join(':')
+      }
+
       el.dataset.editPath = path
+      el.dataset.adminSlug = targetSlug
+
       setEditable(el, state.canEdit && state.editMode)
       updateElementState(el, path, state.language)
     },

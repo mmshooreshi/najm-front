@@ -178,6 +178,7 @@ import { computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import catalogSchema from '@/schemas/catalog-ui.json'
 
 definePageMeta({
   layout: 'default'
@@ -189,67 +190,13 @@ const isFarsi = computed(() => (language.value || '').toUpperCase() === 'FA')
 const isRTL = computed(() => isFarsi.value || isArabic.value)
 
 const { ui, allUi } = usePageUI('catalog')
-useAdminEditable('catalog', allUi)
-
-const fallbackCatalog = {
-  badge: 'کاتالوگ و نمونه‌کارهای رسمی',
-  title: 'کاتالوگ جامع محصولات چاپ و بسته‌بندی نجم',
-  description: 'مشاهده و دریافت نسخه دیجیتال (PDF) تمامی لاین‌های تولیدی، جعبه‌های دارویی، هاردباکس‌های لوکس، ساک‌های دستی و نمونه‌های چاپ افست.',
-  featured: {
-    badge: 'مجموعه کامل ۲۰۲۶',
-    tag: 'نسخه ۲۰۲۶',
-    coverTitle: 'کاتالوگ جامع چاپ نجم',
-    title: 'کاتالوگ جامع خطوط تولید و مشخصات متریال',
-    description: 'این کاتالوگ شامل راهنمای جامع انتخاب گرماژ مقوا، مقایسه خدمات تکمیلی و نمونه‌های اجرا شده جعبه‌های دارویی، غذایی و بهداشتی است.',
-    fileSize: '۱۴.۲ مگابایت',
-    fileFormat: 'PDF',
-    pagesCount: '۴۸ صفحه تمام‌رنگ',
-    lastUpdate: 'بهار ۱۴۰۵',
-    resolution: '300 DPI High-Res',
-    downloadBtn: 'دانلود مستقیم فایل کاتالوگ (PDF)',
-    sampleBtn: 'درخواست نمونه فیزیکی (Sample Kit)',
-    downloadUrl: '#'
-  },
-  gridTitle: 'کاتالوگ‌های تخصصی دسته‌بندی‌ها',
-  catalogs: [
-    {
-      id: 1,
-      badge: 'بسته‌بندی سخت',
-      title: 'کاتالوگ هاردباکس و بسته‌بندی لوکس',
-      desc: 'نمونه ساختارهای مگنتی، کشویی، روکش‌های مخمل و جلوه‌های طلاکوب اختصاصی مناسب برندهای لوکس.',
-      size: '۱۸.۵ مگابایت',
-      icon: 'mdi:package-variant-closed',
-      downloadUrl: '#'
-    },
-    {
-      id: 2,
-      badge: 'صنایع سلامت',
-      title: 'کاتالوگ جعبه‌های دارویی و بهداشتی',
-      desc: 'استانداردهای مقوای ایندربرد بهداشتی، خطوط بریل (Braille) و سیستم‌های کنترل اصالت محصول.',
-      size: '۹.۴ مگابایت',
-      icon: 'mdi:medical-bag',
-      downloadUrl: '#'
-    },
-    {
-      id: 3,
-      badge: 'تبلیغات و فروشگاه',
-      title: 'کاتالوگ ساک‌های دستی و پاکت کرافت',
-      desc: 'انواع ساک‌های خرید گلاسه و کرافت، بندهای فانتزی و تحمل وزن تا ۵ کیلوگرم ویژه فروشگاه‌ها.',
-      size: '۶.۸ مگابایت',
-      icon: 'mdi:shopping-outline',
-      downloadUrl: '#'
-    }
-  ],
-  cta: {
-    title: 'درخواست سمپل‌باکس و کیت نمونه‌های فیزیکی',
-    description: 'برای لمس مستقیم بافت مقواها، تست پوشش‌های سلفونی و بررسی نمونه تیغ‌زنی‌ها، کیت نمونه رایگان ما را برای سازمان خود سفارش دهید.',
-    button: 'سفارش کیت نمونه فیزیکی'
-  }
-}
+useAdminEditable('catalog')
 
 const uiContent = computed(() => {
+  const langKey = (language.value || 'fa').toLowerCase()
+  const base = (catalogSchema as any)[langKey] || (catalogSchema as any).fa
   return {
-    ...fallbackCatalog,
+    ...base,
     ...(ui.value || {})
   }
 })
