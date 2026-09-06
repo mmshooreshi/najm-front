@@ -5,13 +5,13 @@
       Settings
     </button>
  -->
-  <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10"
+  <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10" dir="ltr"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
        @touchmove="handleTouchMove" @touchend="handleTouchEnd">
     <!-- Settings Button -->
 
-    <div class="slider-inner absolute flex" > 
+    <div class="slider-inner absolute flex" dir="ltr"> 
       <div v-for="(image, index) in images" :key="index"
       
            class="image-item absolute"
@@ -287,6 +287,7 @@ const getStyle = (image, index) => {
     width: `${image.width}px`,
     height: `${image.height}px`,
     left: `${effectiveX}px`,
+    right: 'auto',
     top: `${image.top + verticalOffset}px`,
     transform: `rotate(${image.hoverRotate !== undefined ? image.hoverRotate : image.rotate}deg) scale(${(image.scale || 1) * scaleOffset}) translate(${mouseEffect.value.x * parallaxMultiplier.value}px, ${mouseEffect.value.y * parallaxMultiplier.value}px)`,
     transition: `transform ${hoverTransitionDuration.value}s ease-out, box-shadow ${hoverTransitionDuration.value}s ease-out, opacity ${hoverTransitionDuration.value}s ease-out, filter ${hoverTransitionDuration.value}s ease-out`,
@@ -502,22 +503,31 @@ onUnmounted(() => {
 
 
 
-<style >
+<style>
 .slider-container {
-    left: 0;
-    width: 100vw;
+    direction: ltr !important;
+    position: relative;
+    #left: 55% !important;
+    #right: auto !important;
+    #transform: translateX(-50%) !important;
+    width: 100vw !important;
     overflow-x: clip;
     overflow-y: unset;
-    /* background-color: red; */
 }
 
 .slider-inner {
+    direction: ltr !important;
     position: absolute;
+    left: 0 !important;
+    right: auto !important;
+    top: 0 !important;
     display: flex;
 }
 
 .image-item {
+    direction: ltr !important;
     position: absolute;
+    right: auto !important;
     transition-property: transform, box-shadow, opacity, filter;
     will-change: transform, opacity, filter;
 }

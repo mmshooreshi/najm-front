@@ -264,31 +264,18 @@ onMounted(async () => {
 watch(language, async () => {
   if (!sectionRef.value) return
 
-  // 1. Fade out old content
-  await gsap.to(sectionRef.value, {
-    opacity: 0,
-    duration: 0.4,
-    ease: 'power1.in'
-  })
-
-    // 🔒 Prevent rotation while updating
-  // 2. Reset timeline and clear
+  // 1. Clear timeline & reset in-progress animations instantly
   tlHighlights.pause(0).clear()
   typedRefs.value.forEach(el => el && (el.innerHTML = ''))
   paragraphRefs.value.forEach(el => el && (el.innerHTML = ''))
 
-  // 3. NOW update content
+  // 2. Update content immediately without waiting or freezing
   localHighlights.value = props.highlights
   localParagraphes.value = props.paragraphes
   isRTL.value = language.value === 'FA' || language.value === 'AR'
 
-  if (typeof document !== 'undefined' && (document as any).fonts?.ready) {
-    await (document as any).fonts.ready.catch(() => {})
-  }
-
-  // 4. Wait for DOM to update and rerun animation
+  // 3. Wait for Vue DOM patch then rerun clean animation
   await nextTick()
-
   runAnimation()
 })
 

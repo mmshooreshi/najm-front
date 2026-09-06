@@ -41,10 +41,8 @@ import {useLocale} from "@/composables/useLocale"
   
   const { nextLanguage: localNext } = useLocale()
   
-  // wrap so we emit back to parent
   function nextLanguage() {
     localNext()
-    emit('update:modelValue', useLocale().language.value)
   }
   </script>
   

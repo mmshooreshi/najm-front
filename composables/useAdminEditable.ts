@@ -40,24 +40,39 @@ export function useAdminEditable(slug: string) {
   // Track which languages already hydrated
   const hydrated = new Set<string>()
 
-  // Watch both language and allUi so async fetches properly populate baselines
-  watch([language, allUi], ([lang, uiMap]) => {
+  // Watch language and allUi without deep: true to eliminate main-thread freezing
+  watch([language, () => allUi.value], ([lang, uiMap]) => {
     if (!lang || !uiMap) return
     const currentUI = uiMap[lang] || uiMap[lang.toLowerCase()] || uiMap[lang.toUpperCase()]
     if (!currentUI || Object.keys(currentUI).length === 0) {
       return
     }
 
+    // Only perform cloning and baseline walk for admins
+    if (!state.canEdit) return
+
     captureLanguageSnapshot(lang, currentUI, slug)
 
-    if (!hydrated.has(lang)) {
+    // Only perform heavy recursive baseline walk if admin edit mode is actively engaged
+    if (state.editMode && !hydrated.has(lang)) {
       applySnapshotToBaselines(lang, slug)
       hydrated.add(lang)
       if (process.dev) {
         logger.success('Admin:Edit', `Hydrated editable baselines for [${lang.toUpperCase()}] (${Object.keys(currentUI).length} root keys) for slug: "${slug}"`)
       }
     }
-  }, { immediate: true, deep: true })
+  }, { immediate: true })
+
+  // When edit mode is toggled ON, hydrate baselines on demand
+  watch(() => state.editMode, (editMode) => {
+    if (editMode && state.canEdit) {
+      const lang = language.value
+      if (lang && !hydrated.has(lang)) {
+        applySnapshotToBaselines(lang, slug)
+        hydrated.add(lang)
+      }
+    }
+  })
 
   return { state }
 }

@@ -111,13 +111,7 @@ onMounted(() => {
   initCarousel()
 })
 
-watch(language, () => {
-  nextTick(() => {
-    initCarousel()
-  })
-})
-
-watch(isRTL, () => {
+watch([language, isRTL], () => {
   nextTick(() => {
     initCarousel()
   })

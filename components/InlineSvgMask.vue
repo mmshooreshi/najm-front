@@ -2,13 +2,13 @@
 <template>
   <!-- Container with explicit size -->
   <div 
-   :style="{ position: 'relative', width: W + 'px', height: H + 'px' }">
+   :style="{ position: 'relative', width: W + 'px', height: H + 'px', direction: 'ltr' }">
     <!-- SVG with dynamically traced polygon (overlaid) -->
     <svg
       :width="W"
       :height="H"
       ref="svgEl"
-      style="position: absolute; top: 0; left: 0; opacity:0;"
+      style="position: absolute; top: 0; left: 0; right: auto; opacity:0;"
     >
       <polygon
         ref="polyEl"
@@ -27,7 +27,7 @@
       :width="W"
       :height="H"
       alt="Loaded PNG"
-      style="position: relative; top: 0; left: 0; opacity: 1;"
+      style="position: relative; top: 0; left: 0; right: auto; opacity: 1;"
     />
 
   </div>
