@@ -11,34 +11,35 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: false,
     head: {
-      title: 'Najm Printing & Packaging | Quality Printing Solutions',
+      title: 'مجتمع چاپ و بسته‌بندی نجم | چاپ افست ۵ رنگ هایدلبرگ و جعبه‌سازی صنعتی',
       htmlAttrs: {
-        lang: 'en' // Default language, this can be dynamically updated
+        lang: 'fa-IR',
+        dir: 'rtl'
       },
       meta: [
         {
           name: 'description',
           content:
-            'Najm Printing & Packaging offers high-quality printing solutions and customized packaging for businesses in Tehran, Iran.'
+            'مجتمع چاپ و بسته‌بندی نجم؛ مجهز به خطوط چاپ افست ۵ رنگ ورقی هایدلبرگ، دایکات اتوماتیک بوبست، لیتوگرافی حرارتی CTP و تولید انواع جعبه مقوایی و هاردباکس لوکس در تهران.'
         },
-        { name: 'robots', content: 'index, follow' },
+        { name: 'robots', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
         {
           name: 'viewport',
           content: 'width=device-width,initial-scale=1,maximum-scale=1'
         },
-        { name: 'theme-color', content: '#ffffff' },
-        { name: 'author', content: 'Najm Printing & Packaging' },
+        { name: 'theme-color', content: '#115247' },
+        { name: 'author', content: 'مجتمع چاپ و بسته‌بندی نجم' },
 
         // Open Graph (for social media)
-        { property: 'og:site_name', content: 'Najm Printing & Packaging' },
+        { property: 'og:site_name', content: 'مجتمع چاپ و بسته‌بندی نجم' },
         {
           property: 'og:title',
-          content: 'Najm Printing & Packaging | Quality Printing Solutions'
+          content: 'مجتمع چاپ و بسته‌بندی نجم | خدمات تخصصی چاپ افست و جعبه‌سازی'
         },
         {
           property: 'og:description',
           content:
-            'Najm Printing & Packaging offers high-quality printing solutions and customized packaging for businesses in Tehran, Iran.'
+            'مجتمع چاپ و بسته‌بندی نجم؛ مجهز به خطوط چاپ افست ۵ رنگ هایدلبرگ، دایکات اتوماتیک بوبست و تولید تخصصی جعبه‌های مقوایی و دارویی در تهران.'
         },
         { property: 'og:type', content: 'website' },
         { property: 'og:url', content: 'https://chapenajm.com' },
@@ -51,12 +52,12 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary_large_image' },
         {
           name: 'twitter:title',
-          content: 'Najm Printing & Packaging | Quality Printing Solutions'
+          content: 'مجتمع چاپ و بسته‌بندی نجم | چاپ افست و جعبه‌سازی'
         },
         {
           name: 'twitter:description',
           content:
-            'Najm Printing & Packaging offers high-quality printing solutions and customized packaging for businesses in Tehran, Iran.'
+            'مجتمع چاپ و بسته‌بندی نجم؛ تولید انواع جعبه مقوایی، دارویی و هاردباکس با دستگاه‌های هایدلبرگ و بوبست در تهران.'
         },
         {
           name: 'twitter:image',
@@ -64,9 +65,7 @@ export default defineNuxtConfig({
         }
       ],
       link: [
-        { rel: 'alternate', hreflang: 'en', href: 'https://chapenajm.com/en' },
-        { rel: 'alternate', hreflang: 'ar', href: 'https://chapenajm.com/ar' },
-        { rel: 'alternate', hreflang: 'fa', href: 'https://chapenajm.com/fa' },
+        { rel: 'alternate', type: 'text/plain', href: '/llms.txt', title: 'LLM Knowledge File' },
         { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
         {
           rel: 'apple-touch-icon',
@@ -110,38 +109,6 @@ export default defineNuxtConfig({
 
         // Font Preload Links (existing utility)
         ...fontPreloadLinks
-      ],
-      script: [
-        {
-          type: 'application/ld+json',
-          children: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: 'Najm Printing & Packaging',
-            url: 'https://chapenajm.com',
-            logo: 'https://chapenajm.com/najm-logo.png',
-            contactPoint: {
-              '@type': 'ContactPoint',
-              telephone: '+98 21 6679 7911',
-              contactType: 'customer service',
-              areaServed: 'IR',
-              availableLanguage: ['Persian', 'English']
-            },
-            address: {
-              '@type': 'PostalAddress',
-              streetAddress: 'Kooy-e-Mehrzad, M8F5+CC8',
-              addressLocality: 'Tehran',
-              addressRegion: 'Tehran Province',
-              postalCode: '12345678',
-              addressCountry: 'IR'
-            },
-            sameAs: [
-              'https://www.facebook.com/NajmPrinting',
-              'https://twitter.com/NajmPrinting',
-              'https://www.linkedin.com/company/najmprinting'
-            ]
-          })
-        }
       ]
     }
   },

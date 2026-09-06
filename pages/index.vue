@@ -65,6 +65,20 @@ provide('homeUI', ui)                 // now all children can inject
 /* NEW: register slug/language for the edit system */
 const { state } = useAdminEditable('home')
 
+// Google Search Vitrine, Sitelinks SearchBox, Knowledge Graph & FAQ Rich Results
+useAppSeo({
+  title: {
+    fa: 'مجتمع چاپ و بسته‌بندی نجم | چاپ افست ۵ رنگ و جعبه‌سازی صنعتی',
+    en: 'Najm Printing & Packaging | Heidelberg Offset & Luxury Rigid Boxes',
+    ar: 'مجمع نجم للطباعة والتغليف | طباعة أوفست ٥ ألوان وتغليف فاخر'
+  },
+  description: {
+    fa: 'مجتمع چاپ و بسته‌بندی نجم؛ مجهز به ماشین‌آلات چاپ افست ۵ رنگ هایدلبرگ، لیتوگرافی حرارتی CTP، دایکات تمام اتوماتیک بوبست و تولید تخصصی انواع جعبه مقوایی و هاردباکس لوکس در تهران.',
+    en: 'Najm Printing & Packaging Complex operates high-speed 5-color Heidelberg Speedmaster presses, Bobst automated die-cutting, and certified pharmaceutical, cosmetic, and rigid box production.',
+    ar: 'مجمع نجم المتخصص للطباعة والتغليف: أحدث ماكينات هايدلبرغ ٥ ألوان، قوالب بوبست، علب الأدوية وهاردبوكس المجهزة بأعلى معايير إدارة الألوان ISO 12647-2.'
+  },
+  slug: '/'
+})
 
 import SceneSlider from '~/components/scenes/SceneSlider.vue'
 import SceneFinalMessage from '~/components/scenes/SceneFinalMessage.vue'

@@ -11,19 +11,15 @@
 
 
   
-  <ClientOnly fallback="">
-    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback bg-red">
+    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback">
       <div id="smooth-content">
         <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
-          
           <slot />
         </div>
 
         <Footer2 />
       </div>
     </div>
-
-  </ClientOnly>
 </template>
 
   <script setup lang="ts">
