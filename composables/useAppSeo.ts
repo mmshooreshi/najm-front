@@ -35,6 +35,7 @@ export function useAppSeo(options: SeoOptions = {}) {
   })
 
   // Title calculation
+  // Title calculation
   const pageTitle = computed(() => {
     let raw = ''
     if (typeof options.title === 'object' && options.title !== null) {
@@ -43,9 +44,18 @@ export function useAppSeo(options: SeoOptions = {}) {
       raw = options.title
     }
     if (!raw) {
-      if (currentLang.value === 'EN') return `${brandName.value} | Industrial Printing & Luxury Packaging Solutions`
-      if (currentLang.value === 'AR') return `${brandName.value} | حلول الطباعة الأوفست والتغليف الفاخر`
-      return `${brandName.value} | خدمات تخصصی چاپ افست و جعبه‌سازی صنعتی`
+      if (currentLang.value === 'EN') return `${brandName.value} | Industrial Printing & Luxury Packaging`
+      if (currentLang.value === 'AR') return `${brandName.value} | طباعة أوفست وتغليف فاخر`
+      return `${brandName.value} | چاپ افست و جعبه‌سازی صنعتی`
+    }
+    // Check if brandName is already included in raw to prevent ugly duplicate titles
+    if (
+      raw.includes(brandName.value) ||
+      raw.includes('چاپ و بسته‌بندی نجم') ||
+      raw.includes('چاپ نجم') ||
+      raw.includes('Najm Printing')
+    ) {
+      return raw
     }
     return `${raw} | ${brandName.value}`
   })
@@ -59,12 +69,12 @@ export function useAppSeo(options: SeoOptions = {}) {
       return options.description
     }
     if (currentLang.value === 'EN') {
-      return 'Najm Printing & Packaging Complex in Tehran, operating 5-color Heidelberg Speedmaster presses, Bobst die-cutting, CTP thermal plates, and luxury rigid box packaging with ISO 12647-2 color fidelity.'
+      return 'Najm Printing & Packaging Complex: Custom cardboard boxes, luxury rigid boxes, and premium packaging solutions with highest printing quality in Tehran.'
     }
     if (currentLang.value === 'AR') {
-      return 'مجمع نجم المتخصص للطباعة والتغليف الصناعي في طهران، ماكينات هايدلبرغ ٥ ألوان، قص وقوالب بوبست الأوتوماتيكية، علب الكرتون الفاخرة وهاردبوكس بأعلى معايير الجودة.'
+      return 'مجمع نجم للطباعة والتغليف: تصميم وتصنيع علب الكرتون الفاخرة، هاردبوکس، والتغليف الدوائي بأعلى معايير الجودة في طهران.'
     }
-    return 'مجتمع چاپ و بسته‌بندی نجم؛ مجهز به پیشرفته‌ترین ماشین‌آلات چاپ افست ۵ رنگ هایدلبرگ، لیتوگرافی حرارتی CTP، خطوط اتوماتیک جعبه‌سازی، هاردباکس و خدمات تکمیلی در تهران.'
+    return 'مجتمع چاپ و بسته‌بندی نجم؛ طراحی و تولید انواع جعبه‌های مقوایی، هاردباکس و بسته‌بندی‌های لوکس با بالاترین استانداردهای چاپ در تهران.'
   })
 
   // Canonical base URL
@@ -87,7 +97,7 @@ export function useAppSeo(options: SeoOptions = {}) {
     },
     {
       question: 'چه ماشین‌آلات و خطوط چاپی در چاپ نجم مستقر هستند؟',
-      answer: 'مجتمع مجهز به خطوط چاپ افست ۵ رنگ ورقی هایدلبرگ Speedmaster، پلیت‌ستر حرارتی هایدلبرگ Suprasetter CTP، لچک و دایکات تمام اتوماتیک Bobst، طلاکوب گرم و خطوط اتوماتیک جعبه‌چسبانی با استاندارد ISO 12647-2 می‌باشد.'
+      answer: 'مجتمع مجهز به خطوط چاپ افست ورقی هایدلبرگ Speedmaster، پلیت‌ستر حرارتی CTP، دستگاه‌های دایکات و تیغ‌زنی تمام اتوماتیک، طلاکوب گرم و خطوط جعبه‌چسبانی مدرن با استاندارد ISO 12647-2 می‌باشد.'
     },
     {
       question: 'مدت زمان نمونه‌سازی و تحویل نهایی سفارشات چقدر است؟',
@@ -101,15 +111,110 @@ export function useAppSeo(options: SeoOptions = {}) {
 
   const activeFaqs = options.faqItems && options.faqItems.length > 0 ? options.faqItems : defaultFaqs
 
-  // Google Sitelinks Navigation Items
-  const siteNavigationItems = [
-    { name: 'کاتالوگ جامع محصولات و بسته‌بندی', url: 'https://chapenajm.com/catalog' },
-    { name: 'خطوط تولید و ماشین‌آلات چاپ', url: 'https://chapenajm.com/facilities' },
-    { name: 'استعلام تیراژ و مشاوره تخصصی', url: 'https://chapenajm.com/consultation' },
-    { name: 'خدمات چاپ افست و جعبه‌سازی', url: 'https://chapenajm.com/services' },
-    { name: 'درباره مجتمع چاپ نجم', url: 'https://chapenajm.com/about' },
-    { name: 'تماس با کارخانه و دفاتر فروش', url: 'https://chapenajm.com/contact' }
-  ]
+  // Google Sitelinks Navigation Items (6-Pack with Titles & Rich Descriptions for Google SERP)
+  const siteNavigationItems = computed(() => {
+    if (currentLang.value === 'EN') {
+      return [
+        {
+          name: 'Contact & Location',
+          description: 'Direct sales phone lines, factory address in Tehran, business hours, and quotation inquiries.',
+          url: `${baseUrl}/contact`
+        },
+        {
+          name: 'Products & Packaging',
+          description: 'Custom cardboard boxes, pharmaceutical packaging, food grade cartons, and luxury rigid boxes.',
+          url: `${baseUrl}/products`
+        },
+        {
+          name: 'Comprehensive Catalog',
+          description: 'Download industrial product catalog, view past works, and packaging structural specifications.',
+          url: `${baseUrl}/catalog`
+        },
+        {
+          name: 'Printing Facilities & Machinery',
+          description: 'Advanced multi-color Heidelberg offset presses, pre-press CTP plates, and automated finishing lines.',
+          url: `${baseUrl}/facilities`
+        },
+        {
+          name: 'About Najm Complex',
+          description: '25+ years of continuous printing heritage, ISO color standards, and industrial packaging vision.',
+          url: `${baseUrl}/about`
+        },
+        {
+          name: 'Consultation & Pricing',
+          description: 'Free packaging engineering consultation, paperboard selection, and quotation calculation.',
+          url: `${baseUrl}/consultation`
+        }
+      ]
+    }
+    if (currentLang.value === 'AR') {
+      return [
+        {
+          name: 'اتصل بنا',
+          description: 'أرقام الاتصال المباشر، عنوان المصنع في طهران، وساعات العمل واستشارات المبيعات.',
+          url: `${baseUrl}/contact`
+        },
+        {
+          name: 'المنتجات والتغليف',
+          description: 'علب الكرتون المخصصة، التغليف الدوائي، علب الأغذية، وعلب هاردبوكس الفاخرة.',
+          url: `${baseUrl}/products`
+        },
+        {
+          name: 'كتالوج المنتجات',
+          description: 'تحميل كتالوج المنتجات الصناعية، الاطلاع على نماذج الأعمال والمواصفات الفنية.',
+          url: `${baseUrl}/catalog`
+        },
+        {
+          name: 'الماكينات والتجهيزات',
+          description: 'ماكينات هايدلبرغ ٥ ألوان المتطورة، خطوط التقطيع والتشطيب الآلية، والليثوغرافيا الحرارية CTP.',
+          url: `${baseUrl}/facilities`
+        },
+        {
+          name: 'حول مجمع نجم',
+          description: 'أكثر من ٢٥ عاماً من الخبرة في صناعة الطباعة والتغليف ومعايير إدارة الألوان ISO.',
+          url: `${baseUrl}/about`
+        },
+        {
+          name: 'استشارة واستعلام الأسعار',
+          description: 'استشارات هندسة التغليف واختيار نوع الكرتون وحساب تكلفة الإنتاج والتوريد.',
+          url: `${baseUrl}/consultation`
+        }
+      ]
+    }
+    // Persian Default
+    return [
+      {
+        name: 'تماس با ما',
+        description: 'اطلاعات تماس مستقیم، شماره تلفن‌های کارشناسان فروش، نشانی کارخانه در تهران و ساعات کاری.',
+        url: `${baseUrl}/contact`
+      },
+      {
+        name: 'محصولات و بسته‌بندی',
+        description: 'تولید تخصصی انواع جعبه مقوایی، دارویی، بهداشتی، فست‌فود، بگ شاپینگ و هاردباکس‌های لوکس.',
+        url: `${baseUrl}/products`
+      },
+      {
+        name: 'کاتالوگ جامع محصولات',
+        description: 'مشاهده و دانلود کاتالوگ صنعتی محصولات، نمونه‌کارهای اجرا شده و مشخصات فنی بسته‌بندی.',
+        url: `${baseUrl}/catalog`
+      },
+      {
+        name: 'خطوط تولید و ماشین‌آلات',
+        description: 'خطوط پیشرفته چاپ افست ورقی هایدلبرگ، لیتوگرافی هوشمند CTP و تجهیزات اتوماتیک جعبه‌چسبانی.',
+        url: `${baseUrl}/facilities`
+      },
+      {
+        name: 'درباره مجتمع چاپ نجم',
+        description: 'بیش از ۲۵ سال پیشینه مستمر صنعتی، استانداردهای مدیریت کیفیت رنگ ISO و تعهد به مشتریان.',
+        url: `${baseUrl}/about`
+      },
+      {
+        name: 'مشاوره و استعلام قیمت',
+        description: 'مشاوره رایگان مهندسی بسته‌بندی، انتخاب گرماژ مقوا، طراحی ماکت و محاسبه دقیق تیراژ و هزینه.',
+        url: `${baseUrl}/consultation`
+      }
+    ]
+  })
 
   // Breadcrumbs
   const breadcrumbItems = computed(() => {
@@ -162,7 +267,7 @@ export function useAppSeo(options: SeoOptions = {}) {
         '@type': ['Organization', 'LocalBusiness', 'Corporation'],
         '@id': `${baseUrl}/#organization`,
         name: brandName.value,
-        legalName: 'مجتمع صنایع چاپ و بسته‌بندی نجم',
+        legalName: 'مجتمع چاپ و بسته‌بندی نجم',
         url: baseUrl,
         logo: {
           '@type': 'ImageObject',
@@ -174,24 +279,24 @@ export function useAppSeo(options: SeoOptions = {}) {
         description: metaDescription.value,
         foundingDate: '1999',
         telephone: '+98 21 6679 7911',
-        email: 'info@najmprint.com',
+        email: 'info@chapenajm.com',
         priceRange: '$$$',
         currenciesAccepted: 'IRR, AED, EUR, USD',
         paymentAccepted: 'Cash, Credit Card, Bank Wire',
         address: {
           '@type': 'PostalAddress',
-          streetAddress: 'تهران، جاده مخصوص کرج، کیلومتر ۱۱، شهرک صنعتی نجم، پلاک ۲۴',
+          streetAddress: 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶',
           addressLocality: 'Tehran',
           addressRegion: 'Tehran Province',
-          postalCode: '1389712345',
+          postalCode: '1387813111',
           addressCountry: 'IR'
         },
         geo: {
           '@type': 'GeoCoordinates',
-          latitude: 35.713097,
-          longitude: 51.427423
+          latitude: 35.6734868,
+          longitude: 51.3090102
         },
-        hasMap: 'https://maps.google.com/?q=35.713097,51.427423',
+        hasMap: 'https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA',
         openingHoursSpecification: [
           {
             '@type': 'OpeningHoursSpecification',
@@ -216,8 +321,15 @@ export function useAppSeo(options: SeoOptions = {}) {
           },
           {
             '@type': 'ContactPoint',
-            telephone: '+98 21 6622 9900',
+            telephone: '+98 21 6678 9577',
             contactType: 'sales',
+            areaServed: 'IR',
+            availableLanguage: ['Persian', 'English']
+          },
+          {
+            '@type': 'ContactPoint',
+            telephone: '+98 990 340 0074',
+            contactType: 'direct mobile & whatsapp',
             areaServed: 'IR',
             availableLanguage: ['Persian', 'English']
           }
@@ -232,17 +344,20 @@ export function useAppSeo(options: SeoOptions = {}) {
           reviewCount: '128'
         },
         knowsAbout: [
-          'چاپ افست ۵ رنگ ورقی هایدلبرگ',
-          'تولید جعبه مقوایی و هاردباکس تخصصی',
-          'بسته‌بندی دارویی و بهداشتی با مقوای ایندربرد',
-          'دایکات و خط‌تا با ماشین‌آلات بوبست Bobst',
-          'طلاکوب و یووی موضعی برجسته',
-          'استاندارد مدیریت رنگ ISO 12647-2'
+          'چاپ افست هایدلبرگ دوورقی ۵ رنگ SM74',
+          'چاپ افست رولند ۷۰۰ و رولند ۲۰۰',
+          'سلفون حرارتی اتوماتیک Auto band',
+          'تولید انواع جعبه مقوایی و بهداشتی',
+          'جعبه‌های دارویی طبق استانداردهای بهداشت',
+          'تولید هاردباکس لوکس و جعبه‌های فانتزی',
+          'یووی سیلندری و طلاکوب',
+          'صحافی، تاکنی اشتال و مفتول ریلی مولر مارتینی',
+          'برش پولار ۱۱۵ برنامه‌دار'
         ],
         sameAs: [
-          'https://www.linkedin.com/company/najmprinting',
-          'https://www.instagram.com/najmprinting',
-          'https://twitter.com/NajmPrinting'
+          'https://www.instagram.com/chape_najm/',
+          'https://t.me/chapenajm',
+          'https://ir.linkedin.com/in/chape-najm-638103334'
         ]
       },
 
@@ -250,14 +365,22 @@ export function useAppSeo(options: SeoOptions = {}) {
       {
         '@type': 'ItemList',
         '@id': `${baseUrl}/#sitelinks`,
-        name: 'بخش‌های اصلی مجتمع چاپ و بسته‌بندی نجم',
-        itemListElement: siteNavigationItems.map((item, idx) => ({
+        name: brandName.value + (currentLang.value === 'EN' ? ' - Quick Navigation' : ' - بخش‌های اصلی و دسترسی سریع'),
+        itemListElement: siteNavigationItems.value.map((item, idx) => ({
           '@type': 'SiteNavigationElement',
           position: idx + 1,
           name: item.name,
+          description: item.description,
           url: item.url
         }))
       },
+      ...siteNavigationItems.value.map((item, idx) => ({
+        '@type': 'SiteNavigationElement',
+        '@id': `${item.url}/#navigation-${idx + 1}`,
+        name: item.name,
+        description: item.description,
+        url: item.url
+      })),
 
       // 4. BreadcrumbList for Clean Google SERP Navigation
       {

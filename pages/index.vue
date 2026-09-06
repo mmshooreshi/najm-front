@@ -68,14 +68,14 @@ const { state } = useAdminEditable('home')
 // Google Search Vitrine, Sitelinks SearchBox, Knowledge Graph & FAQ Rich Results
 useAppSeo({
   title: {
-    fa: 'مجتمع چاپ و بسته‌بندی نجم | چاپ افست ۵ رنگ و جعبه‌سازی صنعتی',
-    en: 'Najm Printing & Packaging | Heidelberg Offset & Luxury Rigid Boxes',
-    ar: 'مجمع نجم للطباعة والتغليف | طباعة أوفست ٥ ألوان وتغليف فاخر'
+    fa: 'مجتمع چاپ و بسته‌بندی نجم | چاپ افست و جعبه‌سازی',
+    en: 'Najm Printing & Packaging | Offset Printing & Rigid Boxes',
+    ar: 'مجمع نجم للطباعة والتغليف | طباعة أوفست وتغليف فاخر'
   },
   description: {
-    fa: 'مجتمع چاپ و بسته‌بندی نجم؛ مجهز به ماشین‌آلات چاپ افست ۵ رنگ هایدلبرگ، لیتوگرافی حرارتی CTP، دایکات تمام اتوماتیک بوبست و تولید تخصصی انواع جعبه مقوایی و هاردباکس لوکس در تهران.',
-    en: 'Najm Printing & Packaging Complex operates high-speed 5-color Heidelberg Speedmaster presses, Bobst automated die-cutting, and certified pharmaceutical, cosmetic, and rigid box production.',
-    ar: 'مجمع نجم المتخصص للطباعة والتغليف: أحدث ماكينات هايدلبرغ ٥ ألوان، قوالب بوبست، علب الأدوية وهاردبوكس المجهزة بأعلى معايير إدارة الألوان ISO 12647-2.'
+    fa: 'مجتمع چاپ و بسته‌بندی نجم؛ طراحی و تولید انواع جعبه‌های مقوایی، هاردباکس و بسته‌بندی‌های لوکس با بالاترین کیفیت چاپ در تهران.',
+    en: 'Najm Printing & Packaging Complex: Custom cardboard boxes, luxury rigid boxes, and premium packaging solutions with highest printing quality in Tehran.',
+    ar: 'مجمع نجم للطباعة والتغليف: تصميم وتصنيع علب الكرتون الفاخرة، هاردبوكس، والتغليف الدوائي بأعلى معايير الجودة في طهران.'
   },
   slug: '/'
 })

@@ -507,9 +507,6 @@ onUnmounted(() => {
 .slider-container {
     direction: ltr !important;
     position: relative;
-    #left: 55% !important;
-    #right: auto !important;
-    #transform: translateX(-50%) !important;
     width: 100vw !important;
     overflow-x: clip;
     overflow-y: unset;

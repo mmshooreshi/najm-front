@@ -46,9 +46,9 @@
         <div class="flex flex-col gap-2 max-w-xs">
           <h2 class="text-xl font-bold mb-2">ارتباط با ما</h2>
           <p class="text-sm">
-            تلفن: +98 21 1234 5678
+            تلفن: ۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳
             <br />
-            ایمیل: <a href="mailto:chappim@gmail.com" class="underline">chappim@gmail.com</a>
+            ایمیل: <a href="mailto:info@chapenajm.com" class="underline">info@chapenajm.com</a>
           </p>
           <div class="w-full h-32 mt-2">
             <!-- Example map or placeholder for your map image -->
@@ -65,7 +65,7 @@
       <div
         class="border-t border-gray-200 text-center pt-4 mt-8 text-sm text-gray-500"
       >
-        کلیه حقوق این سایت متعلق به مجموعه چاپ پیمی می‌باشد
+        کلیه حقوق این سایت متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد
       </div>
     </footer>
   </template>

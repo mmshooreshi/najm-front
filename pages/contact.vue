@@ -40,7 +40,7 @@
           <p class="text-xs text-gray-500 mb-3 sm:mb-4" v-editable="'phoneSub'">{{ uiContent.phoneSub || 'پاسخگویی در ساعات کاری' }}</p>
         </div>
         <div class="space-y-2 border-t border-gray-100 pt-3 sm:pt-4">
-          <a :href="`tel:${uiContent.phone || '02166229900'}`" class="block text-sm font-semibold text-gray-800 hover:text-najmgreen ltr font-mono" v-editable="'phone'">
+          <a :href="`tel:${uiContent.phone || '02166797911'}`" class="block text-sm font-semibold text-gray-800 hover:text-najmgreen ltr font-mono" v-editable="'phone'">
             {{ uiContent.phone }}
           </a>
         </div>
@@ -240,19 +240,37 @@ const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const { ui, allUi } = usePageUI('contact')
 useAdminEditable('contact', allUi)
 
+useAppSeo({
+  title: {
+    fa: 'تماس با ما | مجتمع چاپ و بسته‌بندی نجم',
+    en: 'Contact Us | Najm Printing & Packaging',
+    ar: 'اتصل بنا | مجمع نجم للطباعة والتغليف'
+  },
+  description: {
+    fa: 'راه‌های ارتباطی مستقیم، تلفن کارشناسان فروش، ایمیل دریافت فایل‌های چاپی و نشانی کارخانه مجتمع چاپ و بسته‌بندی نجم در تهران برای هماهنگی جلسات و سفارشات.',
+    en: 'Contact information, direct sales numbers, file submission email, and factory address of Najm Printing & Packaging in Tehran for quotations and consultation.',
+    ar: 'معلومات الاتصال المباشر، أرقام المبيعات، البريد الإلكتروني لاستلام ملفات التصميم، وعنوان مصنع مجمع نجم للطباعة والتغليف في طهران.'
+  },
+  slug: '/contact',
+  breadcrumbs: [
+    { name: 'خانه', url: 'https://chapenajm.com' },
+    { name: 'تماس با ما', url: 'https://chapenajm.com/contact' }
+  ]
+})
+
 const fallbackContact = {
   badge: 'راه‌های ارتباطی و مشاوره تخصصی',
   title: 'ارتباط مستقیم با کارشناسان چاپ و بسته‌بندی نجم',
   description: 'برای مشاوره انتخاب متریال، استعلام قیمت تیراژ، رزرو زمان چاپ یا هماهنگی بازدید حضوری از کارخانه با ما در تماس باشید.',
   phoneLabel: 'تماس تلفنی مستقیم',
   phoneSub: 'پاسخگویی در ساعات کاری',
-  phone: '۰۲۱-۶۶۲۲۹۹۰۰',
+  phone: '۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳',
   emailLabel: 'مکاتبه و ارسال فایل',
   emailSub: 'ارسال فایل‌های طراحی و پیش‌فاکتور',
   email: 'info@chapenajm.com',
   addressLabel: 'دفتر مرکزی و کارخانه',
   addressSub: 'بازدید و هماهنگی جلسه حضوری',
-  address: 'تهران، جاده مخصوص کرج، کیلومتر ۱۱، خیابان صنعتی نجم، پلاک ۲۴',
+  address: 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶',
   copyAddressBtn: 'کپی نشانی',
   copiedText: 'نشانی کپی شد!',
   hoursLabel: 'ساعات کاری و پذیرش',

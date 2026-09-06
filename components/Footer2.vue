@@ -150,10 +150,11 @@ const fallbackHero = [
 ]
 
 const fallbackContact = [
-  { name: 'تلفن مستقیم', value: '+98 21 6679 7911', slug: 'tel:+982166797911' },
-  { name: 'فکس کارخانه', value: '+98 21 0053 6712', slug: 'fax:+982100536712' },
-  { name: 'پست الکترونیک', value: 'info@najmprint.com', slug: 'mailto:info@najmprint.com' },
-  { name: 'ساعت‌های کاری', value: 'شنبه تا چهارشنبه: ۹ الی ۱۸ | پنج‌شنبه‌ها: ۹ الی ۱۴' }
+  { name: 'تلفن مستقیم', value: '۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳', slug: 'tel:+982166797911' },
+  { name: 'فکس و خط دوم', value: '۰۲۱-۶۶۷۸۹۵۷۷', slug: 'tel:+982166789577' },
+  { name: 'همراه و مشاوره', value: '۰۹۹۰۳۴۰۰۰۷۴', slug: 'tel:+989903400074' },
+  { name: 'نشانی کارخانه', value: 'بزرگراه فتح، نبش کوچه تلفن‌خانه، پلاک ۱۶۶', slug: 'https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA' },
+  { name: 'پست الکترونیک', value: 'info@chapenajm.com', slug: 'mailto:info@chapenajm.com' }
 ]
 
 const accordionSections = computed(() => {

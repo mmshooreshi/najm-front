@@ -37,18 +37,18 @@ export default defineEventHandler(async () => {
           title: 'صفحه اصلی',
           uiData: {
             fa: {
-              'hero.title': 'مجتمع تخصصی چاپ و بسته‌بندی نجم',
+              'hero.title': 'مجتمع چاپ و بسته‌بندی نجم',
               'hero.subtitle': 'پیشرفته‌ترین خطوط تولید کارتن، جعبه سخت و لفاف‌های صنعتی در ایران با تکنولوژی روز دنیا',
               'hero.buttonText': 'درخواست مشاوره تخصصی',
-              'contact.phone': '۰۲۱-۸۸۹۹۷۷۶۶',
-              'contact.address': 'تهران، جاده مخصوص کرج، کیلومتر ۱۴، مجتمع چاپ نجم'
+              'contact.phone': '۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳',
+              'contact.address': 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶'
             },
             en: {
-              'hero.title': 'Najm Specialized Printing & Packaging Complex',
+              'hero.title': 'Najm Printing & Packaging Complex',
               'hero.subtitle': 'Advanced industrial production lines for cartons, rigid boxes, and packaging in Iran.',
               'hero.buttonText': 'Request Free Consultation',
-              'contact.phone': '+98 21 88997766',
-              'contact.address': 'Tehran, Karaj Special Road, Km 14, Najm Printing Complex'
+              'contact.phone': '+98 21 6679 7911-3',
+              'contact.address': 'No. 166, Corner of Telefonkhaneh Alley, Beginning of 45-Metri Zarand, Under Shir Pasteurizeh Bridge, Fath Highway, Tehran, Iran'
             }
           }
         },

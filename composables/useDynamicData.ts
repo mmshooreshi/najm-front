@@ -9,16 +9,16 @@ export function useSiteSettings() {
     default: () => ({
       ok: true,
       settings: {
-        siteTitle: "مجتمع تخصصی چاپ و بسته‌بندی نجم",
-        phone: "۰۲۱ - ۶۶۰۰ ۰۰۰۰",
-        mobile: "۰۹۱۲ ۰۰۰ ۰۰۰۰",
-        email: "info@chapnajm.com",
-        address: "تهران، دفتر مرکزی و کارخانه چاپ نجم",
+        siteTitle: "مجتمع چاپ و بسته‌بندی نجم",
+        phone: "۰۲۱-۶۶۷۹۷۹۱۱",
+        mobile: "۰۹۹۰۳۴۰۰۰۷۴",
+        email: "info@chapenajm.com",
+        address: "تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶",
         workingHours: "شنبه تا چهارشنبه ۸:۳۰ الی ۱۸:۰۰",
         socialLinks: {
-          whatsapp: "https://wa.me/989120000000",
-          telegram: "https://t.me/chapnajm",
-          instagram: "https://instagram.com/chapnajm"
+          whatsapp: "https://wa.me/989903400074",
+          telegram: "https://t.me/chapenajm",
+          instagram: "https://www.instagram.com/chape_najm/"
         }
       }
     })

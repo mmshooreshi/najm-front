@@ -203,16 +203,20 @@ const uiContent = computed(() => {
 
 useAppSeo({
   title: {
-    fa: 'دانلود کاتالوگ جامع چاپ و بسته‌بندی ۱۴۰۵',
-    en: 'Official Industrial Packaging Catalogs 2026',
-    ar: 'تحميل الكتالوج الشامل للطباعة والتغليف الفاخر'
+    fa: 'کاتالوگ جامع محصولات و بسته‌بندی',
+    en: 'Industrial Packaging Catalogs',
+    ar: 'كتالوج المنتجات والتغليف الشامل'
   },
   description: {
-    fa: 'دانلود مستقیم فایل PDF کاتالوگ‌های رسمی مجتمع چاپ و بسته‌بندی نجم؛ شامل کاتالوگ عمومی ۱۴۰۵، راهنمای جعبه‌های لوکس هاردباکس و بسته‌بندی‌های دارویی.',
-    en: 'Download official high-resolution PDF catalogs from Najm Printing & Packaging Complex: Master 2026 production catalog, luxury rigid boxes, and pharma packaging specs.',
-    ar: 'تحميل مباشر للكتالوجات الرسمية لمجمع نجم للطباعة والتغليف: كتالوج عام ٢٠٢٦، علب الكرتون الفاخرة، وهاردبوكس مع المواصفات الفنية الكاملة.'
+    fa: 'مشاهده و دانلود کاتالوگ‌های رسمی مجتمع چاپ و بسته‌بندی نجم شامل جعبه‌های مقوایی، هاردباکس لوکس، بسته‌بندی دارویی و مشخصات فنی گرماژ.',
+    en: 'Download official high-resolution PDF catalogs from Najm Printing & Packaging Complex: Master production catalog, luxury rigid boxes, and packaging specs.',
+    ar: 'تحميل مباشر للكتالوجات الرسمية لمجمع نجم للطباعة والتغليف: كتالوج المنتجات، علب الكرتون الفاخرة، وهاردبوكس مع المواصفات الفنية.'
   },
   slug: '/catalog',
+  breadcrumbs: [
+    { name: 'خانه', url: 'https://chapenajm.com' },
+    { name: 'کاتالوگ جامع', url: 'https://chapenajm.com/catalog' }
+  ],
   extraSchemas: [
     {
       '@type': 'CollectionPage',

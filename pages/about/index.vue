@@ -240,6 +240,24 @@ const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const { ui, allUi } = usePageUI('about')
 useAdminEditable('about', allUi)
 
+useAppSeo({
+  title: {
+    fa: 'درباره ما | مجتمع چاپ و بسته‌بندی نجم',
+    en: 'About Us | Najm Printing & Packaging',
+    ar: 'حول الشركة | مجمع نجم للطباعة والتغليف'
+  },
+  description: {
+    fa: 'آشنایی با تاریخچه ۲۵ ساله مجتمع چاپ و بسته‌بندی نجم، ارزش‌های سازمانی، رویکرد مهندسی در ساختار بسته‌بندی و تعهد به استانداردهای بین‌المللی چاپ.',
+    en: 'Learn about Najm Printing & Packaging Complex, 25+ years of excellence, advanced packaging engineering, and commitment to global quality standards.',
+    ar: 'تعرف على مسيرة مجمع نجم للطباعة والتغليف الممتدة لأكثر من ٢٥ عاماً، رؤيتنا الهندسية في صناعة الكرتون، والتزامنا بأعلى معايير الجودة العالمية.'
+  },
+  slug: '/about',
+  breadcrumbs: [
+    { name: 'خانه', url: 'https://chapenajm.com' },
+    { name: 'درباره ما', url: 'https://chapenajm.com/about' }
+  ]
+})
+
 const sections = computed(() => ui.value?.nav || [
   { id: 'vision', label: 'معرفی' },
   { id: 'story', label: 'تیم فنی' },

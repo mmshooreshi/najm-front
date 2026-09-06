@@ -316,6 +316,24 @@ const viewMode = ref<'grid' | 'list'>('grid')
 const { ui, allUi } = usePageUI('products')
 useAdminEditable('products', allUi)
 
+useAppSeo({
+  title: {
+    fa: 'محصولات و بسته‌بندی | مجتمع چاپ و بسته‌بندی نجم',
+    en: 'Packaging Products | Najm Printing & Packaging',
+    ar: 'المنتجات والتغليف | مجمع نجم للطباعة والتغليف'
+  },
+  description: {
+    fa: 'تولید تخصصی انواع جعبه‌های مقوایی، دارویی و بهداشتی، بگ‌های خرید و هاردباکس‌های لوکس با بالاترین استانداردهای چاپ و بسته‌بندی در تهران.',
+    en: 'Custom cardboard boxes, pharmaceutical cartons, food packaging, and luxury rigid boxes manufactured with highest printing standards at Najm Complex.',
+    ar: 'تصنيع علب الكرتون الدوائية والغذائية، أكياس التسوق، وعلب هاردبوكس الفاخرة بأعلى معايير الجودة والطباعة في طهران.'
+  },
+  slug: '/products',
+  breadcrumbs: [
+    { name: 'خانه', url: 'https://chapenajm.com' },
+    { name: 'محصولات و بسته‌بندی', url: 'https://chapenajm.com/products' }
+  ]
+})
+
 const fallbackProductsUI = {
   badge: 'کاتالوگ محصولات و خدمات اختصاصی',
   title: 'محصولات چاپ، ساخت جعبه و بسته‌بندی',

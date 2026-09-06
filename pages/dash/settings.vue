@@ -99,10 +99,10 @@ definePageMeta({
 })
 
 const settings = reactive({
-  phone: '021-88997766',
-  whatsapp: '09120001122',
-  email: 'info@najmpack.ir',
-  address: 'تهران، جاده مخصوص کرج، کیلومتر ۱۴، شهرک صنعتی، مجتمع چاپ و بسته‌بندی نجم'
+  phone: '021-66797911',
+  whatsapp: '09903400074',
+  email: 'info@chapenajm.com',
+  address: 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶'
 })
 
 function saveSettings() {

@@ -307,6 +307,24 @@ const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const { ui, allUi } = usePageUI('consultation')
 useAdminEditable('consultation', allUi)
 
+useAppSeo({
+  title: {
+    fa: 'مشاوره و استعلام قیمت | مجتمع چاپ و بسته‌بندی نجم',
+    en: 'Packaging Consultation & Quotes | Najm Printing',
+    ar: 'استشارة واستعلام الأسعار | مجمع نجم للطباعة والتغليف'
+  },
+  description: {
+    fa: 'مشاوره رایگان مهندسی ساختار جعبه و بسته‌بندی، انتخاب گرماژ مقوا و استعلام هوشمند آنلاین هزینه و تیراژ چاپ افست در مجتمع چاپ نجم.',
+    en: 'Free structural packaging engineering consultation, paperboard selection, and online smart quotation for industrial offset printing and rigid boxes.',
+    ar: 'استشارة هندسة التغليف واختيار نوعية الكرتون وحساب تكلفة الإنتاج والطباعة الأوفست في مجمع نجم للطباعة والتغليف.'
+  },
+  slug: '/consultation',
+  breadcrumbs: [
+    { name: 'خانه', url: 'https://chapenajm.com' },
+    { name: 'مشاوره و استعلام', url: 'https://chapenajm.com/consultation' }
+  ]
+})
+
 const { submitRequest } = useConsultation()
 
 const currentStep = ref(1)

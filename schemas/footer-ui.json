@@ -54,12 +54,13 @@
     ],
     "contact": {
       "items": [
-        { "id": "phone",  "name": "تلفن مستقیم", "value": "+98 21 6679 7911", "slug": "tel:+982166797911", "ltr": true },
-        { "id": "fax",    "name": "فکس کارخانه",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712", "ltr": true },
-        { "id": "email",  "name": "پست الکترونیک", "value": "info@najmprint.com", "slug": "mailto:info@najmprint.com", "ltr": true },
-        { "id": "hours1", "name": "ساعت‌های کاری", "value": "شنبه تا چهارشنبه: ۹ الی ۱۸ | پنج‌شنبه‌ها: ۹ الی ۱۴" }
+        { "id": "phone",  "name": "تلفن مستقیم", "value": "۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳", "slug": "tel:+982166797911", "ltr": true },
+        { "id": "fax",    "name": "فکس و خط دوم",  "value": "۰۲۱-۶۶۷۸۹۵۷۷", "slug": "tel:+982166789577", "ltr": true },
+        { "id": "mobile", "name": "همراه و مشاوره", "value": "۰۹۹۰۳۴۰۰۰۷۴", "slug": "tel:+989903400074", "ltr": true },
+        { "id": "address", "name": "نشانی کارخانه", "value": "بزرگراه فتح، نبش کوچه تلفن‌خانه، پلاک ۱۶۶", "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA" },
+        { "id": "email",  "name": "پست الکترونیک", "value": "info@chapenajm.com", "slug": "mailto:info@chapenajm.com", "ltr": true }
       ],
-      "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
+      "mapUrl": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
     },
     "copyright": "کلیه حقوق مادی و معنوی این وب‌سایت متعلق به مجتمع چاپ و بسته‌بندی نجم می‌باشد."
   },
@@ -118,12 +119,14 @@
     ],
     "contact": {
       "items": [
-        { "id": "phone",  "name": "Direct Phone", "value": "+98 21 6679 7911", "slug": "tel:+982166797911", "ltr": true },
-        { "id": "fax",    "name": "Plant Fax",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712", "ltr": true },
-        { "id": "email",  "name": "Email", "value": "info@najmprint.com", "slug": "mailto:info@najmprint.com", "ltr": true },
+        { "id": "phone",  "name": "Direct Phone", "value": "+98 21 6679 7911-3", "slug": "tel:+982166797911", "ltr": true },
+        { "id": "fax",    "name": "Line 2 / Fax",  "value": "+98 21 6678 9577", "slug": "tel:+982166789577", "ltr": true },
+        { "id": "mobile", "name": "Mobile Consultation", "value": "+98 990 340 0074", "slug": "tel:+989903400074", "ltr": true },
+        { "id": "address", "name": "Address", "value": "Fath Highway, Corner of Telefonkhaneh Alley, No. 166, Tehran", "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA" },
+        { "id": "email",  "name": "Email", "value": "info@chapenajm.com", "slug": "mailto:info@chapenajm.com", "ltr": true },
         { "id": "hours1", "name": "Working Hours", "value": "Sat - Wed: 9:00 - 18:00 | Thu: 9:00 - 14:00" }
       ],
-      "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
+      "mapUrl": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
     },
     "copyright": "All rights reserved by Najm Printing and Packaging Complex."
   },
@@ -182,12 +185,14 @@
     ],
     "contact": {
       "items": [
-        { "id": "phone",  "name": "الهاتف المباشر", "value": "+98 21 6679 7911", "slug": "tel:+982166797911", "ltr": true },
-        { "id": "fax",    "name": "فاكس المصنع",  "value": "+98 21 0053 6712", "slug": "fax:+982100536712", "ltr": true },
-        { "id": "email",  "name": "البريد الإلكتروني", "value": "info@najmprint.com", "slug": "mailto:info@najmprint.com", "ltr": true },
+        { "id": "phone",  "name": "الهاتف المباشر", "value": "+98 21 6679 7911-3", "slug": "tel:+982166797911", "ltr": true },
+        { "id": "fax",    "name": "الخط الثاني والفاكس",  "value": "+98 21 6678 9577", "slug": "tel:+982166789577", "ltr": true },
+        { "id": "mobile", "name": "الجوال والاستشارات", "value": "+98 990 340 0074", "slug": "tel:+989903400074", "ltr": true },
+        { "id": "address", "name": "العنوان", "value": "طريق فتح السريع، ناصية زقاق تلفن خانة، رقم ١٦٦، طهران", "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA" },
+        { "id": "email",  "name": "البريد الإلكتروني", "value": "info@chapenajm.com", "slug": "mailto:info@chapenajm.com", "ltr": true },
         { "id": "hours1", "name": "ساعات العمل", "value": "السبت إلى الأربعاء: ٩:٠٠ - ١٨:٠٠ | الخميس: ٩:٠٠ - ١٤:٠٠" }
       ],
-      "mapUrl": "https://maps.google.com/?q=35.713097,51.427423"
+      "mapUrl": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
     },
     "copyright": "جميع الحقوق محفوظة لمجمع نجم للطباعة والتغليف."
   }

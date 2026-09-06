@@ -143,10 +143,10 @@
             {{ ui.consultationCta?.button || 'درخواست مشاوره و استعلام فنی' }}
           </button>
           <a
-            href="tel:02144556677"
+            href="tel:02166797911"
             class="w-full sm:w-auto px-6 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition text-center font-mono border border-white/20"
           >
-            ۰۲۱ - ۴۴ ۵۵ ۶۶ ۷۷
+            ۰۲۱ - ۶۶ ۷۹ ۷۹ ۱۱
           </a>
         </div>
       </div>
@@ -170,6 +170,24 @@ const { ui } = usePageUI('facilities')
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const { openModal } = useConsultation()
+
+useAppSeo({
+  title: {
+    fa: 'خطوط تولید و ماشین‌آلات چاپ | مجتمع چاپ و بسته‌بندی نجم',
+    en: 'Printing Machinery & Facilities | Najm Printing & Packaging',
+    ar: 'الماكينات والتجهيزات | مجمع نجم للطباعة والتغليف'
+  },
+  description: {
+    fa: 'معرفی خطوط پیشرفته چاپ افست چندرنگ هایدلبرگ، لیتوگرافی مدرن CTP و ماشین‌آلات تکمیلی پس از چاپ و جعبه‌سازی مجتمع چاپ و بسته‌بندی نجم.',
+    en: 'Overview of modern multi-color Heidelberg offset presses, pre-press CTP, and automated finishing lines at Najm Printing & Packaging Complex.',
+    ar: 'استعراض خطوط طباعة الأوفست هايدلبرغ متعددة الألوان، الليثوغرافيا الحديثة CTP، وماكينات التشطيب وتصنيع العلب في مجمع نجم للطباعة والتغليف.'
+  },
+  slug: '/facilities',
+  breadcrumbs: [
+    { name: 'خانه', url: 'https://chapenajm.com' },
+    { name: 'خطوط تولید و ماشین‌آلات', url: 'https://chapenajm.com/facilities' }
+  ]
+})
 
 const activeCategory = ref('all')
 
