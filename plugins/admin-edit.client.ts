@@ -98,6 +98,7 @@ function getOrCreateHoverBadge(): HTMLDivElement {
 
 function showHoverBadge(el: HTMLElement, path: string) {
   if (!state.canEdit || !state.editMode) return
+  if ((el as any)._isFocused || document.activeElement === el) return
   if (
     !el ||
     el.closest('[data-admin-ui="true"]') ||
@@ -285,25 +286,39 @@ export default defineNuxtPlugin(nuxtApp => {
       updateElementState(el, path, state.language)
 
       // Zero-lag, non-destructive input handler
-      const onInput = () => {
-        const text = getText(el)
-        // syncOverrides = false during typing guarantees 0ms lag and prevents cursor jumping!
-        setDraftValue(path, state.language, text, targetSlug, false)
-        updateElementState(el, path, state.language)
+      let inputDebounceTimer: any = null
 
-        if (hoverActiveTarget === el) {
-          showHoverBadge(el, path)
-        }
+      const onInput = () => {
+        // Fast in-memory text reading without forced innerText layout reflow
+        const text = getText(el)
+
+        // Mark local visual dirty state instantly
+        el.classList.add('v-editable--changed')
+        el.setAttribute('data-admin-changed', 'true')
+
+        // Hide hover badge while actively typing so it never obscures the cursor or runs getBoundingClientRect()
+        hideHoverBadge()
+
+        // Debounce store updates so rapid keystrokes (e.g. "aaaaaa") have 0ms latency and 0 CPU thrashing
+        if (inputDebounceTimer) clearTimeout(inputDebounceTimer)
+        inputDebounceTimer = setTimeout(() => {
+          setDraftValue(path, state.language, text, targetSlug, false)
+        }, 200)
       }
 
       const onFocus = () => {
         (el as any)._isFocused = true
+        hideHoverBadge()
         if (state.canEdit && state.editMode) {
           setEditingActive(path, true)
         }
       }
 
       const onBlur = () => {
+        if (inputDebounceTimer) {
+          clearTimeout(inputDebounceTimer)
+          inputDebounceTimer = null
+        }
         (el as any)._isFocused = false
         setEditingActive(null, false)
         const text = getText(el)
@@ -317,7 +332,7 @@ export default defineNuxtPlugin(nuxtApp => {
       }
 
       const onMouseEnter = () => {
-        if (state.canEdit && state.editMode) {
+        if (state.canEdit && state.editMode && !(el as any)._isFocused && document.activeElement !== el) {
           showHoverBadge(el, path)
         }
       }
@@ -355,6 +370,7 @@ export default defineNuxtPlugin(nuxtApp => {
       el.addEventListener('paste', onPaste)
 
       ;(el as any)._adminCleanup = () => {
+        if (inputDebounceTimer) clearTimeout(inputDebounceTimer)
         el.removeEventListener('input', onInput)
         el.removeEventListener('focus', onFocus)
         el.removeEventListener('blur', onBlur)

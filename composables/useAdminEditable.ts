@@ -48,13 +48,13 @@ export function useAdminEditable(slug: string) {
       return
     }
 
-    captureLanguageSnapshot(lang, currentUI)
+    captureLanguageSnapshot(lang, currentUI, slug)
 
     if (!hydrated.has(lang)) {
-      applySnapshotToBaselines(lang)
+      applySnapshotToBaselines(lang, slug)
       hydrated.add(lang)
       if (process.dev) {
-        logger.success('Admin:Edit', `Hydrated editable baselines for [${lang.toUpperCase()}] (${Object.keys(currentUI).length} root keys)`)
+        logger.success('Admin:Edit', `Hydrated editable baselines for [${lang.toUpperCase()}] (${Object.keys(currentUI).length} root keys) for slug: "${slug}"`)
       }
     }
   }, { immediate: true, deep: true })

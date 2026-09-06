@@ -18,12 +18,12 @@
         <div class="flex flex-col space-y-1.5">
           <BaseFooterAccordion
             v-for="(section, sIdx) in accordionSections"
-            :key="section.id || sIdx"
-            :id="section.id"
+            :key="section?.id || sIdx"
+            :id="section?.id || `sec-${sIdx}`"
             :sectionIndex="sIdx"
-            :title="section.name"
-            :items="section.children"
-            :modelValue="openAccordionId === section.id"
+            :title="section?.name || ''"
+            :items="section?.children || []"
+            :modelValue="openAccordionId === (section?.id || `sec-${sIdx}`)"
             @toggle="handleAccordionToggle"
           />
         </div>
@@ -65,24 +65,24 @@
               class="text-white/95 font-bold font-d4 shrink-0"
               v-editable="`contact.items.${index}.name`"
             >
-              {{ item.name }}
+              {{ item?.name || '' }}
             </span>
             <a
-              v-if="item.slug"
+              v-if="item?.slug"
               :href="item.slug"
               class="font-mono text-emerald-200 hover:text-white transition-colors truncate"
               dir="ltr"
               v-editable="`contact.items.${index}.value`"
             >
-              {{ item.value }}
+              {{ item?.value || '' }}
             </a>
             <span
-              v-else
+              v-else-if="item"
               class="break-words text-xs sm:text-sm text-white/90 truncate"
               :class="isRTL ? 'text-right' : 'text-left'"
               v-editable="`contact.items.${index}.value`"
             >
-              <div v-html="item.value" />
+              <div v-html="item?.value || ''" />
             </span>
           </div>
         </div>
@@ -134,6 +134,7 @@ import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { toLocalizedDigits } from '~/utils/digits'
+import { getLocalSchema } from '~/composables/ui/schemaRegistry'
 import Map from '~/components/map.vue'
 
 const { language } = useLocale()
@@ -155,9 +156,32 @@ const fallbackContact = [
   { name: 'ساعت‌های کاری', value: 'شنبه تا چهارشنبه: ۹ الی ۱۸ | پنج‌شنبه‌ها: ۹ الی ۱۴' }
 ]
 
-const accordionSections = computed(() => ui.value?.sections || [])
-const localizedParagraphs = computed(() => ui.value?.hero?.paragraphs || fallbackHero)
-const contactItemsList = computed(() => ui.value?.contact?.items || fallbackContact)
+const accordionSections = computed(() => {
+  const sec = ui.value?.sections
+  if (Array.isArray(sec) && sec.length > 0) {
+    const valid = sec.filter((s: any) => s && typeof s === 'object')
+    if (valid.length > 0) return valid
+  }
+  const local = getLocalSchema('footer')
+  const lang = (language.value || 'FA').toLowerCase()
+  const fallbackSecs = local?.[lang]?.sections || local?.['fa']?.sections || []
+  return fallbackSecs
+})
+
+const localizedParagraphs = computed(() => {
+  const p = ui.value?.hero?.paragraphs
+  if (Array.isArray(p) && p.length > 0) return p
+  return fallbackHero
+})
+
+const contactItemsList = computed(() => {
+  const items = ui.value?.contact?.items
+  if (Array.isArray(items) && items.length > 0) {
+    const valid = items.filter((it: any) => it && typeof it === 'object')
+    if (valid.length > 0) return valid
+  }
+  return fallbackContact
+})
 
 const currentCopyrightText = computed(() => {
   if (ui.value?.copyright) return ui.value.copyright

@@ -82,6 +82,8 @@ export interface AdminEditState {
   pausedMotionElements: Set<HTMLElement>
   // Array Archive Store (slug -> arrayPath -> items)
   archives: Record<string, Record<PathKey, any[]>>
+  // Slug-scoped snapshots to prevent cross-component schema pollution
+  allLangUIBySlug: Record<string, Record<LangCode, Record<string, any>>>
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -91,6 +93,7 @@ export const adminEditState = reactive<AdminEditState>({
   language: '',
   changes: {},
   allLangUI: {},
+  allLangUIBySlug: {},
   clientOverrides: {},
   versions: {},
   lastSavedAt: null,
@@ -137,7 +140,8 @@ export function normalize(str: string | null | undefined): string {
 }
 
 export function getText(el: HTMLElement): string {
-  return normalize(el.innerText ?? el.textContent ?? '')
+  // Use textContent instead of innerText to eliminate forced synchronous layout reflows!
+  return normalize(el.textContent ?? '')
 }
 
 export function deepClone<T>(obj: T): T {
@@ -196,16 +200,24 @@ export function syncLanguage(lang: LangCode) {
   }
 }
 
-/** Freeze & store full-UI snapshot for a language */
-export function captureLanguageSnapshot(lang: LangCode, ui: Record<string, any>) {
+/** Freeze & store full-UI snapshot for a language and slug */
+export function captureLanguageSnapshot(lang: LangCode, ui: Record<string, any>, slug?: string) {
   if (!ui || Object.keys(ui).length === 0) return
 
+  const effectiveSlug = slug || adminEditState.slug || 'home'
   const upper = lang.toUpperCase()
   const lower = lang.toLowerCase()
   const snap = deepClone(ui)
 
-  adminEditState.allLangUI[upper] = snap
-  adminEditState.allLangUI[lower] = snap
+  if (!adminEditState.allLangUIBySlug) adminEditState.allLangUIBySlug = {}
+  if (!adminEditState.allLangUIBySlug[effectiveSlug]) adminEditState.allLangUIBySlug[effectiveSlug] = {}
+  adminEditState.allLangUIBySlug[effectiveSlug][upper] = snap
+  adminEditState.allLangUIBySlug[effectiveSlug][lower] = snap
+
+  if (effectiveSlug === adminEditState.slug || !adminEditState.slug) {
+    adminEditState.allLangUI[upper] = snap
+    adminEditState.allLangUI[lower] = snap
+  }
 }
 
 /** Versions helpers */
@@ -233,8 +245,9 @@ export function getVersions(path: PathKey, lang: LangCode): VersionEntry[] {
 }
 
 /** Hydrate baselines from allLangUI snapshot */
-export function applySnapshotToBaselines(lang: LangCode) {
-  const snap = adminEditState.allLangUI[lang] || adminEditState.allLangUI[lang.toUpperCase()] || adminEditState.allLangUI[lang.toLowerCase()]
+export function applySnapshotToBaselines(lang: LangCode, slug?: string) {
+  const effectiveSlug = slug || adminEditState.slug || 'home'
+  const snap = adminEditState.allLangUIBySlug?.[effectiveSlug]?.[lang] || adminEditState.allLangUI[lang] || adminEditState.allLangUI[lang.toUpperCase()] || adminEditState.allLangUI[lang.toLowerCase()]
   if (!snap) return
 
   function walk(obj: any, prefix = '') {
@@ -251,10 +264,12 @@ export function applySnapshotToBaselines(lang: LangCode) {
             value: strVal,
             updatedAt: new Date().toISOString()
           }
+          ;(adminEditState.changes[fullPath] as any).slug = effectiveSlug
           addVersion(fullPath, lang, strVal, 'original')
         } else if (!rec.original) {
           rec.original = strVal
           rec.value = strVal
+          ;(adminEditState.changes[fullPath] as any).slug = effectiveSlug
           addVersion(fullPath, lang, strVal, 'original')
         }
       } else if (typeof v === 'object' && v !== null) {
@@ -267,7 +282,6 @@ export function applySnapshotToBaselines(lang: LangCode) {
 }
 
 /** Ensure baseline exists for this path+lang */
-/** Ensure baseline exists for this path+lang */
 export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: string, targetSlug?: string) {
   if (!path || !lang) return
   if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
@@ -278,9 +292,11 @@ export function ensureBaseline(path: PathKey, lang: LangCode, currentElText: str
   const rec = adminEditState.changes[path][lang]
   if (rec && rec.original != null && rec.original !== '') return
 
-  const snapText = getByPath(adminEditState.allLangUI[lang], path)
-  const hasSnap = snapText !== undefined && snapText !== null
-  const original = hasSnap ? (typeof snapText === 'object' ? JSON.stringify(snapText) : String(snapText)) : currentElText
+  const slugSnap = adminEditState.allLangUIBySlug?.[effectiveSlug]?.[lang]
+  const baseSchema = getBaseSchemaForSlugAndLang(effectiveSlug, lang)
+  const snapVal = slugSnap ? getByPath(slugSnap, path) : getByPath(baseSchema, path)
+  const hasSnap = snapVal !== undefined && snapVal !== null
+  const original = hasSnap ? (typeof snapVal === 'object' ? JSON.stringify(snapVal) : String(snapVal)) : currentElText
   const value = original
 
   adminEditState.changes[path][lang] = {
@@ -301,13 +317,17 @@ export function updateClientOverride(path: PathKey, lang: LangCode, newValue: st
   const upper = lang.toUpperCase()
   const lower = lang.toLowerCase()
   if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
+  
+  // Clean initialization per slug strictly from that slug's snapshot or base schema!
   if (!adminEditState.clientOverrides[slug][upper]) {
+    const slugSnap = adminEditState.allLangUIBySlug?.[slug]?.[upper]
     const base = getBaseSchemaForSlugAndLang(slug, upper)
-    adminEditState.clientOverrides[slug][upper] = deepClone(adminEditState.allLangUI[upper] || base)
+    adminEditState.clientOverrides[slug][upper] = deepClone(slugSnap || base || {})
   }
   if (!adminEditState.clientOverrides[slug][lower]) {
+    const slugSnap = adminEditState.allLangUIBySlug?.[slug]?.[lower]
     const base = getBaseSchemaForSlugAndLang(slug, lower)
-    adminEditState.clientOverrides[slug][lower] = deepClone(adminEditState.allLangUI[lower] || base)
+    adminEditState.clientOverrides[slug][lower] = deepClone(slugSnap || base || {})
   }
 
   // If newValue is JSON object/array, parse it before setting

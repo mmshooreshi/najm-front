@@ -10,7 +10,7 @@
         :class="{ 'bg-[#023028]/20': open }"
         @click="toggle"
       >
-        <span class="text-white/80 group-hover:text-white/100 text-sm text-d4 text-demibold" v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.name` : ''">{{ title }}</span>
+        <span class="text-white/80 group-hover:text-white/100 text-sm text-d4 text-demibold" v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.name` : ''">{{ title || '' }}</span>
   
         <!-- chevron -->
         <Icon
@@ -28,13 +28,14 @@
       >
         <ul class="my-0">
           <div class="divide-y divide-white/20">
-          <div class="relative hover:bg-white/10 text-center py-2 border-t border-t-0.5 border-white/20 flex items-center justify-between px-4 group/item" v-for="(item, iIdx) in items" :key="item.id || iIdx">
+          <div class="relative hover:bg-white/10 text-center py-2 border-t border-t-0.5 border-white/20 flex items-center justify-between px-4 group/item" v-for="(item, iIdx) in (items || [])" :key="item?.id || iIdx">
             <NuxtLink
+              v-if="item"
               :to="item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || '')"
               class="block py-1 text-white/100 text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
             >
               <div class="w-max rounded-lg p-1" v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.children.${iIdx}.name` : ''">
-                {{ item.name }}
+                {{ item?.name || '' }}
               </div>
             </NuxtLink>
 
