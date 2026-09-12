@@ -562,6 +562,8 @@ onUnmounted(() => {
     direction: ltr !important;
     position: absolute;
     right: auto !important;
+    /* Allow rotated children to paint outside bounding box */
+    overflow: visible !important;
     transition-property: transform, box-shadow, opacity, filter;
     will-change: transform, opacity, filter;
 }

@@ -264,6 +264,12 @@ onMounted(async () => {
     gsap.set(el,{ backgroundColor:cardStates[i].bgColor ? cardStates[i].bgColor+cardOpacity : 'transparent' })
   })
 
+  const isTouch = typeof window !== 'undefined' && (
+    ('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0)
+  )
+  const scrollerEl = isTouch ? window : '#smooth-wrapper'
+
   /* stack entrance timeline */
   gsap.timeline({
     scrollTrigger:{
@@ -273,7 +279,7 @@ onMounted(async () => {
       //toggleActions:'play none none reverse',
       toggleActions: 'play none none none',
       once: true,
-      scroller:'#smooth-wrapper'
+      scroller: scrollerEl
     }
   }).add(() => updateCardPositions()).to(stacks0,{
     x: () => innerWidth/2 - cardW*1.1/2,
@@ -289,7 +295,7 @@ onMounted(async () => {
     start:   'top 50%',
     end:     '+=200',
     scrub:   true,
-    scroller:'#smooth-wrapper',
+    scroller: scrollerEl,
 
     /* ── enter grid (show all) ─────────────────────────────────────── */
 async onEnter() {

@@ -4,7 +4,7 @@
     <div
       v-for="(lbl, idx) in labelsList"
       :key="idx"
-      class="label absolute rounded-[12px] text-2xl text-d4 px-3 py-1 font-extrabold cursor-pointer select-none top-0"
+      class="label absolute rounded-[12px] text-base md:text-2xl text-d4 px-2 md:px-3 py-0.5 md:py-1 font-extrabold cursor-pointer select-none top-0 whitespace-nowrap"
       :class="{
         '!delay-0 scale-80 z-10 translate-y-0 flash-blur': nextIndex === idx,
         '!delay-0 z-30 opacity-100 translate-y-8 rounded-2xl ring-2 ring-white/30': activeIndex === idx,

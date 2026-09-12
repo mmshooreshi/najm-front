@@ -92,12 +92,12 @@ function toggle() {
   const containerStyle = ref<Record<string,string>>({
     height:        '0px',
     opacity:       '0',
-    transform:     'translateY(-10px)',
-    transition:    'height 300ms ease, opacity 300ms ease, transform 300ms ease',
+    transform:     'translateY(-6px)',
+    transition:    'height 150ms cubic-bezier(0.4, 0, 0.2, 1), opacity 130ms ease, transform 130ms ease',
   })
   const arrowStyle = ref<Record<string,string>>({
     transform:     'rotate(0deg) scale(1)',
-    transition:    'transform 300ms ease',
+    transition:    'transform 150ms cubic-bezier(0.4, 0, 0.2, 1)',
   })
   
   // animate on open/close
@@ -117,7 +117,7 @@ function toggle() {
     } else {
       containerStyle.value.height    = '0px'
       containerStyle.value.opacity   = '0'
-      containerStyle.value.transform = 'translateY(-10px)'
+      containerStyle.value.transform = 'translateY(-6px)'
       arrowStyle.value.transform     = 'rotate(0deg) scale(1)'
     }
   }, { immediate: true })
