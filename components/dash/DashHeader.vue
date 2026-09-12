@@ -53,6 +53,7 @@ const currentTitle = computed(() => {
   if (path.startsWith('/dash/products')) return 'نمونه‌کارها و محصولات'
   if (path.startsWith('/dash/calendar')) return 'تقویم و صف تولید کارخانه'
   if (path.startsWith('/dash/content')) return 'متن‌ها و بنرهای سایت'
+  if (path.startsWith('/dash/sitemap')) return 'نقشه تعاملی و توپولوژیک سایت'
   if (path.startsWith('/dash/blog')) return 'مقالات و اخبار'
   if (path.startsWith('/dash/media')) return 'عکس‌ها و فایل‌ها'
   if (path.startsWith('/dash/messaging')) return 'پیام‌رسان واتس‌اپ'

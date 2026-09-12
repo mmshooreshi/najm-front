@@ -33,8 +33,7 @@ async function onSubmit() {
     // OLD WAY [DEPRECATED]:
     // window.location.href = '/admin'
     
-    // * >> New way to have redirect feature built-in:
-    const redirectTo = (route.query.redirect as string) || '/admin'
+    const redirectTo = (route.query.redirect as string) || '/dash'
     window.location.href = redirectTo
 
   } catch (err: any) {

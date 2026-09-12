@@ -107,6 +107,7 @@ const navItems = [
   { to: '/dash/resources', icon: 'download', label: 'دانلودها و قالب‌های تیغ' },
   { to: '/dash/calendar', icon: 'check', label: 'تقویم و صف تولید' },
   { to: '/dash/content', icon: 'edit', label: 'متن‌ها و بنرها' },
+  { to: '/dash/sitemap', icon: 'layout', label: 'نقشه تعاملی سایت' },
   { to: '/dash/blog', icon: 'file', label: 'مقالات و اخبار' },
   { to: '/dash/media', icon: 'photo', label: 'عکس‌ها و فایل‌ها' },
   { to: '/dash/messaging', icon: 'chat', label: 'ارسال پیام واتس‌اپ' },

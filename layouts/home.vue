@@ -22,81 +22,49 @@
     </div>
 </template>
 
-  <script setup lang="ts">
-  import { ref, onMounted, nextTick } from 'vue'
-  import gsap from 'gsap'
-  import { ScrollSmoother } from 'gsap/ScrollSmoother'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import gsap from 'gsap'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-  const menuOpen = ref(false)
-  const debugVars = ref({
-    scrollPos: 0,
-    scrollProgress: 0,
-    currentSnap: 0,
-  })
-  
-  onMounted(async () => {
-    await nextTick()
-  
-    const smoother = ScrollSmoother.create({
+const menuOpen = ref(false)
+let smootherInstance: ScrollSmoother | null = null
+
+onMounted(async () => {
+  await nextTick()
+
+  // Detect touch devices (iOS Safari, Android Chrome, tablets)
+  const isTouchDevice =
+    typeof window !== 'undefined' &&
+    (ScrollTrigger.isTouch === 1 ||
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia('(pointer: coarse)').matches)
+
+  // On desktop pointer/mouse environments, enable refined ScrollSmoother
+  // On mobile/touch devices, NEVER hijack scroll: allow native 120Hz compositor momentum scrolling!
+  if (!isTouchDevice) {
+    smootherInstance = ScrollSmoother.create({
       wrapper: '#smooth-wrapper',
       content: '#smooth-content',
-      smooth: 1.5,
+      smooth: 1.2,
       effects: true,
-      smoothTouch: 0.1,
+      smoothTouch: false,
     })
-  
-    ScrollTrigger.defaults({ scroller: smoother.content() })
-  
-    // snap sections by grid containerCustom children
-    const sections = gsap.utils.toArray<HTMLElement>('.section-snap')
-  
-    ScrollTrigger.create({
-      start: 0,
-      end: 'max',
-      onUpdate: self => {
-        debugVars.value.scrollPos = Math.round(self.scroll())
-        debugVars.value.scrollProgress = +self.progress.toFixed(3)
-      },
-    })
-  
-    const snapPoints = sections.map(sec => {
-      const st = ScrollTrigger.create({ trigger: sec, start: 'top top' })
-      return st.start
-    })
-  
-    ScrollTrigger.create({
-      snap: {
-        snapTo: snapPoints,
-        duration: { min: 0.2, max: 0.5 },
-        ease: 'power2.out',
-        delay: 0.05,
-      },
-      start: 0,
-      end: ScrollTrigger.maxScroll(smoother.content()),
-      scroller: smoother.content(),
-    })
-  
-    sections.forEach((section, i) => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top center',
-        end: 'bottom center',
-        onToggle({ isActive }) {
-          if (isActive) debugVars.value.currentSnap = i
-        },
-        markers: false,
-      })
-    })
+  }
 
-    useHead({
-    bodyAttrs: {
-      class: 'debugg'
-    }
-  })
+  // Refresh ScrollTrigger so trigger positions are calculated accurately
+  ScrollTrigger.refresh()
+})
 
-  })
-  </script>
+onBeforeUnmount(() => {
+  if (smootherInstance) {
+    smootherInstance.kill()
+    smootherInstance = null
+  }
+})
+</script>
 
 
 <style>

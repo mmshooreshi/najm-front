@@ -1,12 +1,14 @@
 <!-- components/new/HighlightedText.vue -->
 <template>
-    <div class="h-[100px]">
+  <div class="min-h-[100px] flex items-center justify-center w-full">
+    <!-- Semantic H1 for SEO, search engine crawlers, and accessibility -->
+    <h1 class="sr-only">یه راهکار خلاقانه برای چاپ و بسته‌بندی مورد نیاز شما | مجتمع چاپ و بسته‌بندی نجم</h1>
     <ClientOnly>
       <HighlightedMotion
-        :initialDelay="0.5"  
+        :initialDelay="0.2"  
         :speed="2"
         start="top top"
-        :markers=true
+        :markers="false"
         :highlights="highlights"
         :bounce-scale="1.1"
         :bounce-duration="0.2"

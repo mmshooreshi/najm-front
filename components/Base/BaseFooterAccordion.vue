@@ -1,65 +1,87 @@
 <!-- components/Base/BaseFooterAccordion.vue -->
 <template>
-    <div
-      class="group  bg-[#115247]/100  border border-transparent rounded-xl overflow-hidden transition-colors  "
-      :class="{ '!border-primary-600': open }"
+  <div
+    class="group bg-[#0c4a3e] border border-white/10 rounded-xl overflow-hidden transition-all duration-300 shadow-sm"
+    :class="{ 'border-white/25 shadow-md shadow-black/20 bg-[#0d4f42]': open }"
+  >
+    <!-- Header Button (Strictly transparent with dark hover/active, never turns white) -->
+    <button
+      type="button"
+      class="w-full flex justify-between items-center py-4 px-6 text-sm gap-2 cursor-pointer bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none transition-colors duration-200 hover:bg-white/5"
+      :class="{ 'bg-white/10': open }"
+      @click="toggle"
     >
-      <!-- Header -->
-      <button
-        class="w-full flex transition-height duration-500 ease justify-between hover:bg-[#023028]/20 items-center py-4 px-6 text-sm gap-2 cursor-pointer"
-        :class="{ 'bg-[#023028]/20': open }"
-        @click="toggle"
-      >
-        <span class="text-white/80 group-hover:text-white/100 text-sm text-d4 text-demibold" v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.name` : ''">{{ title || '' }}</span>
-  
-        <!-- chevron -->
-        <Icon
-          name="mdi:chevron-down"
-          class="w-5 h-5 text-white/80 group-hover:text-white/100 transition-transform duration-300"
-          :style="{ transform: `rotate(${open ? 180 : 0}deg)` }"
-        />
-      </button>
-  
-      <!-- Sliding panel -->
-      <div
-        ref="contentRef"
-        :style="contentStyles"
-        class="overflow-hidden ease transition-height duration-300 bg-[#115247]/100"
-      >
-        <ul class="my-0 divide-y divide-white/20 list-none p-0">
-          <li class="relative hover:bg-white/10 text-center py-2 border-t border-t-0.5 border-white/20 flex items-center justify-between px-4 group/item" v-for="(item, iIdx) in (items || [])" :key="item?.id || iIdx">
-            <NuxtLink
-              v-if="item"
-              :to="item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || '')"
-              class="block py-1 text-white/100 text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
+      <span
+        class="text-white/85 group-hover:text-white text-sm text-d4 text-demibold transition-colors"
+        v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.name` : ''"
+      >{{ title || '' }}</span>
+
+      <!-- Chevron Icon -->
+      <Icon
+        name="mdi:chevron-down"
+        class="w-5 h-5 text-white/70 group-hover:text-white transition-transform duration-300"
+        :style="{ transform: `rotate(${open ? 180 : 0}deg)` }"
+      />
+    </button>
+
+    <!-- Sliding Panel with Smooth Two-Way Transition -->
+    <div
+      ref="contentRef"
+      :style="contentStyles"
+      @transitionend="onTransitionEnd"
+      class="accordion-content overflow-hidden bg-[#0a3f35] border-t border-transparent"
+      :class="{ '!border-white/10': open }"
+    >
+      <ul class="my-0 divide-y divide-white/10 list-none p-0">
+        <li
+          class="relative hover:bg-white/10 text-center py-2.5 border-t border-white/10 flex items-center justify-between px-4 group/item transition-colors"
+          v-for="(item, iIdx) in (items || [])"
+          :key="item?.id || iIdx"
+        >
+          <NuxtLink
+            v-if="item"
+            :to="item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || '')"
+            class="block py-1 text-white text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
+          >
+            <div
+              class="w-max rounded-lg p-1"
+              v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.children.${iIdx}.name` : ''"
             >
-              <div class="w-max rounded-lg p-1" v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.children.${iIdx}.name` : ''">
-                {{ item?.name || '' }}
-              </div>
-            </NuxtLink>
+              {{ item?.name || '' }}
+            </div>
+          </NuxtLink>
 
-            <!-- Array Action [+] / [-] -->
-            <AdminArrayItemActions v-if="sectionIndex !== undefined" :path="`sections.${sectionIndex}.children`" :index="iIdx" position="inline" />
-          </li>
+          <!-- Array Action [+] / [-] -->
+          <AdminArrayItemActions
+            v-if="sectionIndex !== undefined"
+            :path="`sections.${sectionIndex}.children`"
+            :index="iIdx"
+            position="inline"
+          />
+        </li>
 
-          <li v-if="sectionIndex !== undefined" class="list-none">
-            <AdminAddCardPlaceholder :path="`sections.${sectionIndex}.children`" label="افزودن لینک جدید به این بخش" customClass="min-h-[40px] p-1.5 my-1" />
-          </li>
-        </ul>
-      </div>
+        <li v-if="sectionIndex !== undefined" class="list-none">
+          <AdminAddCardPlaceholder
+            :path="`sections.${sectionIndex}.children`"
+            label="افزودن لینک جدید به این بخش"
+            customClass="min-h-[40px] p-1.5 my-1"
+          />
+        </li>
+      </ul>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, reactive, watch, nextTick } from 'vue'
-  
-  interface Item {
-    id: string
-    name: string
-    slug: string
-  }
-  
-  const props = defineProps<{
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, computed, watch, nextTick } from 'vue'
+
+interface Item {
+  id: string
+  name: string
+  slug: string
+}
+
+const props = defineProps<{
   id: string
   title: string
   items: Item[]
@@ -68,56 +90,64 @@
   sectionIndex?: number
 }>()
 
-  
-  // const open = ref(props.initialOpen ?? false)
-  const open = computed(() => props.modelValue)
+const open = computed(() => props.modelValue)
+const contentRef = ref<HTMLElement | null>(null)
 
-  const contentRef = ref<HTMLElement | null>(null)
-  
-  /**
-   * We animate height: 0 → scrollHeight → auto (and back)
-   * to get a buttery-smooth accordion.
-   */
-  const contentStyles = reactive<{ height: string }>({ height: '0px' })
-  
-  /** helper that sets the inline height style for the transition */
-  function setHeight(expand: boolean) {
-    const el = contentRef.value
-    if (!el) return
-  
-    if (expand) {
-      // expand: 0 → explicit px → auto
-      contentStyles.height = el.scrollHeight + 'px'
-      // after the transition, allow natural height
-      setTimeout(() => {
-        if (open.value) contentStyles.height = 'auto'
-      }, 300) // ← keep in sync with duration-300
-    } else {
-      // collapse: auto/px → px → 0
-      if (contentStyles.height === 'auto') {
-        contentStyles.height = el.scrollHeight + 'px'
-        void el.offsetHeight // force re-flow
-      }
-      contentStyles.height = '0px'
-    }
+const contentStyles = reactive<{ height: string; opacity: string }>({
+  height: '0px',
+  opacity: '0'
+})
+
+function setHeight(expand: boolean) {
+  const el = contentRef.value
+  if (!el) return
+
+  if (expand) {
+    contentStyles.height = '0px'
+    contentStyles.opacity = '0'
+    requestAnimationFrame(() => {
+      if (!el) return
+      contentStyles.height = `${el.scrollHeight}px`
+      contentStyles.opacity = '1'
+    })
+  } else {
+    contentStyles.height = `${el.scrollHeight}px`
+    contentStyles.opacity = '1'
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        contentStyles.height = '0px'
+        contentStyles.opacity = '0'
+      })
+    })
   }
-  
-  const emit = defineEmits<{
+}
+
+function onTransitionEnd(e: TransitionEvent) {
+  if (e.propertyName !== 'height') return
+  if (open.value) {
+    contentStyles.height = 'auto'
+  }
+}
+
+const emit = defineEmits<{
   (e: 'toggle', id: string): void
 }>()
 
-  watch(
-    () => open.value,
-    v => nextTick(() => setHeight(v)),
-    { immediate: true }
-  )
-  
-  function toggle() {
-    // open.value = !open.value
-    emit('toggle', props.id) // send id to parent
-    console.log(props.id)
+watch(
+  () => open.value,
+  v => nextTick(() => setHeight(v)),
+  { immediate: true }
+)
 
-  }
-  
-  </script>
+function toggle() {
+  emit('toggle', props.id)
+}
+</script>
+
+<style scoped>
+.accordion-content {
+  transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s ease, border-color 0.2s ease;
+  will-change: height, opacity;
+}
+</style>
   

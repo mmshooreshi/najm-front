@@ -111,6 +111,10 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { isr: 3600 },
+    '/admin': { redirect: { to: '/dash', statusCode: 301 } },
+    '/admin/**': { redirect: { to: '/dash', statusCode: 301 } },
+    '/dashboard': { redirect: { to: '/dash', statusCode: 301 } },
+    '/dashboard/**': { redirect: { to: '/dash', statusCode: 301 } },
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },

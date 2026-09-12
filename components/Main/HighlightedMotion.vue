@@ -1,25 +1,25 @@
-<!-- components/Main/HighlightedMotion.vue -->
 <template>
   <div>
     <section
       ref="sectionRef"
       :dir="isRTL ? 'rtl' : 'ltr'"
       :class="[isRTL ? 'rtl text-right' : 'ltr text-left']"
-      class="max-w-xl mx-auto space-y-0 p-0 sm:p-2 leading-relaxed flex flex-wrap justify-center w-full "
+      class="max-w-xl mx-auto space-y-0 p-0 sm:p-2 leading-relaxed flex flex-wrap justify-center w-full"
+      :style="{ opacity: isInitialized ? 1 : 0 }"
     >
       <template v-for="(h, i) in highlights" :key="i">
-        <div v-if="h.label === 'break'" class="w-full bg-blue"></div>
+        <div v-if="h.label === 'break'" class="basis-full w-full h-0"></div>
         <div v-else class="flex flex-row justify-start items-center text-nowrap">
           <span
             v-if="h.label !== '' && h.label !== 'end'"
             v-editable="`highlightedText.${i}.label`"
             :ref="el => (highlightRefs[i] = el as HTMLElement | null)"
-            class="inline-block rounded-xl px-2 py-1 text-2xl md:text-3xl font-black text-d4 transition-all"
+            class="inline-block rounded-xl px-2 py-1 text-2xl md:text-3xl font-black text-d4 transition-colors duration-300"
             :style="{
               backgroundColor: h.bgColor ?? '#6D28D9',
               color: h.textColor ?? 'white',
               transform: h.rotation ? `rotate(${h.rotation})` : undefined,
-              'margin-right': h.indent ?? '0px',
+              marginRight: h.indent ?? '0px',
             }"
             :class="[
               '!hover:rotate-0',
@@ -28,14 +28,14 @@
               '!cursor-pointer'
             ]"
           >{{ h.label }}</span>
-          <span v-else :style="{ 'margin-right': h.indent ?? '0px' }"></span>
+          <span v-else :style="{ marginRight: h.indent ?? '0px' }"></span>
 
           <!-- sentence node is editable IN PLACE -->
           <span
             :ref="el => (typedRefs[i] = el as HTMLElement | null)"
             v-editable="`highlightedText.${i}.sentence`"
             class="inline-block mx-0 text-2xl md:text-3xl font-black text-d4 whitespace-pre"
-          ></span>
+          >{{ h.sentence || '' }}</span>
         </div>
       </template>
       <div class="basis-full h-0"></div>
@@ -112,7 +112,7 @@ const props = withDefaults(defineProps<{
   initialDelay: 0
 })
 
-gsap.globalTimeline.timeScale(props.speed)
+const isInitialized = ref(false)
 
 // Centralized animation settings
 const animationConfig = {
@@ -148,22 +148,18 @@ const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 let playedOnce = false
-let stInstance: ScrollTrigger | null = null // 1. Added variable to track ScrollTrigger
+let stInstance: ScrollTrigger | null = null
 let tlHighlights = gsap.timeline({
   defaults: { ease: animationConfig.eases.highlight.forward },
   paused: true,
 })
 
 function runHighlightAnimation() {
-  const splits: SplitText[] = [] // track for reverting
-
-  if (sectionRef.value) {
-    gsap.set(sectionRef.value, { opacity: 0 })
-  }
+  const splits: SplitText[] = []
 
   tlHighlights.pause(0).clear()
+  tlHighlights.timeScale(props.speed || 1)
 
-  // 2. Kill the old ScrollTrigger if it exists before creating a new one
   if (stInstance) {
     stInstance.kill()
   }
@@ -174,15 +170,11 @@ function runHighlightAnimation() {
     el: HTMLElement,
     { duration, stagger, at }: { duration?: number; stagger?: number; at?: string }
   ) {
-    // revert any previous split on this element
     ;(el as any)._split?.revert()
     const split = new SplitText(el, { type: 'words', wordsClass: 'split-word' })
     el.removeAttribute('aria-label')
-    ;(el as any)._split = split   // store so we can revert later
+    ;(el as any)._split = split
     splits.push(split)
-
-    const dur = duration ?? (type === 'full' ? animationConfig.durations.lineFull : animationConfig.durations.lineVertical)
-    const stag = stagger ?? (type === 'full' ? animationConfig.staggers.lineFull : 0)
 
     gsap.set(split.words, {
       clipPath: 'inset(0% 0% 100% 0%)',
@@ -190,16 +182,17 @@ function runHighlightAnimation() {
       yPercent: 100
     })
     tl.to(split.words, {
-      clipPath: 'inset(0% 0% 0% 0%)',
+      clipPath: 'inset(-20% -10% -20% -10%)',
       yPercent: 0,
       opacity: 1,
-      stagger: 0.05,
+      stagger: 0.04,
       duration: animationConfig.durations.lineVertical,
-      ease: animationConfig.eases.lines.forward
+      ease: animationConfig.eases.lines.forward,
+      clearProps: 'clipPath'
     }, at)
   }
 
-  // initial delay (no-op tween)
+  // initial delay
   if (props.initialDelay > 0) {
     tlHighlights.to({}, {
       duration: props.initialDelay,
@@ -207,7 +200,6 @@ function runHighlightAnimation() {
     })
   }
 
-  // 3. Assign the new ScrollTrigger to our tracker variable
   stInstance = ScrollTrigger.create({
     trigger: sectionRef.value,
     start: start,
@@ -215,14 +207,12 @@ function runHighlightAnimation() {
     markers: false,
     onEnter: () => {
       if (!playedOnce && sectionRef.value) {
-        gsap.to(sectionRef.value, { opacity: 1, duration: 0.2 })
         tlHighlights.play()
         playedOnce = true
       }
     },
     onEnterBack: () => {
       if (!playedOnce && sectionRef.value) {
-        gsap.to(sectionRef.value, { opacity: 1, duration: 0.2 })
         tlHighlights.play()
         playedOnce = true
       }
@@ -231,26 +221,30 @@ function runHighlightAnimation() {
 
   // PASS 1: highlight bounce
   props.highlights.forEach((h, i) => {
-    if (h.label === 'break') { tlHighlights.to({}, { duration: 0.1 }); return }
+    if (h.label === 'break') { tlHighlights.to({}, { duration: 0.05 }); return }
     if (h.label) {
       const labelName = `hl-${i}`
       tlHighlights.addLabel(labelName)
+      if (h.label === 'end') return
       const target = highlightRefs.value[i]
       if (target) {
-        target.textContent = h.label
+        const rot = h.rotation ? parseFloat(h.rotation) : 0
         tlHighlights
           .fromTo(
             target,
-            { scale: 0, opacity: 0 },
+            { scale: 0, opacity: 0, rotate: rot },
             {
               scale: bounceScale,
               opacity: 1,
+              rotate: rot,
               duration: animationConfig.durations.bounce,
-              ease: animationConfig.eases.highlight.forward
+              ease: animationConfig.eases.highlight.forward,
+              immediateRender: false
             }
           )
           .to(target, {
             scale: 1,
+            rotate: rot,
             duration: animationConfig.durations.highlightScaleDown,
             ease: animationConfig.eases.highlight.forward
           })
@@ -263,7 +257,6 @@ function runHighlightAnimation() {
     if (h.label === 'break') return
     const el = typedRefs.value[i]
     if (!el || !h.sentence) return
-    el.innerHTML = h.sentence
     let atLabel: string
     if (h.label) atLabel = `hl-${i}`
     else {
@@ -275,9 +268,19 @@ function runHighlightAnimation() {
     splitAndAnimateLines('vertical', tlHighlights, el, {
       duration: h.label ? animationConfig.durations.lineVerticalLabel : animationConfig.durations.lineVertical,
       stagger: 0,
-      at: h.label ? `${atLabel}+=0.1` : `${atLabel}-=0.2`
+      at: h.label ? `${atLabel}+=0.1` : `${atLabel}-=0.15`
     })
   })
+
+  // Pre-set targets so they are invisible before timeline starts
+  highlightRefs.value.forEach((target, i) => {
+    if (target) {
+      const h = props.highlights[i]
+      const rot = h?.rotation ? parseFloat(h.rotation) : 0
+      gsap.set(target, { scale: 0, opacity: 0, rotate: rot })
+    }
+  })
+  isInitialized.value = true
 
   // pause and paragraphs
   tlHighlights.to({}, { duration: animationConfig.durations.pause })
@@ -299,35 +302,21 @@ function runHighlightAnimation() {
 }
 
 function resetAndRerun() {
-  // Revert any existing splits
   typedRefs.value.forEach(el => (el as any)?._split?.revert())
   paragraphRefs.value.forEach(el => (el as any)?._split?.revert())
   
-  // Clear timeline & fade out
-  if (sectionRef.value) gsap.set(sectionRef.value, { opacity: 0 })
   tlHighlights.pause(0).clear()
   playedOnce = false
   
   nextTick(() => {
     runHighlightAnimation()
-    
-    // 4. Force play the animation directly so it doesn't wait for a scroll trigger
     if (sectionRef.value && !playedOnce) {
-      gsap.set(sectionRef.value, { opacity: 1 })
-      // gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 }) 
-
-      // Wait 0.5 seconds (adjust this number as needed) before playing
-      gsap.delayedCall(0.5, () => {
-        tlHighlights.play()
-      })
-      
+      tlHighlights.play()
       playedOnce = true
     }
-
   })
 }
 
-// Rebuild cleanly on language change too
 watch(language, () => {
   resetAndRerun()
 })
@@ -339,23 +328,16 @@ onMounted(async () => {
   await nextTick()
   runHighlightAnimation()
 
-    if (sectionRef.value && !playedOnce) {
-      gsap.set(sectionRef.value, { opacity: 1 })
-      // gsap.to(sectionRef.value, { opacity: 1, duration: 0.3 }) 
-
-      // Wait 0.5 seconds (adjust this number as needed) before playing
-      gsap.delayedCall(0.5, () => {
-        tlHighlights.play()
-      })
-      
-      playedOnce = true
-    }
+  if (sectionRef.value && !playedOnce) {
+    tlHighlights.play()
+    playedOnce = true
+  }
 
   window.addEventListener('admin-edit-discarded', resetAndRerun)
 })
 
 onBeforeUnmount(() => {
-  if (stInstance) stInstance.kill() // Cleanup ScrollTrigger on component unmount
+  if (stInstance) stInstance.kill()
   window.removeEventListener('admin-edit-discarded', resetAndRerun)
 })
 </script>
@@ -367,12 +349,12 @@ section {
 
 .split-line {
   display: block;
-  overflow: hidden;
 }
 
 .split-word {
   display: inline-block;
-  /* or block if you need each word on its own line */
-  overflow: hidden;
+  vertical-align: top;
+  line-height: 1.35;
+  padding: 0 1px;
 }
 </style>

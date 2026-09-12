@@ -16,8 +16,16 @@
       
            class="image-item absolute"
            :style="getStyle(image, index)">
-        <!-- Use InlineSvg, now with pixel–aware hover effects -->
-        <InlineSvgMask   v-memotion-pop-pop="{ delay: (index+5)%5*0.1, duration: 0.4 }"   :height="image.height" :width="image.width"  class="opacity-100" :src="`/images/${image.src}`"  @hover="() => handleElementHover(image)" @leave="() => resetElement(image)" />
+        <InlineSvgMask
+          v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
+          :height="image.height"
+          :width="image.width"
+          :priority="index < 4"
+          class="opacity-100"
+          :src="`/images/${image.src}`"
+          @hover="() => handleElementHover(image)"
+          @leave="() => resetElement(image)"
+        />
 
         </div>
     </div>
@@ -510,6 +518,7 @@ onUnmounted(() => {
     width: 100vw !important;
     overflow-x: clip;
     overflow-y: unset;
+    touch-action: pan-y;
 }
 
 .slider-inner {

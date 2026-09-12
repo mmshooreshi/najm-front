@@ -16,7 +16,7 @@
       <!-- Left: Navigation, Node Count & Reset Center -->
       <div class="flex items-center gap-2">
         <NuxtLink
-          to="/dashboard"
+          to="/dash"
           class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-2xs text-slate-700 hover:text-emerald-800 hover:border-emerald-300 transition cursor-pointer"
           title="بازگشت به پیشخوان"
         >

@@ -33,3 +33,6 @@ logs
 .env*.local
 
 page-speed/
+
+# Local deprecated pages and layouts archive
+.archive/

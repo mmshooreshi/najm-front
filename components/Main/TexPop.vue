@@ -127,7 +127,7 @@ const paragraphRefs = ref<HTMLElement[]>([])
     intersectionRatio.value = entry.intersectionRatio
     isVisible.value         = entry.isIntersecting
 
-    console.log('Visible?', isVisible.value, 'Ratio:', intersectionRatio.value)
+    // console.log('Visible?', isVisible.value, 'Ratio:', intersectionRatio.value)
 
     if (entry.isIntersecting) {
       // fade in container
