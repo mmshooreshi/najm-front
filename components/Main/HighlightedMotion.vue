@@ -65,16 +65,9 @@ import { useLocale } from '@/composables/useLocale'
 
 gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase)
 
-// Define custom easing curves for smoother animation
-CustomEase.create("easeHighlightIn", "0.22, 1, 0.36, 1")
-CustomEase.create("easeHighlightOut", "0.5, 0, 0.75, 0")
-CustomEase.create("easeLineIn", "0.33, 1, 0.68, 1")
-
-// Replace or augment your custom eases:
-CustomEase.create("springIn", "0.5, 1.5, 0.5, 1")
-CustomEase.create("springOut", "0.5, 0.25, 0.75, 0.25")
-
-const springEase = Elastic.easeOut.config(1, 0.4)
+// Define natural fluid motion curves
+CustomEase.create("fluidOut", "0.16, 1, 0.3, 1")
+CustomEase.create("popSpring", "0.34, 1.45, 0.64, 1")
 
 interface HighlightItem {
   label: string
@@ -105,7 +98,7 @@ const props = withDefaults(defineProps<{
   highlights: () => [],
   paragraphes: () => [],
   bounceScale: 1,
-  bounceDuration: 0.5,
+  bounceDuration: 0.48,
   start: 'top center',
   scrub: false,
   markers: true,
@@ -117,21 +110,17 @@ const isInitialized = ref(false)
 // Centralized animation settings
 const animationConfig = {
   eases: {
-    highlight: { forward: "easeHighlightIn", backward: "easeHighlightOut" },
-    lines: { forward: "easeLineIn", backward: "power1.in" }
+    highlight: { forward: "back.out(1.5)", backward: "power2.in" },
+    lines: { forward: "power3.out", backward: "power2.in" }
   },
   durations: {
-    bounce: props.bounceDuration ?? 0.7,
-    highlightScaleDown: 0.6,
-    lineFull: 0.4,
-    lineVertical: 0.4,
-    lineVerticalLabel: 0.3,
-    paragraphLine: 0.4,
-    pause: 0.4
+    bounce: 0.48,
+    lineVertical: 0.42,
+    paragraphLine: 0.38
   },
   staggers: {
-    lineFull: 0.04,
-    paragraph: 0.1
+    lineWords: 0.035,
+    paragraph: 0.08
   }
 }
 
@@ -177,18 +166,15 @@ function runHighlightAnimation() {
     splits.push(split)
 
     gsap.set(split.words, {
-      clipPath: 'inset(0% 0% 100% 0%)',
       opacity: 0,
-      yPercent: 100
+      yPercent: 65
     })
     tl.to(split.words, {
-      clipPath: 'inset(-20% -10% -20% -10%)',
       yPercent: 0,
       opacity: 1,
-      stagger: 0.04,
+      stagger: animationConfig.staggers.lineWords,
       duration: animationConfig.durations.lineVertical,
-      ease: animationConfig.eases.lines.forward,
-      clearProps: 'clipPath'
+      ease: animationConfig.eases.lines.forward
     }, at)
   }
 
@@ -229,25 +215,18 @@ function runHighlightAnimation() {
       const target = highlightRefs.value[i]
       if (target) {
         const rot = h.rotation ? parseFloat(h.rotation) : 0
-        tlHighlights
-          .fromTo(
-            target,
-            { scale: 0, opacity: 0, rotate: rot },
-            {
-              scale: bounceScale,
-              opacity: 1,
-              rotate: rot,
-              duration: animationConfig.durations.bounce,
-              ease: animationConfig.eases.highlight.forward,
-              immediateRender: false
-            }
-          )
-          .to(target, {
+        tlHighlights.fromTo(
+          target,
+          { scale: 0, opacity: 0, rotate: rot - 6 },
+          {
             scale: 1,
+            opacity: 1,
             rotate: rot,
-            duration: animationConfig.durations.highlightScaleDown,
-            ease: animationConfig.eases.highlight.forward
-          })
+            duration: animationConfig.durations.bounce,
+            ease: animationConfig.eases.highlight.forward,
+            immediateRender: false
+          }
+        )
       }
     }
   })
@@ -266,9 +245,9 @@ function runHighlightAnimation() {
       atLabel = `hl-${next.idx}`
     }
     splitAndAnimateLines('vertical', tlHighlights, el, {
-      duration: h.label ? animationConfig.durations.lineVerticalLabel : animationConfig.durations.lineVertical,
-      stagger: 0,
-      at: h.label ? `${atLabel}+=0.1` : `${atLabel}-=0.15`
+      duration: animationConfig.durations.lineVertical,
+      stagger: animationConfig.staggers.lineWords,
+      at: h.label ? `${atLabel}+=0.12` : `${atLabel}-=0.08`
     })
   })
 

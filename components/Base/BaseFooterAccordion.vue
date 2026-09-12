@@ -52,21 +52,25 @@
           </NuxtLink>
 
           <!-- Array Action [+] / [-] -->
-          <AdminArrayItemActions
-            v-if="sectionIndex !== undefined"
-            :path="`sections.${sectionIndex}.children`"
-            :index="iIdx"
-            position="inline"
-          />
+          <ClientOnly>
+            <AdminArrayItemActions
+              v-if="sectionIndex !== undefined && canEdit"
+              :path="`sections.${sectionIndex}.children`"
+              :index="iIdx"
+              position="inline"
+            />
+          </ClientOnly>
         </li>
 
-        <li v-if="sectionIndex !== undefined" class="list-none">
-          <AdminAddCardPlaceholder
-            :path="`sections.${sectionIndex}.children`"
-            label="افزودن لینک جدید به این بخش"
-            customClass="min-h-[40px] p-1.5 my-1"
-          />
-        </li>
+        <ClientOnly>
+          <li v-if="sectionIndex !== undefined && canEdit" class="list-none">
+            <AdminAddCardPlaceholder
+              :path="`sections.${sectionIndex}.children`"
+              label="افزودن لینک جدید به این بخش"
+              customClass="min-h-[40px] p-1.5 my-1"
+            />
+          </li>
+        </ClientOnly>
       </ul>
     </div>
   </div>
@@ -74,6 +78,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { adminEditState } from '@/store/adminEditStore'
+
+const canEdit = computed(() => adminEditState.canEdit)
 
 interface Item {
   id: string

@@ -5,7 +5,12 @@
       <div class="flex">
         <div v-for="(card, idx) in cards" :key="card.id" :data-id="card.id" :class="[isRTL ? 'rtl' : 'ltr']"
           class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]">
-          <img v-gsap.magnetic :src="card.loop" :alt="card.text" :duration="100"
+          <NuxtImg v-gsap.magnetic :src="card.loop" :alt="card.text" :duration="100"
+            width="400"
+            height="400"
+            sizes="xs:280px sm:360px md:400px"
+            format="webp"
+            quality="80"
             :loading="idx < 2 ? 'eager' : 'lazy'"
             decoding="async"
             v-media-editable="`sceneProjects.cards.${idx}.loop`"

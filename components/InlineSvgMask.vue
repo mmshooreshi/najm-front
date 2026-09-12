@@ -43,6 +43,7 @@
       alt="Packaging Visual"
       :loading="priority ? 'eager' : 'lazy'"
       :fetchpriority="priority ? 'high' : 'low'"
+      :preload="priority"
       decoding="async"
       :style="{
         position: 'relative',
@@ -89,22 +90,30 @@ function onLoad() {
   isLoaded.value = true
 }
 
+function getTargetEl(): HTMLElement | null {
+  if (!imgEl.value) return null
+  return (imgEl.value as any)?.$el || (imgEl.value as any)
+}
+
 onMounted(() => {
-  if (imgEl.value?.complete) {
+  const el = getTargetEl()
+  if ((el as any)?.complete) {
     isLoaded.value = true
   }
 })
 
 function onMouseEnter() {
-  if (imgEl.value) {
-    imgEl.value.classList.add('png-hovered')
+  const el = getTargetEl()
+  if (el?.classList) {
+    el.classList.add('png-hovered')
   }
   emit('hover', { src: props.src, state: 'top' })
 }
 
 function onMouseLeave() {
-  if (imgEl.value) {
-    imgEl.value.classList.remove('png-hovered')
+  const el = getTargetEl()
+  if (el?.classList) {
+    el.classList.remove('png-hovered')
   }
   emit('leave', props.src)
 }

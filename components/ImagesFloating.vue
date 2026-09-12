@@ -20,7 +20,7 @@
           v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
           :height="image.height"
           :width="image.width"
-          :priority="index < 4"
+          :priority="index < 8"
           class="opacity-100"
           :src="`/images/${image.src}`"
           @hover="() => handleElementHover(image)"
@@ -127,7 +127,7 @@
 
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useWindowSize, useThrottleFn } from '@vueuse/core'
 import InlineSvgMask from '~/components/InlineSvgMask.vue'
 import { useElementVisibility } from '@vueuse/core'
@@ -333,7 +333,6 @@ const animate = () => {
     !isVisible.value ||
     (slider.value && (slider.value.classList.contains('admin-motion-paused') || document.body.classList.contains('admin-all-motions-paused')))
   ) {
-    animationFrameId = requestAnimationFrame(animate)
     return
   }
 
@@ -405,29 +404,48 @@ const lastTouchTime = ref(0)
 const swipeInertiaActive = ref(false)
 const isRealSwipe = ref(false)
 let startTouchX = 0
+let startTouchY = 0
 let startTranslateX = 0
+let isScrollingY = false
 
 const handleTouchStart = (event) => {
+  if (!event.touches || !event.touches[0]) return
   isSwiping.value = true
   swipeInertiaActive.value = false
   startTouchX = event.touches[0].clientX
+  startTouchY = event.touches[0].clientY
   startTranslateX = translateX.value
   lastTouchX.value = event.touches[0].clientX
   lastTouchTime.value = performance.now()
   isRealSwipe.value = false
+  isScrollingY = false
 }
 
 const handleTouchMove = (event) => {
-  const currentX = event.touches[0].clientX
-  const currentTime = performance.now()
-  const delta = currentX - startTouchX
+  if (!isSwiping.value || !event.touches || !event.touches[0] || isScrollingY) return
 
-  if (!isRealSwipe.value && Math.abs(delta) > 1) {
+  const currentX = event.touches[0].clientX
+  const currentY = event.touches[0].clientY
+  const deltaX = currentX - startTouchX
+  const deltaY = currentY - startTouchY
+
+  // If vertical movement dominates, the user is scrolling the page vertically!
+  // Release swiping immediately so native compositor scroll continues without stutter.
+  if (!isRealSwipe.value && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 5) {
+    isScrollingY = true
+    isSwiping.value = false
+    return
+  }
+
+  const currentTime = performance.now()
+
+  // Only engage horizontal swipe if horizontal movement is dominant
+  if (!isRealSwipe.value && Math.abs(deltaX) > 8 && Math.abs(deltaX) > Math.abs(deltaY)) {
     isRealSwipe.value = true
   }
 
   if (isRealSwipe.value) {
-    translateX.value = startTranslateX + delta
+    translateX.value = startTranslateX + deltaX
     const dt = currentTime - lastTouchTime.value
     if (dt > 0) {
       swipeVelocity.value = (currentX - lastTouchX.value) / dt
@@ -439,6 +457,7 @@ const handleTouchMove = (event) => {
 
 const handleTouchEnd = () => {
   isSwiping.value = false
+  isScrollingY = false
   if (!isRealSwipe.value) {
     swipeVelocity.value = 0
   } else {
@@ -493,10 +512,18 @@ const resetElement = (image) => {
 }
 
 ///////////////////////////////////////////
-// Lifecycle Hooks
-///////////////////////////////////////////
+watch(isVisible, (visible) => {
+  if (visible) {
+    lastFrameTime = performance.now()
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = requestAnimationFrame(animate)
+  } else {
+    cancelAnimationFrame(animationFrameId)
+  }
+})
 
 onMounted(() => {
+  lastFrameTime = performance.now()
   animate()
 })
 
@@ -517,9 +544,8 @@ onUnmounted(() => {
     position: relative;
     width: 100vw !important;
     overflow-x: clip;
-    overflow-y: unset;
+    overflow-y: visible !important;
     touch-action: pan-y;
-    contain: layout paint;
 }
 
 .slider-inner {
@@ -529,6 +555,7 @@ onUnmounted(() => {
     right: auto !important;
     top: 0 !important;
     display: flex;
+    overflow: visible !important;
 }
 
 .image-item {
@@ -537,7 +564,6 @@ onUnmounted(() => {
     right: auto !important;
     transition-property: transform, box-shadow, opacity, filter;
     will-change: transform, opacity, filter;
-    contain: layout style;
 }
 
 </style>

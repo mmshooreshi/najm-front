@@ -78,6 +78,7 @@
 /* Slow anti-clockwise spin */
 .animSpin {
   animation: spinn 8s linear infinite;
+  will-change: transform;
 }
 @keyframes spinn {
   to { transform: rotate(-360deg); }

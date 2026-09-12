@@ -26,14 +26,18 @@
         class="w-full h-auto object-contain   md:object-cover  rounded-3xl
                 md:inset-0 md:h-full" /> -->
       <!-- 29,13,05,01 -->
-                <img
-          :src="'/videos/08.webp'"
+        <NuxtImg
+          src="/videos/08.webp"
           alt="Box Mapping"
           width="400"
           height="400"
-          fetchpriority="high"
+          sizes="xs:300px md:400px"
+          format="webp"
+          quality="80"
+          loading="lazy"
           decoding="async"
-          class="w-min transition-all duration-200 hover:scale-110 h-full object-contain md:object-contain rounded-3xl md:inset-0 md:h-full" />
+          class="w-min transition-all duration-200 hover:scale-110 h-full object-contain md:object-contain rounded-3xl md:inset-0 md:h-full"
+        />
 
 
                 

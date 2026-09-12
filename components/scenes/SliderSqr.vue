@@ -11,13 +11,20 @@
         <div class="transition-all duration-1000 group-hover:scale-110 w-full h-full">
 
           <NuxtImg v-if="!slide.image.endsWith('mp4')" :src="slide.image" :alt="slide.alt"
+            width="400"
+            height="400"
+            sizes="xs:300px sm:400px md:400px"
+            format="webp"
+            quality="80"
+            :loading="index === 0 ? 'eager' : 'lazy'"
+            decoding="async"
             class="w-full h-full object-cover rounded-3xl" />
           <video
             v-else
             muted
             loop
-            preload="metadata"
-            autoPlay
+            :preload="index === 0 ? 'metadata' : 'none'"
+            :autoPlay="index === 0"
             playsInline
             :src="slide.image"
             :aria-label="slide.alt"

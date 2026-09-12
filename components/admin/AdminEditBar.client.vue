@@ -517,10 +517,10 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
               v-for="l in availableLangs"
               :key="l"
               type="button"
-              class="px-1.5 py-0.5 text-[10px] font-semibold uppercase rounded transition-colors cursor-pointer"
+              class="px-1.5 py-0.5 text-[10px] font-semibold uppercase rounded transition-colors cursor-pointer border-0 outline-none appearance-none"
               :class="lang.toUpperCase() === l
                 ? 'bg-zinc-700 text-white shadow-xs'
-                : 'text-zinc-400 hover:text-zinc-200'"
+                : 'bg-transparent text-zinc-400 hover:text-zinc-200 hover:bg-white/10'"
               @click="handleLangChange(l)"
               :title="`Switch to ${l}`"
             >
@@ -627,7 +627,7 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
           <!-- Minimize Button -->
           <button
             type="button"
-            class="w-7 h-8 rounded-xl text-zinc-500 hover:text-zinc-300 hover:bg-white/5 flex items-center justify-center transition-colors cursor-pointer"
+            class="w-7 h-8 rounded-xl bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none text-zinc-500 hover:text-zinc-300 hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
             @click="state.minimized = true"
             title="Minimize Dock"
           >
@@ -702,6 +702,10 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
 <style scoped>
 .admin-floating-dock {
   user-select: none;
+}
+
+.admin-floating-dock button {
+  background-color: transparent;
 }
 
 .admin-modal-enter-active,

@@ -44,15 +44,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SceneHero from '~/components/scenes/SceneHero.vue'
 import SceneServicesAndCapabilities from '@/components/scenes/SceneServicesAndCapabilities.vue'
 import SceneFacilities from '~/components/scenes/SceneFacilities.client.vue'
-import SceneProjects from '@/components/scenes/SceneProjects.vue'
-import SceneCardsIntro from '@/components/scenes/SceneCardsIntro.vue'
 import SceneApplicationsAndIndustries from '@/components/scenes/SceneApplicationsAndIndustries.vue'
 import SceneProducts from '@/components/scenes/SceneProducts.vue'
 import ScenePromo from '@/components/scenes/ScenePromo.vue'
 import SceneCustomers from '@/components/scenes/SceneCustomers.vue'
-import ScrollWrapperW from '@/components/ScrollWrapperW.vue'
-import ScrollWrapperWebp from '@/components/ScrollWrapperW-webp.vue'
-import ScrollWrapperWebpKiller from '@/components/ScrollWrapperW-webp-killer.vue'
 import SW from '@/components/SW.vue'
 
 import { usePageUI } from '@/composables/ui/usePageUI'
@@ -80,8 +75,6 @@ useAppSeo({
   slug: '/'
 })
 
-import SceneSlider from '~/components/scenes/SceneSlider.vue'
-import SceneFinalMessage from '~/components/scenes/SceneFinalMessage.vue'
 import SceneFaq from '~/components/scenes/SceneFaq.vue'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -108,10 +101,9 @@ onMounted(async () => {
 
 /* in your Layout.vue or global styles */
 .section-snap {
-  border: 0px solid teal;;
   position: relative;              /* make ::before sit on top */
-  
-  min-height: calc(100dvh - 64px);
+  min-height: calc(100vh - 64px);
+  min-height: calc(100svh - 64px);
 }
 
 .section-snap.debug-grid::before {

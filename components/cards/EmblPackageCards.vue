@@ -56,6 +56,11 @@
               :editPath="`sceneApplicationsAndIndustries.packages.${idx}`">
               <!-- <div class="relative h-full w-full"> -->
               <NuxtImg v-if="pkg.image" :src="pkg.image" :alt="pkg.name" loading="lazy" placeholder="blur"
+                width="400"
+                height="400"
+                sizes="xs:320px sm:400px md:400px"
+                format="webp"
+                quality="80"
                 v-memotion-pop-visible="{ ystart: 100, delay: idx * 0.3, duration: 0.8 }"
                 class="object-cover h-full w-full scale-100 rounded-[1.5rem]" />
 

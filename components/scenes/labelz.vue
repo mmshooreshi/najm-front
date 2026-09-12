@@ -1,6 +1,6 @@
 <!-- components/scenes/labelz.vue -->
 <template>
-  <div class="w-full h-29 overflow-visible relative flex flex-col items-center justify-center gap-2 group">
+  <div ref="containerRef" class="w-full h-29 overflow-visible relative flex flex-col items-center justify-center gap-2 group">
     <div
       v-for="(lbl, idx) in labelsList"
       :key="idx"
@@ -48,6 +48,8 @@ const labelsList = computed(() => props.labels && props.labels.length > 0 ? prop
   { text: 'انعطاف‌پذیری در اجرا', bg: '#FFD0F4' }
 ])
 
+const containerRef = ref<HTMLElement | null>(null)
+let observer: IntersectionObserver | null = null
 const activeIndex = ref(0)
 const isPaused = ref(false)
 let userInteracting = false
@@ -124,13 +126,28 @@ function onAdminStateChange(e: any) {
 }
 
 onMounted(() => {
-  startTimer()
+  if (typeof IntersectionObserver !== 'undefined' && containerRef.value) {
+    observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        if (!isPaused.value && !userInteracting) startTimer()
+      } else {
+        stopTimer()
+      }
+    }, { rootMargin: '50px' })
+    observer.observe(containerRef.value)
+  } else {
+    startTimer()
+  }
   if (typeof window !== 'undefined') {
     window.addEventListener('najm:admin-editing-state', onAdminStateChange)
   }
 })
 
 onBeforeUnmount(() => {
+  if (observer) {
+    observer.disconnect()
+    observer = null
+  }
   stopTimer()
   clearTimeout(resumeTimer)
   if (typeof window !== 'undefined') {
@@ -148,9 +165,9 @@ onBeforeUnmount(() => {
 }
 
 @keyframes blurToClear {
-  0% { filter: blur(0px); }
-  50% { filter: blur(3px); }
-  100% { filter: blur(0); }
+  0% { opacity: 0.7; transform: scale(0.95); }
+  50% { opacity: 0.85; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
 }
 .flash-blur {
   animation: blurToClear 0.35s ease;

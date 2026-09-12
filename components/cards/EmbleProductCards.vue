@@ -13,14 +13,15 @@
             <NuxtImg
               :src="product.image"
               :alt="product.name"
-              width="267"
-              height="267"
+              fit="contain"
+              format="webp"
+              quality="85"
               :loading="idx < 2 ? 'eager' : 'lazy'"
               v-motion
               :initial="{ scale: 0.8 }"
               :visible="{ scale: 1 }"
               :duration="150"
-              class="object-contain w-full h-auto rounded-[1.5rem] max-h-[267px]"
+              class="object-contain w-full h-[267px] rounded-[1.5rem]"
             />
             <div class="m-1 mt-4 flex flex-col gap-1.5">
               <div class="font-bold text-d4 text-sm text-zinc-900 leading-snug" v-editable="`sceneProducts.items.${idx}.name`">{{ product.name }}</div>
@@ -181,6 +182,7 @@ defineExpose({
 // NEW: re-init when products change
 watch(() => props.products, async () => {
   await nextTick()
+  embla.value?.scrollTo(0, false)
   embla.value?.reInit()
   onSelect()
 })
