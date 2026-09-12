@@ -165,7 +165,7 @@ useAppSeo({
   title: computed(() => `${currentResource.value.title} | مرکز دانلود و راهنمای فنی نجم`),
   description: computed(() => currentResource.value.description),
   slug: `resources/${slug.value}`,
-  extraSchemas: [
+  extraSchemas: computed(() => [
     {
       '@type': 'DigitalDocument',
       name: currentResource.value.title,
@@ -176,7 +176,7 @@ useAppSeo({
         name: 'مجتمع چاپ و بسته‌بندی نجم'
       }
     }
-  ]
+  ])
 })
 </script>
 

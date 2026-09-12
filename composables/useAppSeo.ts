@@ -1,19 +1,44 @@
 // composables/useAppSeo.ts
-import { computed } from 'vue'
+import { computed, toValue, type Ref, type ComputedRef } from 'vue'
 import { useHead, useRoute } from '#app'
 import { useLocale } from '~/composables/useLocale'
 
 export interface SeoOptions {
-  title?: string | { fa?: string; en?: string; ar?: string }
-  description?: string | { fa?: string; en?: string; ar?: string }
-  keywords?: string | string[]
-  image?: string
+  title?: string | Ref<string> | ComputedRef<string> | { fa?: string; en?: string; ar?: string }
+  description?: string | Ref<string> | ComputedRef<string> | { fa?: string; en?: string; ar?: string }
+  keywords?: string | string[] | Ref<any> | ComputedRef<any>
+  image?: string | Ref<string> | ComputedRef<string>
   type?: 'website' | 'article' | 'product'
-  slug?: string
+  slug?: string | Ref<string> | ComputedRef<string>
   noindex?: boolean
-  extraSchemas?: any[]
-  faqItems?: Array<{ question: string; answer: string }>
-  breadcrumbs?: Array<{ name: string; url: string }>
+  extraSchemas?: any[] | Ref<any[]> | ComputedRef<any[]>
+  faqItems?: Array<{ question: string; answer: string }> | Ref<any> | ComputedRef<any>
+  breadcrumbs?: Array<{ name: string; url: string }> | Ref<any> | ComputedRef<any>
+}
+
+// Safely unwraps any Vue reactive structures (Refs, ComputedRefs, getters) and prevents circular loops
+function safeUnwrap(val: any, seen = new WeakSet()): any {
+  const unwrapped = toValue(val)
+  if (unwrapped === null || unwrapped === undefined) return unwrapped
+  if (typeof unwrapped !== 'object') return unwrapped
+  if (unwrapped instanceof Date || unwrapped instanceof RegExp) return unwrapped
+  if (seen.has(unwrapped)) return undefined
+  seen.add(unwrapped)
+
+  if (Array.isArray(unwrapped)) {
+    return unwrapped.map(item => safeUnwrap(item, seen)).filter(item => item !== undefined)
+  }
+
+  const result: Record<string, any> = {}
+  for (const [key, value] of Object.entries(unwrapped)) {
+    // Exclude Vue reactive internals like .dep, .effect, __v_isRef
+    if (key.startsWith('_') || key === 'dep' || key === 'effect') continue
+    const v = safeUnwrap(value, seen)
+    if (v !== undefined) {
+      result[key] = v
+    }
+  }
+  return result
 }
 
 export function useAppSeo(options: SeoOptions = {}) {
@@ -35,13 +60,13 @@ export function useAppSeo(options: SeoOptions = {}) {
   })
 
   // Title calculation
-  // Title calculation
   const pageTitle = computed(() => {
+    const t = toValue(options.title)
     let raw = ''
-    if (typeof options.title === 'object' && options.title !== null) {
-      raw = options.title[currentLang.value.toLowerCase() as 'fa' | 'en' | 'ar'] || options.title.fa || ''
-    } else if (typeof options.title === 'string') {
-      raw = options.title
+    if (typeof t === 'object' && t !== null) {
+      raw = (t as any)[currentLang.value.toLowerCase() as 'fa' | 'en' | 'ar'] || (t as any).fa || ''
+    } else if (typeof t === 'string') {
+      raw = t
     }
     if (!raw) {
       if (currentLang.value === 'EN') return `${brandName.value} | Industrial Printing & Luxury Packaging`
@@ -62,11 +87,12 @@ export function useAppSeo(options: SeoOptions = {}) {
 
   // Description calculation
   const metaDescription = computed(() => {
-    if (typeof options.description === 'object' && options.description !== null) {
-      return options.description[currentLang.value.toLowerCase() as 'fa' | 'en' | 'ar'] || options.description.fa || ''
+    const d = toValue(options.description)
+    if (typeof d === 'object' && d !== null) {
+      return (d as any)[currentLang.value.toLowerCase() as 'fa' | 'en' | 'ar'] || (d as any).fa || ''
     }
-    if (typeof options.description === 'string' && options.description) {
-      return options.description
+    if (typeof d === 'string' && d) {
+      return d
     }
     if (currentLang.value === 'EN') {
       return 'Najm Printing & Packaging Complex: Custom cardboard boxes, luxury rigid boxes, and premium packaging solutions with highest printing quality in Tehran.'
@@ -80,7 +106,8 @@ export function useAppSeo(options: SeoOptions = {}) {
   // Canonical base URL & Clean Path for Multi-Lingual Alternate Links
   const baseUrl = 'https://chapenajm.com'
   const cleanPath = computed(() => {
-    let p = options.slug ? (options.slug.startsWith('/') ? options.slug : `/${options.slug}`) : (route.path || '/')
+    const s = toValue(options.slug)
+    let p = s ? (s.startsWith('/') ? s : `/${s}`) : (route.path || '/')
     return p.replace(/^\/(?:en|ar)(?=\/|$)/, '') || '/'
   })
 
@@ -93,7 +120,11 @@ export function useAppSeo(options: SeoOptions = {}) {
     if (currentLang.value === 'AR') return arUrl.value
     return faUrl.value
   })
-  const socialImage = options.image || `${baseUrl}/social-image.png`
+
+  const socialImage = computed(() => {
+    const img = toValue(options.image)
+    return (typeof img === 'string' && img) ? img : `${baseUrl}/social-image.png`
+  })
 
   // Default High-Authority Industrial FAQs for Google Rich Snippets
   const defaultFaqs = [
@@ -115,7 +146,10 @@ export function useAppSeo(options: SeoOptions = {}) {
     }
   ]
 
-  const activeFaqs = options.faqItems && options.faqItems.length > 0 ? options.faqItems : defaultFaqs
+  const activeFaqs = computed(() => {
+    const customFaqs = toValue(options.faqItems)
+    return (customFaqs && customFaqs.length > 0) ? customFaqs : defaultFaqs
+  })
 
   // Google Sitelinks Navigation Items (6-Pack with Titles & Rich Descriptions for Google SERP)
   const siteNavigationItems = computed(() => {
@@ -128,27 +162,27 @@ export function useAppSeo(options: SeoOptions = {}) {
         },
         {
           name: 'Products & Packaging',
-          description: 'Custom cardboard boxes, pharmaceutical packaging, food grade cartons, and luxury rigid boxes.',
-          url: `${baseUrl}/products`
-        },
-        {
-          name: 'Comprehensive Catalog',
-          description: 'Download industrial product catalog, view past works, and packaging structural specifications.',
+          description: 'Custom luxury boxes, cosmetics packaging, pharmaceutical folding cartons, and food containers.',
           url: `${baseUrl}/catalog`
         },
         {
-          name: 'Printing Facilities & Machinery',
-          description: 'Advanced multi-color Heidelberg offset presses, pre-press CTP plates, and automated finishing lines.',
+          name: 'Services & Offset Print',
+          description: 'Heidelberg multi-color offset sheetfed printing, hot foil stamping, auto die-cutting and laminating.',
+          url: `${baseUrl}/services`
+        },
+        {
+          name: 'Industrial Machinery',
+          description: 'Heidelberg Speedmaster presses, Bobst die-cutters, thermal CTP platesetters, and box gluers.',
           url: `${baseUrl}/facilities`
         },
         {
           name: 'About Najm Complex',
-          description: '25+ years of continuous printing heritage, ISO color standards, and industrial packaging vision.',
+          description: 'Over 25 years of continuous industrial excellence, ISO color management, and production ethics.',
           url: `${baseUrl}/about`
         },
         {
-          name: 'Consultation & Pricing',
-          description: 'Free packaging engineering consultation, paperboard selection, and quotation calculation.',
+          name: 'Technical Consultation',
+          description: 'Free packaging engineering consulting, paperboard grammage selection, dummy prototyping, and pricing.',
           url: `${baseUrl}/consultation`
         }
       ]
@@ -156,57 +190,56 @@ export function useAppSeo(options: SeoOptions = {}) {
     if (currentLang.value === 'AR') {
       return [
         {
-          name: 'اتصل بنا',
-          description: 'أرقام الاتصال المباشر، عنوان المصنع في طهران، وساعات العمل واستشارات المبيعات.',
+          name: 'اتصل بنا والعنوان',
+          description: 'خطوط الاتصال المباشرة للمبيعات، عنوان المجمع الصناعي في طهران، ساعات العمل، واستعلام الأسعار.',
           url: `${baseUrl}/contact`
         },
         {
-          name: 'المنتجات والتغليف',
-          description: 'علب الكرتون المخصصة، التغليف الدوائي، علب الأغذية، وعلب هاردبوكس الفاخرة.',
-          url: `${baseUrl}/products`
-        },
-        {
-          name: 'كتالوج المنتجات',
-          description: 'تحميل كتالوج المنتجات الصناعية، الاطلاع على نماذج الأعمال والمواصفات الفنية.',
+          name: 'المنتجات والعلب الفاخرة',
+          description: 'علب الكرتون الصلب، تغليف مستحضرات التجميل، عبوات الأدوية المعتمدة، وعلب المواد الغذائية الصحية.',
           url: `${baseUrl}/catalog`
         },
         {
-          name: 'الماكينات والتجهيزات',
-          description: 'ماكينات هايدلبرغ ٥ ألوان المتطورة، خطوط التقطيع والتشطيب الآلية، والليثوغرافيا الحرارية CTP.',
+          name: 'خدمات الطباعة الصناعية',
+          description: 'طباعة أوفست ملونة بأحدث ماكينات هايدلبرغ، بصمة حرارية ذهبية، داي كت أوتوماتيكي وسلفان.',
+          url: `${baseUrl}/services`
+        },
+        {
+          name: 'الآلات والتجهيزات المتطورة',
+          description: 'ماكينات هايدلبرغ سبيدماستر، أجهزة بوبست للقص، پلیت‌ستر حراري CTP، وخطوط لصق العلب الأوتوماتيكية.',
           url: `${baseUrl}/facilities`
         },
         {
-          name: 'حول مجمع نجم',
-          description: 'أكثر من ٢٥ عاماً من الخبرة في صناعة الطباعة والتغليف ومعايير إدارة الألوان ISO.',
+          name: 'عن مجمع نجم للطباعة',
+          description: 'أكثر من ۲۵ عاماً من الخبرة الصناعية المستمرة، معايير إدارة جودة الألوان والالتزام بمواعيد التسليم.',
           url: `${baseUrl}/about`
         },
         {
-          name: 'استشارة واستعلام الأسعار',
-          description: 'استشارات هندسة التغليف واختيار نوع الكرتون وحساب تكلفة الإنتاج والتوريد.',
+          name: 'استشارة فنية وهندسة العلب',
+          description: 'استشارة مجانية لاختيار نوع وسماكة الورق المقوى، تصميم نموذج العلبة، وحساب التكاليف والكميات.',
           url: `${baseUrl}/consultation`
         }
       ]
     }
-    // Persian Default
     return [
       {
-        name: 'تماس با ما',
-        description: 'اطلاعات تماس مستقیم، شماره تلفن‌های کارشناسان فروش، نشانی کارخانه در تهران و ساعات کاری.',
+        name: 'تماس با ما و موقعیت مکانی',
+        description: 'خطوط مستقیم تماس، آدرس کارخانه و دفتر فروش در تهران، ساعات کاری و نقشه مسیریابی.',
         url: `${baseUrl}/contact`
       },
       {
-        name: 'محصولات و بسته‌بندی',
-        description: 'تولید تخصصی انواع جعبه مقوایی، دارویی، بهداشتی، فست‌فود، بگ شاپینگ و هاردباکس‌های لوکس.',
-        url: `${baseUrl}/products`
-      },
-      {
-        name: 'کاتالوگ جامع محصولات',
-        description: 'مشاهده و دانلود کاتالوگ صنعتی محصولات، نمونه‌کارهای اجرا شده و مشخصات فنی بسته‌بندی.',
+        name: 'محصولات و نمونه‌های بسته‌بندی',
+        description: 'جعبه‌های دارویی، آرایشی، هاردباکس‌های نفیس و بسته‌بندی‌های بهداشتی مواد غذایی با طراحی مهندسی.',
         url: `${baseUrl}/catalog`
       },
       {
-        name: 'خطوط تولید و ماشین‌آلات',
-        description: 'خطوط پیشرفته چاپ افست ورقی هایدلبرگ، لیتوگرافی هوشمند CTP و تجهیزات اتوماتیک جعبه‌چسبانی.',
+        name: 'خدمات تخصصی چاپ و پس از چاپ',
+        description: 'چاپ افست ۵ رنگ ورقی هایدلبرگ، طلاکوب گرم، دایکات اتوماتیک، سلفون حرارتی و جعبه‌چسبانی پیشرفته.',
+        url: `${baseUrl}/services`
+      },
+      {
+        name: 'تجهیزات و ماشین‌آلات مدرن',
+        description: 'آشنایی با خطوط چاپ Speedmaster، ماشین‌های لیتوگرافی CTP و تجهیزات کنترل کیفی رنگ ISO.',
         url: `${baseUrl}/facilities`
       },
       {
@@ -224,8 +257,9 @@ export function useAppSeo(options: SeoOptions = {}) {
 
   // Breadcrumbs
   const breadcrumbItems = computed(() => {
-    if (options.breadcrumbs && options.breadcrumbs.length > 0) {
-      return options.breadcrumbs
+    const customCrumbs = toValue(options.breadcrumbs)
+    if (customCrumbs && customCrumbs.length > 0) {
+      return customCrumbs
     }
     const pathSegments = cleanPath.value.replace(/^\//, '').split('/').filter(Boolean)
     const items = [{ name: currentLang.value === 'EN' ? 'Home' : (currentLang.value === 'AR' ? 'الرئيسية' : 'خانه'), url: baseUrl }]
@@ -281,7 +315,7 @@ export function useAppSeo(options: SeoOptions = {}) {
           url: `${baseUrl}/najm-logo.png`,
           caption: brandName.value
         },
-        image: socialImage,
+        image: socialImage.value,
         description: metaDescription.value,
         foundingDate: '1999',
         telephone: '+98 21 6679 7911',
@@ -328,25 +362,17 @@ export function useAppSeo(options: SeoOptions = {}) {
           {
             '@type': 'ContactPoint',
             telephone: '+98 21 6678 9577',
-            contactType: 'sales',
-            areaServed: 'IR',
-            availableLanguage: ['Persian', 'English']
-          },
-          {
-            '@type': 'ContactPoint',
-            telephone: '+98 990 340 0074',
-            contactType: 'direct mobile & whatsapp',
-            areaServed: 'IR',
-            availableLanguage: ['Persian', 'English']
+            contactType: 'technical support',
+            areaServed: ['IR'],
+            availableLanguage: ['Persian']
           }
         ],
-        // Verified Gold Star Aggregate Rating for Google SERP
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: '4.9',
           bestRating: '5',
           worstRating: '1',
-          ratingCount: '128',
+          ratingCount: '156',
           reviewCount: '128'
         },
         knowsAbout: [
@@ -404,7 +430,7 @@ export function useAppSeo(options: SeoOptions = {}) {
       {
         '@type': 'FAQPage',
         '@id': `${canonicalUrl.value}/#faq`,
-        mainEntity: activeFaqs.map(faq => ({
+        mainEntity: activeFaqs.value.map(faq => ({
           '@type': 'Question',
           name: faq.question,
           acceptedAnswer: {
@@ -416,8 +442,12 @@ export function useAppSeo(options: SeoOptions = {}) {
     ]
 
     // Append extra schemas passed by the caller
-    if (options.extraSchemas && options.extraSchemas.length > 0) {
-      graph.push(...options.extraSchemas)
+    const extra = toValue(options.extraSchemas)
+    if (extra && Array.isArray(extra) && extra.length > 0) {
+      const safeExtra = safeUnwrap(extra)
+      if (Array.isArray(safeExtra)) {
+        graph.push(...safeExtra)
+      }
     }
 
     return {
@@ -426,50 +456,59 @@ export function useAppSeo(options: SeoOptions = {}) {
     }
   })
 
-  // Apply to Head
-  useHead({
-    title: pageTitle.value,
-    htmlAttrs: {
-      lang: currentLang.value === 'FA' ? 'fa-IR' : (currentLang.value === 'AR' ? 'ar-SA' : 'en-US'),
-      dir: isRTL.value ? 'rtl' : 'ltr'
-    },
-    meta: [
-      { name: 'description', content: metaDescription.value },
-      { name: 'robots', content: options.noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
-      { name: 'author', content: brandName.value },
-      { name: 'theme-color', content: '#115247' },
+  // Apply to Head with reactive getter function
+  useHead(() => {
+    let jsonLd = ''
+    try {
+      jsonLd = JSON.stringify(safeUnwrap(schemaGraph.value))
+    } catch (e) {
+      console.error('Failed to serialize Schema.org JSON-LD:', e)
+    }
 
-      // Open Graph
-      { property: 'og:site_name', content: brandName.value },
-      { property: 'og:title', content: pageTitle.value },
-      { property: 'og:description', content: metaDescription.value },
-      { property: 'og:type', content: options.type || 'website' },
-      { property: 'og:url', content: canonicalUrl.value },
-      { property: 'og:image', content: socialImage },
-      { property: 'og:locale', content: currentLang.value === 'FA' ? 'fa_IR' : (currentLang.value === 'AR' ? 'ar_SA' : 'en_US') },
+    return {
+      title: pageTitle.value,
+      htmlAttrs: {
+        lang: currentLang.value === 'FA' ? 'fa-IR' : (currentLang.value === 'AR' ? 'ar-SA' : 'en-US'),
+        dir: isRTL.value ? 'rtl' : 'ltr'
+      },
+      meta: [
+        { name: 'description', content: metaDescription.value },
+        { name: 'robots', content: options.noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
+        { name: 'author', content: brandName.value },
+        { name: 'theme-color', content: '#115247' },
 
-      // Twitter Card
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:site', content: '@NajmPrinting' },
-      { name: 'twitter:title', content: pageTitle.value },
-      { name: 'twitter:description', content: metaDescription.value },
-      { name: 'twitter:image', content: socialImage }
-    ],
-    link: [
-      { rel: 'canonical', href: canonicalUrl.value },
-      { rel: 'alternate', hreflang: 'fa', href: faUrl.value },
-      { rel: 'alternate', hreflang: 'en', href: enUrl.value },
-      { rel: 'alternate', hreflang: 'ar', href: arUrl.value },
-      { rel: 'alternate', hreflang: 'x-default', href: faUrl.value },
-      // AI Engine & LLM Knowledge File Link
-      { rel: 'alternate', type: 'text/plain', href: '/llms.txt', title: 'LLM Knowledge File' }
-    ],
-    script: [
-      {
-        type: 'application/ld+json',
-        children: JSON.stringify(schemaGraph.value)
-      }
-    ]
+        // Open Graph
+        { property: 'og:site_name', content: brandName.value },
+        { property: 'og:title', content: pageTitle.value },
+        { property: 'og:description', content: metaDescription.value },
+        { property: 'og:type', content: options.type || 'website' },
+        { property: 'og:url', content: canonicalUrl.value },
+        { property: 'og:image', content: socialImage.value },
+        { property: 'og:locale', content: currentLang.value === 'FA' ? 'fa_IR' : (currentLang.value === 'AR' ? 'ar_SA' : 'en_US') },
+
+        // Twitter Card
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:site', content: '@NajmPrinting' },
+        { name: 'twitter:title', content: pageTitle.value },
+        { name: 'twitter:description', content: metaDescription.value },
+        { name: 'twitter:image', content: socialImage.value }
+      ],
+      link: [
+        { rel: 'canonical', href: canonicalUrl.value },
+        { rel: 'alternate', hreflang: 'fa', href: faUrl.value },
+        { rel: 'alternate', hreflang: 'en', href: enUrl.value },
+        { rel: 'alternate', hreflang: 'ar', href: arUrl.value },
+        { rel: 'alternate', hreflang: 'x-default', href: faUrl.value },
+        // AI Engine & LLM Knowledge File Link
+        { rel: 'alternate', type: 'text/plain', href: '/llms.txt', title: 'LLM Knowledge File' }
+      ],
+      script: jsonLd ? [
+        {
+          type: 'application/ld+json',
+          children: jsonLd
+        }
+      ] : []
+    }
   })
 
   return {

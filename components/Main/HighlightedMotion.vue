@@ -14,19 +14,15 @@
             v-if="h.label !== '' && h.label !== 'end'"
             v-editable="`highlightedText.${i}.label`"
             :ref="el => (highlightRefs[i] = el as HTMLElement | null)"
-            class="inline-block rounded-xl px-2 py-1 text-2xl md:text-3xl font-black text-d4 transition-colors duration-300"
+            class="hero-highlight-pill inline-block rounded-xl px-2.5 py-1 text-2xl md:text-3xl font-black text-d4 cursor-pointer select-none"
+            :class="{ 'is-active': activeHighlightIndex === i }"
             :style="{
-              backgroundColor: h.bgColor ?? '#6D28D9',
-              color: h.textColor ?? 'white',
-              transform: h.rotation ? `rotate(${h.rotation})` : undefined,
+              '--base-bg': h.bgColor ?? '#6D28D9',
+              '--base-color': h.textColor ?? 'white',
+              '--base-rot': h.rotation ?? '0deg',
               marginRight: h.indent ?? '0px',
             }"
-            :class="[
-              '!hover:rotate-0',
-              '!hover:bg-black',
-              '!hover:text-white',
-              '!cursor-pointer'
-            ]"
+            @click="toggleHighlight(i)"
           >{{ h.label }}</span>
           <span v-else :style="{ marginRight: h.indent ?? '0px' }"></span>
 
@@ -136,6 +132,12 @@ const paragraphRefs = ref<(HTMLElement | null)[]>([])
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
+const activeHighlightIndex = ref<number | null>(null)
+
+function toggleHighlight(index: number) {
+  activeHighlightIndex.value = activeHighlightIndex.value === index ? null : index
+}
+
 let playedOnce = false
 let stInstance: ScrollTrigger | null = null
 let tlHighlights = gsap.timeline({
@@ -224,7 +226,10 @@ function runHighlightAnimation() {
             rotate: rot,
             duration: animationConfig.durations.bounce,
             ease: animationConfig.eases.highlight.forward,
-            immediateRender: false
+            immediateRender: false,
+            onComplete: () => {
+              gsap.set(target, { clearProps: 'transform' })
+            }
           }
         )
       }
@@ -324,6 +329,31 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 section {
   direction: rtl;
+}
+
+.hero-highlight-pill {
+  background-color: var(--base-bg);
+  color: var(--base-color);
+  transform: rotate(var(--base-rot)) scale(1);
+  transform-origin: center center;
+  /* Fluid spring transition: subtle pop and smooth color/rotation morph */
+  transition: transform 0.42s cubic-bezier(0.34, 1.45, 0.64, 1),
+              background-color 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease;
+  will-change: transform;
+
+  &:hover,
+  &.is-active {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    transform: rotate(0deg) scale(1.07) !important;
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.28);
+  }
+
+  &:active {
+    transform: rotate(0deg) scale(1.02) !important;
+  }
 }
 
 .split-line {

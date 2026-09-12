@@ -176,7 +176,7 @@ useAppSeo({
   image: currentProduct.value.image,
   type: 'product',
   slug: `products/${slug.value}`,
-  extraSchemas: [
+  extraSchemas: computed(() => [
     {
       '@type': 'Product',
       name: currentProduct.value.name,
@@ -193,6 +193,6 @@ useAppSeo({
         price: '1'
       }
     }
-  ]
+  ])
 })
 </script>
