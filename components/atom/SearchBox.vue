@@ -6,7 +6,7 @@
       type="button"
       @click="openSearch"
       :title="searchBtnTooltip"
-      aria-label="Search"
+      :aria-label="searchPromptText"
       class="flex items-center gap-2 px-3 py-2 rounded-2xl bg-white hover:bg-najmgrey transition-all duration-200 border border-gray-100/60 shadow-2xs group cursor-pointer"
     >
       <Icon name="mdi:magnify" class="w-5 h-5 text-gray-700 group-hover:text-najmgreen transition-colors flex-shrink-0" />

@@ -31,3 +31,5 @@ logs
 
 *-prev/
 .env*.local
+
+page-speed/

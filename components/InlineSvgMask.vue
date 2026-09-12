@@ -9,6 +9,8 @@
       :width="W"
       :height="H"
       alt="Packaging Visual"
+      fetchpriority="high"
+      decoding="async"
       style="position: relative; top: 0; left: 0; right: auto; opacity: 1; pointer-events: auto;"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"

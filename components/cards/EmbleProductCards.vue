@@ -13,6 +13,9 @@
             <NuxtImg
               :src="product.image"
               :alt="product.name"
+              width="267"
+              height="267"
+              :loading="idx < 2 ? 'eager' : 'lazy'"
               v-motion
               :initial="{ scale: 0.8 }"
               :visible="{ scale: 1 }"
