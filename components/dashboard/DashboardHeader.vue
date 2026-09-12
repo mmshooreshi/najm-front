@@ -99,6 +99,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useLocale } from '~/composables/useLocale'
 import { useAdminLogger } from '~/composables/useAdminLogger'
 import { toLocalizedDigits } from '~/utils/digits'
+import { clearAdminSession } from '@/store/adminEditStore'
 
 const props = defineProps<{ title?: string }>()
 defineEmits<{
@@ -149,7 +150,10 @@ async function handleLogout() {
   } catch (e) {
     // Ignore error
   }
-  await navigateTo('/admin-login')
+  clearAdminSession()
+  const adminCookie = useCookie('pb_admin')
+  adminCookie.value = null
+  window.location.href = '/admin-login'
 }
 
 onMounted(() => {

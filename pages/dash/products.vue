@@ -759,9 +759,13 @@ async function saveProductStudio() {
   window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: 'محصول با موفقیت ذخیره گردید.' } }))
 }
 
-function deleteProduct(id: string) {
+async function deleteProduct(id: string) {
+  await $fetch(`/api/admin/products/${id}`, {
+    method: 'DELETE'
+  }).catch(() => null)
+
   products.value = products.value.filter(p => p.id !== id)
-  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: 'محصول حذف شد.' } }))
+  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: 'محصول با موفقیت حذف شد.' } }))
 }
 
 async function loadData() {

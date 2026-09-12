@@ -121,13 +121,18 @@ export const adminEditState = reactive<AdminEditState>({
   archives: {}
 })
 
-// Enable admin in development or when localStorage flag is set
-if (typeof window !== 'undefined') {
-  const dev = process.env.NODE_ENV === 'development' || (window as any).__NUXT__?.dev
-  const flag = localStorage.getItem('admin_can_edit')
-  adminEditState.canEdit = dev || flag === 'true'
-  const savedEditMode = localStorage.getItem('admin_edit_mode')
-  adminEditState.editMode = savedEditMode === 'true'
+// Admin session cleanup helper
+export function clearAdminSession() {
+  adminEditState.canEdit = false
+  adminEditState.editMode = false
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.removeItem('admin_can_edit')
+      localStorage.removeItem('admin_edit_mode')
+      sessionStorage.removeItem('admin_editor_active')
+      document.cookie = 'pb_admin=; Max-Age=0; path=/; SameSite=Lax'
+    } catch {}
+  }
 }
 
 /** ---------- Helpers ---------- **/

@@ -13,7 +13,8 @@ import {
   recordSavedVersions,
   changedCountForLang,
   discardAllChanges,
-  toggleGlobalMotionPaused
+  toggleGlobalMotionPaused,
+  clearAdminSession
 } from '@/store/adminEditStore'
 
 const { setLocale, language } = useLocale()
@@ -36,13 +37,10 @@ async function logoutAdmin() {
   try {
     await $fetch('/api/admin/logout', { method: 'POST' })
   } catch {}
+  clearAdminSession()
   const adminCookie = useCookie('pb_admin')
   adminCookie.value = null
-  document.cookie = 'pb_admin=; Max-Age=0; path=/'
-  state.canEdit = false
-  state.editMode = false
-  try { sessionStorage.removeItem('admin_editor_active') } catch {}
-  window.location.reload()
+  window.location.href = '/'
 }
 
 const saving = ref(false)
@@ -678,9 +676,19 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             type="button"
             class="w-7 h-8 rounded-xl bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-colors cursor-pointer"
             @click="closeEditor"
-            title="Exit Visual Editor (Visitor Mode)"
+            title="بستن ویرایشگر بصری (Exit to Visitor Mode)"
           >
             <AdminIcon name="close" class="w-3.5 h-3.5" />
+          </button>
+
+          <!-- Direct 1-Click Logout -->
+          <button
+            type="button"
+            class="w-7 h-8 rounded-xl bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-colors cursor-pointer"
+            @click="logoutAdmin"
+            title="خروج کامل از حساب ادمین (Logout)"
+          >
+            <AdminIcon name="logout" class="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

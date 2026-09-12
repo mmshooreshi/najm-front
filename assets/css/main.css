@@ -23,14 +23,14 @@ body, [dir="rtl"], .font-sans {
 }
 
 [dir="rtl"] .font-mono {
-  font-family: 'IRANSansX-d4', IRANSansX, monospace !important;
+  font-family: 'IRANSansX-d4', 'IRANSansX-D4', IRANSansX, monospace !important;
 }
 
 .animdur{
     animation-duration: 500ms !important;
 }
 .text-d4{
-    font-family: 'IRANSansX-d4', IRANSansX, sans-serif;
+    font-family: 'IRANSansX-d4', 'IRANSansX-D4', IRANSansX, sans-serif !important;
     font-style: normal;
 }
 
