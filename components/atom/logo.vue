@@ -5,8 +5,9 @@
       
       class="flex flex-row items-center gap-4 transition-all duration-500"
     >
-      <NuxtLink to="/" class="flex justify-center">
+      <NuxtLink to="/" class="flex justify-center" aria-label="صفحه اصلی مجتمع چاپ و بسته‌بندی نجم - Najm Printing & Packaging">
         <NajmLogo class="h-10 w-24" />
+        <span class="sr-only">صفحه اصلی مجتمع چاپ و بسته‌بندی نجم</span>
       </NuxtLink>
     </div>
   </template>

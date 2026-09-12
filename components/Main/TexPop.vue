@@ -158,6 +158,7 @@ const paragraphRefs = ref<HTMLElement[]>([])
     if (!el || !el.isConnected) return
     ;(el as any)._split?.revert()
     const split = new SplitText(el, { type: 'lines', linesClass: 'split-line' })
+    el.removeAttribute('aria-label')
     splits.push(split)
 
     const dur = duration ?? (type === 'full' ? animationConfig.durations.lineFull : animationConfig.durations.lineVertical)

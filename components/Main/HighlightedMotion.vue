@@ -177,6 +177,7 @@ function runHighlightAnimation() {
     // revert any previous split on this element
     ;(el as any)._split?.revert()
     const split = new SplitText(el, { type: 'words', wordsClass: 'split-word' })
+    el.removeAttribute('aria-label')
     ;(el as any)._split = split   // store so we can revert later
     splits.push(split)
 

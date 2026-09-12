@@ -25,7 +25,7 @@ export default defineNuxtConfig({
         { name: 'robots', content: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
         {
           name: 'viewport',
-          content: 'width=device-width,initial-scale=1,maximum-scale=1'
+          content: 'width=device-width, initial-scale=1'
         },
         { name: 'theme-color', content: '#115247' },
         { name: 'author', content: 'مجتمع چاپ و بسته‌بندی نجم' },
@@ -99,15 +99,7 @@ export default defineNuxtConfig({
           href: '/android-chrome-512x512.png'
         },
 
-        // Preconnect for external services
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        {
-          rel: 'preconnect',
-          href: 'https://fonts.gstatic.com',
-          crossorigin: ''
-        },
-
-        // Font Preload Links (existing utility)
+        // Font Preload Links (optimized utility)
         ...fontPreloadLinks
       ]
     }
@@ -123,6 +115,14 @@ export default defineNuxtConfig({
     prerender: {
       crawlLinks: false
     }
+  },
+
+  routeRules: {
+    '/': { isr: 3600 },
+    '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/videos/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
   },
 
   build: {
@@ -148,7 +148,7 @@ export default defineNuxtConfig({
   },
 
   features: {
-    inlineStyles: false
+    inlineStyles: true
   },
   router: {
     options: {

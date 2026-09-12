@@ -4,23 +4,28 @@
     <NuxtPage :page-key="route => route.fullPath" />
   </NuxtLayout>
   <ClientOnly>
-    <AdminEditBar />
-    <AdminMediaOverlay />
-    <AdminMediaStudioModal />
-    <AdminMotionPill />
+    <template v-if="canEdit">
+      <AdminEditBar />
+      <AdminMediaOverlay />
+      <AdminMediaStudioModal />
+      <AdminMotionPill />
+    </template>
     <ConsultationModal />
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
+import { computed, defineAsyncComponent } from 'vue'
 import '@unocss/reset/tailwind-compat.css'
-import '@unocss/reset/normalize.css'
-import '@unocss/reset/tailwind.css'
-import AdminEditBar from '~/components/admin/AdminEditBar.client.vue'
-import AdminMediaOverlay from '~/components/admin/AdminMediaOverlay.client.vue'
-import AdminMediaStudioModal from '~/components/admin/AdminMediaStudioModal.client.vue'
-import AdminMotionPill from '~/components/admin/AdminMotionPill.client.vue'
 import ConsultationModal from '~/components/consultation/ConsultationModal.vue'
+import { adminEditState } from '@/store/adminEditStore'
+
+const AdminEditBar = defineAsyncComponent(() => import('~/components/admin/AdminEditBar.client.vue'))
+const AdminMediaOverlay = defineAsyncComponent(() => import('~/components/admin/AdminMediaOverlay.client.vue'))
+const AdminMediaStudioModal = defineAsyncComponent(() => import('~/components/admin/AdminMediaStudioModal.client.vue'))
+const AdminMotionPill = defineAsyncComponent(() => import('~/components/admin/AdminMotionPill.client.vue'))
+
+const canEdit = computed(() => adminEditState.canEdit)
 
 const route = useRoute()
 provideHeadlessUseId(() => useId())

@@ -26,9 +26,8 @@
         :style="contentStyles"
         class="overflow-hidden ease transition-height duration-300 bg-[#115247]/100"
       >
-        <ul class="my-0">
-          <div class="divide-y divide-white/20">
-          <div class="relative hover:bg-white/10 text-center py-2 border-t border-t-0.5 border-white/20 flex items-center justify-between px-4 group/item" v-for="(item, iIdx) in (items || [])" :key="item?.id || iIdx">
+        <ul class="my-0 divide-y divide-white/20 list-none p-0">
+          <li class="relative hover:bg-white/10 text-center py-2 border-t border-t-0.5 border-white/20 flex items-center justify-between px-4 group/item" v-for="(item, iIdx) in (items || [])" :key="item?.id || iIdx">
             <NuxtLink
               v-if="item"
               :to="item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || '')"
@@ -41,10 +40,11 @@
 
             <!-- Array Action [+] / [-] -->
             <AdminArrayItemActions v-if="sectionIndex !== undefined" :path="`sections.${sectionIndex}.children`" :index="iIdx" position="inline" />
-          </div>
+          </li>
 
-          <AdminAddCardPlaceholder v-if="sectionIndex !== undefined" :path="`sections.${sectionIndex}.children`" label="افزودن لینک جدید به این بخش" customClass="min-h-[40px] p-1.5 my-1" />
-        </div>
+          <li v-if="sectionIndex !== undefined" class="list-none">
+            <AdminAddCardPlaceholder :path="`sections.${sectionIndex}.children`" label="افزودن لینک جدید به این بخش" customClass="min-h-[40px] p-1.5 my-1" />
+          </li>
         </ul>
       </div>
     </div>

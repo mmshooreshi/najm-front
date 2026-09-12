@@ -7,8 +7,9 @@
     <!-- Mobile: Logo + Profile + Language + Search + Hamburger -->
     <div v-if="width < 768" class="flex items-center gap-4 w-full">
       <!-- Logo -->
-      <NuxtLink to="/" class="flex-shrink-0">
+      <NuxtLink to="/" class="flex-shrink-0" aria-label="صفحه اصلی مجتمع چاپ و بسته‌بندی نجم - Najm Printing & Packaging">
         <NajmLogo class="h-12 w-12" />
+        <span class="sr-only">صفحه اصلی مجتمع چاپ و بسته‌بندی نجم</span>
       </NuxtLink>
 
       <!-- Spacer -->

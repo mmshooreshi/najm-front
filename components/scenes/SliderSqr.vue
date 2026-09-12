@@ -12,8 +12,19 @@
 
           <NuxtImg v-if="!slide.image.endsWith('mp4')" :src="slide.image" :alt="slide.alt"
             class="w-full h-full object-cover rounded-3xl" />
-          <video v-else muted loop preload="auto" autoPlay playsInline :src="slide.image" :alt="slide.alt"
-            class="w-full h-full object-cover rounded-3xl"></video>
+          <video
+            v-else
+            muted
+            loop
+            preload="metadata"
+            autoPlay
+            playsInline
+            :src="slide.image"
+            :aria-label="slide.alt"
+            class="w-full h-full object-cover rounded-3xl"
+          >
+            <track kind="captions" src="data:text/vtt,WEBVTT" default label="بدون صدا" />
+          </video>
         </div>
 
 
