@@ -116,6 +116,8 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/': { isr: 3600 },
+    '/en': { isr: 3600 },
+    '/ar': { isr: 3600 },
     '/admin': { redirect: { to: '/dash', statusCode: 301 } },
     '/admin/**': { redirect: { to: '/dash', statusCode: 301 } },
     '/dashboard': { redirect: { to: '/dash', statusCode: 301 } },
@@ -124,6 +126,64 @@ export default defineNuxtConfig({
     '/fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/videos/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } }
+  },
+
+  hooks: {
+    'pages:extend'(pages) {
+      const prefixes = ['en', 'ar'] as const
+      const newPages: typeof pages = []
+
+      const shouldSkip = (path: string) => {
+        return (
+          path.startsWith('/dash') ||
+          path.startsWith('/admin') ||
+          path.startsWith('/dashboard') ||
+          path.startsWith('/login') ||
+          path.startsWith('/verify') ||
+          path.startsWith('/api') ||
+          path.startsWith('/en') ||
+          path.startsWith('/ar') ||
+          path === '/NotFound' ||
+          path === '/:catchAll(.*)*'
+        )
+      }
+
+      for (const page of pages) {
+        if (shouldSkip(page.path)) continue
+
+        for (const prefix of prefixes) {
+          const clonedPath = page.path === '/' ? `/${prefix}` : `/${prefix}${page.path.startsWith('/') ? page.path : '/' + page.path}`
+          const clonedName = page.name ? `${prefix}-${String(page.name)}` : `${prefix}-${page.path.replace(/[^a-zA-Z0-9_-]/g, '_')}`
+
+          const cloned: any = {
+            ...page,
+            name: clonedName,
+            path: clonedPath,
+            meta: {
+              ...(page.meta || {}),
+              locale: prefix.toUpperCase(),
+              isLocalePrefixed: true
+            }
+          }
+
+          if (page.children && page.children.length > 0) {
+            cloned.children = page.children.map((child: any) => ({
+              ...child,
+              name: child.name ? `${prefix}-${String(child.name)}` : undefined,
+              meta: {
+                ...(child.meta || {}),
+                locale: prefix.toUpperCase(),
+                isLocalePrefixed: true
+              }
+            }))
+          }
+
+          newPages.push(cloned)
+        }
+      }
+
+      pages.push(...newPages)
+    }
   },
 
   build: {

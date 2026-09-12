@@ -5,7 +5,7 @@
       
       class="flex flex-row items-center gap-4 transition-all duration-500"
     >
-      <NuxtLink to="/" class="flex justify-center" aria-label="صفحه اصلی مجتمع چاپ و بسته‌بندی نجم - Najm Printing & Packaging">
+      <NuxtLink :to="localePath('/')" class="flex justify-center" aria-label="صفحه اصلی مجتمع چاپ و بسته‌بندی نجم - Najm Printing & Packaging">
         <NajmLogo class="h-10 w-24" />
         <span class="sr-only">صفحه اصلی مجتمع چاپ و بسته‌بندی نجم</span>
       </NuxtLink>
@@ -15,6 +15,9 @@
   <script setup lang="ts">
   import NajmLogo from '~/assets/icons/najm-logo.svg'
   import { NuxtLink } from '#components'
+  import { useLocale } from '~/composables/useLocale'
+
+  const { localePath } = useLocale()
   defineProps<{ menuOpen: boolean }>()
   </script>
   

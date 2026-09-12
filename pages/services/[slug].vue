@@ -348,4 +348,23 @@ const midCta = computed(() => {
   }
 })
 const faq = computed(() => ui.value?.faq ?? null)
+
+useAppSeo({
+  title: computed(() => `${hero.value?.title || fallbackTitle.value} | چاپ و بسته‌بندی نجم`),
+  description: computed(() => hero.value?.description || 'خدمات تخصصی چاپ و بسته‌بندی نجم'),
+  image: computed(() => hero.value?.topImage || '/images/sections/cards/01.png'),
+  slug: `services/${serviceSlug.value}`,
+  extraSchemas: [
+    {
+      '@type': 'Service',
+      name: hero.value?.title || fallbackTitle.value,
+      description: hero.value?.description,
+      provider: {
+        '@type': 'LocalBusiness',
+        name: 'مجتمع چاپ و بسته‌بندی نجم'
+      },
+      serviceType: 'خدمات تخصصی چاپ افست و بسته‌بندی'
+    }
+  ]
+})
 </script>

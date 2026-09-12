@@ -40,7 +40,7 @@
         >
           <NuxtLink
             v-if="item"
-            :to="item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || '')"
+            :to="localePath(item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || ''))"
             class="block py-1 text-white text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
           >
             <div
@@ -79,7 +79,9 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick } from 'vue'
 import { adminEditState } from '@/store/adminEditStore'
+import { useLocale } from '~/composables/useLocale'
 
+const { localePath } = useLocale()
 const canEdit = computed(() => adminEditState.canEdit)
 
 interface Item {

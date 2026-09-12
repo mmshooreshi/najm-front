@@ -77,16 +77,22 @@ export function useAppSeo(options: SeoOptions = {}) {
     return 'مجتمع چاپ و بسته‌بندی نجم؛ طراحی و تولید انواع جعبه‌های مقوایی، هاردباکس و بسته‌بندی‌های لوکس با بالاترین استانداردهای چاپ در تهران.'
   })
 
-  // Canonical base URL
+  // Canonical base URL & Clean Path for Multi-Lingual Alternate Links
   const baseUrl = 'https://chapenajm.com'
-  const path = computed(() => {
-    if (options.slug) {
-      return options.slug.startsWith('/') ? options.slug : `/${options.slug}`
-    }
-    return route.path || '/'
+  const cleanPath = computed(() => {
+    let p = options.slug ? (options.slug.startsWith('/') ? options.slug : `/${options.slug}`) : (route.path || '/')
+    return p.replace(/^\/(?:en|ar)(?=\/|$)/, '') || '/'
   })
 
-  const canonicalUrl = computed(() => `${baseUrl}${path.value === '/' ? '' : path.value}`)
+  const faUrl = computed(() => `${baseUrl}${cleanPath.value === '/' ? '' : cleanPath.value}`)
+  const enUrl = computed(() => `${baseUrl}/en${cleanPath.value === '/' ? '' : cleanPath.value}`)
+  const arUrl = computed(() => `${baseUrl}/ar${cleanPath.value === '/' ? '' : cleanPath.value}`)
+
+  const canonicalUrl = computed(() => {
+    if (currentLang.value === 'EN') return enUrl.value
+    if (currentLang.value === 'AR') return arUrl.value
+    return faUrl.value
+  })
   const socialImage = options.image || `${baseUrl}/social-image.png`
 
   // Default High-Authority Industrial FAQs for Google Rich Snippets
@@ -221,10 +227,10 @@ export function useAppSeo(options: SeoOptions = {}) {
     if (options.breadcrumbs && options.breadcrumbs.length > 0) {
       return options.breadcrumbs
     }
-    const cleanPath = path.value.replace(/^\//, '').split('/').filter(Boolean)
+    const pathSegments = cleanPath.value.replace(/^\//, '').split('/').filter(Boolean)
     const items = [{ name: currentLang.value === 'EN' ? 'Home' : (currentLang.value === 'AR' ? 'الرئيسية' : 'خانه'), url: baseUrl }]
     let acc = ''
-    for (const segment of cleanPath) {
+    for (const segment of pathSegments) {
       acc += `/${segment}`
       const segName = segment === 'catalog' ? 'کاتالوگ'
         : segment === 'products' ? 'محصولات'
@@ -451,6 +457,10 @@ export function useAppSeo(options: SeoOptions = {}) {
     ],
     link: [
       { rel: 'canonical', href: canonicalUrl.value },
+      { rel: 'alternate', hreflang: 'fa', href: faUrl.value },
+      { rel: 'alternate', hreflang: 'en', href: enUrl.value },
+      { rel: 'alternate', hreflang: 'ar', href: arUrl.value },
+      { rel: 'alternate', hreflang: 'x-default', href: faUrl.value },
       // AI Engine & LLM Knowledge File Link
       { rel: 'alternate', type: 'text/plain', href: '/llms.txt', title: 'LLM Knowledge File' }
     ],

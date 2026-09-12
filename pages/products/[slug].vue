@@ -119,9 +119,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 definePageMeta({
-  name: 'جزئیات محصول - چاپ نجم',
   layout: 'default'
 })
 
@@ -146,5 +146,53 @@ const defaultProduct = {
   finishes: ['سلفون مات و براق حرارتی', 'یووی موضعی برجسته', 'طلاکوب و نقره‌کوب گرم', 'برجسته‌سازی امباس']
 }
 
-const currentProduct = computed(() => defaultProduct)
+const { data: productsData } = await useFetch('/api/products')
+const matchedProduct = computed(() => {
+  const items = (productsData.value as any)?.items || []
+  return items.find((p: any) => p.slug === slug.value || p.id === slug.value)
+})
+
+const currentProduct = computed(() => {
+  if (matchedProduct.value) {
+    const p = matchedProduct.value
+    return {
+      name: p.title,
+      categoryLabel: p.categoryLabel,
+      description: p.description,
+      minOrder: p.minQty,
+      leadTime: p.leadTime,
+      image: p.image,
+      gallery: p.gallery?.length ? p.gallery : [p.image],
+      materials: [p.paperType],
+      finishes: [p.coating]
+    }
+  }
+  return defaultProduct
+})
+
+useAppSeo({
+  title: computed(() => `${currentProduct.value.name} | چاپ و بسته‌بندی نجم`),
+  description: computed(() => currentProduct.value.description),
+  image: currentProduct.value.image,
+  type: 'product',
+  slug: `products/${slug.value}`,
+  extraSchemas: [
+    {
+      '@type': 'Product',
+      name: currentProduct.value.name,
+      image: currentProduct.value.image,
+      description: currentProduct.value.description,
+      brand: {
+        '@type': 'Brand',
+        name: 'مجتمع چاپ و بسته‌بندی نجم'
+      },
+      offers: {
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        priceCurrency: 'IRR',
+        price: '1'
+      }
+    }
+  ]
+})
 </script>

@@ -18,13 +18,16 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useMenuUIData } from '@/composables/ui/menuUI'
+import { useLocale } from '~/composables/useLocale'
 
+const { localePath } = useLocale()
 const { menuUIData } = useMenuUIData()
 const sections = computed(() => [menuUIData.value?.links, menuUIData.value?.contact].filter(Boolean))
 
 function formatToUrl(slug = ''): string {
-  if (!slug) return '/'
-  if (slug.startsWith('/') || slug.startsWith('http')) return slug
-  return '/' + slug
+  if (!slug) return localePath('/')
+  if (slug.startsWith('http')) return slug
+  const clean = slug.startsWith('/') ? slug : '/' + slug
+  return localePath(clean)
 }
 </script>

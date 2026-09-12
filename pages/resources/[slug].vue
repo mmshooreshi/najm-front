@@ -109,6 +109,7 @@ import { useRoute } from 'vue-router'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 definePageMeta({
   layout: 'default'
@@ -158,6 +159,24 @@ const currentResource = computed(() => {
     ...fallbackResource,
     title: slug.value.replace(/-/g, ' ') || fallbackResource.title
   }
+})
+
+useAppSeo({
+  title: computed(() => `${currentResource.value.title} | مرکز دانلود و راهنمای فنی نجم`),
+  description: computed(() => currentResource.value.description),
+  slug: `resources/${slug.value}`,
+  extraSchemas: [
+    {
+      '@type': 'DigitalDocument',
+      name: currentResource.value.title,
+      description: currentResource.value.description,
+      fileFormat: currentResource.value.fileFormat,
+      publisher: {
+        '@type': 'Organization',
+        name: 'مجتمع چاپ و بسته‌بندی نجم'
+      }
+    }
+  ]
 })
 </script>
 

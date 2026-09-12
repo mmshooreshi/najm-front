@@ -39,10 +39,11 @@ import {useLocale} from "@/composables/useLocale"
     (e: 'update:modelValue', value: string): void
   }>()
   
-  const { nextLanguage: localNext } = useLocale()
+  const { nextLanguage: localNext, language } = useLocale()
   
   function nextLanguage() {
     localNext()
+    emit('update:modelValue', language.value)
   }
   </script>
   

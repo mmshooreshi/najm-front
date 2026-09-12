@@ -2,9 +2,10 @@
 <template>
   <!-- backdrop-blur -->
   <!-- <div dir="rtl" class="fixed top-0 z-50 w-full   flex flex-col w-full"> -->
-  <div   dir="rtl"
-  class="fixed top-0 z-50 w-full flex flex-col transition-transform duration-300"
-  :class="direction === 'down' && !menuOpen && !searchIsOpen ? '-translate-y-full' : 'translate-y-0'">
+  <div
+    :dir="isRTL ? 'rtl' : 'ltr'"
+    class="fixed top-0 z-50 w-full flex flex-col transition-transform duration-300"
+    :class="direction === 'down' && !menuOpen && !searchIsOpen ? '-translate-y-full' : 'translate-y-0'">
 
     <!-- Mobile View -->
     <div class=" bg-white bg-opacity-100   p-2  flex flex-row-reverse w-full transition-all justify-between items-center  z-100">
@@ -71,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { NuxtLink } from '#components'
 import NajmLogo from '~/assets/icons/najm-logo.svg'
 import SearchIcon from '~/assets/icons/search-icon.svg'
