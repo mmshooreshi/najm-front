@@ -90,10 +90,11 @@ export default defineNuxtPlugin(nuxtApp => {
 
   // 2. Global Smart Media Auto-Scanner (Mouse, Click & Selection Tracking in Edit Mode)
   if (typeof window !== 'undefined') {
+    let lastScannedTarget: HTMLElement | null = null
     let currentHoveredMedia: HTMLElement | null = null
 
     function scanElementForMedia(target: HTMLElement): { el: HTMLElement; path: string; url: string } | null {
-      if (isInsideAdminUI(target)) return null
+      if (!target || isInsideAdminUI(target)) return null
 
       // Exclude standalone icons, SVGs or small glyphs
       if (target.tagName === 'svg' || target.classList.contains('iconify') || target.tagName === 'path') {
@@ -102,19 +103,10 @@ export default defineNuxtPlugin(nuxtApp => {
 
       let mediaEl: HTMLElement | null = null
 
-      if (target instanceof HTMLImageElement || target.tagName === 'IMG' || target.tagName === 'PICTURE' || target.tagName === 'VIDEO') {
-        // Exclude tiny icon-sized images
-        if (target.clientWidth > 24 && target.clientHeight > 24) {
-          mediaEl = target
-        }
-      } else if (target.hasAttribute('data-media-path')) {
+      if (target instanceof HTMLImageElement || target.tagName === 'IMG' || target.tagName === 'PICTURE' || target.tagName === 'VIDEO' || target.hasAttribute('data-media-path')) {
         mediaEl = target
       } else {
-        // Check for direct child img
-        const directImg = target.querySelector('img, picture, video')
-        if (directImg && directImg.clientWidth > 32 && (target.clientWidth <= directImg.clientWidth + 24)) {
-          mediaEl = directImg as HTMLElement
-        }
+        mediaEl = target.closest('img, picture, video, [data-media-path]') as HTMLElement | null
       }
 
       if (!mediaEl || isInsideAdminUI(mediaEl)) return null
@@ -147,18 +139,24 @@ export default defineNuxtPlugin(nuxtApp => {
       }
     }
 
-    const onGlobalMouseMove = (e: MouseEvent) => {
+    const onGlobalPointerOver = (e: PointerEvent) => {
       if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
 
       const target = e.target as HTMLElement
-      if (!target || isInsideAdminUI(target)) return
+      if (!target || target === lastScannedTarget || isInsideAdminUI(target)) return
+      lastScannedTarget = target
 
       const scanned = scanElementForMedia(target)
-      if (scanned && scanned.el !== currentHoveredMedia) {
-        currentHoveredMedia = scanned.el
-        window.dispatchEvent(new CustomEvent('admin:media-hover', {
-          detail: { el: scanned.el, path: scanned.path, url: scanned.url }
-        }))
+      if (scanned) {
+        if (scanned.el !== currentHoveredMedia) {
+          currentHoveredMedia = scanned.el
+          window.dispatchEvent(new CustomEvent('admin:media-hover', {
+            detail: { el: scanned.el, path: scanned.path, url: scanned.url }
+          }))
+        }
+      } else if (currentHoveredMedia) {
+        currentHoveredMedia = null
+        window.dispatchEvent(new CustomEvent('admin:media-leave'))
       }
     }
 
@@ -177,7 +175,7 @@ export default defineNuxtPlugin(nuxtApp => {
       }
     }
 
-    window.addEventListener('mousemove', onGlobalMouseMove, { passive: true })
+    window.addEventListener('pointerover', onGlobalPointerOver, { passive: true })
     window.addEventListener('click', onGlobalClick, { capture: true })
 
     // Watch for edit mode toggle

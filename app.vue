@@ -25,8 +25,10 @@ const AdminMediaOverlay = defineAsyncComponent(() => import('~/components/admin/
 const AdminMediaStudioModal = defineAsyncComponent(() => import('~/components/admin/AdminMediaStudioModal.client.vue'))
 const AdminMotionPill = defineAsyncComponent(() => import('~/components/admin/AdminMotionPill.client.vue'))
 
-const canEdit = computed(() => adminEditState.canEdit)
-
 const route = useRoute()
+const canEdit = computed(() => {
+  if (route.path.startsWith('/dash')) return false
+  return adminEditState.canEdit
+})
 provideHeadlessUseId(() => useId())
 </script>

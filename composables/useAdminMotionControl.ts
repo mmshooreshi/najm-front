@@ -12,41 +12,21 @@ import { logger } from '@/utils/logger'
 
 export function useAdminMotionControl() {
   /**
-   * Find all motion ancestor containers for an element
+  const MOTION_CONTAINER_SELECTOR = '.slider-container, .slider-inner, .embla, .embla__viewport, .swiper, [data-motion-container], [data-motion], .projects-intro, .bok'
+
+  /**
+   * Find motion ancestor container for an element (fast closest lookup)
    */
   function getMotionAncestors(el: HTMLElement | null): HTMLElement[] {
-    const list: HTMLElement[] = []
-    if (!el) return list
-
-    let curr: HTMLElement | null = el.parentElement
-    while (curr && curr !== document.body) {
-      if (
-        curr.classList.contains('slider-container') ||
-        curr.classList.contains('slider-inner') ||
-        curr.classList.contains('embla') ||
-        curr.classList.contains('embla__viewport') ||
-        curr.classList.contains('swiper') ||
-        curr.hasAttribute('data-motion-container') ||
-        curr.hasAttribute('data-motion') ||
-        curr.classList.contains('projects-intro') ||
-        curr.classList.contains('bok')
-      ) {
-        list.push(curr)
-      } else {
-        const style = window.getComputedStyle(curr)
-        if (style.animationName && style.animationName !== 'none') {
-          list.push(curr)
-        }
-      }
-      curr = curr.parentElement
-    }
-    return list
+    if (!el) return []
+    const container = el.closest(MOTION_CONTAINER_SELECTOR) as HTMLElement | null
+    return container && container !== el ? [container] : []
   }
 
   /**
-   * Freezes animation on a target container or element AND all its motion parents:
+   * Freezes animation on a target container or element AND its motion parent:
    * 1. CSS animations & transitions (`.admin-motion-paused`)
-   * 2. GSAP tweens associated with element, children, and ancestors
+   * 2. GSAP tweens associated with element
    * 3. Embla/Swiper carousel autoplay instances
    */
   function freezeMotion(el: HTMLElement | null, manualLock = false) {
@@ -59,13 +39,12 @@ export function useAdminMotionControl() {
         item.setAttribute('data-motion-locked', 'true')
       }
 
-      // GSAP pause
+      // GSAP pause on item itself (never querySelectorAll entire DOM subtree)
       try {
         const gsap = (window as any).gsap
         if (gsap) {
           const tweens = gsap.getTweensOf(item) || []
-          const childTweens = gsap.getTweensOf(item.querySelectorAll('*')) || []
-          ;[...tweens, ...childTweens].forEach((t: any) => t?.pause?.())
+          tweens.forEach((t: any) => t?.pause?.())
         }
       } catch {}
 
@@ -96,8 +75,7 @@ export function useAdminMotionControl() {
         const gsap = (window as any).gsap
         if (gsap) {
           const tweens = gsap.getTweensOf(item) || []
-          const childTweens = gsap.getTweensOf(item.querySelectorAll('*')) || []
-          ;[...tweens, ...childTweens].forEach((t: any) => t?.play?.())
+          tweens.forEach((t: any) => t?.play?.())
         }
       } catch {}
 

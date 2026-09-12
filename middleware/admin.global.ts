@@ -6,9 +6,11 @@ export default defineNuxtRouteMiddleware((to) => {
     to.path.startsWith('/admin') ||
     to.path.startsWith('/dashboard')
   const isLoginPage = to.path.startsWith('/admin-login')
-  const adminCookie = useCookie('pb_admin')
 
+  // Early exit immediately for all public routes with zero overhead
   if (!isAdminRoute && !isLoginPage) return
+
+  const adminCookie = useCookie('pb_admin')
 
   const redirectUrl = encodeURIComponent(to.fullPath)
 

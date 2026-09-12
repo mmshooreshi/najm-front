@@ -108,14 +108,11 @@ function updatePosition() {
 }
 
 function startTracking() {
-  if (animFrameId) cancelAnimationFrame(animFrameId)
-  const track = () => {
-    if (isVisible.value && targetEl.value) {
-      updatePosition()
-      animFrameId = requestAnimationFrame(track)
-    }
+  if (animFrameId) {
+    cancelAnimationFrame(animFrameId)
+    animFrameId = null
   }
-  animFrameId = requestAnimationFrame(track)
+  updatePosition()
 }
 
 function showForElement(el: HTMLElement, path = '', url = '') {
@@ -124,9 +121,6 @@ function showForElement(el: HTMLElement, path = '', url = '') {
 
   targetEl.value = el
   currentPath.value = path || el.getAttribute('data-media-path') || el.getAttribute('data-edit-path') || ''
-
-  // Freeze motion on this element and parents while interacting
-  freezeMotion(el, true)
 
   // Resolve media URL & dimensions
   let resolvedUrl = url
@@ -157,7 +151,6 @@ function showForElement(el: HTMLElement, path = '', url = '') {
 
   updatePosition()
   isVisible.value = true
-  startTracking()
 }
 
 function openStudioDirectly() {
@@ -232,10 +225,14 @@ onMounted(() => {
 
   window.addEventListener('admin:media-hover', onMediaHover)
   window.addEventListener('admin:media-leave', onMediaLeave)
+  window.addEventListener('scroll', updatePosition, { passive: true })
+  window.addEventListener('resize', updatePosition, { passive: true })
 
   ;(window as any)._adminMediaOverlayCleanup = () => {
     window.removeEventListener('admin:media-hover', onMediaHover)
     window.removeEventListener('admin:media-leave', onMediaLeave)
+    window.removeEventListener('scroll', updatePosition)
+    window.removeEventListener('resize', updatePosition)
     if (animFrameId) cancelAnimationFrame(animFrameId)
   }
 })

@@ -17,6 +17,33 @@ import {
 } from '@/store/adminEditStore'
 
 const { setLocale, language } = useLocale()
+const router = useRouter()
+const route = useRoute()
+
+function closeEditor() {
+  state.canEdit = false
+  state.editMode = false
+  try { sessionStorage.removeItem('admin_editor_active') } catch {}
+  if (route.query.edit) {
+    const q = { ...route.query }
+    delete q.edit
+    router.replace({ query: q })
+  }
+  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: 'Visual Editor Closed (Visitor Mode)' } }))
+}
+
+async function logoutAdmin() {
+  try {
+    await $fetch('/api/admin/logout', { method: 'POST' })
+  } catch {}
+  const adminCookie = useCookie('pb_admin')
+  adminCookie.value = null
+  document.cookie = 'pb_admin=; Max-Age=0; path=/'
+  state.canEdit = false
+  state.editMode = false
+  try { sessionStorage.removeItem('admin_editor_active') } catch {}
+  window.location.reload()
+}
 
 const saving = ref(false)
 const lastError = ref<string | null>(null)
@@ -363,7 +390,10 @@ const commands = computed(() => [
   { id: 'history', icon: 'history', label: 'View Revisions & History', shortcut: '', action: () => (state.historyOpen = true) },
   { id: 'discard', icon: 'trash', label: 'Discard All Unsaved Changes', shortcut: 'Esc', action: () => discardWithConfirm() },
   { id: 'autosave', icon: 'clock-bolt', label: state.autosaveEnabled ? 'Turn Off Autosave' : 'Turn On Autosave', shortcut: '', action: () => (state.autosaveEnabled = !state.autosaveEnabled) },
-  { id: 'minimize', icon: 'minimize', label: state.minimized ? 'Expand Admin Dock' : 'Minimize Admin Dock', shortcut: '', action: () => (state.minimized = !state.minimized) }
+  { id: 'minimize', icon: 'minimize', label: state.minimized ? 'Expand Admin Dock' : 'Minimize Admin Dock', shortcut: '', action: () => (state.minimized = !state.minimized) },
+  { id: 'exit-editor', icon: 'close', label: 'Close Visual Editor (Return to Visitor Mode)', shortcut: '⌘E', action: closeEditor },
+  { id: 'goto-dash', icon: 'dashboard', label: 'Go to Admin Dashboard (/dash)', shortcut: '', action: () => router.push('/dash') },
+  { id: 'logout', icon: 'logout', label: 'Logout Admin Session', shortcut: '', action: logoutAdmin }
 ])
 
 const filteredCommands = computed(() => {
@@ -470,6 +500,15 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             {{ changedCount }}
           </span>
           <AdminIcon name="maximize" class="w-3.5 h-3.5 text-zinc-400" />
+        </button>
+
+        <button
+          type="button"
+          class="p-1 rounded-lg hover:bg-white/10 text-zinc-500 hover:text-rose-400 transition-colors cursor-pointer"
+          title="Exit Visual Editor (Visitor Mode)"
+          @click.stop="closeEditor"
+        >
+          <AdminIcon name="close" class="w-3.5 h-3.5" />
         </button>
       </div>
 
@@ -632,6 +671,16 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             title="Minimize Dock"
           >
             <AdminIcon name="minimize" class="w-4 h-4" />
+          </button>
+
+          <!-- Exit / Close Visual Editor Button -->
+          <button
+            type="button"
+            class="w-7 h-8 rounded-xl bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-colors cursor-pointer"
+            @click="closeEditor"
+            title="Exit Visual Editor (Visitor Mode)"
+          >
+            <AdminIcon name="close" class="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

@@ -801,6 +801,22 @@ const props = withDefaults(defineProps<{
     <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
   </svg>
 
+  <!-- LOGOUT -->
+  <svg
+    v-else-if="name === 'logout' || name === 'log-out'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+    <path d="M9 12h12l-3 -3" />
+    <path d="M18 15l3 -3" />
+  </svg>
+
   <!-- FALLBACK DEFAULT (Sparkles / Dot) -->
   <svg
     v-else

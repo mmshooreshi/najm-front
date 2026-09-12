@@ -244,41 +244,47 @@ export function getVersions(path: PathKey, lang: LangCode): VersionEntry[] {
   return adminEditState.versions[path]?.[lang] ?? []
 }
 
-/** Hydrate baselines from allLangUI snapshot */
+/** Hydrate baselines from allLangUI snapshot non-blockingly */
 export function applySnapshotToBaselines(lang: LangCode, slug?: string) {
-  const effectiveSlug = slug || adminEditState.slug || 'home'
-  const snap = adminEditState.allLangUIBySlug?.[effectiveSlug]?.[lang] || adminEditState.allLangUI[lang] || adminEditState.allLangUI[lang.toUpperCase()] || adminEditState.allLangUI[lang.toLowerCase()]
-  if (!snap) return
+  const schedule = typeof window !== 'undefined' && 'requestIdleCallback' in window
+    ? (window as any).requestIdleCallback
+    : (fn: any) => setTimeout(fn, 32)
 
-  function walk(obj: any, prefix = '') {
-    if (!obj || typeof obj !== 'object') return
-    for (const [k, v] of Object.entries(obj)) {
-      const fullPath = prefix ? `${prefix}.${k}` : k
-      if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
-        const strVal = String(v)
-        if (!adminEditState.changes[fullPath]) adminEditState.changes[fullPath] = {}
-        const rec = adminEditState.changes[fullPath][lang]
-        if (!rec) {
-          adminEditState.changes[fullPath][lang] = {
-            original: strVal,
-            value: strVal,
-            updatedAt: new Date().toISOString()
+  schedule(() => {
+    const effectiveSlug = slug || adminEditState.slug || 'home'
+    const snap = adminEditState.allLangUIBySlug?.[effectiveSlug]?.[lang] || adminEditState.allLangUI[lang] || adminEditState.allLangUI[lang.toUpperCase()] || adminEditState.allLangUI[lang.toLowerCase()]
+    if (!snap) return
+
+    function walk(obj: any, prefix = '') {
+      if (!obj || typeof obj !== 'object') return
+      for (const [k, v] of Object.entries(obj)) {
+        const fullPath = prefix ? `${prefix}.${k}` : k
+        if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+          const strVal = String(v)
+          if (!adminEditState.changes[fullPath]) adminEditState.changes[fullPath] = {}
+          const rec = adminEditState.changes[fullPath][lang]
+          if (!rec) {
+            adminEditState.changes[fullPath][lang] = {
+              original: strVal,
+              value: strVal,
+              updatedAt: new Date().toISOString()
+            }
+            ;(adminEditState.changes[fullPath] as any).slug = effectiveSlug
+            addVersion(fullPath, lang, strVal, 'original')
+          } else if (!rec.original) {
+            rec.original = strVal
+            rec.value = strVal
+            ;(adminEditState.changes[fullPath] as any).slug = effectiveSlug
+            addVersion(fullPath, lang, strVal, 'original')
           }
-          ;(adminEditState.changes[fullPath] as any).slug = effectiveSlug
-          addVersion(fullPath, lang, strVal, 'original')
-        } else if (!rec.original) {
-          rec.original = strVal
-          rec.value = strVal
-          ;(adminEditState.changes[fullPath] as any).slug = effectiveSlug
-          addVersion(fullPath, lang, strVal, 'original')
+        } else if (typeof v === 'object' && v !== null) {
+          walk(v, fullPath)
         }
-      } else if (typeof v === 'object' && v !== null) {
-        walk(v, fullPath)
       }
     }
-  }
 
-  walk(snap)
+    walk(snap)
+  })
 }
 
 /** Ensure baseline exists for this path+lang */

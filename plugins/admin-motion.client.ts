@@ -32,36 +32,22 @@ export default defineNuxtPlugin(() => {
     )
   }
 
+  const MOTION_SELECTOR = '.slider-container, .embla, .embla__viewport, [data-motion-container], [data-motion], .swiper, [data-carousel], .bok, .projects-intro'
+
   function findMotionContainer(el: HTMLElement | null): HTMLElement | null {
     if (!el || isInsideAdminUI(el)) return null
-
-    // Check known motion containers or classes
-    const container = el.closest(
-      '.slider-container, .embla, .embla__viewport, [data-motion-container], [data-motion], .swiper, [data-carousel], .bok, .projects-intro'
-    ) as HTMLElement | null
-
-    if (container) return container
-
-    // Check if element or parent has CSS animations or transitions active
-    let curr: HTMLElement | null = el
-    while (curr && curr !== document.body) {
-      if (curr.hasAttribute('data-motion-container')) return curr
-      const style = window.getComputedStyle(curr)
-      if (style.animationName && style.animationName !== 'none') {
-        return curr
-      }
-      curr = curr.parentElement
-    }
-
-    return null
+    return el.closest(MOTION_SELECTOR) as HTMLElement | null
   }
 
-  // Mouse Move Scanner for Motion Containers in Edit Mode
-  const onMouseMove = (e: MouseEvent) => {
+  // Use pointerover (only fires when entering an element) instead of mousemove (fires every pixel)
+  let lastTarget: HTMLElement | null = null
+
+  const onPointerOver = (e: PointerEvent) => {
     if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
 
     const target = e.target as HTMLElement
-    if (!target || isInsideAdminUI(target)) return
+    if (!target || target === lastTarget || isInsideAdminUI(target)) return
+    lastTarget = target
 
     const container = findMotionContainer(target)
     if (container) {
@@ -72,14 +58,12 @@ export default defineNuxtPlugin(() => {
 
       if (container !== activeMotionContainer) {
         activeMotionContainer = container
-        // Auto-freeze motion when hovering into container in edit mode
         freezeMotion(container, false)
         window.dispatchEvent(new CustomEvent('admin:motion-container-hover', {
           detail: { container }
         }))
       }
     } else if (activeMotionContainer) {
-      // Hovered outside motion container
       if (!motionLeaveTimer) {
         motionLeaveTimer = setTimeout(() => {
           if (activeMotionContainer) {
@@ -87,12 +71,12 @@ export default defineNuxtPlugin(() => {
             activeMotionContainer = null
           }
           window.dispatchEvent(new CustomEvent('admin:motion-container-leave', {}))
-        }, 200)
+        }, 150)
       }
     }
   }
 
-  window.addEventListener('mousemove', onMouseMove, { passive: true })
+  window.addEventListener('pointerover', onPointerOver, { passive: true })
 
   // Listen to Edit Mode changes
   watch(() => state.editMode, (editMode) => {

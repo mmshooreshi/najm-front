@@ -52,6 +52,12 @@ function updateElementState(el: HTMLElement, path: string, lang: string) {
 
 /** ---------- Instant Hover Badge for Editable Elements ---------- **/
 let hoverBadgeEl: HTMLDivElement | null = null
+let hoverBadgeDot: HTMLSpanElement | null = null
+let hoverBadgeText: HTMLSpanElement | null = null
+let hoverBadgeCopy: HTMLButtonElement | null = null
+let hoverBadgeRevert: HTMLButtonElement | null = null
+let currentBadgePath = ''
+let currentBadgeEl: HTMLElement | null = null
 let hoverActiveTarget: HTMLElement | null = null
 let hideBadgeTimer: any = null
 
@@ -75,11 +81,47 @@ function getOrCreateHoverBadge(): HTMLDivElement {
     border-radius: 8px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(12px);
-    transition: opacity 0.1s ease, transform 0.1s ease;
+    transition: opacity 0.1s ease;
     transform: translateY(0);
     opacity: 0;
     user-select: none;
   `
+
+  hoverBadgeDot = document.createElement('span')
+  hoverBadgeDot.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;flex-shrink:0;'
+
+  hoverBadgeText = document.createElement('span')
+  hoverBadgeText.style.cssText = 'opacity:0.95;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;'
+
+  hoverBadgeCopy = document.createElement('button')
+  hoverBadgeCopy.textContent = 'Copy'
+  hoverBadgeCopy.style.cssText = 'background:rgba(255,255,255,0.08);color:#d1d5db;border:1px solid rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;margin-left:2px;'
+  hoverBadgeCopy.addEventListener('click', (e) => {
+    e.stopPropagation()
+    if (currentBadgePath && navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(currentBadgePath)
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Copied path: ${currentBadgePath}` } }))
+    }
+  })
+
+  hoverBadgeRevert = document.createElement('button')
+  hoverBadgeRevert.textContent = 'Revert'
+  hoverBadgeRevert.style.cssText = 'background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;display:none;'
+  hoverBadgeRevert.addEventListener('click', (e) => {
+    e.stopPropagation()
+    if (currentBadgePath) {
+      revertPath(currentBadgePath, state.language || 'fa')
+      if (currentBadgeEl) {
+        showHoverBadge(currentBadgeEl, currentBadgePath)
+      }
+      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `Reverted "${currentBadgePath}"` } }))
+    }
+  })
+
+  hoverBadgeEl.appendChild(hoverBadgeDot)
+  hoverBadgeEl.appendChild(hoverBadgeText)
+  hoverBadgeEl.appendChild(hoverBadgeCopy)
+  hoverBadgeEl.appendChild(hoverBadgeRevert)
 
   hoverBadgeEl.addEventListener('mouseenter', () => {
     if (hideBadgeTimer) {
@@ -99,55 +141,23 @@ function getOrCreateHoverBadge(): HTMLDivElement {
 function showHoverBadge(el: HTMLElement, path: string) {
   if (!state.canEdit || !state.editMode) return
   if ((el as any)._isFocused || document.activeElement === el) return
-  if (
-    !el ||
-    el.closest('[data-admin-ui="true"]') ||
-    el.closest('.admin-media-overlay-hud') ||
-    el.closest('.media-hud') ||
-    el.closest('.admin-edit-bar') ||
-    el.closest('.admin-floating-dock') ||
-    el.closest('.admin-item-actions') ||
-    el.closest('.admin-add-placeholder') ||
-    el.closest('.admin-hover-badge')
-  ) {
-    return
-  }
+  if (!el || isInsideAdminUI(el)) return
+
   if (hideBadgeTimer) {
     clearTimeout(hideBadgeTimer)
     hideBadgeTimer = null
   }
   hoverActiveTarget = el
+  currentBadgePath = path
+  currentBadgeEl = el
+
   const badge = getOrCreateHoverBadge()
   const lang = state.language
   const changed = isChanged(path, lang)
 
-  badge.innerHTML = `
-    <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${changed ? '#f59e0b' : '#10b981'};flex-shrink:0;"></span>
-    <span style="opacity:0.95;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;">${path}</span>
-    <button id="admin-hover-copy" style="background:rgba(255,255,255,0.08);color:#d1d5db;border:1px solid rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;margin-left:2px;">Copy</button>
-    ${changed ? `<button id="admin-hover-revert" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;">Revert</button>` : ''}
-  `
-
-  const copyBtn = badge.querySelector('#admin-hover-copy')
-  if (copyBtn) {
-    copyBtn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(path)
-        window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Copied path: ${path}` } }))
-      }
-    })
-  }
-
-  const revertBtn = badge.querySelector('#admin-hover-revert')
-  if (revertBtn) {
-    revertBtn.addEventListener('click', (e) => {
-      e.stopPropagation()
-      revertPath(path, lang)
-      showHoverBadge(el, path)
-      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `Reverted "${path}"` } }))
-    })
-  }
+  if (hoverBadgeDot) hoverBadgeDot.style.background = changed ? '#f59e0b' : '#10b981'
+  if (hoverBadgeText) hoverBadgeText.textContent = path
+  if (hoverBadgeRevert) hoverBadgeRevert.style.display = changed ? 'inline-block' : 'none'
 
   const rect = el.getBoundingClientRect()
   badge.style.display = 'inline-flex'
@@ -215,13 +225,42 @@ function toast(text: string, type: 'success' | 'error' | 'info' = 'info') {
 /** ---------- Nuxt Plugin ---------- **/
 export default defineNuxtPlugin(nuxtApp => {
   const { language } = useLocale()
+  const route = useRoute()
 
-  // Initialize admin capability from cookie or dev mode
+  // Initialize admin capability from cookie
   const adminCookie = useCookie('pb_admin')
-  state.canEdit = !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin=')) 
+  const hasSuperuser = computed(() => {
+    return !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin='))
+  })
+
+  // Activate visual editor ONLY if superuser has explicitly requested edit mode:
+  // 1) Via ?edit=true URL query (from /dash "ویرایش بصری سایت"), OR
+  // 2) Via sessionStorage active flag (toggled by ⌘+E)
+  const isExplicitlyEditing = computed(() => {
+    if (!hasSuperuser.value) return false
+    if (typeof window === 'undefined') return false
+    if (route.path.startsWith('/dash')) return false
+    if (route.query.edit === 'true' || route.query.edit === '1') {
+      try { sessionStorage.setItem('admin_editor_active', 'true') } catch {}
+      return true
+    }
+    try {
+      return sessionStorage.getItem('admin_editor_active') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  state.canEdit = isExplicitlyEditing.value
+  state.editMode = isExplicitlyEditing.value
+
+  watch(isExplicitlyEditing, (active) => {
+    state.canEdit = active
+    state.editMode = active
+  })
 
   if (process.dev) {
-    logger.info('Admin:Auth', `Superuser Session: ${state.canEdit ? '✓ Active (canEdit=true)' : '○ Inactive (Visitor Mode)'}`)
+    logger.info('Admin:Auth', `Superuser Session: ${hasSuperuser.value ? (state.canEdit ? '✓ Active (In-Place Edit)' : '○ Present (Visitor Mode - press ⌘E to edit)') : '○ Inactive'}`)
   }
 
   // Keep language in sync
@@ -423,9 +462,18 @@ export default defineNuxtPlugin(nuxtApp => {
 
       // Toggle edit mode: ⌘/Ctrl + E
       if (meta && e.key.toLowerCase() === 'e') {
+        if (!hasSuperuser.value) return
         e.preventDefault()
-        state.editMode = !state.editMode
-        toast(state.editMode ? 'Edit Mode Activated' : 'Preview Mode', 'info')
+        const next = !state.canEdit
+        state.canEdit = next
+        state.editMode = next
+        if (next) {
+          try { sessionStorage.setItem('admin_editor_active', 'true') } catch {}
+          toast('Visual Editor Activated', 'success')
+        } else {
+          try { sessionStorage.removeItem('admin_editor_active') } catch {}
+          toast('Visual Editor Closed (Visitor Mode)', 'info')
+        }
         return
       }
 
