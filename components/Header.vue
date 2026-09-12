@@ -11,22 +11,36 @@
 
       <transition name="menu-switch" mode="out-in">
         <!-- OPEN STATE -->
-        <div key="open" class="flex flex-row w-full transition-all duration-500 justify-end gap-2 items-center z-100">
+        <div key="open" class="flex flex-row w-full transition-all duration-500 justify-end gap-1 md:gap-2 items-center z-100">
 
           <!-- always keep logo at the very right → give it order-first and no grow/shrink -->
-          <Logo :menuOpen="menuOpen" class="max-w-0 sm:max-w-28 order-first flex-shrink-0 flex-grow-0" />
+          <!-- <Logo :menuOpen="menuOpen" class="max-w-0 md:max-w-28 order-first flex-shrink-0 flex-grow-0" /> -->
+          <div 
+  class="order-first flex-shrink-0 flex-grow-0 relative z-[100] transition-[width] duration-500 ease-in-out overflow-hidden flex"
+  :class="(menuOpen && !isDesktop) ? 'w-11 md:w-28' : 'w-28'"
+>
+  <Logo :menuOpen="menuOpen" class="w-28 min-w-[112px] max-w-none flex-shrink-0" />
+</div>
+
+          
 
 
-
-          <div :class="menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div>
-
+          <!-- <div :class="menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div> -->
+          <div :class="(menuOpen && isDesktop) ? '!flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div>
           <NavLinks :class="[menuOpen ? 'w-0 -mx-4 opacity-0 pointer-events-none' : 'mx-0 max-w-98 opacity-100', 'hidden md:block']"
             class="transition-all duration-500 text-nowrap overflow-hidden" />
 
           <!-- Profile Button with blur transition -->
           <transition name="blur">
-            <ProfileButton v-if="!searchIsOpen" :menuOpen="menuOpen"
-              class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden sm:flex' : 'flex'" />
+            <!-- <ProfileButton v-if="!searchIsOpen" :menuOpen="menuOpen"
+              class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden max-w-0 opacity-0 mx-0 border-0  lg:max-w-[180px]  lg:opacity-100 md:mx-1 md:flex' : 'flex max-w-[180px] opacity-100 mx-1 md:mr-8'" /> -->
+            <ProfileButton 
+              v-if="!searchIsOpen" 
+              :menuOpen="menuOpen"
+              class="flex-shrink flex-grow-0 transition-all duration-500 ease-in-out overflow-hidden" 
+              :class="menuOpen ? 'max-w-[180px] opacity-100 mx-1' : 'max-w-0 opacity-0 mx-0 border-0 md:max-w-[180px] md:opacity-100 md:mx-1'" 
+            />
+
           </transition>
 
           <!-- Language Switcher with blur transition -->
@@ -34,11 +48,17 @@
             <LanguageSwitcher v-if="!searchIsOpen" v-model="language"
               class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden sm:flex' : 'flex'" />
           </transition>
-          <div :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class=" -mx-1 duration-500 transition-all"> </div>
-
+          <!-- <div :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class=" -mx-1 duration-500 transition-all"> </div> -->
+          <div :class="(!menuOpen || !isDesktop) ? '!flex-shrink' : '!flex-grow'" class="-mx-1 duration-500 transition-all"> </div>
           <!-- search box flexes only when menu is open -->
-          <SearchBox @update:searchOpen="searchIsOpen = $event" :menuOpen="menuOpen"
-            :class="searchIsOpen ? ' z-100' : ''" />
+          <!-- <SearchBox @update:searchOpen="searchIsOpen = $event" :menuOpen="menuOpen"
+            :class="searchIsOpen ? ' z-100' : ''" /> -->
+
+          <SearchBox 
+            @update:searchOpen="searchIsOpen = $event" 
+            :menuOpen="menuOpen"
+            class="relative z-[100]" 
+          />
 
           <!-- hamburger never grows -->
           <HamburgerMenu v-model:menuOpen="menuOpen" class="flex-shrink-0 flex-grow-0" />

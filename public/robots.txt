@@ -1,37 +1,10 @@
 # robots.txt for Najm Printing & Packaging Complex (https://chapenajm.com)
 
 User-agent: *
-Allow: /
-
-# Private & Administrative Routes
 Disallow: /admin/
 Disallow: /admin-login/
 Disallow: /dashboard/
 Disallow: /dash/
 Disallow: /api/admin/
 
-# Search Engine Crawlers
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-# AI Search & Knowledge Engines
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: GPTBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Claude-Web
-Allow: /
-
-# Sitemaps & LLM Documentation
 Sitemap: https://chapenajm.com/sitemap.xml

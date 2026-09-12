@@ -72,8 +72,8 @@ watch(
         {
           height: fullH,
           opacity: 1,
-          ease: 'power2.inOut',
-          duration: 0.6,
+          ease: 'power2.out', // Changed from power2.inOut
+          duration: 0.3,      // Changed from 0.6
           onComplete: () => (el.style.height = 'auto')
         }
       )
@@ -81,10 +81,12 @@ watch(
       gsap.to(el, {
         height: 0,
         opacity: 0,
-        ease: 'power2.inOut',
-        duration: 0.6
+        ease: 'power2.out', // Changed from power2.inOut
+        duration: 0.3       // Changed from 0.6
       })
     }
+
+    
   },
   { immediate: true }
 )

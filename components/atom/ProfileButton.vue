@@ -1,30 +1,27 @@
 <!-- components/atom/ProfileButton.vue -->
 <!-- components/ProfileButton.vue -->
 <template>
-  <div class="z-100 max-w-full overflow-hidden flex transition-all duration-100 items-center gap-3 whitespace-nowrap ccc max-w-[300px]">
-<NuxtLink :to="isAuthenticated&& user.name ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
+  <div class="z-100 max-w-full overflow-visible flex transition-all duration-100 items-center gap-3 whitespace-nowrap ccc max-w-[300px]">
+    <NuxtLink :to="isAuthenticated && user.name ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
       <button
         @click="handleLogin"
-        class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white transition-all duration-1000 hover:bg-[#A8ABAE]/20 flex rowP items-center justify-center text-gray-700 border border-gray-200 transition-transform  font-medium cursor-pointer"
-        :class="menuOpen ? 'right-[28vw]' : ''"
+        class="transition-all duration-500 text-[11px] md:text-xs text-d4 px-2.5 md:px-4 gap-1.5 md:gap-3 h-10 md:h-12 rounded-2xl md:rounded-3xl bg-white hover:bg-[#A8ABAE]/20 flex items-center justify-center text-gray-700 border border-gray-200 font-medium cursor-pointer"
       >
         <profileUserIcon />
 
-    {{ isAuthenticated && user.name
-        ? `${user?.name} ${user?.familyName}` 
-        : loginText 
-    }}
+        {{ isAuthenticated && user.name
+            ? `${user?.name} ${user?.familyName}` 
+            : loginText 
+        }}
 
-            <Icon
+        <Icon
           name="mdi:chevron-left"
-          class="transition-all group-hover:-translate-x-2 w-5 h-5 my-auto text-[#A8ABAE]"
+          class="transition-transform group-hover:-translate-x-2 w-4 h-4 md:w-5 md:h-5 my-auto text-[#A8ABAE]"
         />
       </button>
     </NuxtLink>
   </div>
 </template>
-
-
 
 <script setup lang="ts">
 import { computed } from 'vue'

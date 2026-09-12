@@ -6,7 +6,7 @@
         v-for="(item, index) in items"
         :delay="index*0.1"
         :key="index"
-        :index="index"
+        :index="index ?? 0"
         :title="item.title"
         :content="item.content"
         :isOpen="openIndex === index"
@@ -24,8 +24,8 @@
   const homeUI = inject<any>('homeUI') ?? {}
   const items = computed(() => homeUI?.value?.accordion ?? [])
 
-  const openIndex = ref(null); // Track which item is open
-
+  // const openIndex = ref(null); // Track which item is open
+  const openIndex = ref<number | null>(null); // Track which item is open
   // const items = ref([
   //   { title: "مشاوره و برنامه‌ریزی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },
   //   { title: "طراحی و فرم‌بندی", content: "در این مرحله، ما با تحلیل نیازهای شما، بهترین راهکارهای چاپ و بسته‌بندی را پیشنهاد می‌دهیم. از انتخاب مواد تا برنامه‌ریزی هزینه و زمان، در کنار شما هستیم.نمی‌دونی کدوم محصول بهتره؟ چه جنسی انتخاب کنی؟ تیم ما آماده راهنمایی و مشاوره‌ی رایگانه!" },

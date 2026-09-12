@@ -95,8 +95,13 @@ import ImagesFloating from '@/components/ImagesFloating.vue'
 import LazyProjectReservation from '@/components/sections/LazyProjectReservation.vue'
 // const homeUI = inject<any>('homeUI') ?? {}
 // const ui = computed(() => homeUI.value?.sceneHero ?? {})
-const homeUI = inject<any>('homeUI') ?? ref({})
-const ui = computed(() => homeUI?.value?.sceneHero ?? {})
+
+// const homeUI = inject<any>('homeUI') ?? ref({})
+// const ui = computed(() => homeUI?.value?.sceneHero ?? {})
+
+const homeUI = inject<any>('homeUI') ?? {}
+const ui = computed(() => homeUI.value?.sceneHero ?? {})
+
 
 // watch(ui, (val) => {
 //   console.log("ui changed to", val)

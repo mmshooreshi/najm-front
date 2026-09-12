@@ -1,0 +1,630 @@
+<!-- components/atom/ProfileButton.vue -->
+<!-- components/ProfileButton.vue -->
+<template>
+  <div class="z-100 max-w-full overflow-hidden flex transition-all duration-100 items-center gap-3 whitespace-nowrap ccc max-w-[300px]">
+<NuxtLink :to="isAuthenticated&& user.name ? `/user/${user.id}` : '/login'" class="group ml-0 flex items-center gap-3">
+      <button
+        @click="handleLogin"
+        class="transition-all text-xs text-d4 px-4 gap-3 h-12 rounded-3xl bg-white transition-all duration-1000 hover:bg-[#A8ABAE]/20 flex rowP items-center justify-center text-gray-700 border border-gray-200 transition-transform  font-medium cursor-pointer"
+        :class="menuOpen ? 'right-[28vw]' : ''"
+      >
+        <profileUserIcon />
+
+    {{ isAuthenticated && user.name
+        ? `${user?.name} ${user?.familyName}` 
+        : loginText 
+    }}
+
+            <Icon
+          name="mdi:chevron-left"
+          class="transition-all group-hover:-translate-x-2 w-5 h-5 my-auto text-[#A8ABAE]"
+        />
+      </button>
+    </NuxtLink>
+  </div>
+</template>
+
+
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useAuth } from '~/composables/useAuth'
+import profileUserIcon from '~/assets/icons/profile-user-icon.svg'
+import { useMediaQuery } from '@vueuse/core'
+import { useLocale } from '~/composables/useLocale'
+
+// Tailwind “md” breakpoint is 768px:
+const isDesktop = useMediaQuery('(min-width: 768px)')
+
+const { user, isAuthenticated } = useAuth()
+const { language } = useLocale()
+
+const loginText = computed(() => {
+  const lang = (language.value || 'FA').toUpperCase()
+  if (lang === 'EN') return 'Login'
+  if (lang === 'AR') return 'تسجيل الدخول'
+  return 'ورود'
+})
+
+function handleLogin() {
+  // login logic if needed
+}
+defineProps<{ menuOpen: boolean }>()
+</script>
+
+<style scoped>
+.ccc{
+    transform-origin: left center;
+}
+</style><!-- components/Header.vue -->
+<template>
+  <!-- backdrop-blur -->
+  <!-- <div dir="rtl" class="fixed top-0 z-50 w-full   flex flex-col w-full"> -->
+  <div   dir="rtl"
+  class="fixed top-0 z-50 w-full flex flex-col transition-transform duration-300"
+  :class="direction === 'down' && !menuOpen && !searchIsOpen ? '-translate-y-full' : 'translate-y-0'">
+
+    <!-- Mobile View -->
+    <div class=" bg-white bg-opacity-100   p-2  flex flex-row-reverse w-full transition-all justify-between items-center  z-100">
+
+      <transition name="menu-switch" mode="out-in">
+        <!-- OPEN STATE -->
+        <div key="open" class="flex flex-row w-full transition-all duration-500 justify-end gap-2 items-center z-100">
+
+          <!-- always keep logo at the very right → give it order-first and no grow/shrink -->
+          <Logo :menuOpen="menuOpen" class="max-w-0 sm:max-w-28 order-first flex-shrink-0 flex-grow-0" />
+
+
+
+          <div :class="menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div>
+
+          <NavLinks :class="[menuOpen ? 'w-0 -mx-4 opacity-0 pointer-events-none' : 'mx-0 max-w-98 opacity-100', 'hidden md:block']"
+            class="transition-all duration-500 text-nowrap overflow-hidden" />
+
+          <!-- Profile Button with blur transition -->
+          <transition name="blur">
+            <ProfileButton v-if="!searchIsOpen" :menuOpen="menuOpen"
+              class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden sm:flex' : 'flex'" />
+          </transition>
+
+          <!-- Language Switcher with blur transition -->
+          <transition name="blur">
+            <LanguageSwitcher v-if="!searchIsOpen" v-model="language"
+              class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden sm:flex' : 'flex'" />
+          </transition>
+          <div :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class=" -mx-1 duration-500 transition-all"> </div>
+
+          <!-- search box flexes only when menu is open -->
+          <SearchBox @update:searchOpen="searchIsOpen = $event" :menuOpen="menuOpen"
+            :class="searchIsOpen ? ' z-100' : ''" />
+
+          <!-- hamburger never grows -->
+          <HamburgerMenu v-model:menuOpen="menuOpen" class="flex-shrink-0 flex-grow-0" />
+
+
+        </div>
+      </transition>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { NuxtLink } from '#components'
+import NajmLogo from '~/assets/icons/najm-logo.svg'
+import SearchIcon from '~/assets/icons/search-icon.svg'
+import { useScrollDirection } from '~/composables/useScrollDirection'
+
+// Modular Components
+import Logo from '~/components/atom/logo.vue'
+import ProfileButton from '@/components/atom/ProfileButton.vue'
+import LanguageSwitcher from '@/components/atom/LanguageSwitcher.vue'
+import SearchBox from '@/components/atom/SearchBox.vue'
+
+import HamburgerMenu from '@/components/atom/HamburgerMenu.vue'
+import NavLinks from '@/components/atom/NavLinks.vue'
+import { useMediaQuery } from '@vueuse/core'
+import { useLocale } from '~/composables/useLocale'
+
+const { language } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const { direction } = useScrollDirection()
+
+
+const props = defineProps<{ topLabel?: any }>()
+
+// Tailwind “md” breakpoint is 768px:
+const isDesktop = useMediaQuery('(min-width: 768px)')
+const isSmall = useMediaQuery('(max-width: 400px)')
+const searchIsOpen = ref(false)
+// Menu state
+const menuOpen = ref(false)
+
+function openDesktopSearch() {
+  // placeholder for desktop search action
+}
+</script>
+
+
+
+
+<style scoped>
+/* 1) Duration & easing of the transition */
+.blur-enter-active,
+.blur-leave-active {
+  transition: filter 0.1s ease, opacity 0.1s ease;
+}
+
+/* 2) Initial state when component is inserted, or after removal */
+.blur-enter-from,
+.blur-leave-to {
+  filter: blur(10px);
+  opacity: 0;
+}
+
+/* 3) Final state once the transition finishes */
+.blur-enter-to,
+.blur-leave-from {
+  filter: blur(0);
+  opacity: 1;
+}
+</style>
+<!-- components/Main/NavBar.vue -->
+<template>
+    <nav
+      dir="ltr"
+      class="flex items-center justify-between w-full bg-white px-0 py-4"
+    >
+      <!-- Left group: Search + Links -->
+      <div class="flex items-center space-x-8">
+        <!-- Search button -->
+        <button
+          @click="onSearchToggle"
+          type="button"
+          class="w-10 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+          aria-label="جستجو"
+        >
+          <slot name="search-icon">
+            <!-- default Heroicon: magnifying-glass -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-linecap="round"/>
+            </svg>
+          </slot>
+        </button>
+  
+        <!-- Nav links -->
+        <NuxtLink
+          v-for="link in links"
+          :key="link.href"
+          :to="link.href"
+          class="text-sm font-medium text-gray-500 hover:text-gray-700 transition"
+        >
+          {{ link.label }}
+        </NuxtLink>
+      </div>
+  
+      <!-- Right group: Category Dropdown, Services, Hamburger -->
+      <div class="flex items-center space-x-4">
+        <!-- Category Dropdown -->
+        <div
+          ref="dropdown"
+          class="relative"
+        >
+          <button
+            @click="onDropdownToggle"
+            type="button"
+            class="flex items-center h-10 px-4 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+            aria-haspopup="true"
+            :aria-expanded="isDropdownOpen"
+          >
+            <slot name="dropdown-label">دسته‌بندی</slot>
+            <slot name="dropdown-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 ml-2 text-gray-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M5 7l5 5 5-5H5z" />
+              </svg>
+            </slot>
+          </button>
+  
+          <ul
+            v-if="isDropdownOpen"
+            class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-sm z-10 overflow-hidden"
+          >
+            <li
+              v-for="(cat, i) in categories"
+              :key="i"
+            >
+              <button
+                @click="selectCategory(cat)"
+                type="button"
+                class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+              >
+                {{ cat }}
+              </button>
+            </li>
+          </ul>
+        </div>
+  
+        <!-- Services button -->
+        <button
+        type="button"
+        class="px-4 w-full h-10 flex items-center justify-center bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+        aria-label="خدمات">
+        <NuxtLink
+          to="/services"
+          class="text-sm font-medium text-gray-700"
+        >
+          خدمات
+        </NuxtLink>
+    </button>
+        <!-- Hamburger -->
+        <button
+          @click="onMobileToggle"
+          type="button"
+          class="w-full px-2 h-10 flex items-center justify-center bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition"
+          aria-label="بازکردن منو"
+        >
+          <slot name="mobile-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </slot>
+        </button>
+      </div>
+    </nav>
+  </template>
+  
+  <script setup lang="ts">
+  import { ref, onMounted, onBeforeUnmount } from 'vue'
+  import { useRouter, useLink } from 'vue-router'
+  
+  /** Your nav links */
+  const links = [
+    { label: 'کاتالوگ',        href: '/catalog' },
+    { label: 'فایل‌های راهنما', href: '/docs'    },
+    { label: 'درباره ما',      href: '/about'   },
+    { label: 'تماس با ما',     href: '/contact' },
+  ]
+  
+  /** Your dropdown items */
+  const categories = ['محصولات', 'خدمات', 'راهنما', 'سوالات متداول']
+  
+  /** Local state */
+  const isDropdownOpen = ref(false)
+  const dropdown = ref<HTMLElement | null>(null)
+  
+  function onDropdownToggle() {
+    isDropdownOpen.value = !isDropdownOpen.value
+  }
+  function selectCategory(cat: string) {
+    isDropdownOpen.value = false
+    // emit or handle selection...
+    console.log('Selected:', cat)
+  }
+  
+  /** Click‑outside to close dropdown */
+  function onClickOutside(e: MouseEvent) {
+    if (dropdown.value && !dropdown.value.contains(e.target as Node)) {
+      isDropdownOpen.value = false
+    }
+  }
+  onMounted(() => document.addEventListener('click', onClickOutside))
+  onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
+  
+  /** stubs for search & mobile toggles */
+  const isSearchOpen = ref(false)
+  function onSearchToggle() {
+    isSearchOpen.value = !isSearchOpen.value
+  }
+  const isMobileOpen = ref(false)
+  function onMobileToggle() {
+    isMobileOpen.value = !isMobileOpen.value
+  }
+  </script>
+  <!-- components/Header2.vue -->
+<template>
+  <header
+    dir="rtl"
+    class="fixed top-0 z-50 w-full backdrop-blur-sm bg-white/80 flex items-center justify-between p-2"
+  >
+    <!-- Mobile: Logo + Profile + Language + Search + Hamburger -->
+    <div v-if="width < 768" class="flex items-center gap-4 w-full">
+      <!-- Logo -->
+      <NuxtLink to="/" class="flex-shrink-0" aria-label="صفحه اصلی مجتمع چاپ و بسته‌بندی نجم - Najm Printing & Packaging">
+        <NajmLogo class="h-12 w-12" />
+        <span class="sr-only">صفحه اصلی مجتمع چاپ و بسته‌بندی نجم</span>
+      </NuxtLink>
+
+      <!-- Spacer -->
+      <div class="flex-1 flex items-center gap-1">
+        <!-- Profile / Login -->
+        <NuxtLink :to="isAuthenticated ? `/user/${user.id}` : '/login'" class="z-50">
+          <button
+            @click="handleLogin"
+            class="flex items-center gap-3 px-4 h-12 rounded-3xl border border-gray-200 bg-white text-xs font-medium text-gray-700 transition hover:bg-[#A8ABAE]/20 transform"
+            :class="menuOpen ? 'right-[28vw]' : ''"
+          >
+            <profileUserIcon />
+            <span>{{ isAuthenticated ? `${user.name} ${user.familyName}` : 'ورود' }}</span>
+            <Icon
+              name="mdi:chevron-left"
+              class="w-5 h-5 text-[#A8ABAE] transition-transform group-hover:-translate-x-2"
+            />
+          </button>
+        </NuxtLink>
+
+        <!-- Language Switch -->
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-2xl border border-gray-200 bg-white font-bold text-gray-700 cursor-pointer transition hover:bg-gray-300/25 hover:text-gray-900"
+          :class="menuOpen ? '!border-0' : ''"
+        >
+          FA
+        </div>
+
+        <!-- Search -->
+        <div
+          @click="openSearch"
+          class="flex items-center p-3 rounded-2xl border border-gray-200 bg-white cursor-pointer transition-[width] duration-300 ease-in-out overflow-hidden"
+          :class="menuOpen ? 'xs:w-20 sm:w-24' : 'w-12'"
+        >
+          <SearchIcon class="w-6 h-6 flex-shrink-0 text-gray-700" />
+          <input
+            v-show="searchOpen"
+            v-model="searchQuery"
+            id="mobile-search-input"
+            type="text"
+            placeholder="جستجو…"
+            @click.stop
+            @blur="closeSearch"
+            class="mr-8 flex-1 bg-transparent outline-none text-gray-800"
+          />
+        </div>
+      </div>
+
+      <!-- Hamburger -->
+      <div class="flex items-center">
+        <div
+          ref="menuContainer"
+          @click="toggleMenu"
+          class="flex items-center justify-center w-12 h-12 rounded-2xl border border-gray-200 bg-white cursor-pointer transition hover:bg-gray-300/25 hover:text-gray-900"
+        >
+          <Drawer v-model:open="menuOpen">
+            <Menu @click="handleWrapperClick" />
+          </Drawer>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav
+      v-else
+      class="hidden md:flex items-center justify-between w-full"
+    >
+      <!-- Logo + Title -->
+      <NuxtLink to="/" class="flex items-center gap-3">
+        <NajmLogo class="h-12 w-12" />
+        <span class="text-base text-black">چاپ و بسته‌بندی</span>
+        <span class="text-2xl font-bold text-black">نجم</span>
+      </NuxtLink>
+
+      <!-- Menu Links + Search -->
+      <div class="flex items-center gap-3">
+        <ul class="flex ml-4 gap-6 text-sm font-medium text-black/70">
+          <template v-for="section in sections" :key="section.name">
+            <li v-for="child in section.children" :key="child.slug">
+              <NuxtLink :to="child.slug">{{ child.name }}</NuxtLink>
+            </li>
+          </template>
+        </ul>
+        <div
+          @click="openSearch"
+          class="flex items-center justify-center w-12 h-12 rounded-2xl border bg-white cursor-pointer transition hover:bg-gray-300/25 hover:text-gray-900"
+        >
+          <SearchIcon class="w-6 h-6 text-gray-700" />
+        </div>
+      </div>
+    </nav>
+  </header>
+</template>
+
+<script setup lang="ts">
+import { ref, nextTick, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useWindowSize, useScrollLock } from '@vueuse/core'
+import { useAuth } from '~/composables/useAuth'
+import { useMenuUIData } from '@/composables/ui/menuUI'
+
+import NajmLogo from '~/assets/icons/najm-logo.svg'
+import SearchIcon from '~/assets/icons/search-icon.svg'
+import profileUserIcon from '~/assets/icons/profile-user-icon.svg'
+import Drawer from '@/components/Drawer.vue'
+
+// Auth
+const { user, isAuthenticated } = useAuth()
+
+// Responsive
+const { width } = useWindowSize()
+
+// Menu UI data
+const { menuUIData } = useMenuUIData()
+const sections = computed(() => [menuUIData.value.links, menuUIData.value.contact])
+
+// Search
+const searchOpen = ref(false)
+const searchQuery = ref('')
+function openSearch() {
+  searchOpen.value = true
+  nextTick(() => {
+    document.getElementById('mobile-search-input')?.focus()
+  })
+}
+function closeSearch() {
+  searchOpen.value = false
+}
+
+// Hamburger Menu
+const menuOpen = ref(false)
+const menuContainer = ref<HTMLElement | null>(null)
+const isLocked = useScrollLock(menuContainer)
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value
+  isLocked.value = menuOpen.value
+}
+function handleWrapperClick(event: MouseEvent) {
+  if (!event.target || (event.target as HTMLElement).closest('a')) return
+  event.stopPropagation()
+}
+
+// Close when clicking outside drawer
+function handleClickOutside(event: MouseEvent) {
+  const drawerEl = document.querySelector('.drawer-container')
+  if (
+    menuOpen.value &&
+    drawerEl &&
+    !drawerEl.contains(event.target as Node) &&
+    menuContainer.value &&
+    !menuContainer.value.contains(event.target as Node)
+  ) {
+    menuOpen.value = false
+    isLocked.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
+</script>
+<!-- components/scenes/SceneHero.vue -->
+<!-- SceneHero.vue -->
+<!-- <template>
+  <div class=" py-16 md:pt-16  flex flex-col flex-grow">
+    <teleport to="body">
+      <RotatoryPane/>
+    </teleport>
+
+    <HighlightedText />
+
+    <div
+      class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px]"
+      style="top:48px; padding:0px 0px;">
+      <ImagesFloating />
+    </div>
+
+
+    <div class="bok gap-3 flex flex-col flex-grow h-full translate-y-0">
+      <div class="h-46  overflow-visible">
+        <LazyProjectReservation />
+      </div>
+      <div class="flex-grow"></div>
+      <GreenButton :fullWidth="false" :label="ui.cta"  @click="" />
+      <div v-motion
+      :initial="{ scale: 0, }" :visible="{ scale: 1, }">
+        <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
+          {{ ui.countdownLabelStart }}
+          <span
+            class=" text-najmgreen underline decoration-0.5 decoration-offset-3 decoration-najmgreen px-0.5">{{ toLocalizedDigits(ui.countdownDays) }}</span>
+          {{ ui.countdownLabelEnd }}
+        </p>
+      </div>
+    </div>
+
+
+  </div>
+</template> -->
+
+
+<!-- components/scenes/SceneHero.vue -->
+<!-- components/scenes/SceneHero.vue -->
+<template>
+
+  <BackgroundGradient />
+  <div class="h-full section-snap pb-2  md:pb-6 flex flex-col pt-16  ">
+
+    <teleport to="body">
+      <RotatoryPane/>
+    </teleport>
+
+    <HighlightedText />
+
+    <div
+      class="z-10 relative flex flex-col items-center gap-8 rounded-bl-[25px] rounded-tl-[35px] rounded-tr-[35px] rounded-br-[35px]"
+      style="top:10vh; padding:0px 0px;">
+      <ClientOnly>
+        <ImagesFloating />
+      </ClientOnly>
+    </div>
+
+    <div class="bok gap-3 flex flex-col grow h-full invisible md:visible">
+      <div class="flex-grow"></div>
+      <!-- <div class="h-46 translate-y-16 overflow-visible">
+        <LazyProjectReservation />
+      </div> -->
+
+      <!-- EDITABLE BUTTON TEXT -->
+      <GreenButton :fullWidth="false" >
+        <span v-editable="'sceneHero.cta'">{{ ui.cta }}</span>
+      </GreenButton>
+
+
+      <div v-motion :initial="{ scale: 0 }" :visible="{ scale: 1 }">
+        <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
+          <span v-editable="'sceneHero.countdownLabelStart'">{{ ui.countdownLabelStart }}</span>
+          <span
+            class=" text-najmgreen underline decoration-0.5 decoration-offset-3 decoration-najmgreen px-0.5"
+            v-editable="'sceneHero.countdownDays'">{{ toLocalizedDigits(ui.countdownDays) }}</span>
+          <span v-editable="'sceneHero.countdownLabelEnd'">{{ ui.countdownLabelEnd }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
+
+
+<script setup lang="ts">
+import HighlightedText from '@/components/new/HighlightedText.vue'
+import GreenButton from '@/components/buttons/GreenButton.vue'
+import RotatoryPane from '@/components/fixed/RotatoryPane.vue'
+import rotatoryLg from '~/components/rotatoryLegacy.vue'
+import { toLocalizedDigits } from '~/utils/digits'
+
+import ImagesFloating from '@/components/ImagesFloating.vue'
+import LazyProjectReservation from '@/components/sections/LazyProjectReservation.vue'
+// const homeUI = inject<any>('homeUI') ?? {}
+// const ui = computed(() => homeUI.value?.sceneHero ?? {})
+const homeUI = inject<any>('homeUI') ?? ref({})
+const ui = computed(() => homeUI?.value?.sceneHero ?? {})
+
+// watch(ui, (val) => {
+//   console.log("ui changed to", val)
+// })
+
+
+</script>
+
+
+<style scoped>
+/* in your Layout.vue or global styles */
+.section-snap {
+  position: relative;              /* make ::before sit on top */
+  min-height: calc(100vh - 64px);
+  min-height: calc(100svh - 64px);
+}
+
+</style>
