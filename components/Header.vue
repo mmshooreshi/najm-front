@@ -28,19 +28,25 @@
 
           <!-- <div :class="menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div> -->
           <div :class="(menuOpen && isDesktop) ? '!flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div>
-          <NavLinks :class="[menuOpen ? 'w-0 -mx-4 opacity-0 pointer-events-none' : 'mx-0 max-w-98 opacity-100', 'hidden md:block']"
-            class="transition-all duration-500 text-nowrap overflow-hidden" />
-
+<NavLinks 
+  :class="[
+    menuOpen ? 'max-w-0 -mx-4 opacity-0 pointer-events-none' : 'mx-0 max-w-[800px] opacity-100 flex-shrink-0', 
+    'hidden xl:block'
+  ]"
+  class="transition-all duration-500 text-nowrap overflow-hidden" 
+/>
           <!-- Profile Button with blur transition -->
           <transition name="blur">
             <!-- <ProfileButton v-if="!searchIsOpen" :menuOpen="menuOpen"
               class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden max-w-0 opacity-0 mx-0 border-0  lg:max-w-[180px]  lg:opacity-100 md:mx-1 md:flex' : 'flex max-w-[180px] opacity-100 mx-1 md:mr-8'" /> -->
-            <ProfileButton 
-              v-if="!searchIsOpen" 
-              :menuOpen="menuOpen"
-              class="flex-shrink flex-grow-0 transition-all duration-500 ease-in-out overflow-hidden" 
-              :class="menuOpen ? 'max-w-[180px] opacity-100 mx-1' : 'max-w-0 opacity-0 mx-0 border-0 md:max-w-[180px] md:opacity-100 md:mx-1'" 
-            />
+<ProfileButton 
+  v-if="!searchIsOpen" 
+  :menuOpen="menuOpen"
+  class="flex-shrink flex-grow-0 transition-all duration-500 ease-in-out overflow-hidden" 
+  :class="menuOpen 
+    ? 'max-w-[180px] opacity-100 mx-1' 
+    : 'max-w-0 opacity-0 mx-0 !px-0 border-0 xl:max-w-[180px] xl:opacity-100 xl:mx-1 xl:!px-4'" 
+/>
 
           </transition>
 
