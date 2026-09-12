@@ -105,8 +105,13 @@ export default defineNuxtConfig({
     preset: process.env.VERCEL ? 'vercel' : undefined,
     compressPublicAssets: true,
     prerender: {
-      crawlLinks: false
+      crawlLinks: false,
+      routes: ['/']
     }
+  },
+
+  experimental: {
+    inlineSSRStyles: true
   },
 
   routeRules: {
@@ -135,10 +140,8 @@ export default defineNuxtConfig({
     'v-gsap-nuxt',
     'nuxt-swiper',
     '@nuxt/image',
-    'nuxt-mapbox',
     'nuxt-delay-hydration',
     '@nuxtjs/fontaine',
-
   ],
   delayHydration: {
     mode: 'init', // delays hydration until idle or first interaction
@@ -160,7 +163,7 @@ export default defineNuxtConfig({
   },
   router: {
     options: {
-      scrollBehaviorType: 'smooth'
+      scrollBehaviorType: 'auto'
     }
   },
 
@@ -198,14 +201,11 @@ export default defineNuxtConfig({
       sizeLimitKb: 256
     }
   },
-  mapbox: {
-    accessToken:
-      'pk.eyJ1IjoibW1zaG9vcmVzaGkiLCJhIjoiY205eGJla2tyMTB3ejJrc2Vma2VwY2VlaiJ9.PGekyHty46Af6FxyKY3HIw'
-  },
   vite: {
     build: {
       chunkSizeWarningLimit: 2000,
-      cssMinify: 'esbuild'
+      cssMinify: 'esbuild',
+      cssCodeSplit: false
     },
 
     optimizeDeps: {
@@ -219,7 +219,8 @@ export default defineNuxtConfig({
     ]
   },
   image: {
-    // Options
+    format: ['webp', 'avif'],
+    quality: 80
   },
   headlessui: {
     prefix: 'Headless'

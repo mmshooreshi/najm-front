@@ -8,11 +8,11 @@
       </h2>
 
       <!-- Category Tabs -->
-      <div class="relative h-8 lg:h-28">
+      <div class="relative w-full max-w-full my-2">
         <div ref="tabsContainer"
-          class="tabs-container absolute   sm:w-screen lg:max-w-full  flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start sm:px-4 w-max lg:justify-center ">
+          class="tabs-container w-full max-w-full flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 px-2 justify-start lg:justify-center">
           <button v-for="(cat, i) in data.categories" :key="cat.name" @click="selectTab(i)" :class="[
-            'rounded-3xl border text-demibold text-xs px-6 py-3 transition-colors',
+            'rounded-3xl border text-demibold text-xs px-6 py-3 transition-colors shrink-0',
             activeTab === i
               ? 'border-[#C2D3D1] bg-najmgreen/20 text-najmgreen'
               : 'border-[#C2D3D1] text-gray-700 bg-transparent hover:bg-gray-200'
@@ -520,13 +520,13 @@ function selectTab(i: number) {
     const btn = btns[i] as HTMLElement | undefined
     if (!btn) return
 
-    btn.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',  // vertical stay-put
-      inline: 'start',    // scroll to left edge + our CSS margin
+    // Scroll ONLY the tabs container, NEVER the whole page or window!
+    const targetScroll = btn.offsetLeft - (container.clientWidth / 2) + (btn.clientWidth / 2)
+    container.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth'
     })
   })
-
 }
 
 

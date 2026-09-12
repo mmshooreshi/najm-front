@@ -7,8 +7,8 @@
  -->
   <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10" dir="ltr"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
-       @mousemove="throttledMouseMove" @touchstart="handleTouchStart"
-       @touchmove="handleTouchMove" @touchend="handleTouchEnd">
+       @mousemove="throttledMouseMove" @touchstart.passive="handleTouchStart"
+       @touchmove.passive="handleTouchMove" @touchend.passive="handleTouchEnd">
     <!-- Settings Button -->
 
     <div class="slider-inner absolute flex" dir="ltr"> 
@@ -519,6 +519,7 @@ onUnmounted(() => {
     overflow-x: clip;
     overflow-y: unset;
     touch-action: pan-y;
+    contain: layout paint;
 }
 
 .slider-inner {
@@ -536,6 +537,7 @@ onUnmounted(() => {
     right: auto !important;
     transition-property: transform, box-shadow, opacity, filter;
     will-change: transform, opacity, filter;
+    contain: layout style;
 }
 
 </style>

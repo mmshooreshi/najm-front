@@ -19,25 +19,25 @@
       </button>
     </div>
 
-     <!-- Tabs -->
-     <div class="relative h-8 lg:h-28">
-  <div
-    ref="tabsContainer"
-    class="tabs-container w-screen lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:w-screen flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible px-4 pl-2 pr-4 translate-x-4 py-2 justify-start lg:justify-center"
-    >
-    <button
-      v-for="(group, i) in uniqueGroups"
-      :key="`${selectedType}-${group}-${i}`"
-      @click="selectTab(i, group)"
-      class="transition-all rounded-3xl border text-xs px-6 py-3 hover:bg-najmgreen/10 hover:scale-105"
-      :class="[activeTab === i
-        ? 'border-[#C2D3D1] !bg-najmgreen !text-white'
-        : 'border-[#C2D3D1] text-gray-700']"
-    >
-      <span v-editable="`sceneProducts.groups.${selectedType}.${i}`">{{ group }}</span>
-    </button>
-  </div>
-</div>
+    <!-- Tabs -->
+    <div class="relative w-full max-w-full my-2">
+      <div
+        ref="tabsContainer"
+        class="tabs-container w-full max-w-full flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible px-2 py-2 justify-start lg:justify-center"
+      >
+        <button
+          v-for="(group, i) in uniqueGroups"
+          :key="`${selectedType}-${group}-${i}`"
+          @click="selectTab(i, group)"
+          class="transition-all rounded-3xl border text-xs px-6 py-3 hover:bg-najmgreen/10 hover:scale-105 shrink-0"
+          :class="[activeTab === i
+            ? 'border-[#C2D3D1] !bg-najmgreen !text-white'
+            : 'border-[#C2D3D1] text-gray-700']"
+        >
+          <span v-editable="`sceneProducts.groups.${selectedType}.${i}`">{{ group }}</span>
+        </button>
+      </div>
+    </div>
     <!-- Product Carousel -->
     <ClientOnly>
       <EmbleProductCards
@@ -145,21 +145,24 @@ function selectTab(index: number, group: string) {
   } else {
     // deselect and reset to first tab
     activeTab.value = -1
-    // activeGroup.value = uniqueGroups.value[0]
     activeGroup.value = ''
-    index=0
+    index = 0
   }
 
   nextTick(() => {
+    const container = tabsContainer.value
+    if (!container) return
     const target = activeGroup.value ? index : 0
-    const btn = tabsContainer.value
-      ?.querySelectorAll('button')[target]
-    btn?.scrollIntoView({
-      behavior: 'smooth',
-      block:    'nearest',
-      inline:   'start',
-    })
+    const btns = container.querySelectorAll('button')
+    const btn = btns[target] as HTMLElement | undefined
+    if (!btn) return
 
+    // Scroll ONLY the tabs container, NEVER the whole page or window!
+    const targetScroll = btn.offsetLeft - (container.clientWidth / 2) + (btn.clientWidth / 2)
+    container.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth'
+    })
   })
 }
 </script>

@@ -33,11 +33,13 @@
     </svg>
 
     <!-- Inline image with exact styling and lazy/priority loading -->
-    <img
+    <NuxtImg
       ref="imgEl"
       :src="src"
       :width="W"
       :height="H"
+      format="webp"
+      quality="85"
       alt="Packaging Visual"
       :loading="priority ? 'eager' : 'lazy'"
       :fetchpriority="priority ? 'high' : 'low'"

@@ -11,8 +11,8 @@
 
 
   
-    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback">
-      <div id="smooth-content">
+    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback overflow-x-clip">
+      <div id="smooth-content" class="w-full max-w-full overflow-x-clip">
         <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
           <slot />
         </div>
@@ -68,7 +68,10 @@ onBeforeUnmount(() => {
 
 
 <style>
-
+#smooth-wrapper,
+#smooth-content {
+  overflow-x: clip;
+}
 
     /* containerCustom utility CSS */
 .containerCustom {
