@@ -29,12 +29,12 @@
       ref="contentRef"
       :style="contentStyles"
       @transitionend="onTransitionEnd"
-      class="accordion-content overflow-hidden bg-[#0a3f35] border-t border-transparent"
+      class="accordion-content overflow-hidden bg-[#0a3f35] "
       :class="{ '!border-white/10': open }"
     >
       <ul class="my-0 divide-y divide-white/10 list-none p-0">
         <li
-          class="relative hover:bg-white/10 text-center py-2.5 border-t border-white/10 flex items-center justify-between px-4 group/item transition-colors"
+          class="relative hover:bg-white/10 text-center py-2.5 flex items-center justify-between px-4 group/item transition-colors"
           v-for="(item, iIdx) in (items || [])"
           :key="item?.id || iIdx"
         >

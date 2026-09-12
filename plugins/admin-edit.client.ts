@@ -218,7 +218,7 @@ export default defineNuxtPlugin(nuxtApp => {
 
   // Initialize admin capability from cookie or dev mode
   const adminCookie = useCookie('pb_admin')
-  state.canEdit = !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin=')) || process.dev
+  state.canEdit = !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin=')) 
 
   if (process.dev) {
     logger.info('Admin:Auth', `Superuser Session: ${state.canEdit ? '✓ Active (canEdit=true)' : '○ Inactive (Visitor Mode)'}`)
