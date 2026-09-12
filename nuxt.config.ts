@@ -142,6 +142,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     'nuxt-delay-hydration',
     '@nuxtjs/fontaine',
+    '@vercel/analytics',
+    '@vercel/speed-insights'
+
   ],
   delayHydration: {
     mode: 'init', // delays hydration until idle or first interaction

@@ -35,6 +35,12 @@ importers:
       '@studio-freight/lenis':
         specifier: ^1.0.42
         version: 1.0.42
+      '@vercel/analytics':
+        specifier: ^2.0.1
+        version: 2.0.1(nuxt@3.15.4(@parcel/watcher@2.5.1)(@types/node@26.2.0)(db0@0.2.4)(encoding@0.1.13)(ioredis@5.5.0)(magicast@0.3.5)(meow@9.0.0)(rollup@4.34.8)(sass@1.85.0)(terser@5.50.0)(typescript@5.7.3)(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(yaml@2.7.0))(svelte@5.56.9)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@vercel/speed-insights':
+        specifier: ^2.0.0
+        version: 2.0.0(nuxt@3.15.4(@parcel/watcher@2.5.1)(@types/node@26.2.0)(db0@0.2.4)(encoding@0.1.13)(ioredis@5.5.0)(magicast@0.3.5)(meow@9.0.0)(rollup@4.34.8)(sass@1.85.0)(terser@5.50.0)(typescript@5.7.3)(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(yaml@2.7.0))(svelte@5.56.9)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
       '@vueuse/components':
         specifier: ^13.1.0
         version: 13.1.0(vue@3.5.13(typescript@5.7.3))
@@ -1537,10 +1543,65 @@ packages:
     peerDependencies:
       webpack: ^4 || ^5
 
+  '@vercel/analytics@2.0.1':
+    resolution: {integrity: sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==}
+    peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      nuxt: '>= 3'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      nuxt:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
+
   '@vercel/nft@0.27.10':
     resolution: {integrity: sha512-zbaF9Wp/NsZtKLE4uVmL3FyfFwlpDyuymQM1kPbeT0mVOHKDQQNjnnfslB3REg3oZprmNFJuh3pkHBk2qAaizg==}
     engines: {node: '>=16'}
     hasBin: true
+
+  '@vercel/speed-insights@2.0.0':
+    resolution: {integrity: sha512-jwkNcrTeafWxjmWq4AHBaptSqZiJkYU5adLC9QBSqeim0GcqDMgN5Ievh8OG1rJ6W3A4l1oiP7qr9CWxGuzu3w==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      nuxt: '>= 3'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      nuxt:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vitejs/plugin-vue-jsx@4.1.1':
     resolution: {integrity: sha512-uMJqv/7u1zz/9NbWAD3XdjaY20tKTf17XVfQ9zq4wY1BjsB/PjpJPMe2xiG39QpP4ZdhYNhm4Hvo66uJrykNLA==}
@@ -7300,6 +7361,13 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
+  '@vercel/analytics@2.0.1(nuxt@3.15.4(@parcel/watcher@2.5.1)(@types/node@26.2.0)(db0@0.2.4)(encoding@0.1.13)(ioredis@5.5.0)(magicast@0.3.5)(meow@9.0.0)(rollup@4.34.8)(sass@1.85.0)(terser@5.50.0)(typescript@5.7.3)(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(yaml@2.7.0))(svelte@5.56.9)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))':
+    optionalDependencies:
+      nuxt: 3.15.4(@parcel/watcher@2.5.1)(@types/node@26.2.0)(db0@0.2.4)(encoding@0.1.13)(ioredis@5.5.0)(magicast@0.3.5)(meow@9.0.0)(rollup@4.34.8)(sass@1.85.0)(terser@5.50.0)(typescript@5.7.3)(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(yaml@2.7.0)
+      svelte: 5.56.9
+      vue: 3.5.13(typescript@5.7.3)
+      vue-router: 4.5.0(vue@3.5.13(typescript@5.7.3))
+
   '@vercel/nft@0.27.10(encoding@0.1.13)(rollup@4.34.8)':
     dependencies:
       '@mapbox/node-pre-gyp': 2.0.0(encoding@0.1.13)
@@ -7318,6 +7386,13 @@ snapshots:
       - encoding
       - rollup
       - supports-color
+
+  '@vercel/speed-insights@2.0.0(nuxt@3.15.4(@parcel/watcher@2.5.1)(@types/node@26.2.0)(db0@0.2.4)(encoding@0.1.13)(ioredis@5.5.0)(magicast@0.3.5)(meow@9.0.0)(rollup@4.34.8)(sass@1.85.0)(terser@5.50.0)(typescript@5.7.3)(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(yaml@2.7.0))(svelte@5.56.9)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))':
+    optionalDependencies:
+      nuxt: 3.15.4(@parcel/watcher@2.5.1)(@types/node@26.2.0)(db0@0.2.4)(encoding@0.1.13)(ioredis@5.5.0)(magicast@0.3.5)(meow@9.0.0)(rollup@4.34.8)(sass@1.85.0)(terser@5.50.0)(typescript@5.7.3)(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(yaml@2.7.0)
+      svelte: 5.56.9
+      vue: 3.5.13(typescript@5.7.3)
+      vue-router: 4.5.0(vue@3.5.13(typescript@5.7.3))
 
   '@vitejs/plugin-vue-jsx@4.1.1(vite@6.1.0(@types/node@26.2.0)(jiti@2.4.2)(sass@1.85.0)(terser@5.50.0)(yaml@2.7.0))(vue@3.5.13(typescript@5.7.3))':
     dependencies:
