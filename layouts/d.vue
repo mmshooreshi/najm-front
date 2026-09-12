@@ -22,7 +22,7 @@ const menuOpen = ref(false)
   <slot/>
 
     <div class="">
-      <!-- <FooterLayout/> -->
+      <Footer2 />
     </div>
   </div>
 </template>

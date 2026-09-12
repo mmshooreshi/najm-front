@@ -12,8 +12,8 @@
     />
 
     <!-- Page Wrapper -->
-    <div class="bg-najmback w-full overflow-visible touch-pan-y min-h-screen pt-16">
-      <main class="w-full overflow-visible mx-auto">
+    <div class="bg-najmback w-full overflow-visible touch-pan-y min-h-screen pt-16 flex flex-col justify-between">
+      <main class="w-full overflow-visible mx-auto flex-grow">
         <slot />
       </main>
       <Footer2 />

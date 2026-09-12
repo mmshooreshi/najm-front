@@ -9,10 +9,15 @@
       class="fixed top-0 left-0 w-full z-50"
     />
 
-    <div :dir="isRTL ? 'rtl' : 'ltr'" class="relative min-h-screen pt-16 pb-24 bg-najmback">
+    <div :dir="isRTL ? 'rtl' : 'ltr'" class="relative min-h-screen pt-16 bg-najmback flex flex-col justify-between">
       <!-- Main content -->
-      <div class="w-full px-4 md:px-8 mt-4 pb-32">
+      <div class="w-full px-4 md:px-8 mt-4 pb-12 flex-grow">
         <slot />
+      </div>
+
+      <!-- Shared Footer -->
+      <div :class="[primaryCtaLabel || secondaryCtaLabel ? 'pb-24 sm:pb-20' : '']">
+        <Footer2 />
       </div>
 
       <!-- Bottom fixed CTA bar -->
@@ -45,6 +50,7 @@ import { ref, computed } from 'vue'
 import { useRoute } from '#imports'
 import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import Header from '~/components/Header.vue'
+import Footer2 from '~/components/Footer2.vue'
 import { usePageUI } from '@/composables/ui/usePageUI'
 import { useLocale } from '@/composables/useLocale'
 import { useAdminEditable } from '@/composables/useAdminEditable'

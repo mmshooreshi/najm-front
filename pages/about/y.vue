@@ -5,7 +5,7 @@ import ScrollStory2 from '~/components/ScrollStory.vue';
 
 definePageMeta({
   name: 'images',
-  layout: 'zero',
+  layout: 'default',
 })
 </script>
 
