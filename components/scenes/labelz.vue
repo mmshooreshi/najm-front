@@ -4,7 +4,7 @@
     <div
       v-for="(lbl, idx) in labelsList"
       :key="idx"
-      class="label absolute rounded-[12px] text-2xl text-d4 px-3 py-1 font-extrabold cursor-pointer select-none top-0"
+      class="label absolute rounded-[12px] text-d4 px-3 py-1 font-extrabold cursor-pointer select-none top-0 whitespace-nowrap"
       :class="{
         '!delay-0 scale-80 z-10 translate-y-0 flash-blur': nextIndex === idx,
         '!delay-0 z-30 opacity-100 translate-y-8 rounded-2xl ring-2 ring-white/30': activeIndex === idx,
@@ -142,6 +142,9 @@ onBeforeUnmount(() => {
 <style scoped>
 .label {
   display: inline-block;
+  white-space: nowrap !important;
+  font-size: clamp(1.05rem, 3.8vw, 1.5rem);
+  max-width: 90vw;
   transform-origin: center center;
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease, background-color 0.5s ease;
   will-change: transform, opacity;

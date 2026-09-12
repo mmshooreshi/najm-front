@@ -139,27 +139,6 @@ export default defineNuxtPlugin(nuxtApp => {
       }
     }
 
-    const onGlobalPointerOver = (e: PointerEvent) => {
-      if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
-
-      const target = e.target as HTMLElement
-      if (!target || target === lastScannedTarget || isInsideAdminUI(target)) return
-      lastScannedTarget = target
-
-      const scanned = scanElementForMedia(target)
-      if (scanned) {
-        if (scanned.el !== currentHoveredMedia) {
-          currentHoveredMedia = scanned.el
-          window.dispatchEvent(new CustomEvent('admin:media-hover', {
-            detail: { el: scanned.el, path: scanned.path, url: scanned.url }
-          }))
-        }
-      } else if (currentHoveredMedia) {
-        currentHoveredMedia = null
-        window.dispatchEvent(new CustomEvent('admin:media-leave'))
-      }
-    }
-
     const onGlobalClick = (e: MouseEvent) => {
       if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
 
@@ -175,7 +154,7 @@ export default defineNuxtPlugin(nuxtApp => {
       }
     }
 
-    window.addEventListener('pointerover', onGlobalPointerOver, { passive: true })
+    // Only click is intercepted - NO pointerover/mousemove listeners to guarantee 0% CPU overhead
     window.addEventListener('click', onGlobalClick, { capture: true })
 
     // Watch for edit mode toggle

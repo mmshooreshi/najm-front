@@ -39,44 +39,8 @@ export default defineNuxtPlugin(() => {
     return el.closest(MOTION_SELECTOR) as HTMLElement | null
   }
 
-  // Use pointerover (only fires when entering an element) instead of mousemove (fires every pixel)
-  let lastTarget: HTMLElement | null = null
-
-  const onPointerOver = (e: PointerEvent) => {
-    if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
-
-    const target = e.target as HTMLElement
-    if (!target || target === lastTarget || isInsideAdminUI(target)) return
-    lastTarget = target
-
-    const container = findMotionContainer(target)
-    if (container) {
-      if (motionLeaveTimer) {
-        clearTimeout(motionLeaveTimer)
-        motionLeaveTimer = null
-      }
-
-      if (container !== activeMotionContainer) {
-        activeMotionContainer = container
-        freezeMotion(container, false)
-        window.dispatchEvent(new CustomEvent('admin:motion-container-hover', {
-          detail: { container }
-        }))
-      }
-    } else if (activeMotionContainer) {
-      if (!motionLeaveTimer) {
-        motionLeaveTimer = setTimeout(() => {
-          if (activeMotionContainer) {
-            unfreezeMotion(activeMotionContainer, false)
-            activeMotionContainer = null
-          }
-          window.dispatchEvent(new CustomEvent('admin:motion-container-leave', {}))
-        }, 150)
-      }
-    }
-  }
-
-  window.addEventListener('pointerover', onPointerOver, { passive: true })
+  // Motion control is now purely user-directed via AdminEditBar (⌘P or dock button)
+  // Zero mousemove/pointerover listeners = zero CPU overhead
 
   // Listen to Edit Mode changes
   watch(() => state.editMode, (editMode) => {

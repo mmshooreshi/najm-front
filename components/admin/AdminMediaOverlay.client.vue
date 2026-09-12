@@ -7,11 +7,8 @@
         v-if="isVisible && targetEl && !state.mediaStudioOpen"
         ref="overlayContainerEl"
         data-admin-ui="true"
-        class="admin-media-overlay-hud media-hud fixed z-[999990] pointer-events-auto flex items-center justify-center select-none cursor-pointer"
+        class="admin-media-overlay-hud media-hud fixed z-[999990] pointer-events-none flex items-center justify-center select-none"
         :style="containerStyle"
-        @mouseenter="onOverlayEnter"
-        @mouseleave="onOverlayLeave"
-        @click.stop="openStudioDirectly"
       >
         <!-- Subtle Green/Amber Overlay Mask with Cool Modern Diagonal Pattern Stripes -->
         <div
@@ -22,7 +19,7 @@
         ></div>
 
         <!-- Centered Glowing Pencil Badge & Format -->
-        <div class="relative z-10 flex items-center gap-2" @click.stop="openStudioDirectly">
+        <div class="relative z-10 flex items-center gap-2 pointer-events-auto" @click.stop="openStudioDirectly">
           <button
             type="button"
             class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-xl border border-white/25"
@@ -219,20 +216,23 @@ onMounted(() => {
     }
   }
 
-  const onMediaLeave = () => {
-    scheduleHide()
+  const onScroll = () => {
+    if (isVisible.value) {
+      isVisible.value = false
+      targetEl.value = null
+    }
   }
 
   window.addEventListener('admin:media-hover', onMediaHover)
   window.addEventListener('admin:media-leave', onMediaLeave)
-  window.addEventListener('scroll', updatePosition, { passive: true })
-  window.addEventListener('resize', updatePosition, { passive: true })
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', onScroll, { passive: true })
 
   ;(window as any)._adminMediaOverlayCleanup = () => {
     window.removeEventListener('admin:media-hover', onMediaHover)
     window.removeEventListener('admin:media-leave', onMediaLeave)
-    window.removeEventListener('scroll', updatePosition)
-    window.removeEventListener('resize', updatePosition)
+    window.removeEventListener('scroll', onScroll)
+    window.removeEventListener('resize', onScroll)
     if (animFrameId) cancelAnimationFrame(animFrameId)
   }
 })

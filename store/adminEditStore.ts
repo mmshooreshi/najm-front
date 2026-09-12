@@ -398,9 +398,10 @@ export function isChanged(path: PathKey, lang: LangCode): boolean {
   const rec = adminEditState.changes[path]?.[lang]
   if (!rec) return false
   if (rec.draft !== undefined && rec.draft !== null) {
+    if (rec.draft === rec.original) return false
     return normForCompare(rec.draft, lang) !== normForCompare(rec.original, lang)
   }
-  if (!rec.original) return false
+  if (!rec.original || rec.value === rec.original) return false
   return normForCompare(rec.value, lang) !== normForCompare(rec.original, lang)
 }
 

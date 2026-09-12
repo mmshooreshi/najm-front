@@ -11,7 +11,6 @@ import {
 import { logger } from '@/utils/logger'
 
 export function useAdminMotionControl() {
-  /**
   const MOTION_CONTAINER_SELECTOR = '.slider-container, .slider-inner, .embla, .embla__viewport, .swiper, [data-motion-container], [data-motion], .projects-intro, .bok'
 
   /**

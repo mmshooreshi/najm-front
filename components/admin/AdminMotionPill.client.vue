@@ -141,20 +141,12 @@ onMounted(() => {
     scheduleHide()
   }
 
-  const onScrollOrResize = () => {
-    if (isVisible.value) updatePosition()
-  }
-
   window.addEventListener('admin:motion-container-hover', onMotionHover)
   window.addEventListener('admin:motion-container-leave', onMotionLeave)
-  window.addEventListener('scroll', onScrollOrResize, { passive: true })
-  window.addEventListener('resize', onScrollOrResize, { passive: true })
 
   ;(window as any)._adminMotionPillCleanup = () => {
     window.removeEventListener('admin:motion-container-hover', onMotionHover)
     window.removeEventListener('admin:motion-container-leave', onMotionLeave)
-    window.removeEventListener('scroll', onScrollOrResize)
-    window.removeEventListener('resize', onScrollOrResize)
   }
 })
 

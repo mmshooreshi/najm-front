@@ -8,7 +8,6 @@
       <AdminEditBar />
       <AdminMediaOverlay />
       <AdminMediaStudioModal />
-      <AdminMotionPill />
     </template>
     <ConsultationModal />
   </ClientOnly>
@@ -23,7 +22,6 @@ import { adminEditState } from '@/store/adminEditStore'
 const AdminEditBar = defineAsyncComponent(() => import('~/components/admin/AdminEditBar.client.vue'))
 const AdminMediaOverlay = defineAsyncComponent(() => import('~/components/admin/AdminMediaOverlay.client.vue'))
 const AdminMediaStudioModal = defineAsyncComponent(() => import('~/components/admin/AdminMediaStudioModal.client.vue'))
-const AdminMotionPill = defineAsyncComponent(() => import('~/components/admin/AdminMotionPill.client.vue'))
 
 const route = useRoute()
 const canEdit = computed(() => {
