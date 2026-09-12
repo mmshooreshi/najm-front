@@ -1,15 +1,36 @@
 // plugins/scroll.client.ts
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
+
 export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
 
-  router.afterEach((to, from) => {
-    // If the path actually changed and there is no hash
+  const smoothScrollToTop = () => {
+    if (typeof window === 'undefined') return
+    try {
+      const smoother = ScrollSmoother.get()
+      if (smoother) {
+        smoother.scrollTo(0, true)
+        return
+      }
+    } catch {
+      // fallback
+    }
+    if (window.scrollY > 0) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+    }
+  }
+
+  // 1. As soon as user clicks a link and page begins leaving, start smooth glide upwards in sync with the fade
+  router.beforeEach((to, from) => {
     if (to.path !== from.path && !to.hash) {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-      // Re-check after next tick for components that adjust layout height asynchronously
-      nextTick(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-      })
+      smoothScrollToTop()
+    }
+  })
+
+  // 2. Once route resolves, ensure smooth completion to top
+  router.afterEach((to, from) => {
+    if (to.path !== from.path && !to.hash) {
+      smoothScrollToTop()
     }
   })
 })

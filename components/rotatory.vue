@@ -4,7 +4,7 @@
       @click="openModal()"
       type="button"
       style="background-color: #014439 !important;"
-      aria-label="مشاوره رایگان و استعلام قیمت"
+      :aria-label="ariaLabel"
       class="rotatory-btn group relative flex items-center justify-center overflow-hidden rounded-full bg-najmgreen text-white transition-all duration-300 ease-in-out hover:bg-black hover:scale-105 active:scale-95 shadow-xl hover:shadow-2xl w-18 h-18 md:w-24 md:h-24 cursor-pointer"
     >
       <!-- Rotating text along a circular path -->
@@ -23,12 +23,12 @@
   
         <!-- Outer ConsulText -->
         <g class="outerConsul transform">
-          <ConsulText />
+          <component :is="activeConsulText" />
         </g>
   
         <!-- Inner ConsulText rotated 180° -->
         <g class="innerConsul transform">
-          <ConsulText />
+          <component :is="activeConsulText" />
         </g>
       </svg>
   
@@ -65,10 +65,27 @@
   </template>
   
   <script setup lang="ts">
-  import ConsulText from '~/assets/svg/ConsulText.svg'
+  import { computed } from 'vue'
+  import ConsulTextFa from '~/assets/svg/ConsulText.svg'
+  import ConsulTextEn from '~/assets/svg/ConsulText-en.svg'
+  import ConsulTextAr from '~/assets/svg/ConsulText-ar.svg'
   import { useConsultation } from '~/composables/useConsultation'
+  import { useLocale } from '~/composables/useLocale'
 
   const { openModal } = useConsultation()
+  const { language } = useLocale()
+
+  const activeConsulText = computed(() => {
+    if (language.value === 'EN') return ConsulTextEn
+    if (language.value === 'AR') return ConsulTextAr
+    return ConsulTextFa
+  })
+
+  const ariaLabel = computed(() => {
+    if (language.value === 'EN') return 'Free Consultation & Price Quote'
+    if (language.value === 'AR') return 'استشارة مجانية واستعلام عن الأسعار'
+    return 'مشاوره رایگان و استعلام قیمت'
+  })
   </script>
   
   <style scoped>

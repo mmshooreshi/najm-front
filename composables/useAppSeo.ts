@@ -312,7 +312,11 @@ export function useAppSeo(options: SeoOptions = {}) {
         logo: {
           '@type': 'ImageObject',
           '@id': `${baseUrl}/#logo`,
-          url: `${baseUrl}/najm-logo.png`,
+          url: computed(() => {
+            if (currentLang.value === 'EN') return `${baseUrl}/najm-logo-en.png`
+            if (currentLang.value === 'AR') return `${baseUrl}/najm-logo-ar.png`
+            return `${baseUrl}/najm-logo.png`
+          }).value,
           caption: brandName.value
         },
         image: socialImage.value,

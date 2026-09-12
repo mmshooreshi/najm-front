@@ -48,41 +48,45 @@ body, [dir="rtl"], .font-sans {
 }
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
-/* ─── NUXT HIGH-PERFORMANCE PAGE TRANSITIONS ─── */
+/* ─── NUXT HIGH-PERFORMANCE PREDICTABLE PAGE & LAYOUT TRANSITIONS ─── */
 .page-enter-active,
-.page-leave-active {
-  transition: opacity 0.22s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
-  will-change: transform, opacity;
+.layout-enter-active {
+  transition: opacity 0.36s cubic-bezier(0.16, 1, 0.3, 1), transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), filter 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
 }
 
-.page-enter-from {
-  opacity: 0;
-  transform: translateY(6px) scale(0.995);
-}
-
-.page-enter-to {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.page-leave-from {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.page-leave-to {
-  opacity: 0;
-  transform: translateY(-6px) scale(0.995);
-}
-
-/* ─── NUXT LAYOUT TRANSITIONS ─────────────────── */
-.layout-enter-active,
+.page-leave-active,
 .layout-leave-active {
-  transition: opacity 0.18s ease-out;
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), filter 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
 }
-.layout-enter-from,
+
+.page-enter-from,
+.layout-enter-from {
+  opacity: 0;
+  transform: translateY(12px) scale(0.995);
+  filter: blur(1rem);
+}
+
+.page-enter-to,
+.layout-enter-to {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.page-leave-from,
+.layout-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+.page-leave-to,
 .layout-leave-to {
   opacity: 0;
+  transform: translateY(-8px) scale(0.995);
+  filter: blur(1rem);
 }
 
 /* ─── SLIDE LEFT (forward) ───────────────────── */

@@ -11,7 +11,7 @@ export default <RouterConfig>{
         nuxtApp.hook('page:transition:finish', () => {
           resolve(savedPosition)
         })
-        setTimeout(() => resolve(savedPosition), 250)
+        setTimeout(() => resolve(savedPosition), 350)
       })
     }
 
@@ -21,31 +21,31 @@ export default <RouterConfig>{
         nuxtApp.hook('page:transition:finish', () => {
           resolve({ el: to.hash, top: 80, behavior: 'smooth' })
         })
-        setTimeout(() => resolve({ el: to.hash, top: 80, behavior: 'smooth' }), 250)
+        setTimeout(() => resolve({ el: to.hash, top: 80, behavior: 'smooth' }), 350)
       })
     }
 
-    // 3. Normal page navigation: ALWAYS scroll cleanly to top (top: 0, left: 0)
+    // 3. Normal page navigation: Smooth transitional glide to top
     return new Promise((resolve) => {
-      // Immediately reset scroll on client
-      if (typeof window !== 'undefined') {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+      // Start smooth scroll on navigation in sync with leave transition
+      if (typeof window !== 'undefined' && window.scrollY > 0) {
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
       }
 
       nuxtApp.hook('page:transition:finish', () => {
-        if (typeof window !== 'undefined') {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+        if (typeof window !== 'undefined' && window.scrollY > 0) {
+          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
         }
-        resolve({ top: 0, left: 0 })
+        resolve({ top: 0, left: 0, behavior: 'smooth' })
       })
 
-      // Fallback timeout in case page:transition:finish is not fired (e.g. initial load or no transition)
+      // Fallback timeout in case page:transition:finish is not fired
       setTimeout(() => {
-        if (typeof window !== 'undefined') {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+        if (typeof window !== 'undefined' && window.scrollY > 0) {
+          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
         }
-        resolve({ top: 0, left: 0 })
-      }, 150)
+        resolve({ top: 0, left: 0, behavior: 'smooth' })
+      }, 350)
     })
   }
 }

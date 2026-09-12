@@ -18,22 +18,22 @@ onMounted(async () => {
 })
 </script>
 <template>
-  
-  <!-- Background -->
-  <BackgroundGradient />
+  <div class="min-h-screen w-full relative">
+    <!-- Background -->
+    <BackgroundGradient />
 
-  <!-- Fixed Header -->
-  <Header
-    :menu-open="menuOpen"
-    @update:menu-open="menuOpen = $event"
-    class="fixed  top-0 left-0 w-full z-50"
-  />
+    <!-- Fixed Header -->
+    <Header
+      :menu-open="menuOpen"
+      @update:menu-open="menuOpen = $event"
+      class="fixed  top-0 left-0 w-full z-50"
+    />
 
-  <!-- Page Wrapper -->
-  <div class=" w-full bg-blue overflow-visible touch-pan-y  bg-blue min-h-screen pt-16 ">
-    <main class="w-full h-fill bg-red overflow-visible  mx-auto ">
-      <slot />
-    </main>
+    <!-- Page Wrapper -->
+    <div class=" w-full bg-blue overflow-visible touch-pan-y  bg-blue min-h-screen pt-16 ">
+      <main class="w-full h-fill bg-red overflow-visible  mx-auto ">
+        <slot />
+      </main>
+    </div>
   </div>
-
 </template>

@@ -10,19 +10,19 @@ const menuOpen = ref(false)
 </script>
 
 <template>
-  <BackgroundGradient/>
-  <!-- Pass menuOpen + listener down to Header -->
-  <Header  class=""
-  :menu-open="menuOpen"
-  @update:menu-open="menuOpen = $event"
-  />
-  <!-- <div class="px-8 mt-20"> -->
-<div>
-
-  <slot/>
-
-    <div class="">
-      <Footer2 />
+  <div class="min-h-screen w-full relative">
+    <BackgroundGradient/>
+    <!-- Pass menuOpen + listener down to Header -->
+    <Header  class=""
+    :menu-open="menuOpen"
+    @update:menu-open="menuOpen = $event"
+    />
+    <!-- <div class="px-8 mt-20"> -->
+    <div>
+      <slot/>
+      <div class="">
+        <Footer2 />
+      </div>
     </div>
   </div>
 </template>

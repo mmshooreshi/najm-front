@@ -7,7 +7,7 @@
   >
     <!-- Top Centered Brand Logo -->
     <div class="flex justify-center pb-10">
-      <logoWhite class="h-10 sm:h-12 w-auto" />
+      <component :is="activeLogoWhite" class="h-10 sm:h-12 w-auto" />
     </div>
 
     <!-- Main 2-Column Responsive Grid -->
@@ -129,7 +129,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import logoWhite from '~/assets/icons/najm-logo-white.svg'
+import logoWhiteFa from '~/assets/icons/najm-logo-white.svg'
+import logoWhiteEn from '~/assets/icons/najm-logo-white-en.svg'
+import logoWhiteAr from '~/assets/icons/najm-logo-white-ar.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
@@ -140,6 +142,12 @@ import Map from '~/components/map.vue'
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const isArabic = computed(() => language.value === 'AR')
+
+const activeLogoWhite = computed(() => {
+  if (language.value === 'EN') return logoWhiteEn
+  if (language.value === 'AR') return logoWhiteAr
+  return logoWhiteFa
+})
 
 // Connect directly to live content engine with dual local + remote persistence
 const { ui } = usePageUI('footer')

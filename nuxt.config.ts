@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
-    layoutTransition: false,
+    layoutTransition: { name: 'layout', mode: 'out-in' },
     head: {
       title: 'مجتمع چاپ و بسته‌بندی نجم | چاپ افست ۵ رنگ هایدلبرگ و جعبه‌سازی صنعتی',
       htmlAttrs: {

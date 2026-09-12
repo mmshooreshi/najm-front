@@ -1,16 +1,13 @@
 <!-- layouts/home.vue -->
 <!-- Layout.vue -->
 <template>
+  <div class="min-h-screen w-full relative">
+    <Header
+      :menu-open="menuOpen"
+      @update:menu-open="menuOpen = $event"
+      class="fixed top-0 left-0 w-full z-50"
+    />
 
-  <Header
-    :menu-open="menuOpen"
-    @update:menu-open="menuOpen = $event"
-    class="fixed top-0 left-0 w-full z-50"
-  />
-
-
-
-  
     <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback overflow-x-clip">
       <div id="smooth-content" class="w-full max-w-full">
         <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
@@ -20,6 +17,7 @@
         <Footer2 />
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
