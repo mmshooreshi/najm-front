@@ -8,14 +8,14 @@
       </h2>
 
       <!-- Category Tabs -->
-      <div class="relative w-full max-w-full my-2">
+      <div class="relative w-full max-w-full my-3">
         <div ref="tabsContainer"
-          class="tabs-container w-full max-w-full flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 px-2 justify-start lg:justify-center">
-          <button v-for="(cat, i) in data.categories" :key="cat.name" @click="selectTab(i)" :class="[
-            'rounded-3xl border text-demibold text-xs px-6 py-3 transition-colors shrink-0',
+          class="tabs-container -mx-4 px-4 md:-mx-8 md:px-8 lg:mx-0 lg:px-0 w-auto lg:w-full flex flex-nowrap lg:flex-wrap gap-2.5 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start lg:justify-center no-scrollbar">
+          <button v-for="(cat, i) in data.categories" :key="cat.name" @click="selectTab(i)" type="button" :class="[
+            'rounded-3xl border text-demibold text-xs px-5 py-2.5 transition-all duration-200 shrink-0 cursor-pointer select-none active:scale-95',
             activeTab === i
-              ? 'border-[#C2D3D1] bg-najmgreen/20 text-najmgreen'
-              : 'border-[#C2D3D1] text-gray-700 bg-transparent hover:bg-gray-200'
+              ? 'border-[#014439] !bg-najmgreen !text-white shadow-sm'
+              : 'border-[#C2D3D1] text-gray-700 bg-white/50 hover:bg-white'
           ]">
             <span v-editable="`sceneFaq.categories.${i}.name`">{{ cat.name }}</span>
           </button>
@@ -511,7 +511,6 @@ const tabsContainer = ref<HTMLElement | null>(null)
 
 function selectTab(i: number) {
   activeTab.value = i
-  // wait for Vue to render the new “active”
   nextTick(() => {
     const container = tabsContainer.value
     if (!container) return
@@ -520,10 +519,12 @@ function selectTab(i: number) {
     const btn = btns[i] as HTMLElement | undefined
     if (!btn) return
 
-    // Scroll ONLY the tabs container, NEVER the whole page or window!
-    const targetScroll = btn.offsetLeft - (container.clientWidth / 2) + (btn.clientWidth / 2)
-    container.scrollTo({
-      left: targetScroll,
+    // Viewport-relative delta scrolling: 100% immune to RTL/LTR coordinate discrepancies and NEVER bubbles to window
+    const containerRect = container.getBoundingClientRect()
+    const btnRect = btn.getBoundingClientRect()
+    const delta = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2)
+    container.scrollBy({
+      left: delta,
       behavior: 'smooth'
     })
   })
@@ -534,4 +535,15 @@ const renderKey = computed(() => `${language.value}-${activeTab.value}`)
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.tabs-container::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-container,
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

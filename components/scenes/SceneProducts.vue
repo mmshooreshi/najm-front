@@ -20,19 +20,20 @@
     </div>
 
     <!-- Tabs -->
-    <div class="relative w-full max-w-full my-2">
+    <div class="relative w-full max-w-full my-3">
       <div
         ref="tabsContainer"
-        class="tabs-container w-full max-w-full flex flex-nowrap lg:flex-wrap gap-2 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible px-2 py-2 justify-start lg:justify-center"
+        class="tabs-container -mx-4 px-4 md:-mx-8 md:px-8 lg:mx-0 lg:px-0 w-auto lg:w-full flex flex-nowrap lg:flex-wrap gap-2.5 whitespace-nowrap lg:whitespace-normal overflow-x-auto lg:overflow-visible py-2 justify-start lg:justify-center no-scrollbar"
       >
         <button
           v-for="(group, i) in uniqueGroups"
           :key="`${selectedType}-${group}-${i}`"
           @click="selectTab(i, group)"
-          class="transition-all rounded-3xl border text-xs px-6 py-3 hover:bg-najmgreen/10 hover:scale-105 shrink-0"
+          type="button"
+          class="transition-all duration-200 rounded-3xl border text-xs px-5 py-2.5 hover:bg-najmgreen/10 active:scale-95 shrink-0 cursor-pointer select-none"
           :class="[activeTab === i
-            ? 'border-[#C2D3D1] !bg-najmgreen !text-white'
-            : 'border-[#C2D3D1] text-gray-700']"
+            ? 'border-[#014439] !bg-najmgreen !text-white shadow-sm'
+            : 'border-[#C2D3D1] text-gray-700 bg-white/50 hover:bg-white']"
         >
           <span v-editable="`sceneProducts.groups.${selectedType}.${i}`">{{ group }}</span>
         </button>
@@ -157,10 +158,12 @@ function selectTab(index: number, group: string) {
     const btn = btns[target] as HTMLElement | undefined
     if (!btn) return
 
-    // Scroll ONLY the tabs container, NEVER the whole page or window!
-    const targetScroll = btn.offsetLeft - (container.clientWidth / 2) + (btn.clientWidth / 2)
-    container.scrollTo({
-      left: targetScroll,
+    // Viewport-relative delta scrolling: 100% immune to RTL/LTR coordinate discrepancies and NEVER bubbles to window
+    const containerRect = container.getBoundingClientRect()
+    const btnRect = btn.getBoundingClientRect()
+    const delta = (btnRect.left + btnRect.width / 2) - (containerRect.left + containerRect.width / 2)
+    container.scrollBy({
+      left: delta,
       behavior: 'smooth'
     })
   })
@@ -186,11 +189,13 @@ function selectTab(index: number, group: string) {
 
 
 
-.tabs-container::-webkit-scrollbar {
+.tabs-container::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
   display: none; /* For Chrome, Safari */
 }
 
-.tabs-container {
+.tabs-container,
+.no-scrollbar {
   -ms-overflow-style: none;  /* IE/Edge */
   scrollbar-width: none;     /* Firefox */
 }

@@ -12,7 +12,7 @@
 
   
     <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback overflow-x-clip">
-      <div id="smooth-content" class="w-full max-w-full overflow-x-clip">
+      <div id="smooth-content" class="w-full max-w-full">
         <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
           <slot />
         </div>
@@ -48,7 +48,7 @@ onMounted(async () => {
     smootherInstance = ScrollSmoother.create({
       wrapper: '#smooth-wrapper',
       content: '#smooth-content',
-      smooth: 1.2,
+      smooth: 1,
       effects: true,
       smoothTouch: false,
     })
@@ -68,9 +68,12 @@ onBeforeUnmount(() => {
 
 
 <style>
-#smooth-wrapper,
-#smooth-content {
+#smooth-wrapper {
   overflow-x: clip;
+}
+
+#smooth-content {
+  overflow: visible;
 }
 
     /* containerCustom utility CSS */
