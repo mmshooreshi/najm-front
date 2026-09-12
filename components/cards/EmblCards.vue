@@ -5,16 +5,18 @@
       <div class="flex">
         <div v-for="(card, idx) in cards" :key="card.id" :data-id="card.id" :class="[isRTL ? 'rtl' : 'ltr']"
           class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]">
-          <NuxtImg v-gsap.magnetic :src="card.loop" :alt="card.text" :duration="100"
+          <img
+            v-gsap.magnetic
+            :src="card.loop"
+            :alt="card.text"
+            :duration="100"
             width="400"
             height="400"
-            sizes="xs:280px sm:360px md:400px"
-            format="webp"
-            quality="80"
             :loading="idx < 2 ? 'eager' : 'lazy'"
             decoding="async"
             v-media-editable="`sceneProjects.cards.${idx}.loop`"
-            class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8" />
+            class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8"
+          />
 
           <div v-gsap.magnetic :class="[isRTL ? 'right-6' : 'left-6']" :duration="100"
             class="projects-intro absolute z-10 bottom-6 bg-[#D6E6E3]/40 px-3 py-2 rounded-[1.5625rem] rounded-br-[0.3125rem] max-h-[85px] max-w-[210px] md:max-w-[260px] text-xs md:text-sm md:font-medium text-d4">

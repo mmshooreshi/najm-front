@@ -65,11 +65,11 @@
       </div> -->
 
       <!-- EDITABLE BUTTON TEXT -->
-      <GreenButton :fullWidth="false" >
+      <!-- <GreenButton :fullWidth="false" >
         <span v-editable="'sceneHero.cta'">{{ ui.cta }}</span>
-      </GreenButton>
+      </GreenButton> -->
 
-
+<!-- 
       <div v-motion :initial="{ scale: 0 }" :visible="{ scale: 1 }">
         <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
           <span v-editable="'sceneHero.countdownLabelStart'">{{ ui.countdownLabelStart }}</span>
@@ -78,7 +78,7 @@
             v-editable="'sceneHero.countdownDays'">{{ toLocalizedDigits(ui.countdownDays) }}</span>
           <span v-editable="'sceneHero.countdownLabelEnd'">{{ ui.countdownLabelEnd }}</span>
         </p>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
