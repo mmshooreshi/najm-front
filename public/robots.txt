@@ -2,21 +2,17 @@
 
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /admin-login
-Disallow: /dashboard
-Disallow: /dash
+
+# Private & Administrative Routes
+Disallow: /admin/
+Disallow: /admin-login/
+Disallow: /dashboard/
+Disallow: /dash/
 Disallow: /api/admin/
-Disallow: /_nuxt/
 
 # Search Engine Crawlers
 User-agent: Googlebot
 Allow: /
-Allow: /catalog
-Allow: /products
-Allow: /services
-Allow: /facilities
-Allow: /resources
 
 User-agent: Bingbot
 Allow: /
@@ -27,18 +23,12 @@ Allow: /
 # AI Search & Knowledge Engines
 User-agent: PerplexityBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 
 User-agent: GPTBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 
 User-agent: ClaudeBot
 Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
 
 User-agent: Claude-Web
 Allow: /
