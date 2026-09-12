@@ -66,26 +66,17 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'alternate', type: 'text/plain', href: '/llms.txt', title: 'LLM Knowledge File' },
-        { rel: 'icon', type: 'image/*', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+        { rel: 'icon', type: 'image/png', sizes: '48x48', href: '/favicon-48x48.png' },
+        { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/favicon-96x96.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+        { rel: 'shortcut icon', href: '/favicon.ico' },
         {
           rel: 'apple-touch-icon',
           sizes: '180x180',
           href: '/apple-touch-icon.png'
         },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '32x32',
-          href: '/favicon-32x32.png'
-        },
-        {
-          rel: 'icon',
-          type: 'image/png',
-          sizes: '16x16',
-          href: '/favicon-16x16.png'
-        },
-        { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'shortcut icon', href: '/favicon.ico' },
         {
           rel: 'icon',
           type: 'image/png',
@@ -98,6 +89,7 @@ export default defineNuxtConfig({
           sizes: '512x512',
           href: '/android-chrome-512x512.png'
         },
+        { rel: 'manifest', href: '/site.webmanifest' },
 
         // Font Preload Links (optimized utility)
         ...fontPreloadLinks
@@ -110,7 +102,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'vercel',
+    preset: process.env.VERCEL ? 'vercel' : undefined,
     compressPublicAssets: true,
     prerender: {
       crawlLinks: false
@@ -139,8 +131,20 @@ export default defineNuxtConfig({
     'v-gsap-nuxt',
     'nuxt-swiper',
     '@nuxt/image',
-    'nuxt-mapbox'
+    'nuxt-mapbox',
+    'nuxt-delay-hydration',
+    '@nuxtjs/fontaine',
+
   ],
+  delayHydration: {
+    mode: 'init', // delays hydration until idle or first interaction
+    debug: process.env.NODE_ENV === 'development'
+  },
+  fontMetrics: {
+    fonts: ['IRANSansX'] // matches fallback font metrics to prevent any font-swap CLS
+  },
+
+
   proxy: {
     '/najm/': {
       target: 'http://65.108.80.205:8090'
