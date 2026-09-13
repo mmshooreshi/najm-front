@@ -4,13 +4,12 @@
     <div
       v-for="(lbl, idx) in labelsList"
       :key="idx"
-      class="label absolute rounded-[12px] transition-all duration-500 text-d4 px-3 py-0.5 font-extrabold cursor-pointer select-none whitespace-nowrap"
+      class="label absolute rounded-[12px] text-d4 px-3 py-0.5 font-extrabold cursor-pointer select-none whitespace-nowrap"
       :class="{
-        '!delay-0 scale-80 z-10 top-0 flash-blur': nextIndex === idx,
-        '!delay-0 z-30 opacity-100 top-8 py-1 rounded-2xl ring-2 ring-white/30': activeIndex === idx,
-        '!delay-0 scale-80 z-20 opacity-100 top-18': prevIndex === idx,
-        '!delay-0 z-0 scale-50 top-9 opacity-0 pointer-events-none': next2Index === idx,
-        '!delay-0 z-0 scale-50 top-10 opacity-0 pointer-events-none': next3Index === idx
+        '!delay-0 -translate-y-8 scale-80 z-10 opacity-70': nextIndex === idx,
+        '!delay-0 translate-y-0 z-30 opacity-100 py-1 rounded-2xl ring-2 ring-white/30 scale-100': activeIndex === idx,
+        '!delay-0 translate-y-8 scale-80 z-20 opacity-70': prevIndex === idx,
+        '!delay-0 translate-y-0 z-0 scale-50 opacity-0 pointer-events-none': next2Index === idx || next3Index === idx
       }"
       :style="{ background: activeIndex === idx ? (lbl.bg || '#B9ADFF') : 'lightgray' }"
       v-editable="`sceneFacilities.labels.${idx}.text`"
@@ -147,20 +146,9 @@ onBeforeUnmount(() => {
   max-width: 90%;
   text-overflow: ellipsis;
   transform-origin: center center;
-  transition: top 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              opacity 0.5s ease,
-              background-color 0.5s ease;
-  will-change: top, transform, opacity;
-}
-
-@keyframes blurToClear {
-  0% { filter: blur(0px); }
-  50% { filter: blur(3px); }
-  100% { filter: blur(0); }
-}
-.flash-blur {
-  animation: blurToClear 0.35s ease;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.5s ease;
+  will-change: transform, opacity;
 }
 </style>
   

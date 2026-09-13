@@ -65,17 +65,19 @@
           -->
 
           <button
-        v-for="(product, idx) in products"
-        :key="product.id"
-         @click="scrollTo(idx)"
-        :class="[
-          //  hover:w-3 hover:h-3 hover:-m-0.5
-          'w-2 h-2 rounded-2xl border-none cursor-pointer transition-all hover:!bg-najmgreen',
-          selectedIndex === idx ? 'bg-najmgreen !w-6' : '!bg-gray-300/40'
-        ]"
-        :aria-label="`Go to slide ${idx + 1}`"
-      >
-      </button>
+            v-for="(product, idx) in products"
+            :key="product.id"
+            @click="scrollTo(idx)"
+            class="p-2 -m-1 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[24px] min-h-[24px]"
+            :aria-label="`Go to slide ${idx + 1}`"
+          >
+            <span
+              :class="[
+                'h-2 rounded-2xl transition-all group-hover:bg-najmgreen block',
+                selectedIndex === idx ? 'bg-najmgreen w-6' : 'bg-gray-300/40 w-2'
+              ]"
+            />
+          </button>
 
         </div>
       </div>

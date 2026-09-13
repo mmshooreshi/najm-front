@@ -1,61 +1,80 @@
 <!-- components/Menu.vue -->
-
-<!-- components/menu.vue -->
 <template>
-    <div class="max-w-xl mx-auto px-4 my-20 rtl" >
-      <div  class="absolute h-16 pointer-events-none bg-white  left-3 right-3 top-0 z-100 transition-all "></div>
+  <nav class="w-full max-w-xl mx-auto py-2" :dir="isRTL ? 'rtl' : 'ltr'" aria-label="Sidebar Navigation">
+    <div v-for="(section, sIdx) in sections || []" :key="section?.id || sIdx" class="mb-4">
+      
+      <!-- Accordion Section -->
+      <BaseAccordionGroupNew 
+        v-if="section && section.type === 'accordion'"
+        :title="section.name"
+        :tabs="section.tabs"
+        :panes="section.children"
+        class="mb-3"
+      >
+        <template #default>
+          <MenuLevel
+            :items="section.children"
+            :parent-slug="section.slug"
+            @link-click="emit('close')"
+          />
+        </template>
+      </BaseAccordionGroupNew>
 
-      <div v-for="section in sections || []" :key="section?.id" class="my-0 py-0" >
-
-        <!-- {{section.type}} -->
-        {{ console.log('[MenuPage] section =', section) }}
-  
-        <BaseAccordionGroup 
-          v-if="section && section.type === 'accordion'"
-          :title="section.name"
-          :tabs="section.tabs"
-          class="mb-4"
-        >
-          <template #default>
-            <MenuLevel :items="section.children" :parent-slug="section.slug" />
-          </template>
-        </BaseAccordionGroup>
-  
-        <div
-          v-else-if="section && section.type === 'label'"
-          class="mb-2"
-        >
-        <div class="text-[#797B7D] text-d4 text-sm px-6  mb-5 mt-12">          {{ section.name }}
+      <!-- Label Section (e.g. Categories, Services) -->
+      <div
+        v-else-if="section && section.type === 'label'"
+        class="mb-4"
+      >
+        <div class="text-gray-400 font-bold text-xs uppercase tracking-wider px-2 mb-2 mt-4 flex items-center justify-between">
+          <span>{{ section.name }}</span>
         </div>
 
-            <MenuLevel :items="section.children" :parent-slug="section.slug" />
+        <MenuLevel
+          :items="section.children"
+          :parent-slug="section.slug"
+          @link-click="emit('close')"
+        />
+      </div>
 
-        </div>
-  
-        <div
-          v-else-if="section && section.type === 'hidden'"
-          class="my-2 border-t border-gray-100 pt-2"
-        >
-          <MenuLevel :items="section.children" :parent-slug="section.slug" />
-        </div>
+      <!-- Hidden / Flat Section (e.g. Links, Contact) -->
+      <div
+        v-else-if="section && section.type === 'hidden'"
+        class="my-3 border-t border-gray-100 pt-3"
+      >
+        <MenuLevel
+          :items="section.children"
+          :parent-slug="section.slug"
+          @link-click="emit('close')"
+        />
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { computed } from 'vue'
-  import BaseAccordionGroup from '~/components/Base/BaseAccordionGroup.vue'
-  import MenuLevel from '~/components/MenuLevel.vue'
-  import { useMenuUIData } from '@/composables/ui/menuUI'
-  const { menuUIData } = useMenuUIData()
-//   console.log('[MenuPage] menuUIData products =', menuUIData.value.products)
-  
-  const sections = computed(() => [
+  </nav>
+</template>
+
+<script setup lang="ts">
+import { computed } from 'vue'
+import BaseAccordionGroupNew from '~/components/Base/BaseAccordionGroupNew.vue'
+import MenuLevel from '~/components/MenuLevel.vue'
+import { useMenuUIData } from '@/composables/ui/menuUI'
+import { useLocale } from '~/composables/useLocale'
+
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
+
+const { menuUIData } = useMenuUIData()
+const { language } = useLocale()
+
+const isRTL = computed(() => {
+  const l = (language.value || 'FA').toUpperCase()
+  return l === 'FA' || l === 'AR'
+})
+
+const sections = computed(() => [
   menuUIData?.value?.products,
   menuUIData?.value?.services,
   menuUIData?.value?.links,
   menuUIData?.value?.contact
-
-  ])
-  </script>
+])
+</script>
   

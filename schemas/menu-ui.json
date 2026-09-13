@@ -544,5 +544,12 @@
         "children": []
       }
     ]
-  }
+  },
+  "headerNav": [
+    { "id": 1, "name": "محصولات و بسته‌بندی", "slug": "/products", "order": 1 },
+    { "id": 2, "name": "خدمات چاپ افست", "slug": "/services/printing-and-packaging", "order": 2 },
+    { "id": 3, "name": "کاتالوگ جامع", "slug": "/catalog", "order": 3 },
+    { "id": 4, "name": "درباره ما", "slug": "/about", "order": 4 },
+    { "id": 5, "name": "تماس با ما", "slug": "/contact", "order": 5 }
+  ]
 }

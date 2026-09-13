@@ -11,8 +11,11 @@
 
 <script setup>
 import { MapComponent, MapTypes } from '@neshan-maps-platform/mapbox-gl-vue'
-import '@neshan-maps-platform/mapbox-gl-vue/dist/style.css'
 import nmp_mapboxgl from '@neshan-maps-platform/mapbox-gl'
+
+onMounted(() => {
+  import('@neshan-maps-platform/mapbox-gl-vue/dist/style.css')
+})
 
 /* ---------- constants ---------- */
 // const OFFICE = [51.392610, 35.699967]                     // دفتر مرکزی

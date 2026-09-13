@@ -1,6 +1,6 @@
 <!-- components/scenes/SliderSqr.vue -->
 <template>
-  <div class="h-full w-full relative group">
+  <div ref="containerEl" class="h-full w-full relative group">
     <!-- Subtle Loading Shimmer Skeleton -->
     <div
       class="absolute inset-0 rounded-3xl bg-neutral-200/60 backdrop-blur-xs z-10 pointer-events-none transition-opacity duration-500 overflow-hidden"
@@ -43,10 +43,10 @@
             v-else
             muted
             loop
-            :preload="index === 0 ? 'metadata' : 'none'"
-            :autoPlay="index === 0"
+            :preload="isVisible && index === 0 ? 'metadata' : 'none'"
+            :autoPlay="isVisible && index === 0"
             playsInline
-            :src="slide.image"
+            :src="isVisible ? slide.image : undefined"
             :aria-label="slide.alt"
             @loadeddata="onMediaLoad"
             class="w-full h-full object-cover rounded-3xl"
@@ -206,6 +206,9 @@ function onSlideChange(_swiper: any) {
 }
 
 const isAutoplayPaused = ref(false)
+const containerEl = ref<HTMLElement | null>(null)
+const isVisible = ref(false)
+let intersectionObserver: IntersectionObserver | null = null
 
 function toggleAutoplay() {
   if (!swiperInstance.value) return
@@ -233,6 +236,23 @@ onMounted(() => {
   }, 400)
   if (typeof window !== 'undefined') {
     window.addEventListener('najm:admin-editing-state', onAdminStateChange)
+
+    if (typeof IntersectionObserver !== 'undefined' && containerEl.value) {
+      intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            isVisible.value = true
+            intersectionObserver?.disconnect()
+          }
+        },
+        { rootMargin: '200px' }
+      )
+      intersectionObserver.observe(containerEl.value)
+    } else {
+      isVisible.value = true
+    }
+  } else {
+    isVisible.value = true
   }
 })
 
@@ -240,6 +260,7 @@ onBeforeUnmount(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('najm:admin-editing-state', onAdminStateChange)
   }
+  intersectionObserver?.disconnect()
 })
 
 function slidePrev() {

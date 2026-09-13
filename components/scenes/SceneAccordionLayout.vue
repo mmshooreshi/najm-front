@@ -28,12 +28,12 @@
       <!-- 29,13,05,01 -->
         <img
           src="/videos/08.webp"
-          alt="Box Mapping"
+          alt="جعبه‌سازی و بسته‌بندی صنعتی نجم"
           width="400"
           height="400"
           loading="lazy"
           decoding="async"
-          class="w-min transition-all duration-200 hover:scale-110 h-full object-contain md:object-contain rounded-3xl md:inset-0 md:h-full"
+          class="w-auto max-w-full aspect-square transition-transform duration-200 hover:scale-105 h-full object-contain rounded-3xl md:inset-0 md:h-full"
         />
 
 

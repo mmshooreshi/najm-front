@@ -3,6 +3,7 @@
 import { computed, onMounted, onBeforeUnmount, ref, reactive, watch, nextTick } from 'vue'
 import HistoryModal from '~/components/admin/HistoryModal.client.vue'
 import ChangesDrawer from '~/components/admin/ChangesDrawer.client.vue'
+import AdminSeoDrawer from '~/components/admin/AdminSeoDrawer.client.vue'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
 import { invalidatePageUI } from '~/composables/ui/pageUiCache'
 import { useLocale } from '@/composables/useLocale'
@@ -21,6 +22,7 @@ import {
 const { setLocale, language } = useLocale()
 const router = useRouter()
 const route = useRoute()
+const isSeoDrawerOpen = ref(false)
 
 function closeEditor() {
   state.canEdit = false
@@ -473,6 +475,7 @@ const commands = computed(() => [
   { id: 'toggle-motion', icon: state.isMotionPausedGlobally ? 'play' : 'pause', label: state.isMotionPausedGlobally ? 'Resume All Animations & Motions' : 'Pause / Freeze All Animations & Motions', shortcut: '⌘P', action: () => toggleGlobalMotionPaused() },
   { id: 'media-studio', icon: 'sparkles', label: 'Open Media Studio & Asset Manager', shortcut: '', action: () => { state.mediaStudioOpen = true; if (!state.activeMediaInitialUrl) state.activeMediaInitialUrl = '/images/sections/cards/01.png' } },
   { id: 'save', icon: 'save', label: 'Save Pending Changes', shortcut: '⌘S', action: () => saveDraft(true) },
+  { id: 'seo-studio', icon: 'sparkles', label: 'Open SEO & AEO Studio (Meta & AI Search)', shortcut: '⌘M', action: () => (isSeoDrawerOpen.value = true) },
   { id: 'inspector', icon: 'diff', label: 'Open Modified Fields Inspector', shortcut: '⌘K', action: () => (state.inspectorOpen = true) },
   { id: 'history', icon: 'history', label: 'View Revisions & History', shortcut: '', action: () => (state.historyOpen = true) },
   { id: 'discard', icon: 'trash', label: 'Discard All Unsaved Changes', shortcut: 'Esc', action: () => discardWithConfirm() },
@@ -795,6 +798,20 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             <AdminIcon name="history" class="w-4 h-4" />
           </button>
 
+          <!-- SEO & AEO Management Studio Button -->
+          <button
+            type="button"
+            class="h-8 px-2.5 rounded-xl border flex items-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold"
+            :class="isSeoDrawerOpen
+              ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 ring-1 ring-emerald-500/30'
+              : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/5'"
+            @click="isSeoDrawerOpen = !isSeoDrawerOpen"
+            title="مدیریت سئو، شبکه‌های اجتماعی و هوش مصنوعی (SEO & AEO Studio)"
+          >
+            <span class="text-xs">🌐</span>
+            <span class="hidden md:inline">SEO & AEO</span>
+          </button>
+
           <!-- Motion Freeze / Pause Toggle -->
           <button
             type="button"
@@ -872,6 +889,11 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
     <HistoryModal
       :open="state.historyOpen"
       @close="state.historyOpen = false"
+    />
+
+    <!-- SEO & AEO Management Studio Drawer -->
+    <AdminSeoDrawer
+      v-model:open="isSeoDrawerOpen"
     />
 
     <!-- Command Palette Modal -->

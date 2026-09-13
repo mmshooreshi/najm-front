@@ -1,68 +1,35 @@
 <!-- components/atom/HamburgerMenu.vue -->
-
-<!-- components/HamburgerMenu.vue -->
 <template>
-  <div
-  @pointerdown="toggleMenu"
-
-    class="hh w-12 h-12 rounded-2xl bg-white flex items-center justify-center  transition-all duration-400 ease-in-out hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
-    ref="menuContainer"
+  <button
+    type="button"
+    @click="toggleMenu"
+    class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white hover:bg-gray-100/80 active:scale-95 flex items-center justify-center transition-all duration-200 border border-gray-200/80 shadow-xs cursor-pointer select-none"
+    :aria-label="menuOpen ? 'بستن منو' : 'باز کردن منو'"
   >
-    <Drawer v-model:open="menuOpen">
-      <Menu @click="handleWrapperClick" />
-    </Drawer>
-  </div>
+    <div class="w-5 h-4 flex flex-col justify-between items-center relative">
+      <span
+        class="w-full h-0.5 bg-gray-700 rounded-full transition-all duration-300 origin-center"
+        :class="menuOpen ? 'translate-y-[7px] rotate-45 !bg-najmgreen' : ''"
+      />
+      <span
+        class="w-full h-0.5 bg-gray-700 rounded-full transition-all duration-300"
+        :class="menuOpen ? 'opacity-0 scale-x-0' : 'opacity-100'"
+      />
+      <span
+        class="w-full h-0.5 bg-gray-700 rounded-full transition-all duration-300 origin-center"
+        :class="menuOpen ? '-translate-y-[7px] -rotate-45 !bg-najmgreen' : ''"
+      />
+    </div>
+  </button>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useScrollLock } from '@vueuse/core'
-import Drawer from '@/components/Drawer.vue'
-import Menu from '@/components/Menu.vue'
-
 const props = defineProps<{ menuOpen: boolean }>()
 const emit = defineEmits<{
   (e: 'update:menuOpen', value: boolean): void
 }>()
 
-const menuOpen = ref(props.menuOpen)
-watch(() => props.menuOpen, (val) => {
-  menuOpen.value = val
-})
-
-const menuContainer = ref<HTMLElement | null>(null)
-const isLocked = useScrollLock(menuContainer)
-
-function toggleMenu(event?: PointerEvent) {
-  // Cast to HTMLElement so we can use classList
-  const target = event?.target as HTMLElement | null;
-  
-  // If there's no element or it doesn't have the .hh class, do nothing
-  if (!target?.classList.contains('hh')) {
-    console.log("cant:", target);
-    return;
-  }
-
-  console.log("toggled by:", target);
-  menuOpen.value = !menuOpen.value;
-  emit('update:menuOpen', menuOpen.value);
+function toggleMenu() {
+  emit('update:menuOpen', !props.menuOpen)
 }
-
-function handleWrapperClick(event: PointerEvent) {
-  if ((event.target as HTMLElement).closest('a')) {
-    menuOpen.value = false;
-    emit('update:menuOpen', false);
-    if (typeof window !== 'undefined' && window.scrollX !== 0) {
-      window.scrollTo({ left: 0, top: window.scrollY })
-    }
-    return;
-  }
-  event.stopPropagation()
-}
-
-// function handleWrapperClick(event: PointerEvent) {
-//   console.log("wrapper clicked by: ", event.target)
-//   if ((event.target as HTMLElement).closest('a')) return
-//   event.stopPropagation()
-// }
 </script>

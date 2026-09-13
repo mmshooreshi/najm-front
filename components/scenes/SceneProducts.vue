@@ -50,7 +50,20 @@
       />
     </ClientOnly>
 
-   
+    <!-- Contextual Semantic Internal Link to Catalog -->
+    <div class="flex justify-center mt-2 mb-2">
+      <NuxtLink
+        :to="localePath('/catalog')"
+        class="group inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-najmgreen/10 hover:bg-najmgreen text-najmgreen hover:text-white border border-najmgreen/20 hover:border-transparent text-xs font-bold font-d4 transition-all duration-300 shadow-xs hover:shadow-md active:scale-95"
+      >
+        <span>{{ catalogLinkText }}</span>
+        <Icon
+          name="mdi:arrow-left"
+          class="w-4 h-4 transition-transform duration-300"
+          :class="[isRTL ? 'group-hover:-translate-x-1' : 'rotate-180 group-hover:translate-x-1']"
+        />
+      </NuxtLink>
+    </div>
 
     <!-- JSON Modal -->
     <!-- <JsonModal :data="products" :key="`${selectedType}-${activeGroup}-json`" /> -->
@@ -63,6 +76,15 @@ import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
 import EmbleProductCards from '@/components/cards/EmbleProductCards.vue'
 import JsonModal from '@/components/JsonModal.vue'
 import { useProductsAll } from '@/composables/useProductsAll'
+import { useLocale } from '~/composables/useLocale'
+
+const { language, localePath } = useLocale()
+const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const catalogLinkText = computed(() => {
+  if (language.value === 'EN') return 'Explore Complete Packaging Catalog'
+  if (language.value === 'AR') return 'استعراض جميع النماذج في الكتالوج الشامل'
+  return 'مشاهده و بررسی همه نمونه‌ها در کاتالوگ جامع بسته‌بندی'
+})
 
 interface Product {
   id: number

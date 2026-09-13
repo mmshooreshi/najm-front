@@ -106,6 +106,9 @@
       </div>
     </div>
 
+    <!-- Strategic Internal Linking Capabilities Hub -->
+    <InternalAuthorityPills />
+
     <!-- Divider Line -->
     <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 my-4 sm:my-5">
       <div class="h-px bg-white/20 w-full"></div>
@@ -134,6 +137,7 @@ import logoWhiteFa from '~/assets/icons/najm-logo-white.svg'
 import logoWhiteEn from '~/assets/icons/najm-logo-white-en.svg'
 import logoWhiteAr from '~/assets/icons/najm-logo-white-ar.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
+import InternalAuthorityPills from '~/components/seo/InternalAuthorityPills.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { toLocalizedDigits } from '~/utils/digits'

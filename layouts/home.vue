@@ -10,9 +10,9 @@
 
     <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback overflow-x-clip">
       <div id="smooth-content" class="w-full max-w-full">
-        <div class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
+        <main id="main-content" class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
           <slot />
-        </div>
+        </main>
 
         <Footer2 />
       </div>

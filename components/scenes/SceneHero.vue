@@ -55,30 +55,10 @@
       style="top:10vh; padding:0px 0px;">
       <ClientOnly>
         <ImagesFloating />
+        <template #fallback>
+          <div class="w-screen h-[20vh] -mt-10" aria-hidden="true" />
+        </template>
       </ClientOnly>
-    </div>
-
-    <div class="bok gap-3 flex flex-col grow h-full invisible md:visible">
-      <div class="flex-grow"></div>
-      <!-- <div class="h-46 translate-y-16 overflow-visible">
-        <LazyProjectReservation />
-      </div> -->
-
-      <!-- EDITABLE BUTTON TEXT -->
-      <!-- <GreenButton :fullWidth="false" >
-        <span v-editable="'sceneHero.cta'">{{ ui.cta }}</span>
-      </GreenButton> -->
-
-<!-- 
-      <div v-motion :initial="{ scale: 0 }" :visible="{ scale: 1 }">
-        <p class="text-center font-medium text-sm text-d4 text-black/50 transition-transform">
-          <span v-editable="'sceneHero.countdownLabelStart'">{{ ui.countdownLabelStart }}</span>
-          <span
-            class=" text-najmgreen underline decoration-0.5 decoration-offset-3 decoration-najmgreen px-0.5"
-            v-editable="'sceneHero.countdownDays'">{{ toLocalizedDigits(ui.countdownDays) }}</span>
-          <span v-editable="'sceneHero.countdownLabelEnd'">{{ ui.countdownLabelEnd }}</span>
-        </p>
-      </div> -->
     </div>
   </div>
 </template>

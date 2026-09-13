@@ -1,125 +1,98 @@
 <!-- components/Base/BaseAccordionGroupNew.vue -->
 <template>
-    <div class="group transition-colors transition-border duration-1000bg-[#F1F5F9]/100 hover:border-[#F1F5F9] border-1 border-transparent rounded-xl overflow-hidden" :class="{'!border-najmgreen': activeFiltersCount>0}">
-      <!-- Header -->
-      <button
-        class="w-full flex bg-transparent transition-colors justify-between items-center py-3 px-6 text-sm "
-        :class="{'!bg-white':openValue}"
-        @click="toggleOpen"
-      >
-        
-        <span class="text-demibold text-d4 flex flex-row gap-2">{{ title }}
-            <div v-show="activeFiltersCount>0"
-  class="text-xs text-white/100 font-semibold  bg-najmgreen/100  border border-najmgreen rounded-lg p-2 pt-0.5 pr-1.2 h-5 w-5"
-  :class="{ '!w-6': activeFiltersCount > 9 }"
->
-  {{ toPersianDigits(activeFiltersCount) }}
-</div>
+  <div
+    class="group transition-all duration-300 bg-gray-50/90 hover:bg-gray-100/90 border border-gray-200/80 rounded-2xl overflow-hidden mb-3"
+    :class="{ '!border-najmgreen/40 shadow-xs bg-white': openValue }"
+  >
+    <!-- Header / Trigger -->
+    <button
+      type="button"
+      class="w-full flex items-center justify-between py-3.5 px-4 sm:px-5 text-sm font-bold text-gray-800 transition-colors select-none cursor-pointer active:scale-[0.99]"
+      :class="{ '!text-najmgreen': openValue }"
+      @click="toggleOpen"
+    >
+      <div class="flex items-center gap-2">
+        <span>{{ title }}</span>
+        <span
+          v-if="activeFiltersCount > 0"
+          class="text-[11px] font-semibold bg-najmgreen text-white px-2 py-0.5 rounded-full"
+        >
+          {{ toPersianDigits(activeFiltersCount) }}
         </span>
-        <Icon
-          name="mdi:chevron-down"
-          ref="arrowRef"
-          :style="arrowStyles"
-          class="w-5 h-5 text-gray-600/50 group-hover:text-gray-600 "
-        />
-      </button>
-  
+      </div>
 
+      <Icon
+        name="mdi:chevron-down"
+        class="w-5 h-5 text-gray-400 transition-transform duration-300 origin-center"
+        :class="{ 'rotate-180 !text-najmgreen': openValue }"
+      />
+    </button>
 
-      <div ref="containerRef" class="overflow-hidden transition-colors" :class="{'!bg-white': openValue}"   :style="containerStyles"      >
-  <div ref="contentRef" class="overflow-auto pb-4">
+    <!-- CSS Grid Expansion (Zero scroll traps, instantaneous & smooth!) -->
+    <div
+      class="grid transition-[grid-template-rows] duration-300 ease-out"
+      :style="{ gridTemplateRows: openValue ? '1fr' : '0fr' }"
+    >
+      <div class="overflow-hidden">
+        <div class="px-3 pb-4 pt-1">
+          <!-- Panes / Tabs -->
           <div v-if="tabs && panes?.length">
-            <nav class="flex w-max mx-auto items-center justify-between p-1 mb-5 mt-2 rounded-full border border-gray-300 text-xs">
+            <nav class="flex w-max max-w-full overflow-x-auto mx-auto items-center justify-between p-1 mb-4 rounded-full border border-gray-200 bg-gray-100/80 text-xs gap-1">
               <button
                 v-for="(pane, idx) in panes"
                 :key="pane.slug || idx"
+                type="button"
                 @click="activeTab = idx"
-                class="sm:px-8 px-4 py-2 sm:min-w-[90px] rounded-2xl font-medium text-center bg-transparent transition-all duration-200" 
-                :class="[
-                  activeTab === idx ? '!bg-najmgreen/100 text-white' : 'text-gray-700'
-                ]"
+                class="px-4 sm:px-6 py-1.5 rounded-full font-bold text-center transition-all duration-200 cursor-pointer whitespace-nowrap"
+                :class="activeTab === idx ? 'bg-najmgreen text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'"
               >
                 {{ pane.name }}
               </button>
             </nav>
             <slot name="pane" :pane="panes[activeTab]" />
           </div>
+
+          <!-- Default content slot -->
           <div v-else>
             <slot />
           </div>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { useMediaQuery } from '@vueuse/core'
-  import { useMotionProperties, useSpring } from '@vueuse/motion'
-  import { toPersianDigits } from '~/utils/digits'
-  
-  const props = defineProps<{
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { toPersianDigits } from '~/utils/digits'
+
+const props = withDefaults(
+  defineProps<{
     title: string
     tabs?: boolean
     open?: boolean
-    activeFiltersCount: number
+    activeFiltersCount?: number
     panes?: Array<{ name: string; slug: string }>
-  }>()
-  
-  // state & refs
-  const openValue   = ref(props.open ?? false)
-  const activeTab   = ref(0)
-  const containerRef = ref<HTMLElement|null>(null)
-  const contentRef   = ref<HTMLElement|null>(null)    // <— measure this!
-  const arrowRef     = ref<SVGSVGElement|null>(null)
-  
-  // motion props
-  const { motionProperties: containerStyles } = useMotionProperties(containerRef, {
-    height: 0, opacity: 0, translateY: -10,
-  })
-  const { motionProperties: arrowStyles } = useMotionProperties(arrowRef, {
-    rotate: 180, scale: 1,
-  })
-  
-  const springConfig = useMediaQuery('(prefers-reduced-motion)')
-    .value
-    ? { duration: 0 }
-    : { stiffness: 200, damping: 30, overshootClamping: true }
-  
-  const { set: animateContainer, stop: stopContainer } = useSpring(containerStyles, springConfig)
-  const { set: animateArrow,     stop: stopArrow     } = useSpring(arrowStyles,     springConfig)
-  
-  // toggle open
-  function toggleOpen() {
-    openValue.value = !openValue.value
+  }>(),
+  {
+    open: false,
+    tabs: false,
+    activeFiltersCount: 0,
+    panes: () => []
   }
-  
-  // unified watcher
-  watch(
-    [openValue, activeTab],
-    async () => {
-      await nextTick()
-  
-      stopContainer()
-      stopArrow()
-  
-      if (openValue.value && contentRef.value) {
-        const fullHeight = contentRef.value.scrollHeight
-        animateContainer({ height: fullHeight, opacity: 1, translateY: 0 })
-        animateArrow({ rotate: 180, scale: 1.1 })
-      }
-      else {
-        animateContainer({ height: 0, opacity: 0, translateY: -10 })
-        animateArrow({ rotate: 0, scale: 1 })
-      }
-    },
-    { immediate: true }
-  )
-  
-  // keep prop sync’d
-  watch(() => props.open, v => v !== undefined && (openValue.value = v))
-  </script>
-    
-  <style scoped>
-  /* Overflow handled via motion inline styles */
-  </style>
+)
+
+const openValue = ref(props.open)
+const activeTab = ref(0)
+
+function toggleOpen() {
+  openValue.value = !openValue.value
+}
+
+watch(() => props.open, (v) => {
+  if (v !== undefined) {
+    openValue.value = v
+  }
+})
+</script>
   

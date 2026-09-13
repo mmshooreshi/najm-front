@@ -2,6 +2,7 @@
 import { computed, toValue, type Ref, type ComputedRef } from 'vue'
 import { useHead, useRoute } from '#app'
 import { useLocale } from '~/composables/useLocale'
+import { adminEditState } from '@/store/adminEditStore'
 
 export interface SeoOptions {
   title?: string | Ref<string> | ComputedRef<string> | { fa?: string; en?: string; ar?: string }
@@ -46,11 +47,27 @@ export function useAppSeo(options: SeoOptions = {}) {
   const { language } = useLocale()
 
   const currentLang = computed(() => {
+    // 1. Inspect route path first for search engine crawlers without cookies
+    const p = route?.path || ''
+    if (p.startsWith('/en/') || p === '/en') return 'EN'
+    if (p.startsWith('/ar/') || p === '/ar') return 'AR'
+    // 2. Client cookie / state fallback
     const l = (language.value || 'FA').toUpperCase()
     return l === 'EN' ? 'EN' : l === 'AR' ? 'AR' : 'FA'
   })
 
   const isRTL = computed(() => currentLang.value === 'FA' || currentLang.value === 'AR')
+
+  // Dynamic SEO overrides from active admin editing session
+  const adminSeoOverrides = computed(() => {
+    const s = toValue(options.slug) || route.path?.replace(/^\/(?:en|ar)(?=\/|$)/, '').replace(/^\//, '') || 'home'
+    const cleanSlug = s === '' ? 'home' : s
+    const langKey = currentLang.value.toLowerCase()
+    return (adminEditState?.clientOverrides?.[cleanSlug]?.[langKey] as any)?.seo ||
+           (adminEditState?.clientOverrides?.[cleanSlug]?.[currentLang.value] as any)?.seo ||
+           (adminEditState?.allLangUIBySlug?.[cleanSlug]?.[langKey] as any)?.seo ||
+           null
+  })
 
   // Brand Name localized
   const brandName = computed(() => {
@@ -61,6 +78,12 @@ export function useAppSeo(options: SeoOptions = {}) {
 
   // Title calculation
   const pageTitle = computed(() => {
+    if (adminSeoOverrides.value?.title) {
+      const raw = adminSeoOverrides.value.title
+      if (raw.includes(brandName.value) || raw.includes('چاپ و بسته‌بندی نجم')) return raw
+      return `${raw} | ${brandName.value}`
+    }
+
     const t = toValue(options.title)
     let raw = ''
     if (typeof t === 'object' && t !== null) {
@@ -87,6 +110,10 @@ export function useAppSeo(options: SeoOptions = {}) {
 
   // Description calculation
   const metaDescription = computed(() => {
+    if (adminSeoOverrides.value?.description) {
+      return adminSeoOverrides.value.description
+    }
+
     const d = toValue(options.description)
     if (typeof d === 'object' && d !== null) {
       return (d as any)[currentLang.value.toLowerCase() as 'fa' | 'en' | 'ar'] || (d as any).fa || ''
@@ -98,7 +125,7 @@ export function useAppSeo(options: SeoOptions = {}) {
       return 'Najm Printing & Packaging Complex: Custom cardboard boxes, luxury rigid boxes, and premium packaging solutions with highest printing quality in Tehran.'
     }
     if (currentLang.value === 'AR') {
-      return 'مجمع نجم للطباعة والتغليف: تصميم وتصنيع علب الكرتون الفاخرة، هاردبوکس، والتغليف الدوائي بأعلى معايير الجودة في طهران.'
+      return 'مجمع نجم للطباعة والتغليف: تصميم وتصنيع علب الكرتون الفاخرة، هاردبوكس، والتغليف الدوائي بأعلى معايير الجودة في طهران.'
     }
     return 'مجتمع چاپ و بسته‌بندی نجم؛ طراحی و تولید انواع جعبه‌های مقوایی، هاردباکس و بسته‌بندی‌های لوکس با بالاترین استانداردهای چاپ در تهران.'
   })
@@ -116,39 +143,90 @@ export function useAppSeo(options: SeoOptions = {}) {
   const arUrl = computed(() => `${baseUrl}/ar${cleanPath.value === '/' ? '' : cleanPath.value}`)
 
   const canonicalUrl = computed(() => {
+    if (adminSeoOverrides.value?.canonical) {
+      return adminSeoOverrides.value.canonical
+    }
     if (currentLang.value === 'EN') return enUrl.value
     if (currentLang.value === 'AR') return arUrl.value
     return faUrl.value
   })
 
   const socialImage = computed(() => {
+    if (adminSeoOverrides.value?.image) {
+      return adminSeoOverrides.value.image
+    }
     const img = toValue(options.image)
     return (typeof img === 'string' && img) ? img : `${baseUrl}/social-image.png`
   })
 
-  // Default High-Authority Industrial FAQs for Google Rich Snippets
-  const defaultFaqs = [
-    {
-      question: 'حداقل تیراژ سفارش تولید جعبه و بسته‌بندی در مجتمع نجم چقدر است؟',
-      answer: 'حداقل تیراژ برای انواع جعبه‌های مقوایی (ایندربرد، کرافت، بهداشتی) ۱,۰۰۰ عدد و برای هاردباکس‌های لوکس و مگنتی ۵۰۰ عدد می‌باشد.'
-    },
-    {
-      question: 'چه ماشین‌آلات و خطوط چاپی در چاپ نجم مستقر هستند؟',
-      answer: 'مجتمع مجهز به خطوط چاپ افست ورقی هایدلبرگ Speedmaster، پلیت‌ستر حرارتی CTP، دستگاه‌های دایکات و تیغ‌زنی تمام اتوماتیک، طلاکوب گرم و خطوط جعبه‌چسبانی مدرن با استاندارد ISO 12647-2 می‌باشد.'
-    },
-    {
-      question: 'مدت زمان نمونه‌سازی و تحویل نهایی سفارشات چقدر است؟',
-      answer: 'نمونه‌سازی ماکت فیزیکی رایگان ظرف ۴۸ ساعت و تولید نهایی سفارشات با تیراژ صنعتی ظرف ۵ الی ۷ روز کاری پس از تأیید نهایی انجام می‌پذیرد.'
-    },
-    {
-      question: 'آیا امکان سفارش بسته‌بندی‌های بهداشتی و دارویی وجود دارد؟',
-      answer: 'بله، تمامی سفارشات دارویی، آرایشی و غذایی با مقوای بهداشتی ایندربرد دارای گواهی سلامت و پوشش‌های بهداشتی ضدچربی و رطوبت تولید می‌شوند.'
+  // Default High-Authority Industrial FAQs for Google Rich Snippets localized per locale
+  const defaultFaqs = computed(() => {
+    if (currentLang.value === 'EN') {
+      return [
+        {
+          question: 'What is the minimum order quantity (MOQ) for custom packaging at Najm Complex?',
+          answer: 'The MOQ is 1,000 units for standard folding carton boxes (Ivory board, Kraft, food-grade) and 500 units for luxury rigid boxes.'
+        },
+        {
+          question: 'What printing and finishing machinery operates in Najm facilities?',
+          answer: 'Our plant is equipped with Heidelberg Speedmaster 5-color offset presses, CTP thermal platesetters, automatic high-speed die-cutters, hot foil stamping, and automated folder-gluers compliant with ISO 12647-2.'
+        },
+        {
+          question: 'What is the turnaround time for sample prototyping and delivery?',
+          answer: 'Complimentary structural dummy prototypes are ready within 48 hours. Full production runs are completed and delivered within 5 to 7 business days following artwork approval.'
+        },
+        {
+          question: 'Do you manufacture certified sanitary and pharmaceutical packaging?',
+          answer: 'Yes, all pharmaceutical and cosmetic boxes are manufactured using certified food-grade Ivory paperboard with certified moisture-resistant coatings.'
+        }
+      ]
     }
-  ]
+    if (currentLang.value === 'AR') {
+      return [
+        {
+          question: 'ما هو الحد الأدنى لكمية الطلب (MOQ) لإنتاج العلب في مجمع نجم؟',
+          answer: 'الحد الأدنى لعلب الكرتون القابلة للطي (إنفربورد، كرافت، صحي) هو ۱,۰۰۰ قطعة، ولعلب الهاردبوكس الفاخرة ۵۰۰ قطعة.'
+        },
+        {
+          question: 'ما هي الآلات وخطوط الطباعة المتوفرة في مصنع مجمع نجم؟',
+          answer: 'المجمع مجهز بماكينات طباعة أوفست هايدلبرغ سبيدماستر ۵ ألوان، پلیت‌ستر حراري CTP، ماكينات داي كت أوتوماتيكية، بصمة حرارية ذهبية، وخطوط تجميع العلب وفق معايير ISO 12647-2.'
+        },
+        {
+          question: 'كم يستغرق تجهيز النموذج الأولي وتسليم الطلب النهائي؟',
+          answer: 'يتم تجهيز النموذج الأولي (الماكيت) مجاناً خلال ۴۸ ساعة، والإنتاج الصناعي ينجز خلال ۵ إلى ۷ أيام عمل بعد الموافقة النهائية.'
+        },
+        {
+          question: 'هل تصنعون عبوات صحية معتمدة للأدوية والمواد الغذائية؟',
+          answer: 'نعم، جميع عبوات الأدوية ومستحضرات التجميل تُصنع باستخدام كرتون إنفربورد صحي معتمد ومقاوم للرطوبة.'
+        }
+      ]
+    }
+    return [
+      {
+        question: 'حداقل تیراژ سفارش تولید جعبه و بسته‌بندی در مجتمع نجم چقدر است؟',
+        answer: 'حداقل تیراژ برای انواع جعبه‌های مقوایی (ایندربرد، کرافت، بهداشتی) ۱,۰۰۰ عدد و برای هاردباکس‌های لوکس و مگنتی ۵۰۰ عدد می‌باشد.'
+      },
+      {
+        question: 'چه ماشین‌آلات و خطوط چاپی در چاپ نجم مستقر هستند؟',
+        answer: 'مجتمع مجهز به خطوط چاپ افست ورقی هایدلبرگ Speedmaster، پلیت‌ستر حرارتی CTP، دستگاه‌های دایکات و تیغ‌زنی تمام اتوماتیک، طلاکوب گرم و خطوط جعبه‌چسبانی مدرن با استاندارد ISO 12647-2 می‌باشد.'
+      },
+      {
+        question: 'مدت زمان نمونه‌سازی و تحویل نهایی سفارشات چقدر است؟',
+        answer: 'نمونه‌سازی ماکت فیزیکی رایگان ظرف ۴۸ ساعت و تولید نهایی سفارشات با تیراژ صنعتی ظرف ۵ الی ۷ روز کاری پس از تأیید نهایی انجام می‌پذیرد.'
+      },
+      {
+        question: 'آیا امکان سفارش بسته‌بندی‌های بهداشتی و دارویی وجود دارد؟',
+        answer: 'بله، تمامی سفارشات دارویی، آرایشی و غذایی با مقوای بهداشتی ایندربرد دارای گواهی سلامت و پوشش‌های بهداشتی ضدچربی و رطوبت تولید می‌شوند.'
+      }
+    ]
+  })
 
   const activeFaqs = computed(() => {
+    if (adminSeoOverrides.value?.faqs && Array.isArray(adminSeoOverrides.value.faqs) && adminSeoOverrides.value.faqs.length > 0) {
+      return adminSeoOverrides.value.faqs
+    }
     const customFaqs = toValue(options.faqItems)
-    return (customFaqs && customFaqs.length > 0) ? customFaqs : defaultFaqs
+    return (customFaqs && customFaqs.length > 0) ? customFaqs : defaultFaqs.value
   })
 
   // Google Sitelinks Navigation Items (6-Pack with Titles & Rich Descriptions for Google SERP)
@@ -158,32 +236,32 @@ export function useAppSeo(options: SeoOptions = {}) {
         {
           name: 'Contact & Location',
           description: 'Direct sales phone lines, factory address in Tehran, business hours, and quotation inquiries.',
-          url: `${baseUrl}/contact`
+          url: `${baseUrl}/en/contact`
         },
         {
           name: 'Products & Packaging',
           description: 'Custom luxury boxes, cosmetics packaging, pharmaceutical folding cartons, and food containers.',
-          url: `${baseUrl}/catalog`
+          url: `${baseUrl}/en/catalog`
         },
         {
           name: 'Services & Offset Print',
           description: 'Heidelberg multi-color offset sheetfed printing, hot foil stamping, auto die-cutting and laminating.',
-          url: `${baseUrl}/services`
+          url: `${baseUrl}/en/services`
         },
         {
           name: 'Industrial Machinery',
           description: 'Heidelberg Speedmaster presses, Bobst die-cutters, thermal CTP platesetters, and box gluers.',
-          url: `${baseUrl}/facilities`
+          url: `${baseUrl}/en/facilities`
         },
         {
           name: 'About Najm Complex',
           description: 'Over 25 years of continuous industrial excellence, ISO color management, and production ethics.',
-          url: `${baseUrl}/about`
+          url: `${baseUrl}/en/about`
         },
         {
           name: 'Technical Consultation',
           description: 'Free packaging engineering consulting, paperboard grammage selection, dummy prototyping, and pricing.',
-          url: `${baseUrl}/consultation`
+          url: `${baseUrl}/en/consultation`
         }
       ]
     }
@@ -192,32 +270,32 @@ export function useAppSeo(options: SeoOptions = {}) {
         {
           name: 'اتصل بنا والعنوان',
           description: 'خطوط الاتصال المباشرة للمبيعات، عنوان المجمع الصناعي في طهران، ساعات العمل، واستعلام الأسعار.',
-          url: `${baseUrl}/contact`
+          url: `${baseUrl}/ar/contact`
         },
         {
           name: 'المنتجات والعلب الفاخرة',
           description: 'علب الكرتون الصلب، تغليف مستحضرات التجميل، عبوات الأدوية المعتمدة، وعلب المواد الغذائية الصحية.',
-          url: `${baseUrl}/catalog`
+          url: `${baseUrl}/ar/catalog`
         },
         {
           name: 'خدمات الطباعة الصناعية',
           description: 'طباعة أوفست ملونة بأحدث ماكينات هايدلبرغ، بصمة حرارية ذهبية، داي كت أوتوماتيكي وسلفان.',
-          url: `${baseUrl}/services`
+          url: `${baseUrl}/ar/services`
         },
         {
           name: 'الآلات والتجهيزات المتطورة',
           description: 'ماكينات هايدلبرغ سبيدماستر، أجهزة بوبست للقص، پلیت‌ستر حراري CTP، وخطوط لصق العلب الأوتوماتيكية.',
-          url: `${baseUrl}/facilities`
+          url: `${baseUrl}/ar/facilities`
         },
         {
           name: 'عن مجمع نجم للطباعة',
           description: 'أكثر من ۲۵ عاماً من الخبرة الصناعية المستمرة، معايير إدارة جودة الألوان والالتزام بمواعيد التسليم.',
-          url: `${baseUrl}/about`
+          url: `${baseUrl}/ar/about`
         },
         {
           name: 'استشارة فنية وهندسة العلب',
           description: 'استشارة مجانية لاختيار نوع وسماكة الورق المقوى، تصميم نموذج العلبة، وحساب التكاليف والكميات.',
-          url: `${baseUrl}/consultation`
+          url: `${baseUrl}/ar/consultation`
         }
       ]
     }
@@ -255,27 +333,70 @@ export function useAppSeo(options: SeoOptions = {}) {
     ]
   })
 
-  // Breadcrumbs
+  // Breadcrumbs (Fully locale-aware)
   const breadcrumbItems = computed(() => {
     const customCrumbs = toValue(options.breadcrumbs)
     if (customCrumbs && customCrumbs.length > 0) {
-      return customCrumbs
+      return customCrumbs.map((c: any) => {
+        let name = c.name
+        if (typeof name === 'object' && name !== null) {
+          name = name[currentLang.value.toLowerCase()] || name.fa || ''
+        }
+        let url = c.url || ''
+        if (url && !url.startsWith('http')) {
+          const clean = url.replace(/^\/(?:en|ar)(?=\/|$)/, '') || '/'
+          url = currentLang.value === 'EN'
+            ? `${baseUrl}/en${clean === '/' ? '' : clean}`
+            : currentLang.value === 'AR'
+            ? `${baseUrl}/ar${clean === '/' ? '' : clean}`
+            : `${baseUrl}${clean === '/' ? '' : clean}`
+        }
+        return { name, url }
+      })
     }
     const pathSegments = cleanPath.value.replace(/^\//, '').split('/').filter(Boolean)
-    const items = [{ name: currentLang.value === 'EN' ? 'Home' : (currentLang.value === 'AR' ? 'الرئيسية' : 'خانه'), url: baseUrl }]
+    const homeName = currentLang.value === 'EN' ? 'Home' : (currentLang.value === 'AR' ? 'الرئيسية' : 'خانه')
+    const homeUrl = currentLang.value === 'EN' ? `${baseUrl}/en` : (currentLang.value === 'AR' ? `${baseUrl}/ar` : baseUrl)
+    const items = [{ name: homeName, url: homeUrl }]
     let acc = ''
     for (const segment of pathSegments) {
       acc += `/${segment}`
-      const segName = segment === 'catalog' ? 'کاتالوگ'
-        : segment === 'products' ? 'محصولات'
-        : segment === 'services' ? 'خدمات'
-        : segment === 'facilities' ? 'تجهیزات و ماشین‌آلات'
-        : segment === 'contact' ? 'تماس با ما'
-        : segment === 'consultation' ? 'مشاوره و استعلام'
-        : segment === 'about' ? 'درباره ما'
-        : segment === 'resources' ? 'منابع و قالب‌ها'
-        : segment.replace(/-/g, ' ')
-      items.push({ name: segName, url: `${baseUrl}${acc}` })
+      let segName = segment
+      if (currentLang.value === 'EN') {
+        segName = segment === 'catalog' ? 'Catalog'
+          : segment === 'products' ? 'Products'
+          : segment === 'services' ? 'Services'
+          : segment === 'facilities' ? 'Machinery'
+          : segment === 'contact' ? 'Contact'
+          : segment === 'consultation' ? 'Consultation'
+          : segment === 'about' ? 'About Us'
+          : segment === 'resources' ? 'Resources'
+          : segment.replace(/-/g, ' ')
+      } else if (currentLang.value === 'AR') {
+        segName = segment === 'catalog' ? 'الكتالوج'
+          : segment === 'products' ? 'المنتجات'
+          : segment === 'services' ? 'الخدمات'
+          : segment === 'facilities' ? 'التجهيزات'
+          : segment === 'contact' ? 'اتصل بنا'
+          : segment === 'consultation' ? 'استشارة'
+          : segment === 'about' ? 'من نحن'
+          : segment === 'resources' ? 'المصادر'
+          : segment.replace(/-/g, ' ')
+      } else {
+        segName = segment === 'catalog' ? 'کاتالوگ'
+          : segment === 'products' ? 'محصولات'
+          : segment === 'services' ? 'خدمات'
+          : segment === 'facilities' ? 'تجهیزات و ماشین‌آلات'
+          : segment === 'contact' ? 'تماس با ما'
+          : segment === 'consultation' ? 'مشاوره و استعلام'
+          : segment === 'about' ? 'درباره ما'
+          : segment === 'resources' ? 'منابع و قالب‌ها'
+          : segment.replace(/-/g, ' ')
+      }
+      const segUrl = currentLang.value === 'EN'
+        ? `${baseUrl}/en${acc}`
+        : (currentLang.value === 'AR' ? `${baseUrl}/ar${acc}` : `${baseUrl}${acc}`)
+      items.push({ name: segName, url: segUrl })
     }
     return items
   })
@@ -307,7 +428,11 @@ export function useAppSeo(options: SeoOptions = {}) {
         '@type': ['Organization', 'LocalBusiness', 'Corporation'],
         '@id': `${baseUrl}/#organization`,
         name: brandName.value,
-        legalName: 'مجتمع چاپ و بسته‌بندی نجم',
+        legalName: computed(() => {
+          if (currentLang.value === 'EN') return 'Najm Industrial Printing & Packaging Complex'
+          if (currentLang.value === 'AR') return 'مجمع نجم للطباعة والتغليف الصناعي'
+          return 'مجتمع چاپ و بسته‌بندی نجم'
+        }).value,
         url: baseUrl,
         logo: {
           '@type': 'ImageObject',
@@ -329,7 +454,11 @@ export function useAppSeo(options: SeoOptions = {}) {
         paymentAccepted: 'Cash, Credit Card, Bank Wire',
         address: {
           '@type': 'PostalAddress',
-          streetAddress: 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶',
+          streetAddress: computed(() => {
+            if (currentLang.value === 'EN') return 'No. 166, Corner of Telephone-Khaneh Alley, 45-Metri Zarand, Fath Expressway, Tehran, Iran'
+            if (currentLang.value === 'AR') return 'رقم ۱۶۶، زاوية زقاق تلفن‌خانه، بداية شارع ۴۵ متري زرند، طريق فتح السريع، طهران، إيران'
+            return 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶'
+          }).value,
           addressLocality: 'Tehran',
           addressRegion: 'Tehran Province',
           postalCode: '1387813111',
@@ -379,17 +508,45 @@ export function useAppSeo(options: SeoOptions = {}) {
           ratingCount: '156',
           reviewCount: '128'
         },
-        knowsAbout: [
-          'چاپ افست هایدلبرگ دوورقی ۵ رنگ SM74',
-          'چاپ افست رولند ۷۰۰ و رولند ۲۰۰',
-          'سلفون حرارتی اتوماتیک Auto band',
-          'تولید انواع جعبه مقوایی و بهداشتی',
-          'جعبه‌های دارویی طبق استانداردهای بهداشت',
-          'تولید هاردباکس لوکس و جعبه‌های فانتزی',
-          'یووی سیلندری و طلاکوب',
-          'صحافی، تاکنی اشتال و مفتول ریلی مولر مارتینی',
-          'برش پولار ۱۱۵ برنامه‌دار'
-        ],
+        knowsAbout: computed(() => {
+          if (currentLang.value === 'EN') {
+            return [
+              'Heidelberg Speedmaster 5-Color Sheetfed Offset Printing',
+              'Roland 700 & 200 Industrial Offset Presses',
+              'Automatic Thermal Lamination (Auto Band)',
+              'Pharmaceutical & Cosmetic Carton Packaging',
+              'Luxury Rigid Boxes & Custom Magnetic Boxes',
+              'Automated Die-Cutting, Creasing & Embossing',
+              'Hot Foil Stamping & Cylinder Spot UV Varnishing',
+              'Muller Martini Saddle Stitching & Stahl Folding',
+              'Polar 115 Computerized High-Precision Guillotine'
+            ]
+          }
+          if (currentLang.value === 'AR') {
+            return [
+              'طباعة أوفست ملونة بماكينات هايدلبرغ الألمانية SM74',
+              'ماكينات رولاند ۷۰۰ ورولاند ۲۰۰ الصناعية',
+              'سلفان حراري أوتوماتيكي ومات وبراق',
+              'تصنيع علب الكرتون الصلب والفاخر (هاردبوكس)',
+              'تغليف عبوات الأدوية ومستحضرات التجميل المعتمدة',
+              'علب المنتجات الغذائية الصحية المقاومة للرطوبة',
+              'بصمة حرارية ذهبية وفضية ويو في موضعي',
+              'قص وتكسير آلي دقيق بماكينات بوبست السويسرية',
+              'خطوط لصق وتجميع العلب الأوتوماتيكية'
+            ]
+          }
+          return [
+            'چاپ افست هایدلبرگ دوورقی ۵ رنگ SM74',
+            'چاپ افست رولند ۷۰۰ و رولند ۲۰۰',
+            'سلفون حرارتی اتوماتیک Auto band',
+            'تولید انواع جعبه مقوایی و بهداشتی',
+            'جعبه‌های دارویی طبق استانداردهای بهداشت',
+            'تولید هاردباکس لوکس و جعبه‌های فانتزی',
+            'یووی سیلندری و طلاکوب',
+            'صحافی، تاکنی اشتال و مفتول ریلی مولر مارتینی',
+            'برش پولار ۱۱۵ برنامه‌دار'
+          ]
+        }).value,
         sameAs: [
           'https://www.instagram.com/chape_najm/',
           'https://t.me/chapenajm',
@@ -445,6 +602,17 @@ export function useAppSeo(options: SeoOptions = {}) {
       }
     ]
 
+    // Append AEO Knowledge Graph Node if configured
+    if (adminSeoOverrides.value?.aeoSummary) {
+      graph.push({
+        '@type': 'AboutPage',
+        '@id': `${canonicalUrl.value}/#aeo`,
+        name: `${brandName.value} - AEO Knowledge`,
+        description: adminSeoOverrides.value.aeoSummary,
+        keywords: adminSeoOverrides.value.entities || undefined
+      })
+    }
+
     // Append extra schemas passed by the caller
     const extra = toValue(options.extraSchemas)
     if (extra && Array.isArray(extra) && extra.length > 0) {
@@ -469,6 +637,15 @@ export function useAppSeo(options: SeoOptions = {}) {
       console.error('Failed to serialize Schema.org JSON-LD:', e)
     }
 
+    const isIndexable = adminSeoOverrides.value ? (adminSeoOverrides.value.indexable !== false) : !options.noindex
+    const isFollowable = adminSeoOverrides.value ? (adminSeoOverrides.value.followLinks !== false) : true
+    const robotsDirective = isIndexable
+      ? `${isFollowable ? 'index, follow' : 'index, nofollow'}, max-snippet:-1, max-image-preview:large, max-video-preview:-1`
+      : 'noindex, nofollow'
+
+    const ogTitle = adminSeoOverrides.value?.ogTitle || pageTitle.value
+    const ogDesc = adminSeoOverrides.value?.ogDescription || metaDescription.value
+
     return {
       title: pageTitle.value,
       htmlAttrs: {
@@ -477,24 +654,36 @@ export function useAppSeo(options: SeoOptions = {}) {
       },
       meta: [
         { name: 'description', content: metaDescription.value },
-        { name: 'robots', content: options.noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
+        { name: 'robots', content: robotsDirective },
         { name: 'author', content: brandName.value },
         { name: 'theme-color', content: '#115247' },
 
         // Open Graph
         { property: 'og:site_name', content: brandName.value },
-        { property: 'og:title', content: pageTitle.value },
-        { property: 'og:description', content: metaDescription.value },
+        { property: 'og:title', content: ogTitle },
+        { property: 'og:description', content: ogDesc },
         { property: 'og:type', content: options.type || 'website' },
         { property: 'og:url', content: canonicalUrl.value },
-        { property: 'og:image', content: socialImage.value },
         { property: 'og:locale', content: currentLang.value === 'FA' ? 'fa_IR' : (currentLang.value === 'AR' ? 'ar_SA' : 'en_US') },
-
-        // Twitter Card
+        ...(currentLang.value === 'FA'
+          ? [
+              { property: 'og:locale:alternate', content: 'en_US' },
+              { property: 'og:locale:alternate', content: 'ar_SA' }
+            ]
+          : currentLang.value === 'EN'
+          ? [
+              { property: 'og:locale:alternate', content: 'fa_IR' },
+              { property: 'og:locale:alternate', content: 'ar_SA' }
+            ]
+          : [
+              { property: 'og:locale:alternate', content: 'fa_IR' },
+              { property: 'og:locale:alternate', content: 'en_US' }
+            ]
+        ),
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: '@NajmPrinting' },
-        { name: 'twitter:title', content: pageTitle.value },
-        { name: 'twitter:description', content: metaDescription.value },
+        { name: 'twitter:title', content: ogTitle },
+        { name: 'twitter:description', content: ogDesc },
         { name: 'twitter:image', content: socialImage.value }
       ],
       link: [

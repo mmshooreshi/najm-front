@@ -1,185 +1,198 @@
 <!-- components/Drawer.vue -->
-<!-- /components/Drawer.vue -->
 <template>
-  <div class="drawer-container">
-    <!-- Hamburger button -->
+  <Teleport to="body">
+    <div
+      v-if="open"
+      class="fixed inset-0 z-[100] flex"
+      :dir="isRTL ? 'rtl' : 'ltr'"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="isRTL ? 'منوی ناوبری' : 'Navigation Menu'"
+    >
+      <!-- Backdrop Overlay -->
+      <transition name="drawer-backdrop" appear>
+        <div
+          class="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300"
+          @click="closeDrawer"
+          aria-hidden="true"
+        />
+      </transition>
 
-           
-    <div class="hh hamburger-icon flex-col" :class="{'flex-row':open}" >
-      <span class="hh icon icon-1" :class="{ 'open': open }"></span>
-      <span class="hh icon icon-2" :class="{ 'open': open }"></span>
-      <span class="hh icon icon-3" :class="{ 'open ': open }"></span>
+      <!-- Sliding Panel -->
+      <transition :name="isRTL ? 'drawer-slide-rtl' : 'drawer-slide-ltr'" appear>
+        <aside
+          class="relative z-10 w-full sm:w-[420px] md:w-[460px] h-[100dvh] bg-white flex flex-col shadow-2xl overflow-hidden"
+          :class="isRTL ? 'mr-auto' : 'ml-auto'"
+        >
+          <!-- Drawer Top Header Bar -->
+          <div class="flex items-center justify-between px-4 sm:px-6 h-16 sm:h-18 border-b border-gray-100 flex-shrink-0 bg-white/95 backdrop-blur-md">
+            <!-- Brand Logo -->
+            <NuxtLink :to="localePath('/')" @click="closeDrawer" class="flex items-center flex-shrink-0">
+              <Logo :menuOpen="true" class="w-24 sm:w-28 flex-shrink-0" />
+            </NuxtLink>
+
+            <!-- Language Switcher & Close Trigger -->
+            <div class="flex items-center gap-2">
+              <LanguageSwitcher v-model="language" class="scale-90 origin-center" />
+
+              <button
+                type="button"
+                @click="closeDrawer"
+                class="w-10 h-10 rounded-2xl bg-gray-100 hover:bg-gray-200 active:scale-95 flex items-center justify-center text-gray-700 transition-all cursor-pointer"
+                :aria-label="isRTL ? 'بستن منو' : 'Close Menu'"
+              >
+                <Icon name="mdi:close" class="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Profile / Login Card -->
+          <div class="px-4 sm:px-6 pt-3 pb-2 flex-shrink-0">
+            <NuxtLink
+              :to="isAuthenticated && user.name ? localePath(`/user/${user.id}`) : localePath('/login')"
+              @click="closeDrawer"
+              class="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50/90 hover:bg-gray-100/90 border border-gray-100 transition-all duration-200 group active:scale-[0.99] shadow-2xs"
+            >
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-najmgreen/10 text-najmgreen flex items-center justify-center flex-shrink-0">
+                  <Icon name="mdi:account" class="w-5 h-5" />
+                </div>
+                <div class="flex flex-col text-right" :class="isRTL ? 'text-right' : 'text-left'">
+                  <span class="text-xs sm:text-sm font-bold text-gray-900 truncate max-w-[200px]">
+                    {{ isAuthenticated && user?.name ? `${user.name} ${user.familyName}` : loginText }}
+                  </span>
+                  <span class="text-[11px] text-gray-500">
+                    {{ isAuthenticated ? profileSubtitle : loginSubtitle }}
+                  </span>
+                </div>
+              </div>
+
+              <Icon
+                name="mdi:chevron-left"
+                class="w-5 h-5 text-gray-400 group-hover:text-najmgreen transition-transform flex-shrink-0"
+                :class="isRTL ? 'group-hover:-translate-x-1' : 'rotate-180 group-hover:translate-x-1'"
+              />
+            </NuxtLink>
+          </div>
+
+          <!-- Single Unified Scroll Container (Zero nested scroll traps!) -->
+          <div
+            ref="scrollContainer"
+            class="flex-1 overflow-y-auto overscroll-contain px-4 sm:px-6 pt-2 pb-32"
+            style="-webkit-overflow-scrolling: touch;"
+          >
+            <slot>
+              <Menu @close="closeDrawer" />
+            </slot>
+          </div>
+        </aside>
+      </transition>
     </div>
-
-    <transition name="slide-full">
-<div
-  v-if="open"
-  class="fixed inset-0 z-50 flex justify-end sm:justify-center items-start md:items-center overflow-hidden"
->
-  <div class="w-full xs:mr-[0vw] sm:mr-[66px] flex flex-col h-screen bg-white/100 sm:rounded-3xl relative md:absolute md:top-0 md:left-0 md:max-w-[600px] overflow-hidden">
-    <div class="drawer-body">
-      <slot />
-    </div>
-  </div>
-</div>
-</transition>
-
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-//   import { ref } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useLocale } from '~/composables/useLocale'
+import { useAuth } from '~/composables/useAuth'
+import Logo from '~/components/atom/logo.vue'
+import LanguageSwitcher from '~/components/atom/LanguageSwitcher.vue'
+import Menu from '~/components/Menu.vue'
 
-//   const open = ref(false)
-
-
-// Accept an `open` prop and emit `update:open` so parent can v-model it
 const props = defineProps<{ open: boolean }>()
-const emit  = defineEmits<{
-(e: 'update:open', value: boolean): void
+const emit = defineEmits<{
+  (e: 'update:open', value: boolean): void
 }>()
 
-// Mirror prop into a local computed so we can `toggle()` it
-const open = computed({
-get:  () => props.open,
-set: (v: boolean) => emit('update:open', v),
+const { language, localePath } = useLocale()
+const { user, isAuthenticated } = useAuth()
+
+const isRTL = computed(() => {
+  const l = (language.value || 'FA').toUpperCase()
+  return l === 'FA' || l === 'AR'
 })
 
-function toggle() {
-open.value = !open.value
+const loginText = computed(() => {
+  const l = (language.value || 'FA').toUpperCase()
+  if (l === 'EN') return 'Sign In / Register'
+  if (l === 'AR') return 'تسجيل الدخول / التسجيل'
+  return 'ورود / عضویت'
+})
+
+const loginSubtitle = computed(() => {
+  const l = (language.value || 'FA').toUpperCase()
+  if (l === 'EN') return 'Access customer dashboard'
+  if (l === 'AR') return 'الدخول إلى لوحة التحكم'
+  return 'دسترسی به سامانه سفارشات و استعلام'
+})
+
+const profileSubtitle = computed(() => {
+  const l = (language.value || 'FA').toUpperCase()
+  if (l === 'EN') return 'View personal profile'
+  if (l === 'AR') return 'عرض الحساب الشخصي'
+  return 'مشاهده حساب کاربری'
+})
+
+function closeDrawer() {
+  emit('update:open', false)
 }
 
-
-// close if the click came from inside an <a> (e.g. a NuxtLink)
-  function maybeClose(e: MouseEvent) {
-      console.log(e.target)
-if ((e.target as HTMLElement).closest('a')) {
-  // open.value = false
-}
-}
-</script>
-
-<style scoped lang="scss">
-.drawer-container {
-
-}
-
-.hamburger-icon {
-  position: relative;
-  top: 10%;
-  left: 3%;
-  // width: 60px;
-  // height: 60px;
-  display: flex;
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 50%;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-
-  &:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && props.open) {
+    closeDrawer()
   }
 }
 
-.icon {
-display: block;
-width: 18px;
-height: 1.5px;
-background-color: black;
-border-radius: 0.75px;
-transition: transform 0.2s ease-in-out;
-margin: 2.5px 0;
+// Lock body scrolling when drawer is active
+watch(() => props.open, (isOpen) => {
+  if (typeof document === 'undefined') return
+  if (isOpen) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
+  }
+}, { immediate: true })
 
-/* ensure all bars can scale from center */
-transform-origin: center center;
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKeydown)
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = ''
+  }
+})
+</script>
+
+<style scoped>
+/* Backdrop Fade */
+.drawer-backdrop-enter-active,
+.drawer-backdrop-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-
-
-.icon-1.open {
-  transform-origin: center center; /* default, but you can tweak */
-transform: translateY(6.5px) rotate(45deg);
-
-  
-}
-
-/* DEFAULT state for the middle bar */
-.icon-2 {
-  transform-origin: center center;
-
-  transition: transform 0.2s ease-in-out;
-transform: scaleX(1);
-}
-
-/* when open, shrink it from both ends */
-.icon-2.open {
-transform: scaleX(0);
-/* remove opacity hack if you left it commented: */
-/* opacity: 1; */
-}
-
-.icon-3.open {
-  transform-origin: center center; /* default, but you can tweak */
-transform: translateY(-6.5px) rotate(-45deg);
-
-}
-
-
-.drawer-body {
-  top: 0px;
-  white-space: nowrap;
-  flex: 1;
-  overflow-y: auto;
-  
-  
-}
-
-/* Slide-full transition classes */
-.slide-full-enter-from {
-  transform: translateX(-100%);
+.drawer-backdrop-enter-from,
+.drawer-backdrop-leave-to {
   opacity: 0;
 }
-.slide-full-enter-to {
-  transform: translateX(0);
-  opacity: 1;
+
+/* Slide Drawer RTL (From right to left) */
+.drawer-slide-rtl-enter-active,
+.drawer-slide-rtl-leave-active {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.slide-full-leave-from {
-  transform: translateX(0);
-  opacity: 1;
+.drawer-slide-rtl-enter-from,
+.drawer-slide-rtl-leave-to {
+  transform: translateX(100%);
 }
-.slide-full-leave-to {
+
+/* Slide Drawer LTR (From left to right) */
+.drawer-slide-ltr-enter-active,
+.drawer-slide-ltr-leave-active {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer-slide-ltr-enter-from,
+.drawer-slide-ltr-leave-to {
   transform: translateX(-100%);
-  opacity: 0;
 }
-.slide-full-enter-active,
-.slide-full-leave-active {
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
-}
-
-
-
-
-button,
-a,
-[role="button"],
-[tabindex],
-input,
-textarea,
-select,
-label,
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-
-* {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
 </style>

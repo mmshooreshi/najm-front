@@ -1,104 +1,78 @@
 <!-- components/Header.vue -->
 <template>
-  <!-- backdrop-blur -->
-  <!-- <div dir="rtl" class="fixed top-0 z-50 w-full   flex flex-col w-full"> -->
-  <div
+  <header
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="fixed top-0 z-50 w-full flex flex-col transition-transform duration-300"
-    :class="direction === 'down' && !menuOpen && !searchIsOpen ? '-translate-y-full' : 'translate-y-0'">
+    class="fixed top-0 z-50 w-full transition-transform duration-300"
+    :class="direction === 'down' && !menuOpen && !searchIsOpen ? '-translate-y-full' : 'translate-y-0'"
+  >
+    <!-- Header Bar -->
+    <div class="w-full bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between transition-all duration-300">
 
-    <!-- Mobile View -->
-    <div class=" bg-white bg-opacity-100   p-2  flex flex-row-reverse w-full transition-all justify-between items-center  z-100">
+      <!-- Start Side: Brand Logo -->
+      <div class="flex items-center flex-shrink-0">
+        <Logo :menuOpen="menuOpen" class="w-24 sm:w-28 flex-shrink-0" />
+      </div>
 
-      <transition name="menu-switch" mode="out-in">
-        <!-- OPEN STATE -->
-        <div key="open" class="flex flex-row w-full transition-all duration-500 justify-end gap-1 md:gap-2 items-center z-100">
+      <!-- Center: Adaptive Desktop Navigation (4 items on lg, 5 items on xl) -->
+      <div class="hidden lg:flex items-center justify-center flex-1 px-4 max-w-2xl transition-all duration-300">
+        <NavLinks v-if="!searchIsOpen" />
+      </div>
 
-          <!-- always keep logo at the very right → give it order-first and no grow/shrink -->
-          <!-- <Logo :menuOpen="menuOpen" class="max-w-0 md:max-w-28 order-first flex-shrink-0 flex-grow-0" /> -->
-          <div 
-  class="order-first flex-shrink-0 flex-grow-0 relative z-[100] transition-[width] duration-500 ease-in-out overflow-hidden flex"
-  :class="(menuOpen && !isDesktop) ? 'w-11 md:w-28' : 'w-28'"
->
-  <Logo :menuOpen="menuOpen" class="w-28 min-w-[112px] max-w-none flex-shrink-0" />
-</div>
+      <!-- End Side: Action Cluster (Profile, Language, Search, Hamburger) -->
+      <div class="flex items-center justify-end gap-1.5 sm:gap-2.5 flex-shrink-0">
+        <!-- Desktop Profile CTA (strictly hidden on mobile/tablet) -->
+        <ProfileButton
+          v-if="!searchIsOpen"
+          :menuOpen="menuOpen"
+          class="hidden lg:flex flex-shrink-0"
+        />
 
-          
+        <!-- Language Switcher (hidden on mobile, visible on sm+) -->
+        <LanguageSwitcher
+          v-if="!searchIsOpen"
+          v-model="language"
+          class="hidden sm:flex flex-shrink-0"
+        />
 
+        <!-- Search Box -->
+        <SearchBox
+          @update:searchOpen="searchIsOpen = $event"
+          :menuOpen="menuOpen"
+          class="relative z-[100] flex-shrink-0"
+        />
 
-          <!-- <div :class="menuOpen ? ' !flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div> -->
-          <div :class="(menuOpen && isDesktop) ? '!flex-shrink' : '!flex-grow'" class="transition-all duration-500 mx-0.5"> </div>
-<NavLinks 
-  :class="[
-    menuOpen ? 'max-w-0 -mx-4 opacity-0 pointer-events-none' : 'mx-0 max-w-[800px] opacity-100 flex-shrink-0', 
-    'hidden xl:block'
-  ]"
-  class="transition-all duration-500 text-nowrap overflow-hidden" 
-/>
-          <!-- Profile Button with blur transition -->
-          <transition name="blur">
-            <!-- <ProfileButton v-if="!searchIsOpen" :menuOpen="menuOpen"
-              class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden max-w-0 opacity-0 mx-0 border-0  lg:max-w-[180px]  lg:opacity-100 md:mx-1 md:flex' : 'flex max-w-[180px] opacity-100 mx-1 md:mr-8'" /> -->
-<ProfileButton 
-  v-if="!searchIsOpen" 
-  :menuOpen="menuOpen"
-  class="flex-shrink flex-grow-0 transition-all duration-500 ease-in-out overflow-hidden" 
-  :class="menuOpen 
-    ? 'max-w-[180px] opacity-100 mx-1' 
-    : 'max-w-0 opacity-0 mx-0 !px-0 border-0 xl:max-w-[180px] xl:opacity-100 xl:mx-1 xl:!px-4'" 
-/>
+        <!-- Hamburger Menu Trigger -->
+        <HamburgerMenu
+          v-model:menuOpen="menuOpen"
+          class="flex-shrink-0"
+        />
+      </div>
 
-          </transition>
-
-          <!-- Language Switcher with blur transition -->
-          <transition name="blur">
-            <LanguageSwitcher v-if="!searchIsOpen" v-model="language"
-              class="flex-shrink-0 flex-grow-0" :class="!menuOpen ? 'hidden sm:flex' : 'flex'" />
-          </transition>
-          <!-- <div :class="!menuOpen ? '!flex-shrink' : '!flex-grow'" class=" -mx-1 duration-500 transition-all"> </div> -->
-          <div :class="(!menuOpen || !isDesktop) ? '!flex-shrink' : '!flex-grow'" class="-mx-1 duration-500 transition-all"> </div>
-          <!-- search box flexes only when menu is open -->
-          <!-- <SearchBox @update:searchOpen="searchIsOpen = $event" :menuOpen="menuOpen"
-            :class="searchIsOpen ? ' z-100' : ''" /> -->
-
-          <SearchBox 
-            @update:searchOpen="searchIsOpen = $event" 
-            :menuOpen="menuOpen"
-            class="relative z-[100]" 
-          />
-
-          <!-- hamburger never grows -->
-          <HamburgerMenu v-model:menuOpen="menuOpen" class="flex-shrink-0 flex-grow-0" />
-
-
-        </div>
-      </transition>
     </div>
-  </div>
+
+    <!-- Slide-over Drawer / Sidebar -->
+    <Drawer v-model:open="menuOpen" />
+  </header>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { NuxtLink } from '#components'
-import NajmLogo from '~/assets/icons/najm-logo.svg'
-import SearchIcon from '~/assets/icons/search-icon.svg'
 import { useScrollDirection } from '~/composables/useScrollDirection'
-
-// Modular Components
 import Logo from '~/components/atom/logo.vue'
 import ProfileButton from '@/components/atom/ProfileButton.vue'
 import LanguageSwitcher from '@/components/atom/LanguageSwitcher.vue'
 import SearchBox from '@/components/atom/SearchBox.vue'
-
 import HamburgerMenu from '@/components/atom/HamburgerMenu.vue'
 import NavLinks from '@/components/atom/NavLinks.vue'
-import { useMediaQuery } from '@vueuse/core'
+import Drawer from '@/components/Drawer.vue'
 import { useLocale } from '~/composables/useLocale'
 
 const { language } = useLocale()
-const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+const isRTL = computed(() => {
+  const l = (language.value || 'FA').toUpperCase()
+  return l === 'FA' || l === 'AR'
+})
 const { direction } = useScrollDirection()
-
 
 const props = withDefaults(
   defineProps<{
@@ -114,43 +88,10 @@ const emit = defineEmits<{
   (e: 'update:menuOpen', value: boolean): void
 }>()
 
-// Tailwind “md” breakpoint is 768px:
-const isDesktop = useMediaQuery('(min-width: 768px)')
-const isSmall = useMediaQuery('(max-width: 400px)')
 const searchIsOpen = ref(false)
 
-// Menu state
 const menuOpen = computed({
   get: () => props.menuOpen,
   set: (val: boolean) => emit('update:menuOpen', val)
 })
-
-function openDesktopSearch() {
-  // placeholder for desktop search action
-}
 </script>
-
-
-
-
-<style scoped>
-/* 1) Duration & easing of the transition */
-.blur-enter-active,
-.blur-leave-active {
-  transition: filter 0.1s ease, opacity 0.1s ease;
-}
-
-/* 2) Initial state when component is inserted, or after removal */
-.blur-enter-from,
-.blur-leave-to {
-  filter: blur(10px);
-  opacity: 0;
-}
-
-/* 3) Final state once the transition finishes */
-.blur-enter-to,
-.blur-leave-from {
-  filter: blur(0);
-  opacity: 1;
-}
-</style>

@@ -90,12 +90,23 @@
         </button>
       </div>
 
-      <div v-if="showDots" class="flex gap-2">
-        <button v-for="(pkg, idx) in packages" :key="pkg.id" @pointerin="scrollTo(idx)" @click="scrollTo(idx)"
-          @touchstart.prevent="scrollTo(idx)" :style="{ backgroundColor: pkg.color }" :class="[
-            'w-2 h-2  rounded-2xl border-none cursor-pointer transition-all hover:!bg-najmgreen',
-            selectedIndex === idx ? 'w-6 !bg-najmgreen' : 'bg-gray-300/40'
-          ]" :aria-label="`Go to slide ${idx + 1}`">
+      <div v-if="showDots" class="flex gap-1.5 items-center justify-center">
+        <button
+          v-for="(pkg, idx) in packages"
+          :key="pkg.id"
+          @pointerin="scrollTo(idx)"
+          @click="scrollTo(idx)"
+          @touchstart.prevent="scrollTo(idx)"
+          class="p-2 -m-1 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[24px] min-h-[24px]"
+          :aria-label="`Go to slide ${idx + 1}`"
+        >
+          <span
+            :style="{ backgroundColor: pkg.color }"
+            :class="[
+              'h-2 rounded-2xl transition-all group-hover:bg-najmgreen block',
+              selectedIndex === idx ? 'w-6 !bg-najmgreen' : 'w-2 bg-gray-300/40'
+            ]"
+          />
         </button>
       </div>
 
