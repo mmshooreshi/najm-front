@@ -1,7 +1,12 @@
 // server/routes/uploads/[...path].get.ts
 import fs from 'node:fs'
 import path from 'node:path'
-import { defineEventHandler, getRouterParam, createError, sendStream, setHeader, setResponseStatus, getHeader } from 'h3'
+import { defineEventHandler, getRouterParam, createError, sendStream, setHeader, setResponseStatus, getHeader, proxyRequest } from 'h3'
+
+const PB_SERVER_URL = process.env.PB_URL || 'http://65.108.80.205:8090'
+const PB_SUPERUSER_TOKEN =
+  process.env.PB_SUPERUSER_TOKEN ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc4NzE0NjU0MSwiaWQiOiJha3ZrOTZnNDMyODk4bDEiLCJyZWZyZXNoYWJsZSI6dHJ1ZSwidHlwZSI6ImF1dGgifQ.auLVQl1bXPsuGHbXWaqtohXZeI0wYfu-cdp-UBXmV_0'
 
 const MIME_MAP: Record<string, string> = {
   pdf: 'application/pdf',
@@ -38,15 +43,39 @@ export default defineEventHandler(async (event) => {
 
   const publicFilePath = path.resolve(process.cwd(), 'public', 'uploads', cleanPath)
   const dataFilePath = path.resolve(process.cwd(), '.data', 'uploads', cleanPath)
+  const tmpFilePath = path.resolve('/tmp', 'uploads', cleanPath)
 
   let targetFilePath = ''
-  if (fs.existsSync(publicFilePath) && fs.statSync(publicFilePath).isFile()) {
-    targetFilePath = publicFilePath
-  } else if (fs.existsSync(dataFilePath) && fs.statSync(dataFilePath).isFile()) {
-    targetFilePath = dataFilePath
-  }
+  try {
+    if (fs.existsSync(publicFilePath) && fs.statSync(publicFilePath).isFile()) {
+      targetFilePath = publicFilePath
+    } else if (fs.existsSync(dataFilePath) && fs.statSync(dataFilePath).isFile()) {
+      targetFilePath = dataFilePath
+    } else if (fs.existsSync(tmpFilePath) && fs.statSync(tmpFilePath).isFile()) {
+      targetFilePath = tmpFilePath
+    }
+  } catch {}
 
   if (!targetFilePath) {
+    // If not cached on local disk or /tmp, check PocketBase media_files collection
+    try {
+      const fileName = path.basename(cleanPath)
+      const pbRes: any = await $fetch(`${PB_SERVER_URL}/api/collections/media_files/records`, {
+        headers: { Authorization: PB_SUPERUSER_TOKEN },
+        params: {
+          filter: `filename="${fileName}"`,
+          perPage: 1
+        },
+        timeout: 4000
+      }).catch(() => null)
+
+      const match = pbRes?.items?.[0]
+      if (match?.file) {
+        const targetUrl = `${PB_SERVER_URL}/api/files/media_files/${match.id}/${match.file}`
+        return proxyRequest(event, targetUrl)
+      }
+    } catch {}
+
     throw createError({ statusCode: 404, statusMessage: 'فایل یافت نشد.' })
   }
 

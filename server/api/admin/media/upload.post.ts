@@ -1,5 +1,5 @@
 // server/api/admin/media/upload.post.ts
-import { defineEventHandler, readMultipartFormData, createError } from 'h3'
+import { defineEventHandler, readMultipartFormData, createError, getCookie, getHeader } from 'h3'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -101,57 +101,86 @@ export default defineEventHandler(async (event) => {
     let baseFilename = sanitizeFilename(rawName)
     let finalFilename = `${baseFilename}.${ext}`
 
-    // Setup local target directories
+    // Setup potential target directories
     const publicTargetDir = path.resolve(process.cwd(), 'public', 'uploads', cleanFolder)
     const dataTargetDir = path.resolve(process.cwd(), '.data', 'uploads', cleanFolder)
+    const tmpTargetDir = path.resolve('/tmp', 'uploads', cleanFolder)
 
+    let localWritten = false
+    let finalPublicPath = path.join(publicTargetDir, finalFilename)
+
+    // 1. Try public directory (works in local dev / persistent node)
     try {
-      if (!fs.existsSync(publicTargetDir)) fs.mkdirSync(publicTargetDir, { recursive: true })
-      if (!fs.existsSync(dataTargetDir)) fs.mkdirSync(dataTargetDir, { recursive: true })
-    } catch (dirErr) {
-      console.error('[Upload] Error creating upload directories:', dirErr)
+      if (!fs.existsSync(publicTargetDir)) {
+        fs.mkdirSync(publicTargetDir, { recursive: true })
+      }
+      if (fs.existsSync(finalPublicPath)) {
+        finalFilename = `${baseFilename}-${Date.now()}.${ext}`
+        finalPublicPath = path.join(publicTargetDir, finalFilename)
+      }
+      fs.writeFileSync(finalPublicPath, filePart.data)
+      localWritten = true
+    } catch {
+      // Ignored in serverless/read-only environments (e.g. AWS Lambda / Vercel /var/task)
     }
 
-    // Handle collision if a file with exact same name exists
-    const publicFilePath = path.join(publicTargetDir, finalFilename)
-    if (fs.existsSync(publicFilePath)) {
-      finalFilename = `${baseFilename}-${Date.now()}.${ext}`
-    }
-
-    const finalPublicPath = path.join(publicTargetDir, finalFilename)
-    const finalDataPath = path.join(dataTargetDir, finalFilename)
-
-    // Write file to disk
-    fs.writeFileSync(finalPublicPath, filePart.data)
+    // 2. Try .data directory (works in local dev)
     try {
+      if (!fs.existsSync(dataTargetDir)) {
+        fs.mkdirSync(dataTargetDir, { recursive: true })
+      }
+      const finalDataPath = path.join(dataTargetDir, finalFilename)
       fs.writeFileSync(finalDataPath, filePart.data)
-    } catch (dataErr) {
-      console.warn('[Upload] Notice: Could not sync to .data/uploads:', dataErr)
+      localWritten = true
+    } catch {}
+
+    // 3. Try /tmp directory (always writable in AWS Lambda / Vercel Serverless)
+    try {
+      if (!fs.existsSync(tmpTargetDir)) {
+        fs.mkdirSync(tmpTargetDir, { recursive: true })
+      }
+      const finalTmpPath = path.join(tmpTargetDir, finalFilename)
+      fs.writeFileSync(finalTmpPath, filePart.data)
+      localWritten = true
+    } catch {}
+
+    let publicUrl = `/uploads/${cleanFolder}/${finalFilename}`.replace(/\/+/g, '/')
+    let uniqueId = `up-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+
+    // 4. Primary Persistent Storage -> PocketBase
+    let pbRecord: any = null
+    const userAuth =
+      getCookie(event, 'pb_admin') ||
+      getHeader(event, 'authorization') ||
+      PB_SUPERUSER_TOKEN
+
+    try {
+      const formData = new FormData()
+      const blob = new Blob([filePart.data], { type: mime })
+      formData.append('file', blob, finalFilename)
+      formData.append('filename', finalFilename)
+      formData.append('path', cleanFolder)
+      formData.append('mime', mime)
+      formData.append('size', String(size))
+      formData.append('format', ext)
+
+      pbRecord = await $fetch(`${PB_SERVER_URL}/api/collections/media_files/records`, {
+        method: 'POST',
+        headers: { Authorization: userAuth },
+        body: formData,
+        timeout: 25000
+      }).catch((e) => {
+        console.warn('[Upload] PocketBase direct upload failed:', e?.data || e?.message)
+        return null
+      })
+
+      if (pbRecord?.id && pbRecord?.file) {
+        uniqueId = pbRecord.id
+        publicUrl = `/api/pb/api/files/media_files/${pbRecord.id}/${pbRecord.file}`
+      }
+    } catch (pbErr) {
+      console.warn('[Upload] PocketBase sync failed:', pbErr)
     }
-
-    const publicUrl = `/uploads/${cleanFolder}/${finalFilename}`.replace(/\/+/g, '/')
-    const uniqueId = `up-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-
-    // Optional background sync to PocketBase if configured (non-blocking, 2s timeout)
-    Promise.resolve().then(async () => {
-      try {
-        const formData = new FormData()
-        const blob = new Blob([filePart.data], { type: mime })
-        formData.append('file', blob, finalFilename)
-        formData.append('filename', finalFilename)
-        formData.append('path', cleanFolder)
-        formData.append('mime', mime)
-        formData.append('size', String(size))
-        formData.append('format', ext)
-
-        await $fetch(`${PB_SERVER_URL}/api/collections/media_files/records`, {
-          method: 'POST',
-          headers: { Authorization: PB_SUPERUSER_TOKEN },
-          body: formData,
-          timeout: 2000
-        }).catch(() => null)
-      } catch {}
-    })
 
     return {
       success: true,
