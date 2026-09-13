@@ -191,23 +191,16 @@ watch(() => props.products, async () => {
 
 
 
-  <style scoped>
+<style scoped>
 .tak2 {
-  /* position: relative; */
-  /* display: flex; */
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* width: 320px; */
-  /* border-radius: 24px; */
-  /* line-height: 1.6; */
   cursor: pointer;
-  transition: all 0.88s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  will-change: transform;
 }
 
-.tak2:hover {
-  /* transform: translate(-2px, -8px); */
-  transform: translate( -8px);
-  margin-inline: 32px;
-
+@media (hover: hover) and (pointer: fine) {
+  .tak2:hover {
+    transform: translateY(-6px);
+  }
 }
 </style>

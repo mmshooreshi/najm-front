@@ -3,17 +3,17 @@
   <footer
     data-admin-slug="footer"
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="bg-najmgreen text-white rounded-t-2xl pt-14 pb-28 md:pb-24 select-text"
+    class="bg-najmgreen text-white rounded-t-2xl pt-8 sm:pt-10 pb-12 sm:pb-16 select-text transition-all duration-300"
   >
     <!-- Top Centered Brand Logo -->
-    <div class="flex justify-center pb-10">
-      <component :is="activeLogoWhite" class="h-10 sm:h-12 w-auto" />
+    <div class="flex justify-center pb-5 sm:pb-6">
+      <component :is="activeLogoWhite" class="h-9 sm:h-11 w-auto transition-transform hover:scale-105" />
     </div>
 
     <!-- Main 2-Column Responsive Grid -->
-    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-start">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 items-start">
       <!-- Left Column: Accordion Navigation, Brand Intro Text, Desktop Trust Badge -->
-      <div class="flex flex-col space-y-6 w-full max-w-xl mx-auto md:mx-0">
+      <div class="flex flex-col space-y-4 sm:space-y-5 w-full max-w-xl mx-auto md:mx-0">
         <!-- Accordion Navigation -->
         <div class="flex flex-col space-y-1.5">
           <BaseFooterAccordion
@@ -29,7 +29,7 @@
         </div>
 
         <!-- Brand Story Paragraphs -->
-        <div class="pt-4 space-y-3 border-t border-white/10">
+        <div class="pt-3 space-y-2 border-t border-white/10">
           <p
             v-for="(paragraph, index) in localizedParagraphs"
             :key="index"
@@ -42,9 +42,9 @@
         </div>
 
         <!-- Trust Badges (Desktop) -->
-        <div class="hidden md:block pt-2">
+        <div class="hidden md:block pt-1">
           <NuxtImg
-            class="max-w-[260px] w-auto h-auto opacity-95 hover:opacity-100 transition-opacity"
+            class="max-w-[240px] w-auto h-auto opacity-90 hover:opacity-100 transition-opacity"
             src="/images/sections/footer/trust.png"
             alt="مجوزها و نماد اعتماد"
             loading="lazy"
@@ -53,13 +53,13 @@
       </div>
 
       <!-- Right Column: Contact Details, Map, Mobile Trust Badge -->
-      <div class="flex flex-col space-y-6 w-full max-w-xl mx-auto md:mx-0">
+      <div class="flex flex-col space-y-4 sm:space-y-5 w-full max-w-xl mx-auto md:mx-0">
         <!-- Contact Items List (Fully in-place editable) -->
         <div class="flex flex-col divide-y divide-white/10 text-xs sm:text-sm">
           <div
             v-for="(item, index) in contactItemsList"
             :key="index"
-            class="flex items-center justify-between py-3 gap-2"
+            class="flex items-center justify-between py-2.5 gap-2"
           >
             <span
               class="text-white/95 font-bold font-d4 shrink-0"
@@ -95,9 +95,9 @@
         </div>
 
         <!-- Trust Badges (Mobile) -->
-        <div class="block md:hidden pt-2 flex justify-center">
+        <div class="block md:hidden pt-1 flex justify-center">
           <NuxtImg
-            class="max-w-[240px] w-auto h-auto opacity-95"
+            class="max-w-[220px] w-auto h-auto opacity-90"
             src="/images/sections/footer/trust.png"
             alt="مجوزها و نماد اعتماد"
             loading="lazy"
@@ -107,19 +107,20 @@
     </div>
 
     <!-- Divider Line -->
-    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 my-6">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 my-4 sm:my-5">
       <div class="h-px bg-white/20 w-full"></div>
     </div>
 
-    <!-- Bottom Copyright & Brand Bar (Guaranteed visible with proper contrast & breathing room) -->
-    <div class="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/95 font-d4">
+    <!-- Bottom Copyright & Brand Bar (Fully responsive and fluid across screens) -->
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4 text-[11px] sm:text-xs text-white/90 font-d4 transition-all">
       <span 
-        class="text-center sm:text-right leading-relaxed font-medium break-words" 
+        class="leading-relaxed font-medium break-words text-balance"
+        :class="isRTL ? 'text-center sm:text-right' : 'text-center sm:text-left'"
         v-editable="'copyright'"
       >
         {{ currentCopyrightText }}
       </span>
-      <span class="font-mono text-xs shrink-0 text-center sm:text-left font-semibold text-white/90" dir="ltr">
+      <span class="font-mono text-[11px] sm:text-xs shrink-0 text-center sm:text-left font-semibold text-white/80 hover:text-white transition-colors tracking-wide" dir="ltr">
         &copy; {{ toLocalizedDigits(year) }} ChapNajm
       </span>
     </div>

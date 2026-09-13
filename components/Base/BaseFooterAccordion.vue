@@ -1,47 +1,46 @@
 <!-- components/Base/BaseFooterAccordion.vue -->
 <template>
   <div
-    class="group bg-[#0c4a3e] border border-white/10 rounded-xl overflow-hidden transition-all duration-300 shadow-sm"
-    :class="{ 'border-white/25 shadow-md shadow-black/20 bg-[#0d4f42]': open }"
+    class="group bg-[#115247] border border-transparent rounded-xl overflow-hidden transition-colors"
+    :class="{ '!border-white/20': open }"
   >
-    <!-- Header Button (Strictly transparent with dark hover/active, never turns white) -->
+    <!-- Header Button -->
     <button
       type="button"
-      class="w-full flex justify-between items-center py-4 px-6 text-sm gap-2 cursor-pointer bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none transition-colors duration-200 hover:bg-white/5"
-      :class="{ 'bg-white/10': open }"
+      class="w-full flex transition-height duration-500 ease justify-between hover:bg-[#023028]/20 items-center py-4 px-6 text-sm gap-2 cursor-pointer bg-transparent border-0 outline-none focus:outline-none focus:ring-0 appearance-none"
+      :class="{ 'bg-[#023028]/20': open }"
       @click="toggle"
     >
       <span
-        class="text-white/85 group-hover:text-white text-sm text-d4 text-demibold transition-colors"
+        class="text-white/80 group-hover:text-white/100 text-sm text-d4 text-demibold transition-colors"
         v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.name` : ''"
       >{{ title || '' }}</span>
 
-      <!-- Chevron Icon -->
+      <!-- chevron -->
       <Icon
         name="mdi:chevron-down"
-        class="w-5 h-5 text-white/70 group-hover:text-white transition-transform duration-300"
+        class="w-5 h-5 text-white/80 group-hover:text-white/100 transition-transform duration-300"
         :style="{ transform: `rotate(${open ? 180 : 0}deg)` }"
       />
     </button>
 
-    <!-- Sliding Panel with Smooth Two-Way Transition -->
+    <!-- Sliding panel with Smooth Transition -->
     <div
       ref="contentRef"
       :style="contentStyles"
       @transitionend="onTransitionEnd"
-      class="accordion-content overflow-hidden bg-[#0a3f35] "
-      :class="{ '!border-white/10': open }"
+      class="accordion-content overflow-hidden bg-[#115247]"
     >
-      <ul class="my-0 divide-y divide-white/10 list-none p-0">
+      <ul class="my-0 divide-y divide-white/20 list-none p-0">
         <li
-          class="relative hover:bg-white/10 text-center py-2.5 flex items-center justify-between px-4 group/item transition-colors"
           v-for="(item, iIdx) in (items || [])"
           :key="item?.id || iIdx"
+          class="relative hover:bg-white/10 text-center py-2 border-t border-t-0.5 border-white/20 flex items-center justify-between px-4 group/item transition-colors"
         >
           <NuxtLink
             v-if="item"
             :to="localePath(item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || ''))"
-            class="block py-1 text-white text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
+            class="block py-1 text-white/100 text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
           >
             <div
               class="w-max rounded-lg p-1"
@@ -51,26 +50,63 @@
             </div>
           </NuxtLink>
 
-          <!-- Array Action [+] / [-] -->
-          <ClientOnly>
-            <AdminArrayItemActions
-              v-if="sectionIndex !== undefined && canEdit"
-              :path="`sections.${sectionIndex}.children`"
-              :index="iIdx"
-              position="inline"
-            />
-          </ClientOnly>
+          <!-- Sleek, non-intrusive micro-action cluster in edit mode -->
+          <div
+            v-if="canEdit && isEditMode && sectionIndex !== undefined"
+            class="opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center gap-1 shrink-0 select-none mr-2"
+            @click.stop.prevent
+          >
+            <button
+              v-if="iIdx > 0"
+              type="button"
+              @click="onMoveUp(iIdx)"
+              class="w-5 h-5 rounded flex items-center justify-center bg-white/10 hover:bg-white/25 text-white/80 hover:text-white transition-colors cursor-pointer"
+              title="انتقال به بالا (Move Up)"
+            >
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+              </svg>
+            </button>
+
+            <button
+              v-if="iIdx < (items?.length || 0) - 1"
+              type="button"
+              @click="onMoveDown(iIdx)"
+              class="w-5 h-5 rounded flex items-center justify-center bg-white/10 hover:bg-white/25 text-white/80 hover:text-white transition-colors cursor-pointer"
+              title="انتقال به پایین (Move Down)"
+            >
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              @click="onRemove(iIdx)"
+              class="w-5 h-5 rounded flex items-center justify-center bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 hover:text-white transition-colors cursor-pointer"
+              title="حذف این لینک (Delete)"
+            >
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </li>
 
-        <ClientOnly>
-          <li v-if="sectionIndex !== undefined && canEdit" class="list-none">
-            <AdminAddCardPlaceholder
-              :path="`sections.${sectionIndex}.children`"
-              label="افزودن لینک جدید به این بخش"
-              customClass="min-h-[40px] p-1.5 my-1"
-            />
-          </li>
-        </ClientOnly>
+        <!-- Subtle Add Link Action in Edit Mode -->
+        <li
+          v-if="canEdit && isEditMode && sectionIndex !== undefined"
+          class="list-none py-2 px-4"
+        >
+          <button
+            type="button"
+            @click="onAdd"
+            class="w-full py-1.5 px-3 rounded-lg border border-dashed border-white/25 hover:border-white/60 hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span class="text-sm leading-none">+</span>
+            <span>افزودن لینک جدید</span>
+          </button>
+        </li>
       </ul>
     </div>
   </div>
@@ -78,11 +114,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick } from 'vue'
-import { adminEditState } from '@/store/adminEditStore'
+import { adminEditState as state, moveArrayItem, removeArrayItem, addArrayItem } from '@/store/adminEditStore'
 import { useLocale } from '~/composables/useLocale'
 
 const { localePath } = useLocale()
-const canEdit = computed(() => adminEditState.canEdit)
+const canEdit = computed(() => state.canEdit)
+const isEditMode = computed(() => state.editMode)
 
 interface Item {
   id: string
@@ -150,6 +187,27 @@ watch(
 
 function toggle() {
   emit('toggle', props.id)
+}
+
+function onMoveUp(idx: number) {
+  if (props.sectionIndex === undefined) return
+  moveArrayItem(`sections.${props.sectionIndex}.children`, idx, idx - 1, state.language || 'fa', 'footer')
+}
+
+function onMoveDown(idx: number) {
+  if (props.sectionIndex === undefined) return
+  moveArrayItem(`sections.${props.sectionIndex}.children`, idx, idx + 1, state.language || 'fa', 'footer')
+}
+
+function onRemove(idx: number) {
+  if (props.sectionIndex === undefined) return
+  removeArrayItem(`sections.${props.sectionIndex}.children`, idx, state.language || 'fa', 'footer')
+}
+
+function onAdd() {
+  if (props.sectionIndex === undefined) return
+  const count = props.items?.length || 0
+  addArrayItem(`sections.${props.sectionIndex}.children`, count - 1, state.language || 'fa', 'footer')
 }
 </script>
 
