@@ -1,6 +1,6 @@
 <!-- pages/consultation/index.vue -->
 <template>
-  <div class="consultation-page min-h-screen bg-[#F8F9FA] pt-20 sm:pt-24 pb-16 px-3.5 sm:px-6 lg:px-8" :dir="isRTL ? 'rtl' : 'ltr'">
+  <div class="consultation-page w-full min-h-screen bg-najmback pt-6 sm:pt-10 pb-16 px-3.5 sm:px-6 lg:px-8" :dir="isRTL ? 'rtl' : 'ltr'">
     <div class="max-w-4xl mx-auto space-y-6 sm:space-y-8">
       <!-- Compact Header & Title -->
       <div class="text-center space-y-2.5 max-w-2xl mx-auto">

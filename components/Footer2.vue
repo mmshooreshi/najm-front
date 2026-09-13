@@ -59,7 +59,7 @@
           <div
             v-for="(item, index) in contactItemsList"
             :key="index"
-            class="flex items-center justify-between py-2.5 gap-2"
+            class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 gap-1 sm:gap-2"
           >
             <span
               class="text-white/95 font-bold font-d4 shrink-0"
@@ -78,7 +78,7 @@
             </a>
             <span
               v-else-if="item"
-              class="break-words text-xs sm:text-sm text-white/90 truncate"
+              class="break-words text-xs sm:text-sm text-white/90"
               :class="isRTL ? 'text-right' : 'text-left'"
               v-editable="`contact.items.${index}.value`"
             >
@@ -87,8 +87,8 @@
           </div>
         </div>
 
-        <!-- Interactive Map Component -->
-        <div class="w-full">
+        <!-- Interactive Map Component (Concentric container with uniform padding) -->
+        <div class="w-full p-2 sm:p-2.5 rounded-3xl bg-white/5 border border-white/15 shadow-inner">
           <ClientOnly>
             <Map />
           </ClientOnly>

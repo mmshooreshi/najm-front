@@ -96,7 +96,6 @@
           :key="pkg.id"
           @pointerin="scrollTo(idx)"
           @click="scrollTo(idx)"
-          @touchstart.prevent="scrollTo(idx)"
           class="p-2 -m-1 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[24px] min-h-[24px]"
           :aria-label="`Go to slide ${idx + 1}`"
         >

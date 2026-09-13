@@ -20,12 +20,12 @@
 <template>
   <div
     @click="nextLanguage"
-    class="z-100 w-12 h-12 rounded-2xl active:bg-gray-300/50 bg-white 
-           flex items-center justify-center text-gray-700 
-           hover:bg-gray-300/25 hover:text-gray-900 cursor-pointer"
+    class="z-100 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl active:bg-gray-200/80 bg-white 
+           flex items-center justify-center text-gray-700 select-none
+           hover:bg-gray-100 hover:text-gray-900 cursor-pointer border border-gray-200/80 shadow-2xs active:scale-95 transition-transform duration-100"
   >
-    <transition name="scale" mode="out-in">
-      <span :key="modelValue" class="inline-block origin-center text-lg mt-1">
+    <transition name="scale">
+      <span :key="modelValue" class="inline-block origin-center text-sm sm:text-base font-bold text-d4">
         {{ modelValue }}
       </span>
     </transition>

@@ -2,12 +2,12 @@
 <template>
   <div dir="rtl" class="min-h-screen pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-12 bg-najmback">
     <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs text-gray-500">
-      <NuxtLink to="/" class="hover:text-najmgreen">خانه</NuxtLink>
+    <nav class="flex items-center gap-2 text-xs text-gray-500 font-medium">
+      <NuxtLink :to="localePath('/')" class="hover:text-najmgreen">خانه</NuxtLink>
       <span>/</span>
-      <NuxtLink to="/products" class="hover:text-najmgreen">محصولات</NuxtLink>
+      <NuxtLink :to="localePath('/products')" class="hover:text-najmgreen">محصولات</NuxtLink>
       <span>/</span>
-      <span class="text-gray-900 font-bold text-d4">{{ currentProduct.name }}</span>
+      <span class="text-gray-900 font-semibold">{{ currentProduct.name }}</span>
     </nav>
 
     <!-- Product Hero Section -->
@@ -98,13 +98,13 @@
         <!-- Action CTA -->
         <div class="pt-4 flex flex-col sm:flex-row gap-3">
           <NuxtLink
-            to="/contact"
+            :to="localePath('/contact')"
             class="flex-1 py-3.5 px-6 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs text-center shadow-xs transition text-d4"
           >
             استعلام تیراژ و قیمت
           </NuxtLink>
           <NuxtLink
-            to="/catalog"
+            :to="localePath('/catalog')"
             class="py-3.5 px-6 rounded-2xl bg-najmgrey hover:bg-gray-200 text-gray-800 font-bold text-xs text-center transition flex items-center justify-center gap-2 text-d4"
           >
             <Icon name="mdi:download" class="w-4 h-4 text-najmgreen" />
@@ -120,6 +120,9 @@
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAppSeo } from '~/composables/useAppSeo'
+import { useLocale } from '~/composables/useLocale'
+
+const { localePath } = useLocale()
 
 definePageMeta({
   layout: 'default'

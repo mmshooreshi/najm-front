@@ -211,7 +211,7 @@
 
       <!-- Map & Directions -->
       <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
-        <div class="rounded-2xl overflow-hidden border border-najmborder/40 h-72 sm:h-80 w-full relative">
+        <div class="p-2 sm:p-2.5 rounded-3xl bg-gray-50/80 border border-najmborder/30 h-72 sm:h-80 w-full relative shadow-xs flex flex-col">
           <ClientOnly>
             <Map />
           </ClientOnly>

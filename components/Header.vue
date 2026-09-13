@@ -20,11 +20,10 @@
 
       <!-- End Side: Action Cluster (Profile, Language, Search, Hamburger) -->
       <div class="flex items-center justify-end gap-1.5 sm:gap-2.5 flex-shrink-0">
-        <!-- Profile CTA: strictly hidden on low-width / mobile screens when sidebar is closed -->
+        <!-- Profile CTA: visible on desktop, mobile uses drawer profile card -->
         <div
-          v-if="!searchIsOpen && (isDesktop || menuOpen)"
-          class="flex-shrink-0"
-          :class="menuOpen ? 'flex' : 'hidden lg:flex'"
+          v-if="!searchIsOpen"
+          class="hidden lg:flex flex-shrink-0"
         >
           <ProfileButton :menuOpen="menuOpen" />
         </div>
@@ -59,7 +58,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useMediaQuery } from '@vueuse/core'
 import { useScrollDirection } from '~/composables/useScrollDirection'
 import Logo from '~/components/atom/logo.vue'
 import ProfileButton from '@/components/atom/ProfileButton.vue'
@@ -76,7 +74,6 @@ const isRTL = computed(() => {
   return l === 'FA' || l === 'AR'
 })
 const { direction } = useScrollDirection()
-const isDesktop = useMediaQuery('(min-width: 1024px)')
 
 const props = withDefaults(
   defineProps<{

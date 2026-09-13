@@ -1,21 +1,25 @@
 <!-- pages/about/index.vue -->
 <template>
   <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative w-full overflow-x-clip">
-    <!-- Smart Floating Capsule Sub-Nav -->
+    <!-- Smart Full-Width Sub-Nav Bar -->
     <div
-      class="fixed inset-x-0 z-40 flex justify-center pointer-events-none transition-[top,transform,opacity] duration-350 ease-out"
+      class="fixed inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/70 shadow-xs py-2 px-3 sm:px-6"
       :class="[
-        headerHidden ? 'top-3.5 sm:top-4' : 'top-22 sm:top-26',
-        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
+        isMounted ? 'transition-[top] duration-300 ease-out' : '',
+        headerHidden ? 'top-0' : 'top-16 sm:top-20'
       ]"
     >
-      <div class="pointer-events-auto bg-white/90 backdrop-blur-xl border border-white/80 shadow-lg rounded-full p-1.5 max-w-[calc(100vw-24px)] sm:max-w-max mx-auto overflow-hidden">
-        <nav class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto najm-scrollbar-thin px-1 py-0.5 scroll-smooth">
+      <div class="max-w-7xl mx-auto flex justify-center">
+        <nav
+          ref="subnavRef"
+          class="flex items-center gap-1 sm:gap-2 overflow-x-auto najm-scrollbar-thin px-2 py-0.5 scroll-smooth max-w-full"
+        >
           <button
             v-for="item in sections"
             :key="item.id"
+            :id="`nav-btn-${item.id}`"
             @click="scrollToSection(item.id)"
-            class="px-3 sm:px-4 py-1.5 text-xs text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none"
+            class="px-3.5 sm:px-5 py-1.5 text-xs sm:text-[13px] text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none shrink-0"
             :class="[
               activeSection === item.id
                 ? 'bg-najmgreen text-white shadow-xs font-bold scale-[1.02]'
@@ -206,14 +210,14 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0 min-w-0">
           <NuxtLink
-            to="/consultation"
+            :to="localePath('/consultation')"
             class="px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-white text-najmgreen font-bold text-xs sm:text-sm hover:bg-emerald-50 transition text-center shadow-xs text-d4 w-full sm:w-auto break-words select-none"
             v-editable="'ctaBtn'"
           >
             {{ ui?.ctaBtn || (isRTL ? 'درخواست مشاوره و استعلام فنی' : 'Request Technical Consultation') }}
           </NuxtLink>
           <NuxtLink
-            to="/catalog"
+            :to="localePath('/catalog')"
             class="px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition text-center border border-white/20 text-d4 w-full sm:w-auto break-words select-none"
             v-editable="'ctaCatalogBtn'"
           >
@@ -237,7 +241,7 @@ definePageMeta({
   layout: 'default'
 })
 
-const { language } = useLocale()
+const { language, localePath } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const { ui, allUi } = usePageUI('about')
@@ -318,24 +322,19 @@ const defaultTimeline = [
   { year: '۱۴۰۴', title: 'استقرار استاندارد‌های چاپ سبز و هوشمند', desc: 'به‌کارگیری مرکب‌های گیاهی، خطوط تمام اتوماتیک بازرسی چشمی و سیستم‌های مدیریت یکپارچه.' }
 ]
 
+const isMounted = ref(false)
+const subnavRef = ref<HTMLElement | null>(null)
 const { direction } = useScrollDirection()
 const scrollY = ref(0)
 const headerHidden = computed(() => direction.value === 'down' && scrollY.value > 80)
 
 const activeSection = ref('vision')
-const navVisible = ref(true)
 let lastScrollY = 0
 let isNavBypassing = false
 
 function handleScrollDirection() {
   if (typeof window === 'undefined') return
   scrollY.value = window.scrollY
-  if (isNavBypassing) return
-  const currentY = window.scrollY
-  
-  // Keep navbar visible, smooth top glide handled via headerHidden
-  navVisible.value = true
-  lastScrollY = currentY
 }
 
 function scrollToSection(id: string) {
@@ -345,16 +344,18 @@ function scrollToSection(id: string) {
   isNavBypassing = true
   activeSection.value = id
 
-  // Dynamic offset taking into account whether main header is present or hidden
-  const yOffset = headerHidden.value ? -60 : -140
+  // Auto-center the clicked button inside the sub-nav scroll area
+  const btn = document.getElementById(`nav-btn-${id}`)
+  btn?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+
+  // Generous offset so section header lands clearly with comfortable breathing space
+  const yOffset = headerHidden.value ? -75 : -145
   const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
 
   window.scrollTo({
     top: Math.max(0, y),
     behavior: 'smooth'
   })
-
-  navVisible.value = true
 
   setTimeout(() => {
     lastScrollY = window.scrollY
@@ -370,12 +371,17 @@ onMounted(async () => {
     lastScrollY = window.scrollY
     window.addEventListener('scroll', handleScrollDirection, { passive: true })
   }
+  isMounted.value = true
 
   const observer = new IntersectionObserver(
     entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           activeSection.value = entry.target.id
+          if (!isNavBypassing) {
+            const btn = document.getElementById(`nav-btn-${entry.target.id}`)
+            btn?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+          }
         }
       })
     },

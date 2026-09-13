@@ -9,10 +9,10 @@
       aria-modal="true"
       :aria-label="isRTL ? 'منوی ناوبری' : 'Navigation Menu'"
     >
-      <!-- Backdrop Overlay -->
+      <!-- Backdrop Overlay (pure dark tint, zero GPU blur lag) -->
       <transition name="drawer-backdrop" appear>
         <div
-          class="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-200"
+          class="fixed inset-0 bg-black/45 transition-opacity duration-200"
           @click="closeDrawer"
           aria-hidden="true"
         />
@@ -22,7 +22,7 @@
       <transition :name="isRTL ? 'drawer-slide-rtl' : 'drawer-slide-ltr'" appear>
         <aside
           class="fixed top-0 bottom-0 z-10 w-full sm:w-[420px] md:w-[460px] h-[100dvh] bg-white flex flex-col shadow-2xl overflow-hidden touch-manipulation will-change-transform"
-          :class="isRTL ? 'left-0' : 'right-0'"
+          :class="isRTL ? 'right-0' : 'left-0'"
         >
           <!-- Drawer Top Header Bar (100% pixel-perfect match with Header.vue) -->
           <div class="w-full flex items-center justify-between px-3 sm:px-6 h-16 sm:h-20 border-b border-gray-100 flex-shrink-0 bg-white/95 backdrop-blur-md">
@@ -182,32 +182,32 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-/* Slide Drawer RTL (FA & AR: Slides in from LEFT to RIGHT) */
+/* Slide Drawer RTL (FA & AR: Slides in from RIGHT to LEFT over the start side) */
 .drawer-slide-rtl-enter-active {
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-rtl-leave-active {
-  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-slide-rtl-enter-from,
 .drawer-slide-rtl-leave-to {
-  transform: translate3d(-100%, 0, 0);
+  transform: translate3d(100%, 0, 0);
 }
 .drawer-slide-rtl-enter-to,
 .drawer-slide-rtl-leave-from {
   transform: translate3d(0, 0, 0);
 }
 
-/* Slide Drawer LTR (EN: Slides in from RIGHT to LEFT) */
+/* Slide Drawer LTR (EN: Slides in from LEFT to RIGHT over the start side) */
 .drawer-slide-ltr-enter-active {
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-ltr-leave-active {
-  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-slide-ltr-enter-from,
 .drawer-slide-ltr-leave-to {
-  transform: translate3d(100%, 0, 0);
+  transform: translate3d(-100%, 0, 0);
 }
 .drawer-slide-ltr-enter-to,
 .drawer-slide-ltr-leave-from {

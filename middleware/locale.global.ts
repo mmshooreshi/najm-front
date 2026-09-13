@@ -2,7 +2,7 @@
 import { defineNuxtRouteMiddleware, navigateTo } from '#app'
 import { useLocale } from '~/composables/useLocale'
 
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware((to, from) => {
   // Exclude all admin, auth, and API routes with zero overhead
   if (
     to.path.startsWith('/dash') ||
@@ -26,7 +26,7 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   // URL Authority: synchronize language state with the current URL prefix
-  const { language } = useLocale()
+  const { language, localePath } = useLocale()
 
   if (to.path === '/en' || to.path.startsWith('/en/')) {
     if (language.value !== 'EN') {
@@ -37,6 +37,19 @@ export default defineNuxtRouteMiddleware((to) => {
       language.value = 'AR'
     }
   } else {
+    // If user is actively in Arabic or English session and navigated internally,
+    // preserve their locale automatically!
+    if (
+      (language.value === 'AR' || language.value === 'EN') &&
+      from?.path &&
+      (from.path.startsWith('/ar') || from.path.startsWith('/en'))
+    ) {
+      const target = localePath(to.fullPath, language.value)
+      if (target !== to.fullPath) {
+        return navigateTo(target)
+      }
+    }
+
     // Un-prefixed root route is Persian default
     if (language.value !== 'FA') {
       language.value = 'FA'

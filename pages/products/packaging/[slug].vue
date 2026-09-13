@@ -105,13 +105,13 @@
         <!-- Action CTA -->
         <div class="pt-4 flex flex-col sm:flex-row gap-3">
           <NuxtLink
-            to="/contact"
+            :to="localePath('/contact')"
             class="flex-1 py-3 px-5 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs text-center shadow-xs transition text-d4"
           >
             <span v-editable="'inquiryBtn'">{{ product.inquiryBtn || (isRTL ? 'درخواست استعلام قیمت و ابعاد' : 'Request Quote & Custom Sizing') }}</span>
           </NuxtLink>
           <NuxtLink
-            to="/catalog"
+            :to="localePath('/catalog')"
             class="py-3 px-5 rounded-2xl bg-najmgrey hover:bg-gray-200 text-gray-800 font-bold text-xs text-center transition flex items-center justify-center gap-2 text-d4"
           >
             <Icon name="mdi:download" class="w-4 h-4 text-najmgreen" />
@@ -157,7 +157,7 @@ definePageMeta({
   layout: 'default'
 })
 
-const { language } = useLocale()
+const { language, localePath } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const route = useRoute()
