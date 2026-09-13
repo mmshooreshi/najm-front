@@ -50,53 +50,82 @@ body, [dir="rtl"], .font-sans {
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
 /* ─── NAJM — SMOOTH FLOATING SCROLLBAR ─── */
-/* ─────────────────────────────────────────────
-   NAJM — ULTRA SLIM FLOATING SCROLLBAR
-   ───────────────────────────────────────────── */
 
 .najm-subnav {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(1, 68, 57, 0.45) transparent;
+  /*
+   * Hide the real browser scrollbar completely.
+   * The custom scrollbar below replaces it.
+   */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
 }
 
-/* Chrome / Edge / Safari */
 .najm-subnav::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── CUSTOM TRACK ─── */
+
+.najm-scrollbar {
+  position: absolute;
+
+  /*
+   * This is the important part:
+   * the scrollbar can sit OUTSIDE the nav's
+   * normal visual area without changing layout.
+   */
+  left: 8px;
+  right: 8px;
+  bottom: -10px;
+
   height: 4px;
+
+  pointer-events: auto;
+
+  opacity: 0.9;
+
+  direction: ltr;
+
+  transition: opacity 180ms ease;
 }
 
-/* Invisible track */
-.najm-subnav::-webkit-scrollbar-track {
-  background: transparent;
-  border: none;
-}
+/* ─── CUSTOM THUMB ─── */
 
-/* Small rounded thumb */
-.najm-subnav::-webkit-scrollbar-thumb {
-  background: rgba(1, 68, 57, 0.42);
+.najm-scrollbar-thumb {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  height: 3px;
+
+  min-width: 28px;
+
   border-radius: 9999px;
 
-  /* Makes the visible part thinner */
-  border: 1px solid transparent;
-  background-clip: padding-box;
+  background: rgba(1, 68, 57, 0.45);
+
+  cursor: grab;
 
   transition:
     background-color 180ms ease,
-    opacity 180ms ease;
+    height 180ms ease;
+
+  touch-action: none;
 }
 
-.najm-subnav::-webkit-scrollbar-thumb:hover {
-  background-color: #014439;
+.najm-scrollbar-thumb:hover {
+  background: #014439;
+  height: 4px;
 }
 
-.najm-subnav::-webkit-scrollbar-thumb:active {
-  background-color: #014439;
-}
-
-.najm-subnav::-webkit-scrollbar-corner {
-  background: transparent;
+.najm-scrollbar-thumb:active {
+  background: #014439;
+  height: 4px;
+  cursor: grabbing;
 }
 
 /* ─── NUXT SOOTHING FADE + RASTER BLUR PAGE & LAYOUT TRANSITIONS ─── */
