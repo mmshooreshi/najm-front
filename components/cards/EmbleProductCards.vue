@@ -68,12 +68,12 @@
             v-for="(product, idx) in products"
             :key="product.id"
             @click="scrollTo(idx)"
-            class="p-2 -m-1 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[24px] min-h-[24px]"
+            class="p-3 -m-2 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[48px] min-h-[48px]"
             :aria-label="`Go to slide ${idx + 1}`"
           >
             <span
               :class="[
-                'h-2 rounded-2xl transition-all group-hover:bg-najmgreen block',
+                'h-2 rounded-2xl transition-[background-color,opacity] duration-300 ease-out group-hover:bg-najmgreen block',
                 selectedIndex === idx ? 'bg-najmgreen w-6' : 'bg-gray-300/40 w-2'
               ]"
             />

@@ -227,7 +227,7 @@
             <div>
               <h1>
                 <span>🌐</span>
-                <span>مجتمع چاپ و بسته‌بندی نجم &middot; XML Sitemap</span>
+                <span>مجتمع چاپ و بسته‌بندی نجم &#183; XML Sitemap</span>
               </h1>
               <p>این نقشه راهنما بهینه‌سازی شده برای ربات‌های هوشمند Googlebot, Bingbot و موتورهای پاسخ هوش مصنوعی (AEO/GEO) می‌باشد.</p>
             </div>
@@ -322,7 +322,7 @@
 
           <div class="footer">
             <div>
-              <span>مجتمع چاپ و بسته‌بندی نجم &copy; 2026 &middot; </span>
+              <span>مجتمع چاپ و بسته‌بندی نجم &#169; 2026 &#183; </span>
               <a href="https://chapenajm.com" target="_blank">chapenajm.com</a>
             </div>
             <div>

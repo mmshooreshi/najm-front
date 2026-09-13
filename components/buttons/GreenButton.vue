@@ -71,7 +71,7 @@ function handleClick(e: MouseEvent) {
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps, defineEmits } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const btnn = ref<HTMLElement | null>(null)
 const isMounted = ref(false)

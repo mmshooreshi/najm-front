@@ -69,10 +69,21 @@ function bgUtility (card: FeatureCard) {
       >
         <!-- 🔹 background ----------------------------------------- -->
         <div
-          class="absolute inset-0 z-0"
+          class="absolute inset-0 z-0 overflow-hidden"
           :class="bgUtility(card)"
-          :style="`background-image: url('${card.bgImage}'); opacity: ${card.id === 3 ? 0.2: 1};`"
-        ></div>
+        >
+          <img
+            v-if="card.bgImage"
+            :src="card.bgImage"
+            alt=""
+            loading="lazy"
+            decoding="async"
+            width="400"
+            height="300"
+            class="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-300"
+            :style="`opacity: ${card.id === 3 ? 0.2 : 1};`"
+          />
+        </div>
 
         <!-- 🔹 foreground (fills full card height) ------------------ -->
         <header class="relative z-10 flex  flex-col justify-between gap-3 h-full">

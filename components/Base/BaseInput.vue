@@ -51,7 +51,7 @@
   </template>
   
   <script setup lang="ts">
-  import { computed, ref, watch, useAttrs, defineProps, withDefaults } from 'vue'
+  import { computed, ref, watch, useAttrs } from 'vue'
   import { toPersianDigits, toEnglishDigits } from '~/utils/digits'
   import { useMotionProperties, useSpring } from '@vueuse/motion'
   

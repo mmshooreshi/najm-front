@@ -91,6 +91,15 @@ export default defineNuxtConfig({
         },
         { rel: 'manifest', href: '/site.webmanifest?v=2' },
 
+        // Preload LCP hero image to eliminate discovery delay
+        {
+          rel: 'preload',
+          as: 'image',
+          type: 'image/png',
+          href: '/images/main/2.png',
+          fetchpriority: 'high'
+        },
+
         // Font Preload Links (optimized utility)
         ...fontPreloadLinks
       ]
@@ -272,7 +281,7 @@ export default defineNuxtConfig({
     build: {
       chunkSizeWarningLimit: 2000,
       cssMinify: 'esbuild',
-      cssCodeSplit: false
+      cssCodeSplit: true
     },
 
     optimizeDeps: {

@@ -3,17 +3,17 @@
   <footer
     data-admin-slug="footer"
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="bg-najmgreen text-white rounded-t-2xl pt-8 sm:pt-10 pb-12 sm:pb-16 select-text transition-all duration-300"
+    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 pb-12 md:pb-6 select-text transition-all duration-300"
   >
     <!-- Top Centered Brand Logo -->
-    <div class="flex justify-center pb-5 sm:pb-6">
-      <component :is="activeLogoWhite" class="h-9 sm:h-11 w-auto transition-transform hover:scale-105" />
+    <div class="flex justify-center pb-5 md:pb-6">
+      <component :is="activeLogoWhite" class="h-9 md:h-11 w-auto transition-transform hover:scale-105" />
     </div>
 
     <!-- Main 2-Column Responsive Grid -->
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 items-start">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10 items-start">
       <!-- Left Column: Accordion Navigation, Brand Intro Text, Desktop Trust Badge -->
-      <div class="flex flex-col space-y-4 sm:space-y-5 w-full max-w-xl mx-auto md:mx-0">
+      <div class="flex flex-col space-y-4 md:space-y-5 w-full max-w-xl mx-auto md:mx-0">
         <!-- Accordion Navigation -->
         <div class="flex flex-col space-y-1.5">
           <BaseFooterAccordion
@@ -53,13 +53,13 @@
       </div>
 
       <!-- Right Column: Contact Details, Map, Mobile Trust Badge -->
-      <div class="flex flex-col space-y-4 sm:space-y-5 w-full max-w-xl mx-auto md:mx-0">
+      <div class="flex flex-col space-y-4 md:space-y-5 w-full max-w-xl mx-auto md:mx-0">
         <!-- Contact Items List (Fully in-place editable) -->
-        <div class="flex flex-col divide-y divide-white/10 text-xs sm:text-sm">
+        <div class="flex flex-col divide-y divide-white/10 text-xs md:text-sm">
           <div
             v-for="(item, index) in contactItemsList"
             :key="index"
-            class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 gap-1 sm:gap-2"
+            class="flex flex-col md:flex-row md:items-center justify-between py-2.5 gap-1 md:gap-2"
           >
             <span
               class="text-white/95 font-bold font-d4 shrink-0"
@@ -78,7 +78,7 @@
             </a>
             <span
               v-else-if="item"
-              class="break-words text-xs sm:text-sm text-white/90"
+              class="break-words text-xs md:text-sm text-white/90"
               :class="isRTL ? 'text-right' : 'text-left'"
               v-editable="`contact.items.${index}.value`"
             >
@@ -88,7 +88,7 @@
         </div>
 
         <!-- Interactive Map Component (Concentric container with uniform padding) -->
-        <div class="w-full p-2 sm:p-2.5 rounded-3xl bg-white/5 border border-white/15 shadow-inner">
+        <div class="w-full p-2 md:p-2.5 rounded-3xl bg-white/5 border border-white/15 shadow-inner">
           <ClientOnly>
             <Map />
           </ClientOnly>
@@ -110,21 +110,21 @@
     <InternalAuthorityPills />
 
     <!-- Divider Line -->
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 my-4 sm:my-5">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 my-4 md:my-5">
       <div class="h-px bg-white/20 w-full"></div>
     </div>
 
     <!-- Bottom Copyright & Brand Bar (Fully responsive and fluid across screens) -->
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-4 text-[11px] sm:text-xs text-white/90 font-d4 transition-all">
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] md:text-xs text-white/90 font-d4 transition-all">
       <span 
         class="leading-relaxed font-medium break-words text-balance"
-        :class="isRTL ? 'text-center sm:text-right' : 'text-center sm:text-left'"
+        :class="isRTL ? 'text-center md:text-right' : 'text-center md:text-left'"
         v-editable="'copyright'"
       >
         {{ currentCopyrightText }}
       </span>
-      <span class="font-mono text-[11px] sm:text-xs shrink-0 text-center sm:text-left font-semibold text-white/80 hover:text-white transition-colors tracking-wide" dir="ltr">
-        &copy; {{ toLocalizedDigits(year) }} ChapNajm
+      <span class="font-mono text-[11px] md:text-xs shrink-0 text-center md:text-left font-semibold text-white/80 hover:text-white transition-colors tracking-wide" dir="ltr">
+        &copy; {{ toLocalizedDigits(year) }} ChapeNajm
       </span>
     </div>
 

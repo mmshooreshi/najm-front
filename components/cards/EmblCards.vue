@@ -12,7 +12,7 @@
             :duration="100"
             width="400"
             height="400"
-            :loading="idx < 2 ? 'eager' : 'lazy'"
+            loading="lazy"
             decoding="async"
             v-media-editable="`sceneProjects.cards.${idx}.loop`"
             class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8"
@@ -49,18 +49,18 @@
         </button>
       </div>
 
-      <div ref="dotsContainerRef" class="flex gap-1.5 items-center justify-center h-6" :dir="isRTL ? 'rtl' : 'ltr'">
+      <div ref="dotsContainerRef" class="flex gap-1 items-center justify-center h-8" :dir="isRTL ? 'rtl' : 'ltr'">
         <button
           v-for="(card, index) in cards"
           :key="card.id"
           @click="scrollTo(index)"
           v-show="shouldShowDot(index)"
-          class="p-2 -m-1 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[24px] min-h-[24px]"
+          class="p-3 -m-2 inline-flex items-center justify-center border-none bg-transparent cursor-pointer group focus:outline-none min-w-[48px] min-h-[48px]"
           :aria-label="`Go to slide ${index + 1}`"
         >
           <span
             :class="[
-              'rounded-full transition-all duration-300 ease-out group-hover:bg-najmgreen block',
+              'rounded-full transition-[background-color,opacity] duration-300 ease-out group-hover:bg-najmgreen block',
               getDotClasses(index)
             ]"
           />

@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
           siteDescription: item.site_description || "",
           phone: item.phone_number || "۰۲۱ - ۶۶۰۰ ۰۰۰۰",
           mobile: "۰۹۱۲ ۰۰۰ ۰۰۰۰",
-          email: item.contact_email || "info@chapnajm.com",
+          email: item.contact_email || "info@chapenajm.com",
           address: item.address || "تهران، شهرک صنعتی، مجتمع چاپ نجم",
           socialLinks: item.social_links || {},
           footerContent: item.footer_content || {}
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       siteTitle: "مجتمع تخصصی چاپ و بسته‌بندی نجم",
       phone: "۰۲۱ - ۶۶۰۰ ۰۰۰۰",
       mobile: "۰۹۱۲ ۰۰۰ ۰۰۰۰",
-      email: "info@chapnajm.com",
+      email: "info@chapenajm.com",
       address: "تهران، دفتر مرکزی و کارخانه چاپ نجم"
     }
   }

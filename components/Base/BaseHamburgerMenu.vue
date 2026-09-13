@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
+import { ref } from 'vue'
 
 type MenuItem = { href: string } & Record<string, any>
 

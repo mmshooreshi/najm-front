@@ -34,7 +34,7 @@
             sizes="xs:300px sm:400px md:400px"
             format="webp"
             quality="80"
-            :loading="index === 0 ? 'eager' : 'lazy'"
+            loading="lazy"
             decoding="async"
             @load="onMediaLoad"
             class="w-full h-full object-cover rounded-3xl"

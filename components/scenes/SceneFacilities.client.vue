@@ -20,6 +20,9 @@
           <NuxtImg
             src="/images/sections/facilities/center.avif"
             fill
+            loading="lazy"
+            decoding="async"
+            sizes="xs:320px sm:400px md:600px lg:800px"
             class="absolute inset-0 w-full h-full object-cover object-center"
             alt="Facility Center"
           />

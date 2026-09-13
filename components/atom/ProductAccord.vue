@@ -79,7 +79,7 @@
   </template>
   
   <script setup lang="ts">
-  import { defineProps, defineEmits, ref, watch, nextTick, computed } from 'vue'
+  import { ref, watch, nextTick, computed } from 'vue'
   import { useMotionProperties, useSpring } from '@vueuse/motion'
   import { useMediaQuery } from '@vueuse/core'
   import { toPersianDigits } from '~/utils/digits'

@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { defineProps, defineEmits } from 'vue'
+
 
 const props = defineProps({
   src: { type: String, required: true }

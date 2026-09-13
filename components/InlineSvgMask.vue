@@ -171,16 +171,19 @@ function onMouseLeave() {
 
 @keyframes maskPulse {
   0%, 100% {
-    filter: drop-shadow(0 0 0px rgba(16, 185, 129, 0));
+    opacity: 0.7;
+    transform: scale(0.985);
   }
   50% {
-    filter: drop-shadow(0 4px 14px rgba(16, 185, 129, 0.22));
+    opacity: 1;
+    transform: scale(1.015);
   }
 }
 
 .silhouette-shimmer {
   animation: maskPulse 2.4s ease-in-out infinite;
   transform-origin: center center;
+  will-change: transform, opacity;
 }
 </style>
 
