@@ -1,6 +1,6 @@
 <!-- pages/blog/index.vue -->
 <template>
-  <div dir="rtl" class="min-h-screen bg-najmback pb-20 sm:pb-28 text-gray-800">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback pb-20 sm:pb-28 text-gray-800">
     <!-- Header -->
     <header class="pt-20 sm:pt-24 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center space-y-3 sm:space-y-4">
       <span class="inline-block px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs font-bold bg-najmgreen/10 text-najmgreen border border-najmgreen/20 text-d4">
@@ -97,6 +97,9 @@ import { ref, computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useDynamicPosts } from '~/composables/useDynamicData'
+import { useLocale } from '~/composables/useLocale'
+
+const { isRTL } = useLocale()
 
 definePageMeta({
   name: 'وبلاگ و مقالات آموزشی - چاپ نجم',

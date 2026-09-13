@@ -109,6 +109,9 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
+import { useLocale } from '~/composables/useLocale'
+
+const { isRTL } = useLocale()
 
 definePageMeta({
   name: 'مقاله تخصصی وبلاگ - چاپ نجم',
