@@ -5,7 +5,7 @@ export default <RouterConfig>{
   scrollBehavior(to, from, savedPosition) {
     const nuxtApp = useNuxtApp()
 
-    // 1. Browser Back / Forward: restore exact saved position after leave transition finishes
+    // 1. Browser Back / Forward: restore exact saved position after page transition finishes
     if (savedPosition) {
       return new Promise((resolve) => {
         let settled = false
@@ -20,7 +20,7 @@ export default <RouterConfig>{
             settled = true
             resolve(savedPosition)
           }
-        }, 260)
+        }, 1000)
       })
     }
 
@@ -39,17 +39,20 @@ export default <RouterConfig>{
             settled = true
             resolve({ el: to.hash, top: 90, behavior: 'smooth' })
           }
-        }, 260)
+        }, 1000)
       })
     }
 
-    // 3. If user is already at top of the page, do not perform any scroll
-    if (typeof window !== 'undefined' && window.scrollY <= 20) {
+    // 3. Same-page navigation: if user clicked link to same page, smoothly scroll to top
+    if (to.path === from.path && !to.hash) {
+      if (typeof window !== 'undefined' && window.scrollY > 20) {
+        return { top: 0, left: 0, behavior: 'smooth' }
+      }
       return false
     }
 
     // 4. Normal navigation: wait for the leave transition to complete before resetting scroll
-    // This prevents the current page from jarringly jumping before/during the fade-blur exit!
+    // This prevents the outgoing page from jarringly jumping before/during the fade-blur exit!
     return new Promise((resolve) => {
       let settled = false
       nuxtApp.hook('page:transition:finish', () => {
@@ -63,7 +66,7 @@ export default <RouterConfig>{
           settled = true
           resolve({ top: 0, left: 0 })
         }
-      }, 260)
+      }, 1000)
     })
   }
 }

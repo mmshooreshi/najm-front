@@ -25,8 +25,9 @@ import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import gsap from 'gsap'
 import { ScrollSmoother } from 'gsap/ScrollSmoother'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useMenu } from '~/composables/useMenu'
 
-const menuOpen = ref(false)
+const { isMenuOpen: menuOpen } = useMenu()
 let smootherInstance: ScrollSmoother | null = null
 let contentResizeObserver: ResizeObserver | null = null
 let refreshTimer: ReturnType<typeof setTimeout> | null = null

@@ -22,12 +22,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import Header from '~/components/Header.vue'
 import BackgroundGradient from '~/components/BackgroundGradient.vue'
 import Footer2 from '~/components/Footer2.vue'
+import { useMenu } from '~/composables/useMenu'
 
-const menuOpen = ref(false)
+const { isMenuOpen: menuOpen } = useMenu()
 
 onMounted(() => {
   useHead({

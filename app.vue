@@ -3,6 +3,7 @@
   <NuxtLayout>
     <NuxtPage :page-key="route => route.fullPath" />
   </NuxtLayout>
+  <Drawer v-if="!isDash" v-model:open="isMenuOpen" />
   <ClientOnly>
     <template v-if="canEdit">
       <AdminEditBar />
@@ -16,12 +17,14 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue'
 import '@unocss/reset/tailwind-compat.css'
+import Drawer from '~/components/Drawer.vue'
 import ConsultationModal from '~/components/consultation/ConsultationModal.vue'
 import { adminEditState } from '@/store/adminEditStore'
-
+import { useMenu } from '~/composables/useMenu'
 import { useLocale } from '~/composables/useLocale'
 
 const { language, isRTL } = useLocale()
+const { isMenuOpen } = useMenu()
 
 useHead({
   htmlAttrs: {
@@ -35,8 +38,9 @@ const AdminMediaOverlay = defineAsyncComponent(() => import('~/components/admin/
 const AdminMediaStudioModal = defineAsyncComponent(() => import('~/components/admin/AdminMediaStudioModal.client.vue'))
 
 const route = useRoute()
+const isDash = computed(() => route.path.startsWith('/dash'))
 const canEdit = computed(() => {
-  if (route.path.startsWith('/dash')) return false
+  if (isDash.value) return false
   return adminEditState.canEdit
 })
 provideHeadlessUseId(() => useId())

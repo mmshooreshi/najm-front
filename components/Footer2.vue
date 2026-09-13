@@ -132,7 +132,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import logoWhiteFa from '~/assets/icons/najm-logo-white.svg'
 import logoWhiteEn from '~/assets/icons/najm-logo-white-en.svg'
 import logoWhiteAr from '~/assets/icons/najm-logo-white-ar.svg'
@@ -140,13 +140,26 @@ import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import InternalAuthorityPills from '~/components/seo/InternalAuthorityPills.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useMenu } from '~/composables/useMenu'
 import { toLocalizedDigits } from '~/utils/digits'
 import { getLocalSchema } from '~/composables/ui/schemaRegistry'
 import Map from '~/components/map.vue'
 
 const { language } = useLocale()
+const { preloadMenuRoutes } = useMenu()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const isArabic = computed(() => language.value === 'AR')
+
+// In idle CPU time, preload core navigation routes so footer link clicks are instant
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    if ('requestIdleCallback' in window) {
+      ;(window as any).requestIdleCallback(() => preloadMenuRoutes(), { timeout: 2500 })
+    } else {
+      setTimeout(() => preloadMenuRoutes(), 600)
+    }
+  }
+})
 
 const activeLogoWhite = computed(() => {
   if (language.value === 'EN') return logoWhiteEn

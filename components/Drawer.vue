@@ -112,6 +112,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { useLocale } from '~/composables/useLocale'
 import { useAuth } from '~/composables/useAuth'
+import { useMenu } from '~/composables/useMenu'
 import Logo from '~/components/atom/logo.vue'
 import LanguageSwitcher from '~/components/atom/LanguageSwitcher.vue'
 import Menu from '~/components/Menu.vue'
@@ -123,6 +124,7 @@ const emit = defineEmits<{
 
 const { language, localePath } = useLocale()
 const { user, isAuthenticated } = useAuth()
+const { preloadMenuRoutes } = useMenu()
 const route = useRoute()
 
 const isVisible = ref(props.open)
@@ -173,6 +175,7 @@ function onKeydown(e: KeyboardEvent) {
 watch(() => props.open, (isOpen) => {
   if (isOpen) {
     isVisible.value = true
+    preloadMenuRoutes()
   }
   if (typeof document === 'undefined') return
   if (isOpen) {

@@ -48,6 +48,8 @@
         v-else-if="item.type === 'link'"
         :to="formatToUrl(item)"
         @click="onLinkClick"
+        @pointerenter.passive="onLinkHover(item)"
+        @focus.passive="onLinkHover(item)"
         class="min-h-[44px] py-2.5 px-3 sm:px-4 flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-najmgreen hover:bg-gray-100/80 active:bg-gray-200/70 active:scale-[0.99] rounded-xl transition-all duration-200"
       >
         <span class="truncate">{{ item.name }}</span>
@@ -87,6 +89,8 @@
         v-else-if="item.type === 'link-simple'"
         :to="formatToUrl(item)"
         @click="onLinkClick"
+        @pointerenter.passive="onLinkHover(item)"
+        @focus.passive="onLinkHover(item)"
         class="min-h-[44px] py-2.5 px-3 sm:px-4 flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-najmgreen hover:bg-gray-100/80 active:bg-gray-200/70 active:scale-[0.99] rounded-xl transition-all duration-200"
       >
         <span class="truncate">{{ item.name }}</span>
@@ -100,6 +104,8 @@
         v-else-if="item.type === 'link-simple-xs'"
         :to="formatToUrl(item)"
         @click="onLinkClick"
+        @pointerenter.passive="onLinkHover(item)"
+        @focus.passive="onLinkHover(item)"
         class="min-h-[40px] py-2 px-3 sm:px-4 flex items-center justify-between text-xs sm:text-sm text-gray-600 hover:text-najmgreen hover:bg-white active:bg-gray-100 rounded-xl transition-all duration-150"
       >
         <div class="flex items-center gap-2 truncate">
@@ -116,6 +122,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { preloadRouteComponents } from '#app'
 import BaseAccordionGroupNew from '~/components/Base/BaseAccordionGroupNew.vue'
 import { toLocalizedDigits } from '~/utils/digits'
 import { useLocale } from '~/composables/useLocale'
@@ -156,13 +163,17 @@ function formatToUrl(item: any): string {
   return localePath(raw)
 }
 
+function onLinkHover(item: any) {
+  try {
+    const url = formatToUrl(item)
+    if (url && !url.startsWith('http')) {
+      preloadRouteComponents(url).catch(() => {})
+    }
+  } catch {}
+}
+
 function onLinkClick() {
   emit('link-click')
-
-  // Smoothly scroll to top only if not already near top, ensuring soothing page transition
-  if (typeof window !== 'undefined' && window.scrollY > 20) {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 }
 
 // Grandchildren count helper

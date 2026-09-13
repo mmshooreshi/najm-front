@@ -50,9 +50,6 @@
       </div>
 
     </div>
-
-    <!-- Slide-over Drawer / Sidebar -->
-    <Drawer v-model:open="menuOpen" />
   </header>
 </template>
 
@@ -65,10 +62,12 @@ import LanguageSwitcher from '@/components/atom/LanguageSwitcher.vue'
 import SearchBox from '@/components/atom/SearchBox.vue'
 import HamburgerMenu from '@/components/atom/HamburgerMenu.vue'
 import NavLinks from '@/components/atom/NavLinks.vue'
-import Drawer from '@/components/Drawer.vue'
 import { useLocale } from '~/composables/useLocale'
+import { useMenu } from '~/composables/useMenu'
 
 const { language } = useLocale()
+const { isMenuOpen } = useMenu()
+
 const isRTL = computed(() => {
   const l = (language.value || 'FA').toUpperCase()
   return l === 'FA' || l === 'AR'
@@ -81,7 +80,7 @@ const props = withDefaults(
     menuOpen?: boolean
   }>(),
   {
-    menuOpen: false
+    menuOpen: undefined
   }
 )
 
@@ -92,7 +91,10 @@ const emit = defineEmits<{
 const searchIsOpen = ref(false)
 
 const menuOpen = computed({
-  get: () => props.menuOpen,
-  set: (val: boolean) => emit('update:menuOpen', val)
+  get: () => (props.menuOpen !== undefined ? props.menuOpen : isMenuOpen.value),
+  set: (val: boolean) => {
+    isMenuOpen.value = val
+    emit('update:menuOpen', val)
+  }
 })
 </script>

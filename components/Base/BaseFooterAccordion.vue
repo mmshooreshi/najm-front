@@ -40,6 +40,8 @@
           <NuxtLink
             v-if="item"
             :to="localePath(item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || ''))"
+            @pointerenter.passive="onLinkHover(item.slug)"
+            @focus.passive="onLinkHover(item.slug)"
             class="block py-1 text-white/100 text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
           >
             <div
@@ -114,12 +116,21 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, nextTick } from 'vue'
+import { preloadRouteComponents } from '#app'
 import { adminEditState as state, moveArrayItem, removeArrayItem, addArrayItem } from '@/store/adminEditStore'
 import { useLocale } from '~/composables/useLocale'
 
 const { localePath } = useLocale()
 const canEdit = computed(() => state.canEdit)
 const isEditMode = computed(() => state.editMode)
+
+function onLinkHover(slug?: string) {
+  try {
+    if (!slug || slug.startsWith('http')) return
+    const path = localePath(slug.startsWith('/') ? slug : '/' + slug)
+    preloadRouteComponents(path).catch(() => {})
+  } catch {}
+}
 
 interface Item {
   id: string

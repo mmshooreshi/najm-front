@@ -54,11 +54,12 @@ import Footer2 from '~/components/Footer2.vue'
 import { usePageUI } from '@/composables/ui/usePageUI'
 import { useLocale } from '@/composables/useLocale'
 import { useAdminEditable } from '@/composables/useAdminEditable'
+import { useMenu } from '~/composables/useMenu'
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-const menuOpen = ref(false)
+const { isMenuOpen: menuOpen } = useMenu()
 
 const route = useRoute()
 const serviceSlug = computed(() => (route.params.slug as string) || 'design-and-layout')
