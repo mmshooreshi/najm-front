@@ -42,21 +42,24 @@
         </div>
       </div>
 
-      <!-- Category Filter Tabs -->
-      <div class="flex justify-center overflow-x-auto gap-2 py-2">
-        <button
-          v-for="cat in categoriesList"
-          :key="cat.key"
-          @click="activeCategory = cat.key"
-          class="px-5 py-2.5 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap"
-          :class="[
-            activeCategory === cat.key
-              ? 'bg-najmgreen text-white shadow-xs'
-              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
-          ]"
-        >
-          {{ cat.label }}
-        </button>
+      <!-- Category Filter Tabs (Full-width responsive with smooth auto-centering on click) -->
+      <div class="w-full max-w-full overflow-x-auto py-2 px-1 sm:px-0 scroll-smooth no-scrollbar">
+        <div class="flex items-center justify-start sm:justify-center gap-2 min-w-max mx-auto px-2">
+          <button
+            v-for="cat in categoriesList"
+            :key="cat.key"
+            :id="`fac-cat-${cat.key}`"
+            @click="selectCategory(cat.key, $event)"
+            class="px-5 py-2.5 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 select-none active:scale-95"
+            :class="[
+              activeCategory === cat.key
+                ? 'bg-najmgreen text-white shadow-xs scale-[1.02]'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+            ]"
+          >
+            {{ cat.label }}
+          </button>
+        </div>
       </div>
 
       <!-- Machinery & Facilities Grid -->
@@ -274,4 +277,14 @@ const filteredMachines = computed(() => {
   if (activeCategory.value === 'all') return machinesList.value
   return machinesList.value.filter(m => m.category === activeCategory.value)
 })
+
+function selectCategory(key: string, event?: Event) {
+  activeCategory.value = key
+  const btn = event?.currentTarget as HTMLElement | null
+  btn?.scrollIntoView({
+    behavior: 'smooth',
+    inline: 'center',
+    block: 'nearest'
+  })
+}
 </script>

@@ -32,6 +32,14 @@ export default defineNuxtPlugin(nuxtApp => {
   // 1. Explicit Directive: v-media-editable="path"
   nuxtApp.vueApp.directive('media-editable', {
     mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
+      const adminCookie = useCookie('pb_admin')
+      const hasSuperuser = !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin='))
+      if (!hasSuperuser) {
+        el.removeAttribute('data-media-path')
+        el.classList.remove('v-media-editable')
+        return
+      }
+
       const path = binding.value
       if (!path || path.startsWith('undefined') || path.startsWith('null')) return
 

@@ -3,7 +3,7 @@
   <nav
     :dir="isRTL ? 'rtl' : 'ltr'"
     :aria-label="navAriaLabel"
-    class="w-full max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 pt-3 pb-2 select-text"
+    class="w-full max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 py-1.5 sm:py-2 select-text"
   >
     <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
       <span class="text-[11px] sm:text-xs font-semibold text-white/70 font-d4 ml-1 flex items-center gap-1">

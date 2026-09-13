@@ -448,7 +448,10 @@ export default defineNuxtPlugin(nuxtApp => {
 
   // Toggle contenteditable across all editable elements
   watch(() => [state.canEdit, state.editMode], ([canEdit, editMode]) => {
-    const on = !!(canEdit && editMode)
+    const on = !!(hasSuperuser.value && canEdit && editMode)
+    if (typeof document !== 'undefined') {
+      document.body.classList.toggle('admin-edit-active', on)
+    }
     const elements = document.querySelectorAll<HTMLElement>('[data-edit-path]')
     elements.forEach(el => {
       setEditable(el, on)
@@ -463,7 +466,7 @@ export default defineNuxtPlugin(nuxtApp => {
         logger.info('Admin:Edit', 'Edit Mode DISENGAGED (Preview mode active)')
       }
     }
-  })
+  }, { immediate: true })
 
   // Update page title badge for unsaved changes
   const baseTitle = typeof document !== 'undefined' ? document.title : ''
@@ -476,6 +479,16 @@ export default defineNuxtPlugin(nuxtApp => {
   // Directive: v-editable="path"
   nuxtApp.vueApp.directive('editable', {
     mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
+      // Non-admin / default users must NEVER see v-editable attributes, classes, or dirty states
+      if (!hasSuperuser.value) {
+        el.removeAttribute('contenteditable')
+        el.removeAttribute('data-edit-path')
+        el.removeAttribute('data-admin-slug')
+        el.removeAttribute('data-admin-changed')
+        el.classList.remove('v-editable', 'v-editable--active', 'v-editable--changed')
+        return
+      }
+
       const rawPath = binding.value
       if (!rawPath || rawPath.startsWith('undefined') || rawPath.startsWith('null')) return
 
@@ -617,6 +630,15 @@ export default defineNuxtPlugin(nuxtApp => {
     },
 
     updated(el: HTMLElement, binding: DirectiveBinding<string>) {
+      if (!hasSuperuser.value) {
+        el.removeAttribute('contenteditable')
+        el.removeAttribute('data-edit-path')
+        el.removeAttribute('data-admin-slug')
+        el.removeAttribute('data-admin-changed')
+        el.classList.remove('v-editable', 'v-editable--active', 'v-editable--changed')
+        return
+      }
+
       const rawPath = binding.value
       if (!rawPath) return
 

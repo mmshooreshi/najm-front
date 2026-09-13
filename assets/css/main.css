@@ -520,32 +520,31 @@ blockquote {
 
 
 
-/* Modern In-Place Admin Editor Styles */
-.v-editable {
+/* Modern In-Place Admin Editor Styles (Strictly scoped to superuser edit mode) */
+body.admin-edit-active .v-editable {
   transition: background-color 0.15s ease, box-shadow 0.15s ease, outline 0.15s ease;
   outline: none;
   min-height: 1.2em;
 }
 
 /* Active edit mode: subtle hint on hover */
-.v-editable--active {
+body.admin-edit-active .v-editable--active {
   cursor: text !important;
   user-select: text !important;
   -webkit-user-select: text !important;
   pointer-events: auto !important;
 }
 
-.v-editable--active:hover {
+body.admin-edit-active .v-editable--active:hover {
   outline: 1.5px dashed rgba(59, 130, 246, 0.5) !important;
   background-color: rgba(59, 130, 246, 0.06) !important;
   border-radius: 4px;
 }
 
-
 /* Focused active editing element */
-.v-editable--active:focus,
-.v-editable[contenteditable="plaintext-only"]:focus,
-.v-editable[contenteditable="true"]:focus {
+body.admin-edit-active .v-editable--active:focus,
+body.admin-edit-active .v-editable[contenteditable="plaintext-only"]:focus,
+body.admin-edit-active .v-editable[contenteditable="true"]:focus {
   outline: 2px solid rgba(59, 130, 246, 0.75) !important;
   background-color: rgba(59, 130, 246, 0.08) !important;
   border-radius: 4px;
@@ -555,15 +554,15 @@ blockquote {
 }
 
 /* Changed/modified element indicator */
-.v-editable--changed,
-[data-admin-changed="true"] {
+body.admin-edit-active .v-editable--changed,
+body.admin-edit-active [data-admin-changed="true"] {
   background-color: rgba(245, 158, 11, 0.12) !important;
   box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.55);
   border-radius: 4px;
 }
 
-.v-editable--changed:focus,
-[data-admin-changed="true"]:focus {
+body.admin-edit-active .v-editable--changed:focus,
+body.admin-edit-active [data-admin-changed="true"]:focus {
   outline: 2px solid rgba(245, 158, 11, 0.85) !important;
   background-color: rgba(245, 158, 11, 0.15) !important;
   box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);

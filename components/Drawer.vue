@@ -2,27 +2,34 @@
 <template>
   <Teleport to="body">
     <div
-      v-if="open"
+      v-if="isVisible"
       class="fixed inset-0 z-[100]"
       :dir="isRTL ? 'rtl' : 'ltr'"
       role="dialog"
       aria-modal="true"
       :aria-label="isRTL ? 'منوی ناوبری' : 'Navigation Menu'"
     >
-      <!-- Backdrop Overlay (pure dark tint, zero GPU blur lag) -->
-      <transition name="drawer-backdrop" appear>
+      <!-- Backdrop Overlay (soft tint + subtle blur, zero GPU lag) -->
+      <transition name="drawer-backdrop">
         <div
-          class="fixed inset-0 bg-black/45 transition-opacity duration-200"
+          v-if="open"
+          class="fixed inset-0 bg-black/45 backdrop-blur-[2px]"
           @click="closeDrawer"
           aria-hidden="true"
         />
       </transition>
 
       <!-- Sliding Panel -->
-      <transition :name="isRTL ? 'drawer-slide-rtl' : 'drawer-slide-ltr'" appear>
+      <transition
+        :name="isRTL ? 'drawer-slide-rtl' : 'drawer-slide-ltr'"
+        @after-leave="onAfterLeave"
+      >
         <aside
-          class="fixed top-0 bottom-0 z-10 w-full sm:w-[420px] md:w-[460px] h-[100dvh] bg-white flex flex-col shadow-2xl overflow-hidden touch-manipulation will-change-transform"
-          :class="isRTL ? 'right-0' : 'left-0'"
+          v-if="open"
+          class="fixed top-0 bottom-0 z-10 w-full sm:w-[420px] md:w-[460px] h-[100dvh] bg-white flex flex-col overflow-hidden touch-manipulation will-change-transform"
+          :class="[
+            isRTL ? 'left-0 shadow-[8px_0_36px_rgba(0,0,0,0.14)]' : 'right-0 shadow-[-8px_0_36px_rgba(0,0,0,0.14)]'
+          ]"
         >
           <!-- Drawer Top Header Bar (100% pixel-perfect match with Header.vue) -->
           <div class="w-full flex items-center justify-between px-3 sm:px-6 h-16 sm:h-20 border-b border-gray-100 flex-shrink-0 bg-white/95 backdrop-blur-md">
@@ -41,7 +48,10 @@
                 class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gray-100 hover:bg-gray-200 active:scale-90 flex items-center justify-center text-gray-700 transition-all duration-150 cursor-pointer select-none"
                 :aria-label="isRTL ? 'بستن منو' : 'Close Menu'"
               >
-                <Icon name="mdi:close" class="w-5 h-5" />
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
           </div>
@@ -49,17 +59,19 @@
           <!-- Mobile Profile / Login Card -->
           <div class="px-3 sm:px-6 pt-3 pb-2 flex-shrink-0">
             <NuxtLink
-              :to="isAuthenticated && user.name ? localePath(`/user/${user.id}`) : localePath('/login')"
+              :to="isAuthenticated && user?.name ? localePath(`/user/${user?.id || ''}`) : localePath('/login')"
               @click="closeDrawer"
               class="flex items-center justify-between p-3.5 rounded-2xl bg-gray-50/90 hover:bg-gray-100/90 border border-gray-100 transition-all duration-150 group active:scale-[0.98] shadow-2xs cursor-pointer select-none"
             >
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-najmgreen/10 text-najmgreen flex items-center justify-center flex-shrink-0">
-                  <Icon name="mdi:account" class="w-5 h-5" />
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4Z"/>
+                  </svg>
                 </div>
                 <div class="flex flex-col" :class="isRTL ? 'text-right' : 'text-left'">
                   <span class="text-xs sm:text-sm font-bold text-gray-900 truncate max-w-[200px]">
-                    {{ isAuthenticated && user?.name ? `${user.name} ${user.familyName}` : loginText }}
+                    {{ isAuthenticated && user?.name ? `${user.name} ${user.familyName || ''}` : loginText }}
                   </span>
                   <span class="text-[11px] text-gray-500">
                     {{ isAuthenticated ? profileSubtitle : loginSubtitle }}
@@ -67,11 +79,14 @@
                 </div>
               </div>
 
-              <Icon
-                name="mdi:chevron-left"
+              <svg
                 class="w-5 h-5 text-gray-400 group-hover:text-najmgreen transition-transform flex-shrink-0"
                 :class="isRTL ? 'group-hover:-translate-x-1' : 'rotate-180 group-hover:translate-x-1'"
-              />
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+              </svg>
             </NuxtLink>
           </div>
 
@@ -93,6 +108,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
 import { useLocale } from '~/composables/useLocale'
 import { useAuth } from '~/composables/useAuth'
 import Logo from '~/components/atom/logo.vue'
@@ -106,6 +122,9 @@ const emit = defineEmits<{
 
 const { language, localePath } = useLocale()
 const { user, isAuthenticated } = useAuth()
+const route = useRoute()
+
+const isVisible = ref(props.open)
 
 const isRTL = computed(() => {
   const l = (language.value || 'FA').toUpperCase()
@@ -137,14 +156,23 @@ function closeDrawer() {
   emit('update:open', false)
 }
 
+function onAfterLeave() {
+  if (!props.open) {
+    isVisible.value = false
+  }
+}
+
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape' && props.open) {
     closeDrawer()
   }
 }
 
-// Lock body scrolling when drawer is active
+// Watch open state: manage visibility and body scroll lock
 watch(() => props.open, (isOpen) => {
+  if (isOpen) {
+    isVisible.value = true
+  }
   if (typeof document === 'undefined') return
   if (isOpen) {
     document.body.style.overflow = 'hidden'
@@ -152,6 +180,13 @@ watch(() => props.open, (isOpen) => {
     document.body.style.overflow = ''
   }
 }, { immediate: true })
+
+// Close drawer automatically on route navigation
+watch(() => route.fullPath, () => {
+  if (props.open) {
+    closeDrawer()
+  }
+})
 
 onMounted(() => {
   window.addEventListener('keydown', onKeydown)
@@ -168,10 +203,10 @@ onBeforeUnmount(() => {
 <style scoped>
 /* Backdrop Fade */
 .drawer-backdrop-enter-active {
-  transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-backdrop-leave-active {
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-backdrop-enter-from,
 .drawer-backdrop-leave-to {
@@ -182,35 +217,41 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-/* Slide Drawer RTL (FA & AR: Slides in from RIGHT to LEFT over the start side) */
+/* Slide Drawer RTL (FA & AR: Slides in from LEFT to RIGHT) */
 .drawer-slide-rtl-enter-active {
-  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-rtl-leave-active {
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-slide-rtl-enter-from,
 .drawer-slide-rtl-leave-to {
-  transform: translate3d(100%, 0, 0);
+  transform: translate3d(-100%, 0, 0);
 }
 .drawer-slide-rtl-enter-to,
 .drawer-slide-rtl-leave-from {
   transform: translate3d(0, 0, 0);
 }
 
-/* Slide Drawer LTR (EN: Slides in from LEFT to RIGHT over the start side) */
+/* Slide Drawer LTR (EN: Slides in from RIGHT to LEFT) */
 .drawer-slide-ltr-enter-active {
-  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-ltr-leave-active {
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-slide-ltr-enter-from,
 .drawer-slide-ltr-leave-to {
-  transform: translate3d(-100%, 0, 0);
+  transform: translate3d(100%, 0, 0);
 }
 .drawer-slide-ltr-enter-to,
 .drawer-slide-ltr-leave-from {
   transform: translate3d(0, 0, 0);
+}
+
+aside {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 </style>

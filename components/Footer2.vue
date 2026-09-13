@@ -3,7 +3,7 @@
   <footer
     data-admin-slug="footer"
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 pb-12 md:pb-6 select-text transition-all duration-300"
+    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 pb-4 md:pb-2.5 select-text transition-all duration-300"
   >
     <!-- Top Centered Brand Logo -->
     <div class="flex justify-center pb-5 md:pb-6">
@@ -109,21 +109,20 @@
     <!-- Strategic Internal Linking Capabilities Hub -->
     <InternalAuthorityPills />
 
-    <!-- Divider Line -->
-    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 my-4 md:my-5">
+    <!-- Divider Line (Thinnest) -->
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 my-2">
       <div class="h-px bg-white/20 w-full"></div>
     </div>
 
-    <!-- Bottom Copyright & Brand Bar (Fully responsive and fluid across screens) -->
-    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] md:text-xs text-white/90 font-d4 transition-all">
+    <!-- Bottom Copyright & Brand Bar (Thinnest, flex row on desktop, flex col on mobile) -->
+    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-1.5 md:gap-4 py-1 text-[11px] text-white/90 font-d4 leading-tight">
       <span 
-        class="leading-relaxed font-medium break-words text-balance"
-        :class="isRTL ? 'text-center md:text-right' : 'text-center md:text-left'"
+        class="font-medium text-center md:text-start"
         v-editable="'copyright'"
       >
         {{ currentCopyrightText }}
       </span>
-      <span class="font-mono text-[11px] md:text-xs shrink-0 text-center md:text-left font-semibold text-white/80 hover:text-white transition-colors tracking-wide" dir="ltr">
+      <span class="font-mono text-[10px] md:text-[11px] shrink-0 text-center md:text-end font-semibold text-white/80 hover:text-white transition-colors" dir="ltr">
         &copy; {{ toLocalizedDigits(year) }} ChapeNajm
       </span>
     </div>
