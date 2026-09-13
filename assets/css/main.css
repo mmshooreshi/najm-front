@@ -71,14 +71,18 @@ body, [dir="rtl"], .font-sans {
 
 .najm-scrollbar {
   position: absolute;
-  left: 8px;
-  right: 8px;
+  left: 12px;
+  right: 12px;
   bottom: -4px;
-  height: 4px;
+  height: 3px;
   pointer-events: auto;
-  opacity: 0.85;
+  opacity: 0.6;
   direction: ltr;
   transition: opacity 180ms ease;
+}
+
+.najm-scrollbar:hover {
+  opacity: 1;
 }
 
 .najm-scrollbar-thumb {
@@ -99,36 +103,23 @@ body, [dir="rtl"], .font-sans {
 .najm-scrollbar-thumb:hover,
 .najm-scrollbar-thumb:active {
   background: #014439;
-  height: 4px;
+  height: 3px;
 }
 
-/* ─── NUXT SOOTHING FADE + RASTER BLUR PAGE & LAYOUT TRANSITIONS ─── */
-.page-enter-active {
-  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), filter 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
+/* ─── NUXT FAST HARDWARE-ACCELERATED PAGE & LAYOUT TRANSITIONS ─── */
+.page-enter-active,
 .page-leave-active {
-  transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), filter 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.page-enter-from {
-  opacity: 0;
-  filter: blur(12px);
-}
-
-.page-enter-to {
-  opacity: 1;
-  filter: blur(0);
-}
-
-.page-leave-from {
-  opacity: 1;
-  filter: blur(0);
-}
-
+.page-enter-from,
 .page-leave-to {
   opacity: 0;
-  filter: blur(12px);
+}
+
+.page-enter-to,
+.page-leave-from {
+  opacity: 1;
 }
 
 /* Layout transition: clean seamless crossfade */

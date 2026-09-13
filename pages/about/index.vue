@@ -2,47 +2,49 @@
 <template>
   <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative w-full overflow-x-clip">
     <!-- Smart Full-Width Sub-Nav Bar -->
-    <div
-      ref="subnavHeaderRef"
-      class="fixed inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/70 shadow-xs py-2 px-0 md:px-6"
-      :class="[
-        isMounted ? 'transition-[top] duration-300 ease-out' : '',
-        headerHidden ? 'top-0' : 'top-16 sm:top-20'
-      ]"
-    >
+    <Teleport to="body" :disabled="!isMounted">
+      <div
+        ref="subnavHeaderRef"
+        :dir="isRTL ? 'rtl' : 'ltr'"
+        class="fixed inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/70 shadow-xs py-2 px-0 md:px-6"
+        :class="[
+          isMounted ? 'transition-[top] duration-300 ease-out' : '',
+          headerHidden ? 'top-0' : 'top-16 sm:top-20'
+        ]"
+      >
         <div class="relative max-w-7xl mx-auto flex justify-center">
-
-  <nav
-  ref="subnavRef"
-  class="najm-subnav flex items-center gap-1 sm:gap-2 overflow-x-auto px-2 py-0.5 scroll-smooth max-w-full"
->
-  <button
-    v-for="item in sections"
-    :key="item.id"
-    :id="`nav-btn-${item.id}`"
-    @click="scrollToSection(item.id)"
-    class="px-3.5 sm:px-5 py-1.5 text-xs sm:text-[13px] text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none shrink-0"
-    :class="[
-      activeSection === item.id
-        ? 'bg-najmgreen text-white shadow-xs font-bold scale-[1.02]'
-        : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
-    ]"
-  >
-    {{ item.label }}
-  </button>
-</nav>
-<div
-  ref="scrollbarRef"
-  class="najm-scrollbar"
-  aria-hidden="true"
->
-  <div
-    ref="scrollbarThumbRef"
-    class="najm-scrollbar-thumb"
-  ></div>
-</div>
+          <nav
+            ref="subnavRef"
+            class="najm-subnav flex items-center gap-1 sm:gap-2 overflow-x-auto px-2 py-0.5 scroll-smooth max-w-full"
+          >
+            <button
+              v-for="item in sections"
+              :key="item.id"
+              :id="`nav-btn-${item.id}`"
+              @click="scrollToSection(item.id)"
+              class="px-3.5 sm:px-5 py-1.5 text-xs sm:text-[13px] text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none shrink-0"
+              :class="[
+                activeSection === item.id
+                  ? 'bg-najmgreen text-white shadow-xs font-bold scale-[1.02]'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
+              ]"
+            >
+              {{ item.label }}
+            </button>
+          </nav>
+          <div
+            ref="scrollbarRef"
+            class="najm-scrollbar"
+            aria-hidden="true"
+          >
+            <div
+              ref="scrollbarThumbRef"
+              class="najm-scrollbar-thumb"
+            ></div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Teleport>
 
     <!-- Main Editorial Container -->
     <main class="pt-20 sm:pt-24 pb-20 sm:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16 sm:space-y-28">
@@ -247,6 +249,7 @@ import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
 import { useScrollDirection } from '~/composables/useScrollDirection'
+import { scrollDirection } from '~/composables/useScrollStore'
 
 definePageMeta({
   name: 'درباره ما - چاپ و بسته‌بندی نجم',
@@ -345,10 +348,16 @@ const headerHidden = computed(() => direction.value === 'down' && scrollY.value 
 
 const activeSection = ref('vision')
 let isNavBypassing = false
+let navBypassTimer: ReturnType<typeof setTimeout> | null = null
 
+let scrollTicking = false
 function handleScrollDirection() {
-  if (typeof window === 'undefined') return
-  scrollY.value = window.scrollY
+  if (typeof window === 'undefined' || scrollTicking) return
+  scrollTicking = true
+  window.requestAnimationFrame(() => {
+    scrollY.value = window.scrollY
+    scrollTicking = false
+  })
 }
 
 function scrollToSection(id: string) {
@@ -358,49 +367,49 @@ function scrollToSection(id: string) {
   isNavBypassing = true
   activeSection.value = id
 
-  const btn = document.getElementById(`nav-btn-${id}`)
+  // 1. Batch read DOM layout properties FIRST (avoids forced reflow layout thrashing)
+  const targetAbsoluteY = el.getBoundingClientRect().top + window.scrollY
+  const currentScrollY = window.scrollY
+  const isScrollingUp = targetAbsoluteY < currentScrollY
 
+  // Main header height: 64px on mobile (< 640px), 80px on desktop (>= 640px)
+  const isSmUp = typeof window !== 'undefined' && window.innerWidth >= 640
+  const mainHeaderHeight = isSmUp ? 80 : 64
+  const subnavHeight = subnavHeaderRef.value?.offsetHeight ?? (isSmUp ? 56 : 48)
+
+  // 2. Predict resting state at destination:
+  // - When scrolling UP (or target is near top < 80px), main header will be revealed
+  // - When scrolling DOWN, main header will be hidden
+  let effectiveHeaderOffset: number
+  if (isScrollingUp || targetAbsoluteY < 80) {
+    effectiveHeaderOffset = mainHeaderHeight + subnavHeight
+    direction.value = 'up'
+    scrollDirection.value = 'up'
+  } else {
+    effectiveHeaderOffset = subnavHeight
+    direction.value = 'down'
+    scrollDirection.value = 'down'
+  }
+
+  const y = targetAbsoluteY - effectiveHeaderOffset - 16
+
+  // 3. Batch DOM writes / scrolls AFTER reading
+  window.scrollTo({
+    top: Math.max(0, y),
+    behavior: 'smooth'
+  })
+
+  const btn = document.getElementById(`nav-btn-${id}`)
   btn?.scrollIntoView({
     behavior: 'smooth',
     inline: 'center',
     block: 'nearest'
   })
 
-  const headerBottom =
-    subnavHeaderRef.value?.getBoundingClientRect().bottom ?? 0
-
-  const y =
-    el.getBoundingClientRect().top +
-    window.scrollY -
-    headerBottom -
-    16
-
-  window.scrollTo({
-    top: Math.max(0, y),
-    behavior: 'smooth'
-  })
-
-  window.setTimeout(() => {
+  if (navBypassTimer) clearTimeout(navBypassTimer)
+  navBypassTimer = setTimeout(() => {
     isNavBypassing = false
-  }, 700)
-}
-
-function getNormalizedScrollLeft(el: HTMLElement) {
-  const maxScroll = el.scrollWidth - el.clientWidth
-
-  if (maxScroll <= 0) return 0
-
-  if (!isRTL.value) {
-    return Math.max(0, Math.min(el.scrollLeft, maxScroll))
-  }
-
-  const raw = el.scrollLeft
-
-  if (raw < 0) {
-    return Math.min(Math.abs(raw), maxScroll)
-  }
-
-  return Math.min(maxScroll - raw, maxScroll)
+  }, 1000)
 }
 
 function updateSubnavScrollbar() {
@@ -411,9 +420,10 @@ function updateSubnavScrollbar() {
   if (!nav || !track || !thumb) return
 
   const { scrollWidth, clientWidth } = nav
+  const maxScroll = scrollWidth - clientWidth
 
   // No scrollbar needed
-  if (scrollWidth <= clientWidth + 1) {
+  if (maxScroll <= 1) {
     track.style.display = 'none'
     return
   }
@@ -429,18 +439,19 @@ function updateSubnavScrollbar() {
   )
 
   const maxThumbTravel = trackWidth - thumbWidth
+  if (maxThumbTravel <= 0) return
 
-  const maxScroll = scrollWidth - clientWidth
-  const normalizedScrollLeft = getNormalizedScrollLeft(nav)
+  const raw = Math.abs(nav.scrollLeft)
+  const scrollRatio = Math.min(1, Math.max(0, raw / maxScroll))
 
-  const progress =
-    maxScroll > 0
-      ? normalizedScrollLeft / maxScroll
-      : 0
+  // In RTL, start is right (maxThumbTravel) and end is left (0)
+  // In LTR, start is left (0) and end is right (maxThumbTravel)
+  const thumbX = isRTL.value
+    ? (1 - scrollRatio) * maxThumbTravel
+    : scrollRatio * maxThumbTravel
 
   thumb.style.width = `${thumbWidth}px`
-  thumb.style.transform =
-    `translateX(${progress * maxThumbTravel}px)`
+  thumb.style.transform = `translateX(${thumbX}px)`
 }
 
 let isDraggingScrollbar = false
@@ -459,7 +470,6 @@ function startScrollbarDrag(event: PointerEvent) {
   dragStartScrollLeft = nav.scrollLeft
 
   thumb.setPointerCapture(event.pointerId)
-
   event.preventDefault()
 }
 
@@ -474,20 +484,15 @@ function moveScrollbarDrag(event: PointerEvent) {
 
   const trackWidth = track.clientWidth
   const thumbWidth = thumb.offsetWidth
-
   const maxThumbTravel = trackWidth - thumbWidth
 
   if (maxThumbTravel <= 0) return
 
   const deltaX = event.clientX - dragStartX
+  const maxScroll = nav.scrollWidth - nav.clientWidth
+  const scrollDelta = (deltaX / maxThumbTravel) * maxScroll
 
-  const scrollRatio =
-    (nav.scrollWidth - nav.clientWidth) /
-    maxThumbTravel
-
-  nav.scrollLeft =
-    dragStartScrollLeft + deltaX * scrollRatio
-
+  nav.scrollLeft = dragStartScrollLeft + scrollDelta
   updateSubnavScrollbar()
 }
 
@@ -503,12 +508,25 @@ onMounted(async () => {
   }
   isMounted.value = true
 
+  const cancelNavBypass = () => {
+    if (isNavBypassing) {
+      isNavBypassing = false
+      if (navBypassTimer) {
+        clearTimeout(navBypassTimer)
+        navBypassTimer = null
+      }
+    }
+  }
+
   const observer = new IntersectionObserver(
     entries => {
+      // When user clicked a nav button, ignore intermediate sections so they don't get colorized
+      if (isNavBypassing) return
+
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          activeSection.value = entry.target.id
-          if (!isNavBypassing) {
+          if (activeSection.value !== entry.target.id) {
+            activeSection.value = entry.target.id
             const btn = document.getElementById(`nav-btn-${entry.target.id}`)
             btn?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
           }
@@ -523,50 +541,52 @@ onMounted(async () => {
     if (el) observer.observe(el)
   })
 
-
-
+  if (typeof window !== 'undefined') {
+    window.addEventListener('wheel', cancelNavBypass, { passive: true })
+    window.addEventListener('touchmove', cancelNavBypass, { passive: true })
+  }
 
   const nav = subnavRef.value
-const thumb = scrollbarThumbRef.value
+  const thumb = scrollbarThumbRef.value
 
-if (nav) {
-  nav.addEventListener('scroll', updateSubnavScrollbar, {
-    passive: true
+  if (nav) {
+    nav.addEventListener('scroll', updateSubnavScrollbar, {
+      passive: true
+    })
+  }
+
+  if (thumb) {
+    thumb.addEventListener(
+      'pointerdown',
+      startScrollbarDrag
+    )
+
+    thumb.addEventListener(
+      'pointermove',
+      moveScrollbarDrag
+    )
+
+    thumb.addEventListener(
+      'pointerup',
+      endScrollbarDrag
+    )
+
+    thumb.addEventListener(
+      'pointercancel',
+      endScrollbarDrag
+    )
+  }
+
+  window.addEventListener(
+    'resize',
+    updateSubnavScrollbar
+  )
+
+  await nextTick()
+
+  requestAnimationFrame(() => {
+    updateSubnavScrollbar()
   })
-}
-
-if (thumb) {
-  thumb.addEventListener(
-    'pointerdown',
-    startScrollbarDrag
-  )
-
-  thumb.addEventListener(
-    'pointermove',
-    moveScrollbarDrag
-  )
-
-  thumb.addEventListener(
-    'pointerup',
-    endScrollbarDrag
-  )
-
-  thumb.addEventListener(
-    'pointercancel',
-    endScrollbarDrag
-  )
-}
-
-window.addEventListener(
-  'resize',
-  updateSubnavScrollbar
-)
-
-await nextTick()
-
-requestAnimationFrame(() => {
-  updateSubnavScrollbar()
-})
 })
 
 onUnmounted(() => {
@@ -580,6 +600,21 @@ onUnmounted(() => {
       'resize',
       updateSubnavScrollbar
     )
+
+    window.removeEventListener(
+      'wheel',
+      cancelNavBypass
+    )
+
+    window.removeEventListener(
+      'touchmove',
+      cancelNavBypass
+    )
+  }
+
+  if (navBypassTimer) {
+    clearTimeout(navBypassTimer)
+    navBypassTimer = null
   }
 
   const nav = subnavRef.value

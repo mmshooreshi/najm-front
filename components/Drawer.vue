@@ -10,7 +10,7 @@
       :aria-label="isRTL ? 'منوی ناوبری' : 'Navigation Menu'"
     >
       <!-- Backdrop Overlay (soft tint + subtle blur, zero GPU lag) -->
-      <transition name="drawer-backdrop">
+      <transition appear name="drawer-backdrop">
         <div
           v-if="open"
           class="fixed inset-0 bg-black/45 backdrop-blur-[2px]"
@@ -21,6 +21,7 @@
 
       <!-- Sliding Panel -->
       <transition
+        appear
         :name="isRTL ? 'drawer-slide-rtl' : 'drawer-slide-ltr'"
         @after-leave="onAfterLeave"
       >
@@ -202,48 +203,57 @@ onBeforeUnmount(() => {
 
 <style scoped>
 /* Backdrop Fade */
+.drawer-backdrop-appear-active,
 .drawer-backdrop-enter-active {
-  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-backdrop-leave-active {
   transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1);
 }
+.drawer-backdrop-appear-from,
 .drawer-backdrop-enter-from,
 .drawer-backdrop-leave-to {
   opacity: 0;
 }
+.drawer-backdrop-appear-to,
 .drawer-backdrop-enter-to,
 .drawer-backdrop-leave-from {
   opacity: 1;
 }
 
 /* Slide Drawer RTL (FA & AR: Slides in from LEFT to RIGHT) */
+.drawer-slide-rtl-appear-active,
 .drawer-slide-rtl-enter-active {
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-rtl-leave-active {
-  transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
 }
+.drawer-slide-rtl-appear-from,
 .drawer-slide-rtl-enter-from,
 .drawer-slide-rtl-leave-to {
   transform: translate3d(-100%, 0, 0);
 }
+.drawer-slide-rtl-appear-to,
 .drawer-slide-rtl-enter-to,
 .drawer-slide-rtl-leave-from {
   transform: translate3d(0, 0, 0);
 }
 
 /* Slide Drawer LTR (EN: Slides in from RIGHT to LEFT) */
+.drawer-slide-ltr-appear-active,
 .drawer-slide-ltr-enter-active {
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-ltr-leave-active {
-  transition: transform 0.26s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
 }
+.drawer-slide-ltr-appear-from,
 .drawer-slide-ltr-enter-from,
 .drawer-slide-ltr-leave-to {
   transform: translate3d(100%, 0, 0);
 }
+.drawer-slide-ltr-appear-to,
 .drawer-slide-ltr-enter-to,
 .drawer-slide-ltr-leave-from {
   transform: translate3d(0, 0, 0);

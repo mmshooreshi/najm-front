@@ -1,53 +1,61 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { scrollDirection } from '~/composables/useScrollStore'
 
-export function useScrollDirection(threshold = 10) {
-  const direction = ref<'up' | 'down'>('up')
-  const lastY = ref(0)
-  let ticking = false
+let subscriberCount = 0
+let lastY = 0
+let ticking = false
 
-  const update = () => {
-    const currentY = window.scrollY
-    const diff = currentY - lastY.value
+const update = (threshold = 10) => {
+  if (typeof window === 'undefined') return
+  const currentY = window.scrollY
+  const diff = currentY - lastY
 
-    // Ignore micro-deltas
-    if (Math.abs(diff) < threshold) {
-      ticking = false
-      return
-    }
-
-    // Always treat top of page as "up"
-    if (currentY < 80) {
-      direction.value = 'up'
-      scrollDirection.value = 'up'
-      lastY.value = currentY
-      ticking = false
-      return
-    }
-
-    const newDir = diff > 0 ? 'down' : 'up'
-    direction.value = newDir
-    scrollDirection.value = newDir
-
-    lastY.value = currentY
+  // Ignore micro-deltas
+  if (Math.abs(diff) < threshold) {
     ticking = false
+    return
   }
 
-  const onScroll = () => {
-    if (!ticking) {
-      window.requestAnimationFrame(update)
-      ticking = true
-    }
+  // Always treat top of page as "up"
+  if (currentY < 80) {
+    scrollDirection.value = 'up'
+    lastY = currentY
+    ticking = false
+    return
   }
 
+  const newDir = diff > 0 ? 'down' : 'up'
+  scrollDirection.value = newDir
+
+  lastY = currentY
+  ticking = false
+}
+
+const onScroll = () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => update(10))
+    ticking = true
+  }
+}
+
+export function useScrollDirection(threshold = 10) {
   onMounted(() => {
-    lastY.value = window.scrollY
-    window.addEventListener('scroll', onScroll, { passive: true })
+    if (typeof window === 'undefined') return
+    if (subscriberCount === 0) {
+      lastY = window.scrollY
+      window.addEventListener('scroll', onScroll, { passive: true })
+    }
+    subscriberCount++
   })
 
   onUnmounted(() => {
-    window.removeEventListener('scroll', onScroll)
+    if (typeof window === 'undefined') return
+    subscriberCount--
+    if (subscriberCount <= 0) {
+      subscriberCount = 0
+      window.removeEventListener('scroll', onScroll)
+    }
   })
 
-  return { direction }
+  return { direction: scrollDirection }
 }
