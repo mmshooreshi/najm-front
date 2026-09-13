@@ -3,26 +3,29 @@
   <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative w-full overflow-x-clip">
     <!-- Smart Floating Capsule Sub-Nav -->
     <div
-      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300 ease-out"
+      class="fixed inset-x-0 z-40 flex justify-center pointer-events-none transition-[top,transform,opacity] duration-350 ease-out"
       :class="[
-        navVisible ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-16 opacity-0 pointer-events-none'
+        headerHidden ? 'top-3.5 sm:top-4' : 'top-22 sm:top-26',
+        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
       ]"
     >
-      <nav class="pointer-events-auto bg-white/90 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto max-w-[calc(100vw-32px)] mx-auto">
-        <button
-          v-for="item in sections"
-          :key="item.id"
-          @click="scrollToSection(item.id)"
-          class="px-3.5 py-1.5 text-xs text-d4 rounded-full transition-all cursor-pointer whitespace-nowrap"
-          :class="[
-            activeSection === item.id
-              ? 'bg-najmgreen text-white shadow-xs font-bold'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
-          ]"
-        >
-          {{ item.label }}
-        </button>
-      </nav>
+      <div class="pointer-events-auto bg-white/90 backdrop-blur-xl border border-white/80 shadow-lg rounded-full p-1.5 max-w-[calc(100vw-24px)] sm:max-w-max mx-auto overflow-hidden">
+        <nav class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto najm-scrollbar-thin px-1 py-0.5 scroll-smooth">
+          <button
+            v-for="item in sections"
+            :key="item.id"
+            @click="scrollToSection(item.id)"
+            class="px-3 sm:px-4 py-1.5 text-xs text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none"
+            :class="[
+              activeSection === item.id
+                ? 'bg-najmgreen text-white shadow-xs font-bold scale-[1.02]'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
+            ]"
+          >
+            {{ item.label }}
+          </button>
+        </nav>
+      </div>
     </div>
 
     <!-- Main Editorial Container -->
@@ -192,26 +195,26 @@
       </section>
 
       <!-- Section 5: Consultation CTA Banner -->
-      <section id="aboutus" class="scroll-mt-28 bg-najmgreen text-white rounded-3xl sm:rounded-[36px] p-8 sm:p-12 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-8" :class="isRTL ? 'text-right' : 'text-left'">
-        <div class="space-y-3 max-w-2xl">
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-d4 leading-tight" v-editable="'ctaTitle'">
+      <section id="aboutus" class="scroll-mt-28 bg-najmgreen text-white rounded-3xl sm:rounded-[36px] p-6 sm:p-10 lg:p-12 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 max-w-full overflow-hidden" :class="isRTL ? 'text-right' : 'text-left'">
+        <div class="space-y-3 max-w-2xl min-w-0 w-full lg:w-auto">
+          <h2 class="text-xl sm:text-3xl font-extrabold text-d4 leading-tight break-words" v-editable="'ctaTitle'">
             {{ ui?.ctaTitle || 'آماده‌اید بسته‌بندی محصول خود را به سطح بالاتری ببرید؟' }}
           </h2>
-          <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed" v-editable="'ctaDescription'">
+          <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed break-words" v-editable="'ctaDescription'">
             {{ ui?.ctaDescription || 'با مهندسان ساختار و کارشناسان رنگ نجم مشورت کنید و نمونه اولیه فیزیکی رایگان دریافت نمایید.' }}
           </p>
         </div>
-        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0 min-w-0">
           <NuxtLink
             to="/consultation"
-            class="px-8 py-4 rounded-2xl bg-white text-najmgreen font-bold text-xs sm:text-sm hover:bg-emerald-50 transition text-center shadow-xs whitespace-nowrap text-d4"
+            class="px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-white text-najmgreen font-bold text-xs sm:text-sm hover:bg-emerald-50 transition text-center shadow-xs text-d4 w-full sm:w-auto break-words select-none"
             v-editable="'ctaBtn'"
           >
             {{ ui?.ctaBtn || (isRTL ? 'درخواست مشاوره و استعلام فنی' : 'Request Technical Consultation') }}
           </NuxtLink>
           <NuxtLink
             to="/catalog"
-            class="px-8 py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition text-center border border-white/20 whitespace-nowrap text-d4"
+            class="px-5 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm transition text-center border border-white/20 text-d4 w-full sm:w-auto break-words select-none"
             v-editable="'ctaCatalogBtn'"
           >
             {{ ui?.ctaCatalogBtn || (isRTL ? 'دانلود کاتالوگ جامع' : 'Download Full Catalog') }}
@@ -227,6 +230,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { useScrollDirection } from '~/composables/useScrollDirection'
 
 definePageMeta({
   name: 'درباره ما - چاپ و بسته‌بندی نجم',
@@ -314,33 +318,23 @@ const defaultTimeline = [
   { year: '۱۴۰۴', title: 'استقرار استاندارد‌های چاپ سبز و هوشمند', desc: 'به‌کارگیری مرکب‌های گیاهی، خطوط تمام اتوماتیک بازرسی چشمی و سیستم‌های مدیریت یکپارچه.' }
 ]
 
+const { direction } = useScrollDirection()
+const scrollY = ref(0)
+const headerHidden = computed(() => direction.value === 'down' && scrollY.value > 80)
+
 const activeSection = ref('vision')
 const navVisible = ref(true)
 let lastScrollY = 0
 let isNavBypassing = false
 
 function handleScrollDirection() {
-  if (typeof window === 'undefined' || isNavBypassing) return
+  if (typeof window === 'undefined') return
+  scrollY.value = window.scrollY
+  if (isNavBypassing) return
   const currentY = window.scrollY
   
-  // At top of page, always show
-  if (currentY < 80) {
-    navVisible.value = true
-    lastScrollY = currentY
-    return
-  }
-
-  const diff = currentY - lastScrollY
-  if (Math.abs(diff) < 6) return
-
-  if (diff > 0) {
-    // Scrolling DOWN -> hide smoothly
-    navVisible.value = false
-  } else {
-    // Scrolling UP even a bit -> reveal smoothly
-    navVisible.value = true
-  }
-  
+  // Keep navbar visible, smooth top glide handled via headerHidden
+  navVisible.value = true
   lastScrollY = currentY
 }
 
@@ -351,8 +345,8 @@ function scrollToSection(id: string) {
   isNavBypassing = true
   activeSection.value = id
 
-  // 120px offset gives perfect room for fixed header + capsule sub-nav
-  const yOffset = -120
+  // Dynamic offset taking into account whether main header is present or hidden
+  const yOffset = headerHidden.value ? -60 : -140
   const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
 
   window.scrollTo({
@@ -364,14 +358,18 @@ function scrollToSection(id: string) {
 
   setTimeout(() => {
     lastScrollY = window.scrollY
+    scrollY.value = window.scrollY
     isNavBypassing = false
   }, 800)
 }
 
 onMounted(async () => {
   await nextTick()
-  lastScrollY = window.scrollY
-  window.addEventListener('scroll', handleScrollDirection, { passive: true })
+  if (typeof window !== 'undefined') {
+    scrollY.value = window.scrollY
+    lastScrollY = window.scrollY
+    window.addEventListener('scroll', handleScrollDirection, { passive: true })
+  }
 
   const observer = new IntersectionObserver(
     entries => {

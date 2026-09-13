@@ -49,6 +49,28 @@ body, [dir="rtl"], .font-sans {
 }
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
+/* ─── REUSABLE NAJM SLIM BRANDED SCROLLBAR ─── */
+.najm-scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #014439 transparent;
+}
+.najm-scrollbar-thin::-webkit-scrollbar {
+  height: 3.5px;
+  width: 3.5px;
+}
+.najm-scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+.najm-scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(1, 68, 57, 0.45);
+  border-radius: 9999px;
+  transition: background 0.2s ease;
+}
+.najm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #014439;
+}
+
 /* ─── NUXT SOOTHING FADE + RASTER BLUR PAGE & LAYOUT TRANSITIONS ─── */
 .page-enter-active {
   transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), filter 0.35s cubic-bezier(0.25, 1, 0.5, 1);
