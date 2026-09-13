@@ -20,12 +20,14 @@
 
       <!-- End Side: Action Cluster (Profile, Language, Search, Hamburger) -->
       <div class="flex items-center justify-end gap-1.5 sm:gap-2.5 flex-shrink-0">
-        <!-- Desktop Profile CTA (strictly hidden on mobile/tablet) -->
-        <ProfileButton
-          v-if="!searchIsOpen"
-          :menuOpen="menuOpen"
-          class="hidden lg:flex flex-shrink-0"
-        />
+        <!-- Profile CTA: strictly hidden on low-width / mobile screens when sidebar is closed -->
+        <div
+          v-if="!searchIsOpen && (isDesktop || menuOpen)"
+          class="flex-shrink-0"
+          :class="menuOpen ? 'flex' : 'hidden lg:flex'"
+        >
+          <ProfileButton :menuOpen="menuOpen" />
+        </div>
 
         <!-- Language Switcher (hidden on mobile, visible on sm+) -->
         <LanguageSwitcher
@@ -57,6 +59,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useMediaQuery } from '@vueuse/core'
 import { useScrollDirection } from '~/composables/useScrollDirection'
 import Logo from '~/components/atom/logo.vue'
 import ProfileButton from '@/components/atom/ProfileButton.vue'
@@ -73,6 +76,7 @@ const isRTL = computed(() => {
   return l === 'FA' || l === 'AR'
 })
 const { direction } = useScrollDirection()
+const isDesktop = useMediaQuery('(min-width: 1024px)')
 
 const props = withDefaults(
   defineProps<{
