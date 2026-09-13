@@ -3,6 +3,7 @@
   <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative w-full overflow-x-clip">
     <!-- Smart Full-Width Sub-Nav Bar -->
     <div
+      ref="subnavHeaderRef"
       class="fixed inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/70 shadow-xs py-2 px-0 md:px-6"
       :class="[
         isMounted ? 'transition-[top] duration-300 ease-out' : '',
@@ -334,6 +335,7 @@ const defaultTimeline = [
 ]
 
 const isMounted = ref(false)
+const subnavHeaderRef = ref<HTMLElement | null>(null)
 const subnavRef = ref<HTMLElement | null>(null)
 const scrollbarRef = ref<HTMLElement | null>(null)
 const scrollbarThumbRef = ref<HTMLElement | null>(null)
@@ -342,7 +344,6 @@ const scrollY = ref(0)
 const headerHidden = computed(() => direction.value === 'down' && scrollY.value > 80)
 
 const activeSection = ref('vision')
-let lastScrollY = 0
 let isNavBypassing = false
 
 function handleScrollDirection() {
@@ -357,24 +358,49 @@ function scrollToSection(id: string) {
   isNavBypassing = true
   activeSection.value = id
 
-  // Auto-center the clicked button inside the sub-nav scroll area
   const btn = document.getElementById(`nav-btn-${id}`)
-  btn?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
 
-  // Generous offset so section header lands clearly with comfortable breathing space
-  const yOffset = headerHidden.value ? -75 : -145
-  const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+  btn?.scrollIntoView({
+    behavior: 'smooth',
+    inline: 'center',
+    block: 'nearest'
+  })
+
+  const headerBottom =
+    subnavHeaderRef.value?.getBoundingClientRect().bottom ?? 0
+
+  const y =
+    el.getBoundingClientRect().top +
+    window.scrollY -
+    headerBottom -
+    16
 
   window.scrollTo({
     top: Math.max(0, y),
     behavior: 'smooth'
   })
 
-  setTimeout(() => {
-    lastScrollY = window.scrollY
-    scrollY.value = window.scrollY
+  window.setTimeout(() => {
     isNavBypassing = false
-  }, 800)
+  }, 700)
+}
+
+function getNormalizedScrollLeft(el: HTMLElement) {
+  const maxScroll = el.scrollWidth - el.clientWidth
+
+  if (maxScroll <= 0) return 0
+
+  if (!isRTL.value) {
+    return Math.max(0, Math.min(el.scrollLeft, maxScroll))
+  }
+
+  const raw = el.scrollLeft
+
+  if (raw < 0) {
+    return Math.min(Math.abs(raw), maxScroll)
+  }
+
+  return Math.min(maxScroll - raw, maxScroll)
 }
 
 function updateSubnavScrollbar() {
@@ -384,7 +410,7 @@ function updateSubnavScrollbar() {
 
   if (!nav || !track || !thumb) return
 
-  const { scrollWidth, clientWidth, scrollLeft } = nav
+  const { scrollWidth, clientWidth } = nav
 
   // No scrollbar needed
   if (scrollWidth <= clientWidth + 1) {
@@ -404,30 +430,17 @@ function updateSubnavScrollbar() {
 
   const maxThumbTravel = trackWidth - thumbWidth
 
-  /*
-   * RTL browsers can report scrollLeft differently.
-   * Normalize it into a 0 → 1 progress value.
-   */
   const maxScroll = scrollWidth - clientWidth
+  const normalizedScrollLeft = getNormalizedScrollLeft(nav)
 
-  let progress = 0
-
-  if (isRTL.value) {
-    const raw = Math.abs(scrollLeft)
-
-    progress = Math.min(
-      1,
-      Math.max(0, raw / maxScroll)
-    )
-  } else {
-    progress = Math.min(
-      1,
-      Math.max(0, scrollLeft / maxScroll)
-    )
-  }
+  const progress =
+    maxScroll > 0
+      ? normalizedScrollLeft / maxScroll
+      : 0
 
   thumb.style.width = `${thumbWidth}px`
-  thumb.style.transform = `translateX(${progress * maxThumbTravel}px)`
+  thumb.style.transform =
+    `translateX(${progress * maxThumbTravel}px)`
 }
 
 let isDraggingScrollbar = false
@@ -486,7 +499,6 @@ onMounted(async () => {
   await nextTick()
   if (typeof window !== 'undefined') {
     scrollY.value = window.scrollY
-    lastScrollY = window.scrollY
     window.addEventListener('scroll', handleScrollDirection, { passive: true })
   }
   isMounted.value = true

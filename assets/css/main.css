@@ -71,61 +71,35 @@ body, [dir="rtl"], .font-sans {
 
 .najm-scrollbar {
   position: absolute;
-
-  /*
-   * This is the important part:
-   * the scrollbar can sit OUTSIDE the nav's
-   * normal visual area without changing layout.
-   */
   left: 8px;
   right: 8px;
-  bottom: -11px;
-
+  bottom: -4px;
   height: 4px;
-
   pointer-events: auto;
-
-  opacity: 0.4;
-
+  opacity: 0.85;
   direction: ltr;
-
   transition: opacity 180ms ease;
 }
 
-/* ─── CUSTOM THUMB ─── */
-
 .najm-scrollbar-thumb {
   position: absolute;
-
   top: 0;
   left: 0;
-
   height: 3px;
-
   min-width: 28px;
-
   border-radius: 9999px;
-
-  background: rgba(1, 68, 57, 0.45);
-
+  background: rgba(1, 68, 57, 0.38);
   cursor: grab;
-
   transition:
     background-color 180ms ease,
     height 180ms ease;
-
   touch-action: none;
 }
 
-.najm-scrollbar-thumb:hover {
-  background: #014439;
-  height: 4px;
-}
-
+.najm-scrollbar-thumb:hover,
 .najm-scrollbar-thumb:active {
   background: #014439;
   height: 4px;
-  cursor: grabbing;
 }
 
 /* ─── NUXT SOOTHING FADE + RASTER BLUR PAGE & LAYOUT TRANSITIONS ─── */

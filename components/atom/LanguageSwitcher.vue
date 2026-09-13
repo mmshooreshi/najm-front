@@ -26,7 +26,7 @@
     aria-label="Switch Language"
   >
     <transition name="lang-flip" mode="out-in">
-      <span :key="modelValue" class="inline-block origin-center text-base sm:text-lg font-medium font-sans">
+      <span :key="modelValue" class="inline-block origin-center text-base sm:text-lg ">
         {{ modelValue }}
       </span>
     </transition>
