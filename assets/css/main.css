@@ -49,26 +49,54 @@ body, [dir="rtl"], .font-sans {
 }
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
-/* ─── REUSABLE NAJM SLIM BRANDED SCROLLBAR ─── */
-.najm-scrollbar-thin {
+/* ─── NAJM — SMOOTH FLOATING SCROLLBAR ─── */
+/* ─────────────────────────────────────────────
+   NAJM — ULTRA SLIM FLOATING SCROLLBAR
+   ───────────────────────────────────────────── */
+
+.najm-subnav {
   scrollbar-width: thin;
-  scrollbar-color: #014439 transparent;
+  scrollbar-color: rgba(1, 68, 57, 0.45) transparent;
+
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
-.najm-scrollbar-thin::-webkit-scrollbar {
-  height: 3.5px;
-  width: 3.5px;
+
+/* Chrome / Edge / Safari */
+.najm-subnav::-webkit-scrollbar {
+  height: 4px;
 }
-.najm-scrollbar-thin::-webkit-scrollbar-track {
+
+/* Invisible track */
+.najm-subnav::-webkit-scrollbar-track {
   background: transparent;
-  border-radius: 9999px;
+  border: none;
 }
-.najm-scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(1, 68, 57, 0.45);
+
+/* Small rounded thumb */
+.najm-subnav::-webkit-scrollbar-thumb {
+  background: rgba(1, 68, 57, 0.42);
   border-radius: 9999px;
-  transition: background 0.2s ease;
+
+  /* Makes the visible part thinner */
+  border: 1px solid transparent;
+  background-clip: padding-box;
+
+  transition:
+    background-color 180ms ease,
+    opacity 180ms ease;
 }
-.najm-scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #014439;
+
+.najm-subnav::-webkit-scrollbar-thumb:hover {
+  background-color: #014439;
+}
+
+.najm-subnav::-webkit-scrollbar-thumb:active {
+  background-color: #014439;
+}
+
+.najm-subnav::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* ─── NUXT SOOTHING FADE + RASTER BLUR PAGE & LAYOUT TRANSITIONS ─── */

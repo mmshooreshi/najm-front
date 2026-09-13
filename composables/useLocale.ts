@@ -83,7 +83,7 @@ export const useLocale = () => {
         ) {
           const target = localePath(currentPath, upper)
           if (target !== currentPath) {
-            navigateTo(target, { replace: true }).catch(() => {})
+            window.history.replaceState(window.history.state, '', target)
           }
         }
       } catch {}

@@ -3,17 +3,17 @@
   <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative w-full overflow-x-clip">
     <!-- Smart Full-Width Sub-Nav Bar -->
     <div
-      class="fixed inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/70 shadow-xs py-2 px-3 sm:px-6"
+      class="fixed inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-200/70 shadow-xs py-2 px-0 md:px-6"
       :class="[
         isMounted ? 'transition-[top] duration-300 ease-out' : '',
         headerHidden ? 'top-0' : 'top-16 sm:top-20'
       ]"
     >
       <div class="max-w-7xl mx-auto flex justify-center">
-        <nav
-          ref="subnavRef"
-          class="flex items-center gap-1 sm:gap-2 overflow-x-auto najm-scrollbar-thin px-2 py-0.5 scroll-smooth max-w-full"
-        >
+<nav
+  ref="subnavRef"
+  class="najm-subnav flex items-center gap-1 sm:gap-2 overflow-x-auto px-2 py-0.5 scroll-smooth max-w-full"
+>
           <button
             v-for="item in sections"
             :key="item.id"

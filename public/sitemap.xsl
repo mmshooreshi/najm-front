@@ -8,7 +8,7 @@
   <xsl:template match="/">
     <html xmlns="http://www.w3.org/1999/xhtml" lang="fa" dir="rtl">
       <head>
-        <title>نقشه سایت مجتمع چاپ و بسته‌بندی نجم | XML Sitemap Vitrine</title>
+        <title>نقشه سایت مجتمع چاپ و بسته‌بندی نجم &#183; XML Sitemap Vitrine</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style type="text/css">
@@ -19,10 +19,10 @@
             color: #e5e7eb;
             font-size: 13px;
             line-height: 1.6;
-            padding: 32px 16px;
+            padding: 24px 16px;
           }
           .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
             background: #112823;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -56,7 +56,7 @@
           .stats {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
           }
           .badge {
@@ -68,8 +68,40 @@
             font-size: 11px;
             font-weight: 700;
           }
+          .cat-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 14px 32px;
+            background: rgba(0, 0, 0, 0.35);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            overflow-x: auto;
+            flex-wrap: nowrap;
+          }
+          .cat-tab {
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.04);
+            color: #cbd5e1;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+          }
+          .cat-tab:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            color: #fff;
+          }
+          .cat-tab.active {
+            background: #10b981;
+            border-color: #10b981;
+            color: #04201a;
+            font-weight: 700;
+          }
           .search-bar {
-            padding: 16px 32px;
+            padding: 14px 32px;
             background: rgba(0, 0, 0, 0.2);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
@@ -85,7 +117,7 @@
             padding: 8px 16px;
             border-radius: 12px;
             font-size: 12px;
-            width: 300px;
+            width: 320px;
             outline: none;
             direction: ltr;
           }
@@ -105,13 +137,13 @@
             color: rgba(255, 255, 255, 0.7);
             font-size: 11px;
             font-weight: 700;
-            padding: 14px 20px;
+            padding: 14px 18px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
           td {
-            padding: 12px 20px;
+            padding: 12px 18px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             vertical-align: middle;
           }
@@ -131,6 +163,21 @@
             color: #a7f3d0;
             text-decoration: underline;
           }
+          .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 9999px;
+            white-space: nowrap;
+          }
+          .chip-core { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #7dd3fc; }
+          .chip-products { background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.35); color: #d8b4fe; }
+          .chip-services { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
+          .chip-resources { background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.35); color: #fde68a; }
+          .chip-editorial { background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #fecdd3; }
           .alternates {
             display: flex;
             gap: 6px;
@@ -149,7 +196,7 @@
           }
           .lang-pill:hover {
             background: #10b981;
-            color: #fff;
+            color: #04201a;
             border-color: #10b981;
           }
           .priority-bar {
@@ -204,20 +251,36 @@
         </style>
         <script type="text/javascript">
           function filterUrls() {
-            var input = document.getElementById('filterInput');
-            var filter = input.value.toLowerCase();
-            var rows = document.querySelectorAll('#sitemapTable tbody tr');
-            for (var i = 0; i &lt; rows.length; i++) {
-              var loc = rows[i].querySelector('.url-link');
+            var input = document.getElementById("filterInput");
+            var filter = input ? input.value.toLowerCase() : "";
+            var rows = document.querySelectorAll("#sitemapTable tbody tr");
+            Array.prototype.forEach.call(rows, function(row) {
+              var loc = row.querySelector(".url-link");
+              var cat = row.getAttribute("data-cat") || "";
               if (loc) {
-                var text = loc.textContent || loc.innerText;
-                if (text.toLowerCase().indexOf(filter) > -1) {
-                  rows[i].style.display = '';
-                } else {
-                  rows[i].style.display = 'none';
-                }
+                var text = (loc.textContent || loc.innerText).toLowerCase();
+                var matches = (text.indexOf(filter) !== -1) || (cat.toLowerCase().indexOf(filter) !== -1);
+                row.style.display = matches ? "" : "none";
               }
-            }
+            });
+          }
+
+          function setCategoryFilter(catName, btn) {
+            var buttons = document.querySelectorAll(".cat-tab");
+            Array.prototype.forEach.call(buttons, function(b) {
+              b.classList.remove("active");
+            });
+            if (btn) btn.classList.add("active");
+
+            var rows = document.querySelectorAll("#sitemapTable tbody tr");
+            Array.prototype.forEach.call(rows, function(row) {
+              if (!catName || catName === "all") {
+                row.style.display = "";
+              } else {
+                var rowCat = row.getAttribute("data-cat");
+                row.style.display = (rowCat === catName) ? "" : "none";
+              }
+            });
           }
         </script>
       </head>
@@ -229,14 +292,24 @@
                 <span>🌐</span>
                 <span>مجتمع چاپ و بسته‌بندی نجم &#183; XML Sitemap</span>
               </h1>
-              <p>این نقشه راهنما بهینه‌سازی شده برای ربات‌های هوشمند Googlebot, Bingbot و موتورهای پاسخ هوش مصنوعی (AEO/GEO) می‌باشد.</p>
+              <p>نقشه مهندسی و ساختار سلسله‌مراتبی منطبق بر استانداردهای جهانی Googlebot, Bingbot و موتورهای پاسخ هوش مصنوعی (AEO/GEO).</p>
             </div>
             <div class="stats">
               <span class="badge">
                 تعداد کل آدرس‌ها: <xsl:value-of select="count(sitemap:urlset/sitemap:url)"/>
               </span>
               <span class="badge">۳ زبان مستقل (FA, EN, AR)</span>
+              <span class="badge">معماری ۳ سطحی</span>
             </div>
+          </div>
+
+          <div class="cat-tabs">
+            <button type="button" class="cat-tab active" onclick="setCategoryFilter('all', this)">همه بخش‌ها</button>
+            <button type="button" class="cat-tab" onclick="setCategoryFilter('core', this)">🏛️ صفحات اصلی (Core)</button>
+            <button type="button" class="cat-tab" onclick="setCategoryFilter('products', this)">📦 محصولات و جعبه‌ها</button>
+            <button type="button" class="cat-tab" onclick="setCategoryFilter('services', this)">⚙️ خدمات فنی چاپ</button>
+            <button type="button" class="cat-tab" onclick="setCategoryFilter('resources', this)">📐 منابع و قالب‌ها</button>
+            <button type="button" class="cat-tab" onclick="setCategoryFilter('editorial', this)">📰 پایگاه دانش و اخبار</button>
           </div>
 
           <div class="search-bar">
@@ -257,6 +330,7 @@
               <thead>
                 <tr>
                   <th style="width: 40px; text-align: center;">#</th>
+                  <th>شاخه ساختاری</th>
                   <th>نشانی اصلی (URL)</th>
                   <th style="text-align: center;">نسخه‌های چندزبانه (hreflang)</th>
                   <th style="text-align: center;">تواتر بروزرسانی</th>
@@ -267,8 +341,36 @@
               <tbody>
                 <xsl:for-each select="sitemap:urlset/sitemap:url">
                   <tr>
+                    <xsl:attribute name="data-cat">
+                      <xsl:choose>
+                        <xsl:when test="contains(sitemap:loc, '/products')">products</xsl:when>
+                        <xsl:when test="contains(sitemap:loc, '/services')">services</xsl:when>
+                        <xsl:when test="contains(sitemap:loc, '/resources')">resources</xsl:when>
+                        <xsl:when test="contains(sitemap:loc, '/blog') or contains(sitemap:loc, '/news')">editorial</xsl:when>
+                        <xsl:otherwise>core</xsl:otherwise>
+                      </xsl:choose>
+                    </xsl:attribute>
                     <td style="text-align: center; color: #64748b; font-family: ui-monospace, monospace; font-size: 11px;">
                       <xsl:value-of select="position()"/>
+                    </td>
+                    <td>
+                      <xsl:choose>
+                        <xsl:when test="contains(sitemap:loc, '/products')">
+                          <span class="chip chip-products">📦 محصولات</span>
+                        </xsl:when>
+                        <xsl:when test="contains(sitemap:loc, '/services')">
+                          <span class="chip chip-services">⚙️ خدمات</span>
+                        </xsl:when>
+                        <xsl:when test="contains(sitemap:loc, '/resources')">
+                          <span class="chip chip-resources">📐 منابع</span>
+                        </xsl:when>
+                        <xsl:when test="contains(sitemap:loc, '/blog') or contains(sitemap:loc, '/news')">
+                          <span class="chip chip-editorial">📰 دانش / اخبار</span>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <span class="chip chip-core">🏛️ اصلی</span>
+                        </xsl:otherwise>
+                      </xsl:choose>
                     </td>
                     <td>
                       <a class="url-link" target="_blank">
@@ -326,7 +428,7 @@
               <a href="https://chapenajm.com" target="_blank">chapenajm.com</a>
             </div>
             <div>
-              <span>تولید خودکار بر اساس جدیدترین ساختار مهندسی سایت</span>
+              <span>نقشه درختی مهندسی شده و منطبق بر آخرین پروتکل Sitemaps.org</span>
             </div>
           </div>
         </div>

@@ -121,7 +121,6 @@ import Autoplay from 'embla-carousel-autoplay'
 
 // import DescriptionBubble if needed
 import CardOverlayWrapper from '@/components/CardOverlayWrapper.vue'
-import { defineExpose } from 'vue'
 
 const props = defineProps({
   packages: {

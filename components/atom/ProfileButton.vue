@@ -10,16 +10,21 @@
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M3 20c2.336-2.477 5.507-4 9-4s6.664 1.523 9 4M16.5 7.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0" />
         </svg>
-        <span class="truncate max-w-[120px]">ورود</span>
-        <span
-          class="iconify i-mdi:chevron-left transition-transform group-hover:-translate-x-1 w-4 h-4 text-gray-400 group-hover:text-najmgreen shrink-0"
-          aria-hidden="true"></span>
-<!-- 
-                  <Icon
-          name="mdi:chevron-left"
-          class="transition-transform group-hover:-translate-x-1 w-4 h-4 text-gray-400 group-hover:text-najmgreen flex-shrink-0"
-          :class="isRTL ? '' : 'rotate-180 group-hover:translate-x-1'"
-        /> -->
+        <span class="truncate max-w-[120px]">{{ isAuthenticated && user?.name ? user.name : loginText }}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-4 h-4 text-gray-400 group-hover:text-najmgreen transition-transform shrink-0"
+          :class="isRTL ? 'group-hover:-translate-x-0.5' : 'rotate-180 group-hover:translate-x-0.5'"
+          aria-hidden="true"
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
       </button>
     </NuxtLink>
   </div>
