@@ -6,7 +6,7 @@ import { fontPreloadLinks } from './utils/font-preload'
 // import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },

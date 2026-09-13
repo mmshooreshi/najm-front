@@ -7,7 +7,7 @@
       :width="W"
       :height="H"
       :viewBox="maskData ? `0 0 ${maskData.w} ${maskData.h}` : `0 0 ${W} ${H}`"
-      class="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out"
+      class="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0"
       :style="{
         opacity: isLoaded ? 0 : 1,
         position: 'absolute',
@@ -72,17 +72,15 @@
       quality="85"
       :alt="alt || 'چاپ و بسته‌بندی نجم'"
       :loading="priority ? 'eager' : 'lazy'"
-      :fetchpriority="priority ? 'high' : 'low'"
+      :fetchpriority="priority ? 'high' : 'auto'"
       :preload="priority"
       decoding="async"
+      class="relative z-10 w-full h-full object-contain pointer-events-auto"
       :style="{
         position: 'relative',
         top: 0,
         left: 0,
-        right: 'auto',
-        opacity: isLoaded ? 1 : 0,
-        transition: 'opacity 0.4s ease',
-        pointerEvents: 'auto'
+        right: 'auto'
       }"
       @load="onLoad"
       @mouseenter="onMouseEnter"

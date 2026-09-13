@@ -17,10 +17,9 @@
            class="image-item absolute"
            :style="getStyle(image, index)">
         <InlineSvgMask
-          v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
           :height="image.height"
           :width="image.width"
-          :priority="index < 8"
+          :priority="index < 14"
           class="opacity-100"
           :src="`/images/${image.src}`"
           @hover="() => handleElementHover(image)"

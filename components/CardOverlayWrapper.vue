@@ -38,6 +38,12 @@
         <NuxtImg
           :src="item.image"
           :alt="item.alt ?? item.name"
+          format="webp"
+          quality="80"
+          :width="Math.round(item.specs.width * 1.5)"
+          :height="Math.round(item.specs.height * 1.5)"
+          loading="lazy"
+          decoding="async"
           :class="editingItem?.id === item.id ? 'border border-teal rounded-3xl' : ''"
           class="w-full h-full object-contain pointer-events-none select-none"
         />
