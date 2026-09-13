@@ -3,7 +3,7 @@ import { useFetch } from '#app'
 import { computed, type ComputedRef, watch } from 'vue'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
-import { adminEditState } from '@/store/adminEditStore'
+import { adminEditState, loadDraftFromLocalStorage } from '@/store/adminEditStore'
 import { getLocalSchema } from '@/composables/ui/schemaRegistry'
 
 type UiForLang = Record<string, any>
@@ -43,6 +43,11 @@ export function usePageUI(
   refresh: () => Promise<void>
 } {
   const { language } = useLocale()
+
+  // In client, immediately restore any saved draft for this slug from LocalStorage
+  if (typeof window !== 'undefined' && slug) {
+    loadDraftFromLocalStorage(slug)
+  }
 
   // Local fallback schemas from schemaRegistry
   const local: AllUi = getLocalSchema(slug)

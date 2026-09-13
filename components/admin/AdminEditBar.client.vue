@@ -14,7 +14,8 @@ import {
   changedCountForLang,
   discardAllChanges,
   toggleGlobalMotionPaused,
-  clearAdminSession
+  clearAdminSession,
+  clearDraftFromLocalStorage
 } from '@/store/adminEditStore'
 
 const { setLocale, language } = useLocale()
@@ -49,6 +50,94 @@ const paletteQuery = ref('')
 const paletteActiveIndex = ref(0)
 const autosaveDelayMs = 2000
 let autosaveTimer: any = null
+
+const isTelemetryHovered = ref(false)
+
+function formatTime(iso: string | null): string {
+  if (!iso) return 'None'
+  try {
+    const d = new Date(iso)
+    return d.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  } catch {
+    return iso
+  }
+}
+
+function formatRelativeTime(iso: string | null): string {
+  if (!iso) return 'Never'
+  try {
+    const diffSec = Math.round((Date.now() - new Date(iso).getTime()) / 1000)
+    if (diffSec < 5) return 'هم‌اکنون'
+    if (diffSec < 60) return `${diffSec} ثانیه پیش`
+    const diffMin = Math.round(diffSec / 60)
+    if (diffMin < 60) return `${diffMin} دقیقه پیش`
+    const diffHr = Math.round(diffMin / 60)
+    return `${diffHr} ساعت پیش`
+  } catch {
+    return ''
+  }
+}
+
+const telemetrySourceState = computed<'local_draft' | 'server_synced' | 'saving' | 'pristine'>(() => {
+  if (saving.value) return 'saving'
+  if (changedCount.value > 0 || state.telemetry.localDraftSavedAt) return 'local_draft'
+  if (state.telemetry.serverSyncedAt) return 'server_synced'
+  return 'pristine'
+})
+
+const telemetryDot = computed(() => {
+  switch (telemetrySourceState.value) {
+    case 'saving': return 'bg-sky-400 animate-pulse'
+    case 'local_draft': return 'bg-amber-400'
+    case 'server_synced': return 'bg-emerald-400'
+    default: return 'bg-zinc-400'
+  }
+})
+
+const telemetryBorder = computed(() => {
+  switch (telemetrySourceState.value) {
+    case 'saving': return 'border-sky-500/30 text-sky-300 bg-sky-950/40'
+    case 'local_draft': return 'border-amber-500/30 text-amber-300 bg-amber-950/30'
+    case 'server_synced': return 'border-emerald-500/30 text-emerald-300 bg-emerald-950/30'
+    default: return 'border-white/10 text-zinc-400 bg-zinc-900/60'
+  }
+})
+
+const telemetryLabel = computed(() => {
+  if (saving.value) return 'Saving…'
+  if (changedCount.value > 0) return `💾 پیش‌نویس (${changedCount.value})`
+  if (state.telemetry.localDraftSavedAt) return `💾 ${formatRelativeTime(state.telemetry.localDraftSavedAt)}`
+  if (state.telemetry.serverSyncedAt) return `☁️ PB Synced`
+  return `☁️ PB Live`
+})
+
+const dynamicsNote = computed(() => {
+  if (changedCount.value > 0 || state.telemetry.localDraftSavedAt) {
+    return '⚡ پیش‌نویس محلی (LocalStorage) فعال است و با رفرش صفحه از بین نمی‌رود. تا زمان ذخیره در سرور (Save) یا انصراف (Discard)، تغییرات لوکال در اولویت نمایش قرار دارند.'
+  }
+  if (state.telemetry.serverSyncedAt) {
+    return '✓ دیتای زنده سرور PocketBase با نسخه محلی کاملاً همگام و ذخیره شده است.'
+  }
+  return '○ نمایش مستقیم دیتای PocketBase بدون پیش‌نویس محلی.'
+})
+
+function clearLocalDraftAndReload() {
+  const effectiveSlug = state.slug || 'home'
+  clearDraftFromLocalStorage(effectiveSlug)
+  discardAllChanges(lang.value)
+  invalidatePageUI(effectiveSlug)
+  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: 'پیش‌نویس محلی پاک شد و دیتا از سرور بازیابی شد' } }))
+  setTimeout(() => window.location.reload(), 300)
+}
+
+function copyStorageJson() {
+  const effectiveSlug = state.slug || 'home'
+  const raw = localStorage.getItem('najm_draft_v1_' + effectiveSlug) || '{}'
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(raw)
+    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `JSON پیش‌نویس محلی /${effectiveSlug} کپی شد` } }))
+  }
+}
 
 const lang = computed(() => state.language || language.value || 'FA')
 const changedCount = computed(() => changedCountForLang(lang.value))
@@ -566,17 +655,112 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
           </div>
         </div>
 
-        <!-- Status & Changed Count Badge -->
-        <button
-          type="button"
-          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-medium bg-zinc-900/60 transition-colors cursor-pointer"
-          :class="statusMeta.border"
-          @click="state.inspectorOpen = true"
-          :title="`Click to open Changes Inspector (${changedCount} modified)`"
+        <!-- Zero-Tap Observable Telemetry Capsule & HUD -->
+        <div
+          class="relative flex items-center"
+          @mouseenter="isTelemetryHovered = true"
+          @mouseleave="isTelemetryHovered = false"
         >
-          <span class="w-2 h-2 rounded-full shrink-0" :class="statusMeta.dot"></span>
-          <span>{{ statusMeta.label }}</span>
-        </button>
+          <!-- Sleek Minimal Capsule Button (No tap needed - hover reveals live telemetry!) -->
+          <div
+            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-medium transition-all cursor-default select-none shadow-xs"
+            :class="telemetryBorder"
+            title="وضعیت همگام‌سازی دیتای محلی و سرور (برای جزئیات ماوس را نگه دارید)"
+          >
+            <span class="w-2 h-2 rounded-full shrink-0" :class="telemetryDot"></span>
+            <span class="font-mono text-[10px] tracking-tight">{{ telemetryLabel }}</span>
+          </div>
+
+          <!-- Zero-Tap Observable HUD Popover (Floats smoothly on hover with 0ms lag) -->
+          <transition name="admin-modal">
+            <div
+              v-if="isTelemetryHovered"
+              class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-84 p-3.5 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-2xl z-[999999] pointer-events-auto select-text text-right"
+              dir="rtl"
+            >
+              <!-- HUD Header: Dynamics Status -->
+              <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-white/10 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full" :class="telemetryDot"></span>
+                  <span class="font-semibold text-zinc-100">وضعیت همگام‌سازی محلی و سرور</span>
+                </div>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-zinc-300 font-mono" dir="ltr">
+                  /{{ state.slug || 'home' }}
+                </span>
+              </div>
+
+              <!-- Sync Dynamics Details -->
+              <div class="space-y-2 text-[11px]">
+                <!-- Local Storage Row -->
+                <div class="flex items-center justify-between bg-zinc-900/80 px-2.5 py-1.5 rounded-lg border border-white/5">
+                  <div class="flex items-center gap-1.5 text-zinc-300">
+                    <span>💾</span>
+                    <span class="font-medium">پیش‌نویس لوکال‌استوریج:</span>
+                  </div>
+                  <div class="font-mono text-[10px] text-amber-300" dir="ltr">
+                    {{ state.telemetry.localDraftSavedAt ? formatTime(state.telemetry.localDraftSavedAt) : 'بدون تغییر' }}
+                  </div>
+                </div>
+
+                <!-- Server PB Row -->
+                <div class="flex items-center justify-between bg-zinc-900/80 px-2.5 py-1.5 rounded-lg border border-white/5">
+                  <div class="flex items-center gap-1.5 text-zinc-300">
+                    <span>☁️</span>
+                    <span class="font-medium">همگام‌سازی سرور:</span>
+                  </div>
+                  <div class="font-mono text-[10px] text-emerald-300" dir="ltr">
+                    {{ state.telemetry.serverSyncedAt ? formatTime(state.telemetry.serverSyncedAt) : 'همگام نشده' }}
+                  </div>
+                </div>
+
+                <!-- Live Sync Explanation -->
+                <div class="text-[10px] text-zinc-300 leading-relaxed px-1 py-0.5">
+                  {{ dynamicsNote }}
+                </div>
+              </div>
+
+              <!-- Recent Edits Stream (Zero-Tap Ticker) -->
+              <div v-if="state.telemetry.recentEdits.length > 0" class="mt-2.5 pt-2 border-t border-white/10">
+                <div class="text-[10px] font-bold text-zinc-400 mb-1.5 flex items-center justify-between">
+                  <span>آخرین فیلدهای ویرایش‌شده:</span>
+                  <span class="text-amber-400 text-[9px] font-mono">Live Stream</span>
+                </div>
+                <div class="space-y-1 max-h-32 overflow-y-auto pr-1">
+                  <div
+                    v-for="(edit, idx) in state.telemetry.recentEdits"
+                    :key="idx"
+                    class="flex items-center justify-between text-[10px] py-1 px-1.5 rounded bg-white/5 border border-white/5"
+                  >
+                    <span class="font-mono text-zinc-200 truncate max-w-[150px] text-left" dir="ltr" :title="edit.path">
+                      {{ edit.path }}
+                    </span>
+                    <span class="text-zinc-400 text-[9px] font-mono" dir="ltr">
+                      {{ formatRelativeTime(edit.time) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Actions in HUD -->
+              <div class="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px]">
+                <button
+                  type="button"
+                  class="text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+                  @click="clearLocalDraftAndReload"
+                >
+                  🗑 پاکسازی پیش‌نویس لوکال
+                </button>
+                <button
+                  type="button"
+                  class="text-zinc-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                  @click="copyStorageJson"
+                >
+                  📋 کپی JSON ذخیره
+                </button>
+              </div>
+            </div>
+          </transition>
+        </div>
 
         <div class="h-4 w-px bg-white/10 mx-0.5"></div>
 
@@ -599,22 +783,6 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
               :class="{ 'animate-spin': saving }"
             />
             <span>Save</span>
-          </button>
-
-          <!-- Changes Inspector Toggle -->
-          <button
-            type="button"
-            class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/5 flex items-center justify-center transition-colors relative cursor-pointer"
-            @click="state.inspectorOpen = true"
-            title="Inspect Modified Fields (Diff Viewer)"
-          >
-            <AdminIcon name="diff" class="w-4 h-4" />
-            <span
-              v-if="changedCount > 0"
-              class="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-black text-[9px] font-bold rounded-full flex items-center justify-center"
-            >
-              {{ changedCount }}
-            </span>
           </button>
 
           <!-- History Toggle -->

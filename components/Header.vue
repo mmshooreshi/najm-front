@@ -100,14 +100,30 @@ const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 const { direction } = useScrollDirection()
 
 
-const props = defineProps<{ topLabel?: any }>()
+const props = withDefaults(
+  defineProps<{
+    topLabel?: any
+    menuOpen?: boolean
+  }>(),
+  {
+    menuOpen: false
+  }
+)
+
+const emit = defineEmits<{
+  (e: 'update:menuOpen', value: boolean): void
+}>()
 
 // Tailwind “md” breakpoint is 768px:
 const isDesktop = useMediaQuery('(min-width: 768px)')
 const isSmall = useMediaQuery('(max-width: 400px)')
 const searchIsOpen = ref(false)
+
 // Menu state
-const menuOpen = ref(false)
+const menuOpen = computed({
+  get: () => props.menuOpen,
+  set: (val: boolean) => emit('update:menuOpen', val)
+})
 
 function openDesktopSearch() {
   // placeholder for desktop search action

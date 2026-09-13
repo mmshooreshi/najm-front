@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useScrollLock } from '@vueuse/core'
 import Drawer from '@/components/Drawer.vue'
 import Menu from '@/components/Menu.vue'
@@ -26,6 +26,10 @@ const emit = defineEmits<{
 }>()
 
 const menuOpen = ref(props.menuOpen)
+watch(() => props.menuOpen, (val) => {
+  menuOpen.value = val
+})
+
 const menuContainer = ref<HTMLElement | null>(null)
 const isLocked = useScrollLock(menuContainer)
 
@@ -45,11 +49,12 @@ function toggleMenu(event?: PointerEvent) {
 }
 
 function handleWrapperClick(event: PointerEvent) {
-  console.log("wrapper clicked by: ", event.target)
   if ((event.target as HTMLElement).closest('a')) {
     menuOpen.value = false;
-    emit('update:menuOpen', menuOpen.value);
-
+    emit('update:menuOpen', false);
+    if (typeof window !== 'undefined' && window.scrollX !== 0) {
+      window.scrollTo({ left: 0, top: window.scrollY })
+    }
     return;
   }
   event.stopPropagation()

@@ -1,15 +1,14 @@
 <!-- pages/about/index.vue -->
 <template>
-  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative">
+  <div :dir="isRTL ? 'rtl' : 'ltr'" class="min-h-screen bg-najmback text-gray-800 relative w-full overflow-x-clip">
     <!-- Smart Floating Capsule Sub-Nav -->
     <div
-      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none"
+      class="fixed top-20 inset-x-0 z-40 flex justify-center pointer-events-none transition-all duration-300 ease-out"
       :class="[
-        isReady ? 'transition-all duration-300' : '',
-        navVisible ? 'translate-y-0 opacity-100' : '-translate-y-12 opacity-0'
+        navVisible ? 'translate-y-0 opacity-100 pointer-events-auto' : '-translate-y-16 opacity-0 pointer-events-none'
       ]"
     >
-      <nav class="pointer-events-auto bg-white/85 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto max-w-[95vw]">
+      <nav class="pointer-events-auto bg-white/90 backdrop-blur-xl border border-white/80 shadow-lg rounded-full px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto max-w-[calc(100vw-32px)] mx-auto">
         <button
           v-for="item in sections"
           :key="item.id"
@@ -317,19 +316,28 @@ const defaultTimeline = [
 
 const activeSection = ref('vision')
 const navVisible = ref(true)
-const isReady = ref(false)
-const isNavBypassing = ref(false)
 let lastScrollY = 0
+let isNavBypassing = false
 
 function handleScrollDirection() {
-  if (typeof window === 'undefined') return
+  if (typeof window === 'undefined' || isNavBypassing) return
   const currentY = window.scrollY
   
-  if (currentY < 180) {
+  // At top of page, always show
+  if (currentY < 80) {
     navVisible.value = true
-  } else if (currentY > lastScrollY + 12) {
+    lastScrollY = currentY
+    return
+  }
+
+  const diff = currentY - lastScrollY
+  if (Math.abs(diff) < 6) return
+
+  if (diff > 0) {
+    // Scrolling DOWN -> hide smoothly
     navVisible.value = false
-  } else if (currentY < lastScrollY - 8) {
+  } else {
+    // Scrolling UP even a bit -> reveal smoothly
     navVisible.value = true
   }
   
@@ -337,31 +345,33 @@ function handleScrollDirection() {
 }
 
 function scrollToSection(id: string) {
-  isNavBypassing.value = true
   const el = document.getElementById(id)
-  if (el) {
-    const yOffset = -90
-    const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
-    window.scrollTo({
-      top: y,
-      behavior: 'smooth'
-    })
-  }
+  if (!el) return
+
+  isNavBypassing = true
   activeSection.value = id
 
+  // 120px offset gives perfect room for fixed header + capsule sub-nav
+  const yOffset = -120
+  const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset
+
+  window.scrollTo({
+    top: Math.max(0, y),
+    behavior: 'smooth'
+  })
+
+  navVisible.value = true
+
   setTimeout(() => {
-    isNavBypassing.value = false
-  }, 1000)
+    lastScrollY = window.scrollY
+    isNavBypassing = false
+  }, 800)
 }
 
 onMounted(async () => {
   await nextTick()
   lastScrollY = window.scrollY
   window.addEventListener('scroll', handleScrollDirection, { passive: true })
-
-  setTimeout(() => {
-    isReady.value = true
-  }, 400)
 
   const observer = new IntersectionObserver(
     entries => {

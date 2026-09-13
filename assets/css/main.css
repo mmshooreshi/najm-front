@@ -3,6 +3,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  overflow-x: clip;
 }
 
 :root {
@@ -48,45 +49,44 @@ body, [dir="rtl"], .font-sans {
 }
 /* global‑styles.css (or just put it in the <style> block of the layout) */
 
-/* ─── NUXT HIGH-PERFORMANCE PREDICTABLE PAGE & LAYOUT TRANSITIONS ─── */
-.page-enter-active,
-.layout-enter-active {
-  transition: opacity 0.36s cubic-bezier(0.16, 1, 0.3, 1), transform 0.36s cubic-bezier(0.16, 1, 0.3, 1), filter 0.36s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity, filter;
+/* ─── NUXT SOOTHING FADE + RASTER BLUR PAGE & LAYOUT TRANSITIONS ─── */
+.page-enter-active {
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), filter 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.page-leave-active,
-.layout-leave-active {
-  transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), filter 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity, filter;
+.page-leave-active {
+  transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1), filter 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.page-enter-from,
-.layout-enter-from {
+.page-enter-from {
   opacity: 0;
-  transform: translateY(12px) scale(0.995);
-  filter: blur(1rem);
+  filter: blur(12px);
 }
 
-.page-enter-to,
-.layout-enter-to {
+.page-enter-to {
   opacity: 1;
-  transform: translateY(0) scale(1);
   filter: blur(0);
 }
 
-.page-leave-from,
-.layout-leave-from {
+.page-leave-from {
   opacity: 1;
-  transform: translateY(0) scale(1);
   filter: blur(0);
 }
 
-.page-leave-to,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(12px);
+}
+
+/* Layout transition: clean seamless crossfade */
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.28s ease;
+}
+
+.layout-enter-from,
 .layout-leave-to {
   opacity: 0;
-  transform: translateY(-8px) scale(0.995);
-  filter: blur(1rem);
 }
 
 /* ─── SLIDE LEFT (forward) ───────────────────── */

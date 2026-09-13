@@ -84,6 +84,23 @@ export interface AdminEditState {
   archives: Record<string, Record<PathKey, any[]>>
   // Slug-scoped snapshots to prevent cross-component schema pollution
   allLangUIBySlug: Record<string, Record<LangCode, Record<string, any>>>
+  telemetry: SyncTelemetry
+}
+
+export interface EditTelemetryEntry {
+  path: string
+  lang: string
+  time: string // ISO
+  preview: string
+}
+
+export interface SyncTelemetry {
+  localDraftSavedAt: string | null
+  serverSyncedAt: string | null
+  lastModifiedPath: string | null
+  lastModifiedTime: string | null
+  source: 'local_storage' | 'server_live' | 'pristine'
+  recentEdits: EditTelemetryEntry[]
 }
 
 export const adminEditState = reactive<AdminEditState>({
@@ -118,7 +135,15 @@ export const adminEditState = reactive<AdminEditState>({
   isMotionPausedGlobally: false,
   activeMotionElement: null,
   pausedMotionElements: new Set(),
-  archives: {}
+  archives: {},
+  telemetry: {
+    localDraftSavedAt: null,
+    serverSyncedAt: null,
+    lastModifiedPath: null,
+    lastModifiedTime: null,
+    source: 'pristine',
+    recentEdits: []
+  }
 })
 
 // Admin session cleanup helper
@@ -135,12 +160,119 @@ export function clearAdminSession() {
   }
 }
 
+/** ---------- LocalStorage Draft Persistence Engine ---------- **/
+const DRAFT_STORAGE_PREFIX = 'najm_draft_v1_'
+let draftSaveDebounceTimer: any = null
+
+export function saveDraftToLocalStorage(slug?: string) {
+  if (typeof window === 'undefined') return
+  const effectiveSlug = slug || adminEditState.slug || 'home'
+  if (!effectiveSlug) return
+
+  if (draftSaveDebounceTimer) clearTimeout(draftSaveDebounceTimer)
+  draftSaveDebounceTimer = setTimeout(() => {
+    try {
+      const slugChanges: ChangeMap = {}
+      for (const [path, record] of Object.entries(adminEditState.changes)) {
+        const recordSlug = (record as any)?.slug || adminEditState.slug || 'home'
+        if (recordSlug === effectiveSlug) {
+          slugChanges[path] = record
+        }
+      }
+
+      const overrides = adminEditState.clientOverrides[effectiveSlug] || {}
+      const now = new Date().toISOString()
+
+      const payload = {
+        slug: effectiveSlug,
+        updatedAt: now,
+        serverSyncedAt: adminEditState.telemetry.serverSyncedAt,
+        changes: slugChanges,
+        clientOverrides: overrides,
+        lastModifiedPath: adminEditState.telemetry.lastModifiedPath,
+        lastModifiedTime: adminEditState.telemetry.lastModifiedTime
+      }
+
+      localStorage.setItem(DRAFT_STORAGE_PREFIX + effectiveSlug, JSON.stringify(payload))
+      adminEditState.telemetry.localDraftSavedAt = now
+      adminEditState.telemetry.source = 'local_storage'
+    } catch (err) {
+      if (process.dev) logger.warn('Admin:Storage', 'LocalStorage write failed', err)
+    }
+  }, 150)
+}
+
+export function loadDraftFromLocalStorage(slug: string): boolean {
+  if (typeof window === 'undefined' || !slug) return false
+  try {
+    const raw = localStorage.getItem(DRAFT_STORAGE_PREFIX + slug)
+    if (!raw) return false
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return false
+
+    // Restore clientOverrides if present
+    if (parsed.clientOverrides && Object.keys(parsed.clientOverrides).length > 0) {
+      adminEditState.clientOverrides[slug] = parsed.clientOverrides
+    }
+
+    // Restore changes
+    if (parsed.changes && Object.keys(parsed.changes).length > 0) {
+      for (const [path, val] of Object.entries(parsed.changes)) {
+        if (!adminEditState.changes[path]) {
+          adminEditState.changes[path] = val as any
+        } else {
+          adminEditState.changes[path] = { ...adminEditState.changes[path], ...(val as any) }
+        }
+      }
+    }
+
+    adminEditState.telemetry.localDraftSavedAt = parsed.updatedAt || null
+    adminEditState.telemetry.serverSyncedAt = parsed.serverSyncedAt || null
+    adminEditState.telemetry.lastModifiedPath = parsed.lastModifiedPath || null
+    adminEditState.telemetry.lastModifiedTime = parsed.lastModifiedTime || null
+    adminEditState.telemetry.source = 'local_storage'
+
+    return true
+  } catch (err) {
+    if (process.dev) logger.warn('Admin:Storage', 'LocalStorage read failed', err)
+    return false
+  }
+}
+
+export function clearDraftFromLocalStorage(slug?: string) {
+  if (typeof window === 'undefined') return
+  const effectiveSlug = slug || adminEditState.slug || 'home'
+  try {
+    localStorage.removeItem(DRAFT_STORAGE_PREFIX + effectiveSlug)
+    adminEditState.telemetry.localDraftSavedAt = null
+    adminEditState.telemetry.source = 'server_live'
+  } catch {}
+}
+
+export function recordEditTelemetry(path: string, lang: string, value: any) {
+  const now = new Date().toISOString()
+  adminEditState.telemetry.lastModifiedPath = path
+  adminEditState.telemetry.lastModifiedTime = now
+  adminEditState.telemetry.source = 'local_storage'
+
+  const preview = typeof value === 'string' ? value.slice(0, 35) : String(value).slice(0, 35)
+  adminEditState.telemetry.recentEdits.unshift({
+    path,
+    lang,
+    time: now,
+    preview
+  })
+  if (adminEditState.telemetry.recentEdits.length > 5) {
+    adminEditState.telemetry.recentEdits.pop()
+  }
+}
+
 /** ---------- Helpers ---------- **/
 export function normalize(str: string | null | undefined): string {
   if (str == null) return ''
   return String(str)
-    .replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width
-    .replace(/\s+/g, ' ')
+    .replace(/[\u200B\uFEFF]/g, '') // Strip BOM and Zero-Width Space ONLY! PRESERVE \u200C (ZWNJ / نیم‌فاصله) and \u200D (ZWJ)!
+    .replace(/[ \t\r\f\v]+/g, ' ')
     .trim()
 }
 
@@ -195,6 +327,9 @@ function normForCompare(v: any, lang: LangCode): string {
 export function setSlug(slug: string) {
   if (adminEditState.slug !== slug) {
     adminEditState.slug = slug
+    if (typeof window !== 'undefined' && slug) {
+      loadDraftFromLocalStorage(slug)
+    }
   }
 }
 
@@ -372,11 +507,15 @@ export function setDraftValue(path: PathKey, lang: LangCode, newValue: string, t
   rec.updatedAt = new Date().toISOString()
   addVersion(path, lang, newValue, 'draft')
 
+  recordEditTelemetry(path, lang, newValue)
+
   // Only update reactive clientOverrides when syncOverrides is true (e.g. on blur or programmatic commit)
   // This guarantees 0ms typing lag and completely prevents cursor jumps
   if (syncOverrides) {
     updateClientOverride(path, lang, newValue, effectiveSlug)
   }
+
+  saveDraftToLocalStorage(effectiveSlug)
 
   if (process.dev) {
     logger.debug('Admin:Edit', `Draft updated on "${path}" [${lang.toUpperCase()}]: "${newValue.slice(0, 40)}${newValue.length > 40 ? '...' : ''}"`)
@@ -442,6 +581,11 @@ export function buildChangesPayload(lang: LangCode): { path: string; value: stri
 
 /** Record saved versions for saved paths */
 export function recordSavedVersions(lang: LangCode, paths: string[]) {
+  const now = new Date().toISOString()
+  adminEditState.telemetry.serverSyncedAt = now
+  adminEditState.telemetry.source = 'server_live'
+  adminEditState.lastSavedAt = now
+
   for (const path of paths) {
     const rec = adminEditState.changes[path]?.[lang]
     if (!rec) continue
@@ -451,6 +595,8 @@ export function recordSavedVersions(lang: LangCode, paths: string[]) {
     rec.draft = undefined
     addVersion(path, lang, savedVal, 'saved')
   }
+
+  saveDraftToLocalStorage()
 }
 
 /** Total modified fields for a language */
@@ -501,6 +647,8 @@ export function revertPath(path: PathKey, lang: LangCode) {
         el.removeAttribute('data-admin-changed')
       })
   }
+
+  saveDraftToLocalStorage(slug)
 }
 
 export function revertPathToOriginal(path: PathKey, lang: LangCode) {
@@ -531,6 +679,8 @@ export function discardAllChanges(lang: LangCode) {
     delete adminEditState.clientOverrides[slug][lang.toUpperCase()]
     delete adminEditState.clientOverrides[slug][lang.toLowerCase()]
   }
+
+  clearDraftFromLocalStorage(slug)
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('admin:array-changed', {

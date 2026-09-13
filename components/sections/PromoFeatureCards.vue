@@ -54,7 +54,7 @@ const cardsPrev: FeatureCard[] = [
 
 function bgUtility (card: FeatureCard) {
   // These utility names are registered once in uno.config.ts → see docs
-  if (card.id === 1) return 'bg-[#E9E9E1]/100 bg-cover bg-no-repeat bg-card-1 bg-position-[center_bottom_10rem]  md:bg-card-1'
+  if (card.id === 1) return 'bg-[#E9E9E1]/100 bg-contain bg-no-repeat bg-card-1 bg-position-[center_bottom_10rem]  md:bg-card-1'
   if (card.id === 2) return 'scale-x-[-1]  bg-[#E9E9E1]/100  bg-cover bg-no-repeat bg-card-2 sm:bg-card-2-bet md:bg-card-2'
   return 'bg-cover bg-no-repeat bg-card-3'
 }

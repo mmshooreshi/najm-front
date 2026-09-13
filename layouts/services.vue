@@ -9,9 +9,9 @@
       class="fixed top-0 left-0 w-full z-50"
     />
 
-    <div :dir="isRTL ? 'rtl' : 'ltr'" class="relative min-h-screen pt-16 bg-najmback flex flex-col justify-between">
+    <div :dir="isRTL ? 'rtl' : 'ltr'" class="relative min-h-screen pt-16 bg-najmback flex flex-col justify-between overflow-x-clip">
       <!-- Main content -->
-      <div class="w-full px-4 md:px-8 mt-4 pb-4 flex-grow">
+      <div class="w-full px-4 md:px-8 mt-4 pb-4 flex-grow overflow-x-clip">
         <slot />
       </div>
 

@@ -17,8 +17,25 @@ import {
 } from '@/store/adminEditStore'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
+import {
+  convertTextDigits,
+  fixBiDiPhoneAndRange,
+  insertZwnjAtCursor,
+  setElementDirection,
+  setElementAlignment,
+  setElementBidiOverride
+} from '@/utils/bidi'
 
-/** ---------- ContentEditable helpers ---------- **/
+function isInsideAdminUI(target: HTMLElement | null): boolean {
+  if (!target) return false
+  return !!(
+    target.closest('.admin-floating-dock') ||
+    target.closest('.admin-hover-badge') ||
+    target.closest('.admin-modal') ||
+    target.closest('[role="dialog"]')
+  )
+}
+
 /** ---------- ContentEditable helpers ---------- **/
 function setEditable(el: HTMLElement, on: boolean) {
   if (on) {
@@ -50,16 +67,138 @@ function updateElementState(el: HTMLElement, path: string, lang: string) {
   }
 }
 
-/** ---------- Instant Hover Badge for Editable Elements ---------- **/
+/** ---------- Instant Hover Micro-Toolbar for Editable Elements ---------- **/
 let hoverBadgeEl: HTMLDivElement | null = null
 let hoverBadgeDot: HTMLSpanElement | null = null
 let hoverBadgeText: HTMLSpanElement | null = null
-let hoverBadgeCopy: HTMLButtonElement | null = null
 let hoverBadgeRevert: HTMLButtonElement | null = null
 let currentBadgePath = ''
 let currentBadgeEl: HTMLElement | null = null
 let hoverActiveTarget: HTMLElement | null = null
 let hideBadgeTimer: any = null
+
+function createToolbarButton(
+  text: string,
+  title: string,
+  onClick: (e: MouseEvent) => void,
+  isDanger = false
+): HTMLButtonElement {
+  const btn = document.createElement('button')
+  btn.type = 'button'
+  btn.textContent = text
+  btn.title = title
+  btn.style.cssText = `
+    background: ${isDanger ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.08)'};
+    color: ${isDanger ? '#fca5a5' : '#e5e7eb'};
+    border: 1px solid ${isDanger ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.14)'};
+    padding: 2px 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.2;
+    transition: all 0.12s ease;
+    user-select: none;
+    outline: none;
+    white-space: nowrap;
+  `
+  btn.addEventListener('mousedown', (e) => {
+    e.preventDefault() // Prevents editable element from losing focus or text selection!
+  })
+  btn.addEventListener('mouseenter', () => {
+    btn.style.background = isDanger ? 'rgba(239,68,68,0.35)' : 'rgba(255,255,255,0.2)'
+    btn.style.color = '#ffffff'
+  })
+  btn.addEventListener('mouseleave', () => {
+    btn.style.background = isDanger ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.08)'
+    btn.style.color = isDanger ? '#fca5a5' : '#e5e7eb'
+  })
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation()
+    onClick(e)
+  })
+  return btn
+}
+
+function createSeparator(): HTMLSpanElement {
+  const sep = document.createElement('span')
+  sep.style.cssText = 'display:inline-block;width:1px;height:12px;background:rgba(255,255,255,0.18);margin:0 2px;flex-shrink:0;'
+  return sep
+}
+
+function applyDigitConversion(target: 'FA' | 'AR' | 'EN') {
+  if (!currentBadgeEl) return
+  const sel = window.getSelection()
+  const hasSelection = !!(sel && sel.rangeCount > 0 && !sel.isCollapsed && currentBadgeEl.contains(sel.anchorNode))
+
+  if (hasSelection) {
+    const selectedText = sel!.toString()
+    const converted = convertTextDigits(selectedText, target)
+    try {
+      document.execCommand('insertText', false, converted)
+    } catch {
+      currentBadgeEl.textContent = convertTextDigits(getText(currentBadgeEl), target)
+    }
+  } else {
+    const fullText = getText(currentBadgeEl)
+    const converted = convertTextDigits(fullText, target)
+    currentBadgeEl.textContent = converted
+  }
+
+  currentBadgeEl.dispatchEvent(new Event('input', { bubbles: true }))
+  updateElementState(currentBadgeEl, currentBadgePath, state.language)
+  const labels = { FA: 'فارسی (۱۲۳)', AR: 'عربی (١٢٣)', EN: 'انگلیسی (123)' }
+  toast(`اعداد به ${labels[target]} تبدیل شدند`, 'success')
+}
+
+function applyBidiPhoneFix() {
+  if (!currentBadgeEl) return
+  const fullText = getText(currentBadgeEl)
+  const fixed = fixBiDiPhoneAndRange(fullText)
+  currentBadgeEl.textContent = fixed
+  currentBadgeEl.dispatchEvent(new Event('input', { bubbles: true }))
+  updateElementState(currentBadgeEl, currentBadgePath, state.language)
+  toast('ترتیب شماره تلفن و کلمات میانی اصلاح شد (BiDi Phone Fix)', 'success')
+}
+
+function applyZwnj() {
+  if (!currentBadgeEl) return
+  if (document.activeElement !== currentBadgeEl) {
+    currentBadgeEl.focus()
+  }
+  const ok = insertZwnjAtCursor()
+  if (ok) {
+    currentBadgeEl.dispatchEvent(new Event('input', { bubbles: true }))
+    updateElementState(currentBadgeEl, currentBadgePath, state.language)
+    toast('نیم‌فاصله درج شد (ZWNJ / \\u200C)', 'info')
+  }
+}
+
+function toggleDirection() {
+  if (!currentBadgeEl) return
+  const currentDir = currentBadgeEl.getAttribute('dir') || window.getComputedStyle(currentBadgeEl).direction
+  const nextDir = currentDir === 'rtl' ? 'ltr' : 'rtl'
+  setElementDirection(currentBadgeEl, nextDir as any)
+  toast(`جهت متن: ${nextDir.toUpperCase()}`, 'info')
+}
+
+function applyAlignment(align: 'right' | 'center' | 'left') {
+  if (!currentBadgeEl) return
+  setElementAlignment(currentBadgeEl, align as any)
+  toast(`چینش متن: ${align}`, 'info')
+}
+
+function toggleBidiOverride() {
+  if (!currentBadgeEl) return
+  const isRlo = currentBadgeEl.style.unicodeBidi === 'bidi-override'
+  if (isRlo) {
+    setElementBidiOverride(currentBadgeEl, 'normal')
+    toast('حالت BiDi Override عادی شد', 'info')
+  } else {
+    setElementBidiOverride(currentBadgeEl, 'rlo')
+    toast('حالت BiDi Override (راست به چپ) فعال شد', 'info')
+  }
+}
 
 function getOrCreateHoverBadge(): HTMLDivElement {
   if (hoverBadgeEl) return hoverBadgeEl
@@ -71,56 +210,82 @@ function getOrCreateHoverBadge(): HTMLDivElement {
     pointer-events: auto;
     display: none;
     align-items: center;
-    gap: 6px;
-    padding: 3px 8px;
+    gap: 4px;
+    padding: 3px 6px;
     font-size: 11px;
     font-weight: 500;
-    background: rgba(18, 18, 20, 0.95);
+    background: rgba(18, 18, 22, 0.95);
     color: #f3f4f6;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 8px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
+    border-radius: 9px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(14px);
     transition: opacity 0.1s ease;
     transform: translateY(0);
     opacity: 0;
     user-select: none;
+    max-width: 95vw;
+    overflow-x: auto;
   `
 
   hoverBadgeDot = document.createElement('span')
   hoverBadgeDot.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;flex-shrink:0;'
 
   hoverBadgeText = document.createElement('span')
-  hoverBadgeText.style.cssText = 'opacity:0.95;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;'
+  hoverBadgeText.style.cssText = 'opacity:0.9;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-family:monospace;flex-shrink:0;'
 
-  hoverBadgeCopy = document.createElement('button')
-  hoverBadgeCopy.textContent = 'Copy'
-  hoverBadgeCopy.style.cssText = 'background:rgba(255,255,255,0.08);color:#d1d5db;border:1px solid rgba(255,255,255,0.12);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;margin-left:2px;'
-  hoverBadgeCopy.addEventListener('click', (e) => {
-    e.stopPropagation()
+  // 1. Digits group
+  const btnFa = createToolbarButton('۱۲۳', 'تبدیل اعداد به فارسی (Persian Digits)', () => applyDigitConversion('FA'))
+  const btnAr = createToolbarButton('١٢٣', 'تبدیل اعداد به عربی (Arabic Digits)', () => applyDigitConversion('AR'))
+  const btnEn = createToolbarButton('123', 'تبدیل اعداد به انگلیسی (Latin Digits)', () => applyDigitConversion('EN'))
+
+  // 2. Persian ZWNJ & BiDi Phone/Range Fixer
+  const btnZwnj = createToolbarButton('‌ نیم‌فاصله', 'درج نیم‌فاصله (Shift+Space)', () => applyZwnj())
+  const btnPhone = createToolbarButton('📞 تلفن/بازه', 'اصلاح ترتیب تلفن و کلمات میانی نظیر الی/تا (۰۲۱-۸۸۹۸۷۰۶۷ الی ۶۹)', () => applyBidiPhoneFix())
+
+  // 3. Direction & Alignment
+  const btnDir = createToolbarButton('RTL/LTR', 'تغییر جهت (RTL ⇄ LTR)', () => toggleDirection())
+  const btnAlignR = createToolbarButton('⇤', 'چینش راست', () => applyAlignment('right'))
+  const btnAlignC = createToolbarButton('↔', 'چینش وسط', () => applyAlignment('center'))
+  const btnAlignL = createToolbarButton('⇥', 'چینش چپ', () => applyAlignment('left'))
+  const btnRlo = createToolbarButton('RLO', 'تغییر وضعیت BiDi Override اجباری', () => toggleBidiOverride())
+
+  // 4. Utility: Copy & Revert
+  const btnCopy = createToolbarButton('📋', 'کپی آدرس فیلد', (e) => {
     if (currentBadgePath && navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(currentBadgePath)
-      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Copied path: ${currentBadgePath}` } }))
+      toast(`آدرس کپی شد: ${currentBadgePath}`, 'success')
     }
   })
 
-  hoverBadgeRevert = document.createElement('button')
-  hoverBadgeRevert.textContent = 'Revert'
-  hoverBadgeRevert.style.cssText = 'background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);padding:1px 6px;border-radius:4px;cursor:pointer;font-size:10px;display:none;'
-  hoverBadgeRevert.addEventListener('click', (e) => {
-    e.stopPropagation()
+  hoverBadgeRevert = createToolbarButton('↺', 'بازگردانی به مقدار سرور', (e) => {
     if (currentBadgePath) {
       revertPath(currentBadgePath, state.language || 'fa')
       if (currentBadgeEl) {
         showHoverBadge(currentBadgeEl, currentBadgePath)
       }
-      window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `Reverted "${currentBadgePath}"` } }))
+      toast(`فیلد "${currentBadgePath}" بازگردانی شد`, 'info')
     }
-  })
+  }, true)
+  hoverBadgeRevert.style.display = 'none'
 
   hoverBadgeEl.appendChild(hoverBadgeDot)
   hoverBadgeEl.appendChild(hoverBadgeText)
-  hoverBadgeEl.appendChild(hoverBadgeCopy)
+  hoverBadgeEl.appendChild(createSeparator())
+  hoverBadgeEl.appendChild(btnFa)
+  hoverBadgeEl.appendChild(btnAr)
+  hoverBadgeEl.appendChild(btnEn)
+  hoverBadgeEl.appendChild(createSeparator())
+  hoverBadgeEl.appendChild(btnZwnj)
+  hoverBadgeEl.appendChild(btnPhone)
+  hoverBadgeEl.appendChild(createSeparator())
+  hoverBadgeEl.appendChild(btnDir)
+  hoverBadgeEl.appendChild(btnAlignR)
+  hoverBadgeEl.appendChild(btnAlignC)
+  hoverBadgeEl.appendChild(btnAlignL)
+  hoverBadgeEl.appendChild(btnRlo)
+  hoverBadgeEl.appendChild(createSeparator())
+  hoverBadgeEl.appendChild(btnCopy)
   hoverBadgeEl.appendChild(hoverBadgeRevert)
 
   hoverBadgeEl.addEventListener('mouseenter', () => {
@@ -140,7 +305,6 @@ function getOrCreateHoverBadge(): HTMLDivElement {
 
 function showHoverBadge(el: HTMLElement, path: string) {
   if (!state.canEdit || !state.editMode) return
-  if ((el as any)._isFocused || document.activeElement === el) return
   if (!el || isInsideAdminUI(el)) return
 
   if (hideBadgeTimer) {
@@ -161,14 +325,28 @@ function showHoverBadge(el: HTMLElement, path: string) {
 
   const rect = el.getBoundingClientRect()
   badge.style.display = 'inline-flex'
-  badge.style.top = `${Math.max(8, rect.top - 32)}px`
-  badge.style.left = `${Math.max(8, rect.left)}px`
+
+  let top = rect.top - 36
+  if (top < 10) {
+    top = rect.bottom + 6
+  }
+  let left = rect.left
+  const badgeWidth = 460
+  if (typeof window !== 'undefined' && left + badgeWidth > window.innerWidth - 12) {
+    left = Math.max(12, window.innerWidth - badgeWidth - 12)
+  }
+  badge.style.top = `${Math.round(top)}px`
+  badge.style.left = `${Math.round(left)}px`
   badge.style.opacity = '1'
 }
 
 function hideHoverBadge() {
   if (hideBadgeTimer) clearTimeout(hideBadgeTimer)
   hideBadgeTimer = setTimeout(() => {
+    // If active element is focused, maintain the micro-toolbar
+    if (currentBadgeEl && (currentBadgeEl as any)._isFocused) {
+      return
+    }
     if (hoverBadgeEl) {
       hoverBadgeEl.style.opacity = '0'
       setTimeout(() => {
@@ -178,7 +356,7 @@ function hideHoverBadge() {
       }, 100)
     }
     hoverActiveTarget = null
-  }, 120)
+  }, 150)
 }
 
 /** ---------- Notification Toast Host ---------- **/
@@ -322,6 +500,14 @@ export default defineNuxtPlugin(nuxtApp => {
       // Set initial editable state
       setEditable(el, state.canEdit && state.editMode)
       ensureBaseline(path, state.language, getText(el), targetSlug)
+
+      // Restore existing draft from LocalStorage if present
+      const existingDraft = state.changes[path]?.[state.language]?.draft
+      if (existingDraft !== undefined && existingDraft !== null) {
+        if (getText(el) !== existingDraft) {
+          el.textContent = existingDraft
+        }
+      }
       updateElementState(el, path, state.language)
 
       // Zero-lag, non-destructive input handler
@@ -335,9 +521,6 @@ export default defineNuxtPlugin(nuxtApp => {
         el.classList.add('v-editable--changed')
         el.setAttribute('data-admin-changed', 'true')
 
-        // Hide hover badge while actively typing so it never obscures the cursor or runs getBoundingClientRect()
-        hideHoverBadge()
-
         // Debounce store updates so rapid keystrokes (e.g. "aaaaaa") have 0ms latency and 0 CPU thrashing
         if (inputDebounceTimer) clearTimeout(inputDebounceTimer)
         inputDebounceTimer = setTimeout(() => {
@@ -345,11 +528,20 @@ export default defineNuxtPlugin(nuxtApp => {
         }, 200)
       }
 
+      const onKeyDown = (e: KeyboardEvent) => {
+        // Intercept Shift+Space to insert true Persian ZWNJ (\u200C / نیم‌فاصله)
+        if (e.shiftKey && (e.code === 'Space' || e.key === ' ')) {
+          e.preventDefault()
+          insertZwnjAtCursor()
+          onInput()
+        }
+      }
+
       const onFocus = () => {
         (el as any)._isFocused = true
-        hideHoverBadge()
         if (state.canEdit && state.editMode) {
           setEditingActive(path, true)
+          showHoverBadge(el, path)
         }
       }
 
@@ -368,6 +560,7 @@ export default defineNuxtPlugin(nuxtApp => {
           setValueSilently(path, state.language, text, targetSlug)
         }
         updateElementState(el, path, state.language)
+        hideHoverBadge()
       }
 
       const onMouseEnter = () => {
@@ -407,6 +600,7 @@ export default defineNuxtPlugin(nuxtApp => {
       el.addEventListener('mousedown', onMouseDown)
       el.addEventListener('click', onClick)
       el.addEventListener('paste', onPaste)
+      el.addEventListener('keydown', onKeyDown)
 
       ;(el as any)._adminCleanup = () => {
         if (inputDebounceTimer) clearTimeout(inputDebounceTimer)
@@ -418,6 +612,7 @@ export default defineNuxtPlugin(nuxtApp => {
         el.removeEventListener('mousedown', onMouseDown)
         el.removeEventListener('click', onClick)
         el.removeEventListener('paste', onPaste)
+        el.removeEventListener('keydown', onKeyDown)
       }
     },
 
