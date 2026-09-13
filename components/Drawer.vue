@@ -58,7 +58,7 @@
           </div>
 
           <!-- Mobile Profile / Login Card -->
-          <div class="px-3 sm:px-6 pt-3 pb-2 flex-shrink-0">
+          <div class="px-3 sm:px-6 pt-3 pb-2 flex-shrink-0 drawer-stagger-item" style="--item-idx: 0;">
             <NuxtLink
               :to="isAuthenticated && user?.name ? localePath(`/user/${user?.id || ''}`) : localePath('/login')"
               @click="closeDrawer"
@@ -205,10 +205,10 @@ onBeforeUnmount(() => {
 /* Backdrop Fade */
 .drawer-backdrop-appear-active,
 .drawer-backdrop-enter-active {
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.46s cubic-bezier(0.16, 1, 0.28, 1);
 }
 .drawer-backdrop-leave-active {
-  transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: opacity 0.30s cubic-bezier(0.35, 0, 0.65, 0);
 }
 .drawer-backdrop-appear-from,
 .drawer-backdrop-enter-from,
@@ -221,13 +221,13 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-/* Slide Drawer RTL (FA & AR: Slides in from LEFT to RIGHT) */
+/* Slide Drawer RTL (FA & AR: Slides in from LEFT to RIGHT with subtle soothing cushion) */
 .drawer-slide-rtl-appear-active,
 .drawer-slide-rtl-enter-active {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.46s cubic-bezier(0.16, 1.05, 0.28, 1);
 }
 .drawer-slide-rtl-leave-active {
-  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.30s cubic-bezier(0.35, 0, 0.65, 0);
 }
 .drawer-slide-rtl-appear-from,
 .drawer-slide-rtl-enter-from,
@@ -240,13 +240,13 @@ onBeforeUnmount(() => {
   transform: translate3d(0, 0, 0);
 }
 
-/* Slide Drawer LTR (EN: Slides in from RIGHT to LEFT) */
+/* Slide Drawer LTR (EN: Slides in from RIGHT to LEFT with subtle soothing cushion) */
 .drawer-slide-ltr-appear-active,
 .drawer-slide-ltr-enter-active {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.46s cubic-bezier(0.16, 1.05, 0.28, 1);
 }
 .drawer-slide-ltr-leave-active {
-  transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.30s cubic-bezier(0.35, 0, 0.65, 0);
 }
 .drawer-slide-ltr-appear-from,
 .drawer-slide-ltr-enter-from,
@@ -259,9 +259,53 @@ onBeforeUnmount(() => {
   transform: translate3d(0, 0, 0);
 }
 
+/* Alive Staggered Items Animation - subtle rubbery settling */
+.drawer-slide-rtl-appear-active :deep(.drawer-stagger-item),
+.drawer-slide-rtl-enter-active :deep(.drawer-stagger-item) {
+  animation: drawerItemInRTL 0.44s cubic-bezier(0.16, 1.08, 0.28, 1) backwards;
+  animation-delay: calc(0.06s + var(--item-idx, 0) * 0.045s);
+}
+
+.drawer-slide-ltr-appear-active :deep(.drawer-stagger-item),
+.drawer-slide-ltr-enter-active :deep(.drawer-stagger-item) {
+  animation: drawerItemInLTR 0.44s cubic-bezier(0.16, 1.08, 0.28, 1) backwards;
+  animation-delay: calc(0.06s + var(--item-idx, 0) * 0.045s);
+}
+
+@keyframes drawerItemInRTL {
+  0% {
+    opacity: 0;
+    transform: translate3d(-16px, 4px, 0);
+  }
+  68% {
+    opacity: 0.95;
+    transform: translate3d(1.5px, -0.5px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes drawerItemInLTR {
+  0% {
+    opacity: 0;
+    transform: translate3d(16px, 4px, 0);
+  }
+  68% {
+    opacity: 0.95;
+    transform: translate3d(-1.5px, -0.5px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 aside {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transform-style: preserve-3d;
+  will-change: transform;
 }
 </style>

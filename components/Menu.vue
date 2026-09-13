@@ -1,7 +1,12 @@
 <!-- components/Menu.vue -->
 <template>
   <nav class="w-full max-w-xl mx-auto py-2" :dir="isRTL ? 'rtl' : 'ltr'" aria-label="Sidebar Navigation">
-    <div v-for="(section, sIdx) in sections || []" :key="section?.id || sIdx" class="mb-4">
+    <div
+      v-for="(section, sIdx) in sections || []"
+      :key="section?.id || sIdx"
+      class="mb-4 drawer-stagger-item"
+      :style="{ '--item-idx': sIdx + 1 }"
+    >
       
       <!-- Accordion Section -->
       <BaseAccordionGroupNew 
