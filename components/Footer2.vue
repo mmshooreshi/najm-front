@@ -3,7 +3,8 @@
   <footer
     data-admin-slug="footer"
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 pb-4 md:pb-2.5 select-text transition-all duration-300"
+    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 pb-8 sm:pb-6 select-text"
+    style="padding-bottom: max(2rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));"
   >
     <!-- Top Centered Brand Logo -->
     <div class="flex justify-center pb-5 md:pb-6">

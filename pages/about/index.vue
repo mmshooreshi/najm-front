@@ -350,6 +350,16 @@ const activeSection = ref('vision')
 let isNavBypassing = false
 let navBypassTimer: ReturnType<typeof setTimeout> | null = null
 
+function cancelNavBypass() {
+  if (isNavBypassing) {
+    isNavBypassing = false
+    if (navBypassTimer) {
+      clearTimeout(navBypassTimer)
+      navBypassTimer = null
+    }
+  }
+}
+
 let scrollTicking = false
 function handleScrollDirection() {
   if (typeof window === 'undefined' || scrollTicking) return
@@ -507,16 +517,6 @@ onMounted(async () => {
     window.addEventListener('scroll', handleScrollDirection, { passive: true })
   }
   isMounted.value = true
-
-  const cancelNavBypass = () => {
-    if (isNavBypassing) {
-      isNavBypassing = false
-      if (navBypassTimer) {
-        clearTimeout(navBypassTimer)
-        navBypassTimer = null
-      }
-    }
-  }
 
   const observer = new IntersectionObserver(
     entries => {

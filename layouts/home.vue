@@ -28,6 +28,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const menuOpen = ref(false)
 let smootherInstance: ScrollSmoother | null = null
+let contentResizeObserver: ResizeObserver | null = null
+let refreshTimer: ReturnType<typeof setTimeout> | null = null
+
+function scheduleScrollRefresh() {
+  if (refreshTimer) clearTimeout(refreshTimer)
+  refreshTimer = setTimeout(() => {
+    ScrollTrigger.refresh()
+  }, 100)
+}
 
 onMounted(async () => {
   await nextTick()
@@ -54,9 +63,33 @@ onMounted(async () => {
 
   // Refresh ScrollTrigger so trigger positions are calculated accurately
   ScrollTrigger.refresh()
+
+  // Continuously synchronize scroll boundaries as dynamic async content (Map, images, fonts, UI schemas) loads
+  const contentEl = document.getElementById('smooth-content')
+  if (contentEl && typeof ResizeObserver !== 'undefined') {
+    contentResizeObserver = new ResizeObserver(() => {
+      scheduleScrollRefresh()
+    })
+    contentResizeObserver.observe(contentEl)
+  }
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('load', scheduleScrollRefresh, { passive: true })
+  }
 })
 
 onBeforeUnmount(() => {
+  if (contentResizeObserver) {
+    contentResizeObserver.disconnect()
+    contentResizeObserver = null
+  }
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('load', scheduleScrollRefresh)
+  }
+  if (refreshTimer) {
+    clearTimeout(refreshTimer)
+    refreshTimer = null
+  }
   if (smootherInstance) {
     smootherInstance.kill()
     smootherInstance = null

@@ -16,7 +16,7 @@
       </div>
 
       <!-- Shared Footer -->
-      <div :class="[primaryCtaLabel || secondaryCtaLabel ? 'pb-8 sm:pb-7' : '']">
+      <div :class="[primaryCtaLabel || secondaryCtaLabel ? 'pb-24 sm:pb-28' : '']">
         <Footer2 />
       </div>
 
