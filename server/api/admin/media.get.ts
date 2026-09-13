@@ -9,23 +9,26 @@ const PB_SUPERUSER_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9
 
 const SUPPORTED_EXTENSIONS = new Set([
   'png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'svg',
-  'mp4', 'webm', 'ogg', 'mov',
-  'mp3', 'wav', 'm4a',
-  'pdf', 'psd', 'ai'
+  'mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv',
+  'mp3', 'wav', 'm4a', 'aac', 'flac',
+  'pdf', 'psd', 'ai', 'eps', 'cdr', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'zip'
 ])
 
-function scanLocalDirectory(dir: string, baseDir: string, list: any[] = []) {
+function scanLocalDirectory(dir: string, baseDir: string, list: any[] = [], urlPrefix = '') {
   try {
     if (!fs.existsSync(dir)) return list
     const entries = fs.readdirSync(dir, { withFileTypes: true })
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name)
       if (entry.isDirectory()) {
-        scanLocalDirectory(fullPath, baseDir, list)
+        scanLocalDirectory(fullPath, baseDir, list, urlPrefix)
       } else if (entry.isFile()) {
         const ext = entry.name.split('.').pop()?.toLowerCase() || ''
         if (SUPPORTED_EXTENSIONS.has(ext)) {
-          const relPath = '/' + path.relative(baseDir, fullPath).replace(/\\/g, '/')
+          let relPath = '/' + path.relative(baseDir, fullPath).replace(/\\/g, '/')
+          if (urlPrefix) {
+            relPath = `${urlPrefix}${relPath}`.replace(/\/+/g, '/')
+          }
           let size = 0
           try {
             const stat = fs.statSync(fullPath)
@@ -33,9 +36,9 @@ function scanLocalDirectory(dir: string, baseDir: string, list: any[] = []) {
           } catch {}
 
           let category = 'image'
-          if (['mp4', 'webm', 'ogg', 'mov'].includes(ext)) category = 'video'
-          else if (['mp3', 'wav', 'm4a'].includes(ext)) category = 'audio'
-          else if (['pdf', 'psd', 'ai'].includes(ext)) category = 'document'
+          if (['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv'].includes(ext)) category = 'video'
+          else if (['mp3', 'wav', 'm4a', 'aac', 'flac'].includes(ext)) category = 'audio'
+          else if (['pdf', 'psd', 'ai', 'eps', 'cdr', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'zip'].includes(ext)) category = 'document'
           else if (ext === 'svg') category = 'vector'
 
           list.push({
@@ -114,6 +117,20 @@ export default defineEventHandler(async (event) => {
       if (!seenUrls.has(item.url)) {
         seenUrls.add(item.url)
         allItems.push(item)
+      }
+    }
+  } catch (err) {}
+
+  // 2b. Scan .data/uploads directory if present
+  try {
+    const dataUploadsDir = path.resolve(process.cwd(), '.data', 'uploads')
+    if (fs.existsSync(dataUploadsDir)) {
+      const dataFiles = scanLocalDirectory(dataUploadsDir, dataUploadsDir, [], '/uploads')
+      for (const item of dataFiles) {
+        if (!seenUrls.has(item.url)) {
+          seenUrls.add(item.url)
+          allItems.push(item)
+        }
       }
     }
   } catch (err) {}

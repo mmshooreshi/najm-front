@@ -652,27 +652,60 @@ function removeFaq(idx: number) {
 }
 
 const formattedJsonLd = computed(() => {
+  const brandTitle = currentLang.value === 'en' ? 'Najm Printing & Packaging' : (currentLang.value === 'ar' ? 'مجمع نجم للطباعة والتغليف' : 'مجتمع چاپ و بسته‌بندی نجم')
+  const langCode = currentLang.value === 'en' ? 'en-US' : (currentLang.value === 'ar' ? 'ar-SA' : 'fa-IR')
+  const pageUrl = `https://chapenajm.com${currentLang.value === 'fa' ? '' : '/' + currentLang.value}/${currentSlug.value || ''}`
+  
+  const graphElements: any[] = [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://chapenajm.com/#website',
+      name: brandTitle,
+      url: 'https://chapenajm.com',
+      description: displayDescription.value,
+      inLanguage: ['fa-IR', 'en-US', 'ar-SA']
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: displayTitle.value,
+      description: displayDescription.value,
+      inLanguage: langCode,
+      isPartOf: { '@id': 'https://chapenajm.com/#website' },
+      about: { '@id': 'https://chapenajm.com/#organization' }
+    }
+  ]
+
+  const validFaqs = seoState.faqs.filter(f => f.question && f.answer)
+  if (validFaqs.length > 0) {
+    graphElements.push({
+      '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
+      mainEntity: validFaqs.map(f => ({
+        '@type': 'Question',
+        name: f.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: f.answer
+        }
+      }))
+    })
+  }
+
+  if (seoState.aeoSummary) {
+    graphElements.push({
+      '@type': 'AboutPage',
+      '@id': `${pageUrl}#aeo`,
+      name: `${brandTitle} - AEO`,
+      description: seoState.aeoSummary,
+      keywords: seoState.entities?.length ? seoState.entities : undefined
+    })
+  }
+
   const graph = {
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebSite',
-        name: 'مجتمع چاپ و بسته‌بندی نجم',
-        url: 'https://chapenajm.com',
-        description: displayDescription.value
-      },
-      {
-        '@type': 'FAQPage',
-        mainEntity: seoState.faqs.filter(f => f.question && f.answer).map(f => ({
-          '@type': 'Question',
-          name: f.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: f.answer
-          }
-        }))
-      }
-    ]
+    '@graph': graphElements
   }
   return JSON.stringify(graph, null, 2)
 })

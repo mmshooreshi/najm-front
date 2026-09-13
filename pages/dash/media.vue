@@ -44,41 +44,85 @@
 
     <!-- Drag & Drop Dropzone (Bound to Current Folder Path) -->
     <div
-      class="border-2 border-dashed rounded-3xl p-5 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2 relative overflow-hidden"
+      class="border-2 border-dashed rounded-3xl p-5 text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-2.5 relative overflow-hidden group"
       :class="isDragging ? 'border-emerald-400 bg-emerald-500/10' : 'border-white/10 bg-zinc-900/60 hover:border-emerald-500/40 hover:bg-zinc-900/90'"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
       @drop.prevent="onDropFile"
       @click="triggerUpload"
     >
-      <div class="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-xs">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 shadow-xs group-hover:scale-105 transition-transform">
         <AdminIcon name="upload" class="w-5 h-5" />
       </div>
-      <div>
-        <div class="font-bold text-xs text-zinc-200 font-d4">
+
+      <div class="space-y-1">
+        <div class="font-bold text-xs sm:text-sm text-zinc-100 font-d4">
           فایل‌های خود را به اینجا بکشید یا برای انتخاب از سیستم کلیک کنید
         </div>
-        <div class="flex items-center justify-center gap-2 text-[11px] text-zinc-400 font-mono mt-1">
-          <span>مسیر آپلود مقصد:</span>
-          <span class="px-2 py-0.5 rounded-md bg-zinc-950 border border-emerald-500/30 text-emerald-300 font-bold">
-            {{ currentFolder ? `/${currentFolder}` : '/ (ریشه اصلی)' }}
-          </span>
-        </div>
+        <p class="text-[11px] text-zinc-400 font-d4">
+          پشتیبانی از انواع فایل‌های سنگین تا ۱۰۰ مگابایت با بارگذاری روان، استریم بدون قطعی و لینک دائمی
+        </p>
+      </div>
+
+      <!-- Format Pills Guide -->
+      <div class="flex items-center gap-1.5 flex-wrap justify-center text-[10px] font-mono pt-1">
+        <span class="px-2 py-0.5 rounded-lg bg-rose-500/15 text-rose-300 border border-rose-500/25 font-bold">PDF کاتالوگ و اسناد</span>
+        <span class="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/25 font-bold">AI / PSD تیغ و گرافیک</span>
+        <span class="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-bold">SVG / وکتور</span>
+        <span class="px-2 py-0.5 rounded-lg bg-blue-500/15 text-blue-300 border border-blue-500/25 font-bold">WEBP / PNG / JPG</span>
+        <span class="px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-300 border border-cyan-500/25 font-bold">MP4 ویدیو</span>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 text-[11px] text-zinc-400 font-mono pt-1">
+        <span>مسیر آپلود مقصد:</span>
+        <span class="px-2.5 py-0.5 rounded-md bg-zinc-950 border border-emerald-500/30 text-emerald-300 font-bold">
+          {{ currentFolder ? `/${currentFolder}` : '/ (ریشه اصلی)' }}
+        </span>
       </div>
     </div>
 
-    <!-- Upload Progress Bar -->
-    <div v-if="isUploading" class="p-4 rounded-2xl bg-zinc-900 border border-white/10 space-y-2">
-      <div class="flex justify-between text-xs font-semibold text-zinc-200 font-d4">
-        <span>در حال آپلود در مسیر "{{ currentFolder || 'root' }}"...</span>
-        <span class="font-mono text-emerald-400">{{ uploadProgress }}%</span>
+    <!-- Live Real-Time Upload Progress Card -->
+    <div v-if="isUploading" class="p-4 sm:p-5 rounded-3xl bg-zinc-900/95 border border-emerald-500/30 shadow-2xl space-y-3 relative overflow-hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-semibold text-zinc-200 font-d4">
+        <div class="flex items-center gap-2 truncate">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="font-bold text-white font-d4">در حال ارسال به سرور:</span>
+          <span class="font-mono text-emerald-300 truncate max-w-xs">{{ currentUploadingFile }}</span>
+          <span v-if="uploadQueueTotal > 1" class="px-2 py-0.5 rounded-md bg-white/10 text-[10px] font-mono text-zinc-300">
+            فایل {{ uploadQueueIndex }} از {{ uploadQueueTotal }}
+          </span>
+        </div>
+
+        <div class="flex items-center gap-3 font-mono text-[11px]">
+          <span v-if="uploadTotalBytes > 0" class="text-zinc-400">
+            {{ formatBytes(uploadLoadedBytes) }} / {{ formatBytes(uploadTotalBytes) }}
+          </span>
+          <span class="font-bold text-emerald-400 text-sm">{{ uploadProgress }}%</span>
+        </div>
       </div>
-      <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+
+      <!-- Animated Progress Bar -->
+      <div class="w-full h-2.5 bg-zinc-950 rounded-full overflow-hidden p-0.5 border border-white/10">
         <div
-          class="h-full bg-emerald-500 transition-all duration-150 rounded-full"
+          class="h-full bg-linear-to-r from-emerald-600 via-emerald-400 to-emerald-300 transition-all duration-150 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.7)]"
           :style="{ width: `${uploadProgress}%` }"
         ></div>
       </div>
+    </div>
+
+    <!-- Upload Error Alert -->
+    <div v-if="uploadError" class="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/40 text-xs flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2 text-rose-300 font-d4">
+        <AdminIcon name="x" class="w-4 h-4 text-rose-400 shrink-0" />
+        <span>{{ uploadError }}</span>
+      </div>
+      <button
+        type="button"
+        @click="uploadError = ''"
+        class="px-3 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 text-[11px] font-d4 cursor-pointer"
+      >
+        متوجه شدم
+      </button>
     </div>
 
     <!-- MAIN TWO-COLUMN WORKSPACE: FOLDER TREE (Left) + FILE EXPLORER (Right) -->
@@ -338,7 +382,7 @@
           </button>
         </div>
 
-        <!-- 1. GRID VIEW (Compact Visual Grid) -->
+        <!-- 1. GRID VIEW (Compact Visual Grid with Specialized PDF & Media Cards) -->
         <div v-else-if="viewMode === 'grid'" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5">
           <div
             v-for="item in filteredItems"
@@ -350,27 +394,63 @@
           >
             <!-- Visual Box -->
             <div class="relative aspect-square bg-zinc-950 flex items-center justify-center p-2 overflow-hidden">
+              <!-- A. IMAGE & VECTOR PREVIEW -->
               <img
-                v-if="item.category === 'image' || item.category === 'vector'"
+                v-if="item.category === 'image' || (item.category === 'vector' && item.format === 'SVG')"
                 :src="item.url"
                 :alt="item.filename"
                 class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-200"
                 loading="lazy"
               />
 
-              <div v-else-if="item.category === 'video'" class="flex flex-col items-center justify-center gap-1.5 text-cyan-400">
-                <AdminIcon name="play" class="w-8 h-8" />
-                <span class="text-[10px] font-mono font-bold uppercase">ویدیو</span>
+              <!-- B. SPECIALIZED PDF PREVIEW CARD -->
+              <div
+                v-else-if="item.format === 'PDF' || item.mime === 'application/pdf'"
+                class="w-full h-full rounded-xl bg-linear-to-br from-rose-950/40 via-zinc-900 to-zinc-950 border border-rose-500/20 flex flex-col items-center justify-center p-3 text-center gap-1.5 cursor-pointer"
+                @click="openDocPreview(item)"
+              >
+                <div class="w-11 h-11 rounded-2xl bg-rose-500/15 text-rose-400 flex items-center justify-center border border-rose-500/30 shadow-inner group-hover:scale-110 transition-transform">
+                  <AdminIcon name="file-text" class="w-6 h-6" />
+                </div>
+                <span class="text-[11px] font-bold font-mono text-rose-300">Adobe PDF</span>
+                <span class="text-[10px] text-zinc-400 font-mono">{{ item.size ? formatBytes(item.size) : 'سند' }}</span>
               </div>
 
+              <!-- C. AI / PSD / DESIGN FILE PREVIEW -->
+              <div
+                v-else-if="['AI', 'PSD', 'EPS', 'CDR'].includes(item.format)"
+                class="w-full h-full rounded-xl bg-linear-to-br from-amber-950/30 via-zinc-900 to-zinc-950 border border-amber-500/20 flex flex-col items-center justify-center p-3 text-center gap-1.5 cursor-pointer"
+                @click="openDocPreview(item)"
+              >
+                <div class="w-11 h-11 rounded-2xl bg-amber-500/15 text-amber-400 flex items-center justify-center border border-amber-500/30 shadow-inner group-hover:scale-110 transition-transform">
+                  <AdminIcon name="layout" class="w-6 h-6" />
+                </div>
+                <span class="text-[11px] font-bold font-mono text-amber-300">{{ item.format }} تیغ/گرافیک</span>
+                <span class="text-[10px] text-zinc-400 font-mono">{{ item.size ? formatBytes(item.size) : 'سورس' }}</span>
+              </div>
+
+              <!-- D. VIDEO PREVIEW -->
+              <div
+                v-else-if="item.category === 'video'"
+                class="w-full h-full rounded-xl bg-linear-to-br from-cyan-950/40 via-zinc-900 to-zinc-950 border border-cyan-500/20 flex flex-col items-center justify-center p-3 text-center gap-1.5 cursor-pointer"
+                @click="openInNewTab(item.url)"
+              >
+                <div class="w-11 h-11 rounded-2xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center border border-cyan-500/30 shadow-inner group-hover:scale-110 transition-transform">
+                  <AdminIcon name="play" class="w-6 h-6" />
+                </div>
+                <span class="text-[10px] font-mono font-bold text-cyan-300 uppercase">ویدیو ({{ item.format }})</span>
+              </div>
+
+              <!-- E. AUDIO PREVIEW -->
               <div v-else-if="item.category === 'audio'" class="flex flex-col items-center justify-center gap-1.5 text-purple-400">
                 <AdminIcon name="sparkles" class="w-8 h-8" />
                 <span class="text-[10px] font-mono font-bold uppercase">صدا</span>
               </div>
 
-              <div v-else class="flex flex-col items-center justify-center gap-1.5 text-amber-400">
-                <AdminIcon name="download" class="w-8 h-8" />
-                <span class="text-[10px] font-mono font-bold uppercase">{{ item.format }}</span>
+              <!-- F. OTHER DOCUMENTS / FALLBACK -->
+              <div v-else class="flex flex-col items-center justify-center gap-1.5 text-zinc-400">
+                <AdminIcon name="document" class="w-8 h-8 text-zinc-300" />
+                <span class="text-[10px] font-mono font-bold uppercase text-zinc-300">{{ item.format }}</span>
               </div>
 
               <!-- Selection Checkbox -->
@@ -378,53 +458,94 @@
                 type="checkbox"
                 :checked="selectedFileIds.includes(item.id)"
                 @change="toggleSelectFile(item.id)"
-                class="absolute top-2 left-2 w-4 h-4 rounded accent-emerald-500 cursor-pointer z-10"
+                class="absolute top-2 left-2 w-4 h-4 rounded accent-emerald-500 cursor-pointer z-20"
               />
 
               <!-- Format Badge -->
-              <span class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase bg-zinc-950/80 text-zinc-300 border border-white/10 backdrop-blur-md">
+              <span
+                class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold uppercase border backdrop-blur-md z-10"
+                :class="item.format === 'PDF'
+                  ? 'bg-rose-950/80 text-rose-300 border-rose-500/40'
+                  : ['AI', 'PSD'].includes(item.format)
+                  ? 'bg-amber-950/80 text-amber-300 border-amber-500/40'
+                  : item.category === 'video'
+                  ? 'bg-cyan-950/80 text-cyan-300 border-cyan-500/40'
+                  : 'bg-zinc-950/80 text-zinc-300 border-white/10'"
+              >
                 {{ item.format }}
               </span>
 
               <!-- Hover Fast Actions Overlay -->
-              <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2 z-10">
+              <div class="absolute inset-0 bg-black/85 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2.5 z-20">
+                <!-- Primary Action based on file type -->
                 <button
                   v-if="item.category === 'image'"
                   type="button"
                   @click="openInStudio(item)"
-                  class="w-full py-1 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-[11px] font-bold font-d4 flex items-center justify-center gap-1 shadow-md cursor-pointer"
+                  class="w-full py-1.5 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-[11px] font-bold font-d4 flex items-center justify-center gap-1 shadow-md cursor-pointer"
                 >
                   <AdminIcon name="sparkles" class="w-3.5 h-3.5" />
-                  <span>ویرایش تصویر</span>
+                  <span>ویرایش در استودیو</span>
+                </button>
+
+                <button
+                  v-else-if="item.format === 'PDF' || item.mime === 'application/pdf'"
+                  type="button"
+                  @click="openDocPreview(item)"
+                  class="w-full py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold font-d4 flex items-center justify-center gap-1 shadow-md cursor-pointer"
+                >
+                  <AdminIcon name="eye" class="w-3.5 h-3.5" />
+                  <span>مشاهده و مطالعه PDF</span>
+                </button>
+
+                <button
+                  v-else
+                  type="button"
+                  @click="downloadFile(item)"
+                  class="w-full py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-[11px] font-bold font-d4 flex items-center justify-center gap-1 shadow-md cursor-pointer"
+                >
+                  <AdminIcon name="download" class="w-3.5 h-3.5" />
+                  <span>دانلود مستقیم</span>
                 </button>
 
                 <div class="flex items-center gap-1 w-full">
                   <button
                     type="button"
-                    @click="copyUrl(item.url)"
+                    @click="openInNewTab(item.url)"
                     class="flex-1 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] font-semibold flex items-center justify-center gap-1 cursor-pointer font-d4"
-                    title="کپی لینک مستقیم"
+                    title="باز کردن در برگه جدید"
                   >
-                    <AdminIcon name="link" class="w-3 h-3 text-emerald-400" />
-                    <span>لینک</span>
+                    <AdminIcon name="link" class="w-3 h-3 text-cyan-400" />
+                    <span>برگه جدید</span>
                   </button>
 
                   <button
                     type="button"
-                    @click="copyRelativePath(item.path || item.url)"
+                    @click="copyUrl(item.url)"
                     class="flex-1 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] font-semibold flex items-center justify-center gap-1 cursor-pointer font-d4"
-                    title="کپی مسیر نسبی"
+                    title="کپی لینک فایل"
                   >
-                    <span>مسیر</span>
+                    <AdminIcon name="link" class="w-3 h-3 text-emerald-400" />
+                    <span>کپی لینک</span>
                   </button>
                 </div>
 
                 <div class="flex items-center gap-1 w-full">
                   <button
                     type="button"
+                    @click="openRenameModal(item)"
+                    class="flex-1 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] font-semibold flex items-center justify-center gap-1 cursor-pointer font-d4"
+                    title="تغییر نام فایل"
+                  >
+                    <AdminIcon name="edit" class="w-3 h-3 text-indigo-400" />
+                    <span>نام</span>
+                  </button>
+
+                  <button
+                    type="button"
                     @click="openMoveModal(item)"
                     class="flex-1 py-1 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[10px] font-semibold flex items-center justify-center gap-1 cursor-pointer font-d4"
-                    title="تغییر پوشه"
+                    title="انتقال به پوشه"
                   >
                     <AdminIcon name="folder" class="w-3 h-3 text-amber-400" />
                     <span>انتقال</span>
@@ -465,14 +586,26 @@
             class="rounded-3xl bg-zinc-900/90 border border-white/10 hover:border-emerald-500/50 transition-all p-4 flex flex-col justify-between gap-3 shadow-sm"
           >
             <div class="flex items-start gap-3">
-              <div class="w-16 h-16 rounded-2xl bg-zinc-950 border border-white/10 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+              <!-- Thumbnail or Document Badge -->
+              <div
+                class="w-16 h-16 rounded-2xl bg-zinc-950 border border-white/10 p-1 flex items-center justify-center shrink-0 overflow-hidden cursor-pointer"
+                @click="item.format === 'PDF' ? openDocPreview(item) : (item.category === 'image' ? openInStudio(item) : openInNewTab(item.url))"
+              >
                 <img
-                  v-if="item.category === 'image' || item.category === 'vector'"
+                  v-if="item.category === 'image' || (item.category === 'vector' && item.format === 'SVG')"
                   :src="item.url"
                   :alt="item.filename"
                   class="max-w-full max-h-full object-contain"
                   loading="lazy"
                 />
+                <div v-else-if="item.format === 'PDF'" class="flex flex-col items-center justify-center text-rose-400">
+                  <AdminIcon name="file-text" class="w-6 h-6" />
+                  <span class="text-[9px] font-mono font-bold">PDF</span>
+                </div>
+                <div v-else-if="['AI', 'PSD'].includes(item.format)" class="flex flex-col items-center justify-center text-amber-400">
+                  <AdminIcon name="layout" class="w-6 h-6" />
+                  <span class="text-[9px] font-mono font-bold">{{ item.format }}</span>
+                </div>
                 <span v-else class="text-[11px] font-mono font-bold text-emerald-400 uppercase">{{ item.format }}</span>
               </div>
 
@@ -484,7 +617,12 @@
                   {{ item.path || item.url }}
                 </div>
                 <div class="flex items-center gap-2 text-[10px] text-zinc-500 font-mono">
-                  <span class="px-1.5 py-0.2 rounded bg-white/5 uppercase">{{ item.format }}</span>
+                  <span
+                    class="px-1.5 py-0.2 rounded uppercase font-bold"
+                    :class="item.format === 'PDF' ? 'bg-rose-500/20 text-rose-300' : 'bg-white/5 text-zinc-300'"
+                  >
+                    {{ item.format }}
+                  </span>
                   <span>{{ item.size ? formatBytes(item.size) : 'سرور' }}</span>
                 </div>
               </div>
@@ -503,31 +641,71 @@
               </button>
 
               <button
+                v-else-if="item.format === 'PDF' || item.mime === 'application/pdf'"
                 type="button"
-                @click="copyUrl(item.url)"
-                class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
-                title="کپی لینک CDN"
+                @click="openDocPreview(item)"
+                class="px-2.5 py-1.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500/30 font-bold flex items-center gap-1 cursor-pointer"
               >
-                <AdminIcon name="link" class="w-3.5 h-3.5" />
+                <AdminIcon name="eye" class="w-3.5 h-3.5" />
+                <span>مشاهده PDF</span>
               </button>
 
               <button
+                v-else
                 type="button"
-                @click="openMoveModal(item)"
-                class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 cursor-pointer"
-                title="انتقال به پوشه دیگر"
+                @click="downloadFile(item)"
+                class="px-2.5 py-1.5 rounded-xl bg-zinc-800 text-zinc-200 hover:bg-zinc-700 font-semibold flex items-center gap-1 cursor-pointer"
               >
-                <AdminIcon name="folder" class="w-3.5 h-3.5" />
+                <AdminIcon name="download" class="w-3.5 h-3.5" />
+                <span>دانلود</span>
               </button>
 
-              <button
-                type="button"
-                @click="deleteItem(item)"
-                class="p-1.5 rounded-xl text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer"
-                title="حذف"
-              >
-                <AdminIcon name="trash" class="w-3.5 h-3.5" />
-              </button>
+              <div class="flex items-center gap-1">
+                <button
+                  type="button"
+                  @click="openInNewTab(item.url)"
+                  class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
+                  title="باز کردن در برگه جدید"
+                >
+                  <AdminIcon name="link" class="w-3.5 h-3.5 text-cyan-400" />
+                </button>
+
+                <button
+                  type="button"
+                  @click="copyUrl(item.url)"
+                  class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
+                  title="کپی لینک فایل"
+                >
+                  <AdminIcon name="link" class="w-3.5 h-3.5 text-emerald-400" />
+                </button>
+
+                <button
+                  type="button"
+                  @click="openRenameModal(item)"
+                  class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
+                  title="تغییر نام"
+                >
+                  <AdminIcon name="edit" class="w-3.5 h-3.5 text-indigo-400" />
+                </button>
+
+                <button
+                  type="button"
+                  @click="openMoveModal(item)"
+                  class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-amber-300 cursor-pointer"
+                  title="انتقال به پوشه دیگر"
+                >
+                  <AdminIcon name="folder" class="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  @click="deleteItem(item)"
+                  class="p-1.5 rounded-xl text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer"
+                  title="حذف"
+                >
+                  <AdminIcon name="trash" class="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -549,14 +727,19 @@
                 class="w-4 h-4 rounded accent-emerald-500 cursor-pointer shrink-0"
               />
 
-              <div class="w-10 h-10 rounded-xl bg-zinc-950 border border-white/10 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+              <div
+                class="w-10 h-10 rounded-xl bg-zinc-950 border border-white/10 p-1 flex items-center justify-center shrink-0 overflow-hidden cursor-pointer"
+                @click="item.format === 'PDF' ? openDocPreview(item) : (item.category === 'image' ? openInStudio(item) : openInNewTab(item.url))"
+              >
                 <img
-                  v-if="item.category === 'image' || item.category === 'vector'"
+                  v-if="item.category === 'image' || (item.category === 'vector' && item.format === 'SVG')"
                   :src="item.url"
                   :alt="item.filename"
                   class="max-w-full max-h-full object-contain"
                   loading="lazy"
                 />
+                <AdminIcon v-else-if="item.format === 'PDF'" name="file-text" class="w-5 h-5 text-rose-400" />
+                <AdminIcon v-else-if="['AI', 'PSD'].includes(item.format)" name="layout" class="w-5 h-5 text-amber-400" />
                 <span v-else class="text-[10px] font-mono font-bold text-emerald-400 uppercase">{{ item.format }}</span>
               </div>
 
@@ -568,7 +751,12 @@
 
             <div class="flex items-center gap-2.5 shrink-0">
               <span class="text-[11px] text-zinc-400 font-mono">{{ item.size ? formatBytes(item.size) : 'سرور' }}</span>
-              <span class="px-2 py-0.5 rounded-md bg-white/5 text-zinc-300 font-mono text-[10px] uppercase font-bold">{{ item.format }}</span>
+              <span
+                class="px-2 py-0.5 rounded-md font-mono text-[10px] uppercase font-bold"
+                :class="item.format === 'PDF' ? 'bg-rose-500/20 text-rose-300' : 'bg-white/5 text-zinc-300'"
+              >
+                {{ item.format }}
+              </span>
 
               <button
                 v-if="item.category === 'image'"
@@ -581,12 +769,22 @@
               </button>
 
               <button
+                v-else-if="item.format === 'PDF' || item.mime === 'application/pdf'"
                 type="button"
-                @click="openMoveModal(item)"
-                class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
-                title="تغییر پوشه"
+                @click="openDocPreview(item)"
+                class="px-2.5 py-1 rounded-xl bg-rose-600/20 text-rose-300 hover:bg-rose-600/30 border border-rose-500/30 text-xs font-bold font-d4 flex items-center gap-1 transition-colors cursor-pointer"
               >
-                <AdminIcon name="folder" class="w-3.5 h-3.5 text-amber-400" />
+                <AdminIcon name="eye" class="w-3.5 h-3.5" />
+                <span>مشاهده PDF</span>
+              </button>
+
+              <button
+                type="button"
+                @click="openInNewTab(item.url)"
+                class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-cyan-400 cursor-pointer"
+                title="باز کردن در برگه جدید"
+              >
+                <AdminIcon name="link" class="w-3.5 h-3.5" />
               </button>
 
               <button
@@ -595,7 +793,25 @@
                 class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
                 title="کپی آدرس فایل"
               >
-                <AdminIcon name="link" class="w-3.5 h-3.5" />
+                <AdminIcon name="link" class="w-3.5 h-3.5 text-emerald-400" />
+              </button>
+
+              <button
+                type="button"
+                @click="openRenameModal(item)"
+                class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-indigo-300 cursor-pointer"
+                title="تغییر نام"
+              >
+                <AdminIcon name="edit" class="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
+                @click="openMoveModal(item)"
+                class="p-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 cursor-pointer"
+                title="تغییر پوشه"
+              >
+                <AdminIcon name="folder" class="w-3.5 h-3.5 text-amber-400" />
               </button>
 
               <button
@@ -612,108 +828,129 @@
       </div>
     </div>
 
-    <!-- MODAL 1: CREATE NEW FOLDER -->
+    <!-- MODAL 3: IN-PLACE DOCUMENT PREVIEW & VIEWER (PDF / CAD / DOC) -->
     <div
-      v-if="showNewFolderModal"
-      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4"
-      @click.self="showNewFolderModal = false"
+      v-if="showDocPreviewModal && previewDocItem"
+      class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+      @click.self="showDocPreviewModal = false"
     >
-      <div class="w-full max-w-md bg-zinc-950 rounded-3xl border border-white/15 p-5 space-y-4 text-xs shadow-2xl">
-        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-          <h3 class="font-bold text-sm text-white font-d4 flex items-center gap-2">
-            <AdminIcon name="folder-plus" class="w-4 h-4 text-emerald-400" />
-            <span>ایجاد پوشه جدید</span>
-          </h3>
-          <button @click="showNewFolderModal = false" class="text-zinc-400 hover:text-white cursor-pointer">
-            <AdminIcon name="x" class="w-4 h-4" />
-          </button>
-        </div>
-
-        <div class="space-y-3">
-          <div class="space-y-1">
-            <label class="font-bold text-zinc-200 font-d4">نام پوشه:</label>
-            <input
-              v-model="newFolderName"
-              type="text"
-              placeholder="مثال: banners یا products/boxes"
-              class="w-full h-10 px-3 rounded-xl bg-zinc-900 border border-white/10 text-white font-mono focus:border-emerald-500 focus:outline-none text-xs"
-              dir="ltr"
-            />
+      <div class="w-full max-w-4xl h-[88vh] bg-zinc-950 rounded-3xl border border-white/15 flex flex-col overflow-hidden text-xs shadow-2xl">
+        <!-- Preview Header -->
+        <div class="px-5 py-3.5 bg-zinc-900 border-b border-white/10 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold">
+              <AdminIcon name="file-text" class="w-4 h-4" />
+            </div>
+            <div class="truncate">
+              <h3 class="font-bold text-sm text-white font-mono truncate">{{ previewDocItem.filename }}</h3>
+              <p class="text-[11px] text-zinc-400 font-mono">{{ previewDocItem.format }} &middot; {{ previewDocItem.size ? formatBytes(previewDocItem.size) : 'فایل' }}</p>
+            </div>
           </div>
 
-          <div class="p-3 rounded-xl bg-zinc-900/60 border border-white/5 text-[11px] text-zinc-400 font-mono">
-            مسیر نهایی: /{{ currentFolder ? `${currentFolder}/${newFolderName}` : newFolderName }}
+          <div class="flex items-center gap-2 shrink-0">
+            <a
+              :href="previewDocItem.url"
+              target="_blank"
+              class="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 transition-colors font-d4 cursor-pointer"
+            >
+              <AdminIcon name="link" class="w-3.5 h-3.5 text-cyan-400" />
+              <span>باز کردن در برگه جدید</span>
+            </a>
+
+            <button
+              type="button"
+              @click="downloadFile(previewDocItem)"
+              class="px-3.5 py-1.5 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors font-d4 cursor-pointer"
+            >
+              <AdminIcon name="download" class="w-3.5 h-3.5" />
+              <span>دانلود فایل</span>
+            </button>
+
+            <button
+              type="button"
+              @click="showDocPreviewModal = false"
+              class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center cursor-pointer"
+            >
+              <AdminIcon name="x" class="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        <div class="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
-          <button
-            type="button"
-            @click="showNewFolderModal = false"
-            class="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold cursor-pointer font-d4"
-          >
-            انصراف
-          </button>
-          <button
-            type="button"
-            @click="confirmCreateFolder"
-            class="px-4 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white font-bold cursor-pointer font-d4 shadow-xs"
-          >
-            ایجاد پوشه
-          </button>
+        <!-- Embedded Viewer / Frame -->
+        <div class="flex-1 bg-zinc-900/50 p-2 flex items-center justify-center overflow-hidden">
+          <iframe
+            v-if="previewDocItem.format === 'PDF' || previewDocItem.mime === 'application/pdf'"
+            :src="previewDocItem.url"
+            class="w-full h-full rounded-2xl border border-white/10 bg-white"
+          ></iframe>
+
+          <div v-else class="text-center p-8 space-y-3">
+            <div class="w-16 h-16 rounded-3xl bg-amber-500/10 text-amber-400 mx-auto flex items-center justify-center">
+              <AdminIcon name="layout" class="w-8 h-8" />
+            </div>
+            <div class="font-bold text-sm text-white font-d4">پیش‌نمایش داخلی برای این فرمت در دسترس نیست</div>
+            <p class="text-xs text-zinc-400 font-d4 max-w-sm mx-auto">
+              این فایل سورس طراحی ({{ previewDocItem.format }}) است. می‌توانید آن را مستقیماً دانلود کنید یا آدرس آن را کپی نمایید.
+            </p>
+            <button
+              type="button"
+              @click="downloadFile(previewDocItem)"
+              class="px-5 py-2 rounded-xl bg-najmgreen text-white font-bold font-d4 cursor-pointer"
+            >
+              دانلود مستقیم فایل
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MODAL 2: MOVE FILE(S) TO FOLDER -->
+    <!-- MODAL 4: IN-PLACE RENAME FILE -->
     <div
-      v-if="showMoveModal"
+      v-if="showRenameModal && editingRenameItem"
       class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4"
-      @click.self="showMoveModal = false"
+      @click.self="showRenameModal = false"
     >
       <div class="w-full max-w-md bg-zinc-950 rounded-3xl border border-white/15 p-5 space-y-4 text-xs shadow-2xl">
         <div class="flex items-center justify-between border-b border-white/10 pb-3">
           <h3 class="font-bold text-sm text-white font-d4 flex items-center gap-2">
-            <AdminIcon name="folder" class="w-4 h-4 text-amber-400" />
-            <span>انتقال فایل به پوشه دیگر</span>
+            <AdminIcon name="edit" class="w-4 h-4 text-indigo-400" />
+            <span>تغییر نام فایل</span>
           </h3>
-          <button @click="showMoveModal = false" class="text-zinc-400 hover:text-white cursor-pointer">
+          <button @click="showRenameModal = false" class="text-zinc-400 hover:text-white cursor-pointer">
             <AdminIcon name="x" class="w-4 h-4" />
           </button>
         </div>
 
         <div class="space-y-3">
-          <div class="text-zinc-300 font-d4">
-            {{ movingTargetItem ? `فایل: ${movingTargetItem.filename}` : `${selectedFileIds.length} فایل انتخاب شده` }}
-          </div>
-
           <div class="space-y-1">
-            <label class="font-bold text-zinc-200 font-d4">انتخاب پوشه مقصد:</label>
-            <select
-              v-model="targetMoveFolder"
+            <label class="font-bold text-zinc-200 font-d4">نام جدید فایل:</label>
+            <input
+              v-model="newNameInput"
+              type="text"
               class="w-full h-10 px-3 rounded-xl bg-zinc-900 border border-white/10 text-white font-mono focus:border-emerald-500 focus:outline-none text-xs"
               dir="ltr"
-            >
-              <option value="">/ (ریشه اصلی)</option>
-              <option v-for="f in allFolderPaths" :key="f" :value="f">/{{ f }}</option>
-            </select>
+              @keydown.enter="confirmRenameFile"
+            />
+          </div>
+          <div class="text-[11px] text-zinc-400 font-mono truncate">
+            مسیر فعلی: {{ editingRenameItem.path || editingRenameItem.url }}
           </div>
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
           <button
             type="button"
-            @click="showMoveModal = false"
+            @click="showRenameModal = false"
             class="px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-semibold cursor-pointer font-d4"
           >
             انصراف
           </button>
           <button
             type="button"
-            @click="confirmMoveFile"
+            @click="confirmRenameFile"
             class="px-4 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white font-bold cursor-pointer font-d4 shadow-xs"
           >
-            تایید و انتقال
+            ذخیره نام جدید
           </button>
         </div>
       </div>
@@ -732,12 +969,19 @@ definePageMeta({
   layout: 'dash'
 })
 
-const { formatBytes, uploadMedia } = useAdminMedia()
+const { formatBytes, uploadMedia, getFileCategory } = useAdminMedia()
 
 const loading = ref(true)
 const isUploading = ref(false)
 const isDragging = ref(false)
 const uploadProgress = ref(0)
+const uploadError = ref('')
+const currentUploadingFile = ref('')
+const uploadLoadedBytes = ref(0)
+const uploadTotalBytes = ref(0)
+const uploadQueueIndex = ref(0)
+const uploadQueueTotal = ref(0)
+
 const searchQuery = ref('')
 const folderSearchQuery = ref('')
 const activeCategory = ref('all')
@@ -748,8 +992,22 @@ const currentFolder = ref('')
 const customFolders = ref<string[]>([])
 const selectedFileIds = ref<string[]>([])
 
+// Modals
+const showNewFolderModal = ref(false)
+const newFolderName = ref('')
+const showMoveModal = ref(false)
+const movingTargetItem = ref<any>(null)
+const targetMoveFolder = ref('')
+
+const showDocPreviewModal = ref(false)
+const previewDocItem = ref<any>(null)
+
+const showRenameModal = ref(false)
+const editingRenameItem = ref<any>(null)
+const newNameInput = ref('')
+
 // Collapsible Folders State
-const expandedFolders = ref<Set<string>>(new Set(['images', 'images/sections']))
+const expandedFolders = ref<Set<string>>(new Set(['images', 'images/sections', 'documents', 'templates']))
 
 function toggleFolderExpand(path: string) {
   if (expandedFolders.value.has(path)) {
@@ -774,21 +1032,14 @@ function toggleExpandAll() {
   }
 }
 
-// Modals
-const showNewFolderModal = ref(false)
-const newFolderName = ref('')
-const showMoveModal = ref(false)
-const movingTargetItem = ref<any>(null)
-const targetMoveFolder = ref('')
-
 const items = ref<any[]>([])
 
 const categories = [
   { id: 'all', label: 'همه رسانه‌ها' },
+  { id: 'document', label: 'اسناد و PDF' },
   { id: 'image', label: 'عکس‌ها' },
-  { id: 'video', label: 'ویدیوها' },
-  { id: 'document', label: 'اسناد PDF/PSD/AI' },
-  { id: 'vector', label: 'وکتور و SVG' }
+  { id: 'vector', label: 'وکتور و SVG' },
+  { id: 'video', label: 'ویدیوها' }
 ]
 
 function extractFolderFromPath(pathStr: string): string {
@@ -987,39 +1238,109 @@ function onDragStartFile(e: DragEvent, item: any) {
 }
 
 async function handleMultipleUpload(files: File[]) {
+  if (!files || files.length === 0) return
   isUploading.value = true
-  uploadProgress.value = 10
-  const targetPath = currentFolder.value ? `images/${currentFolder.value}` : 'images/uploads'
+  uploadError.value = ''
+  uploadProgress.value = 0
+  uploadQueueTotal.value = files.length
+  uploadQueueIndex.value = 0
+
+  const targetPath = currentFolder.value || ''
 
   try {
     let completed = 0
-    for (const file of files) {
-      const res = await uploadMedia(file, (p) => {
-        uploadProgress.value = Math.round(((completed + p / 100) / files.length) * 100)
-      }, targetPath)
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      currentUploadingFile.value = file.name
+      uploadQueueIndex.value = i + 1
+      uploadLoadedBytes.value = 0
+      uploadTotalBytes.value = file.size
+
+      const res = await uploadMedia(
+        file,
+        (p: any) => {
+          if (typeof p === 'number') {
+            uploadProgress.value = p
+          } else if (p && typeof p.percent === 'number') {
+            uploadProgress.value = p.percent
+            uploadLoadedBytes.value = p.loaded
+            uploadTotalBytes.value = p.total
+          }
+        },
+        targetPath
+      )
 
       if (res.url) {
+        const category = res.category || getFileCategory(file.name, file.type)
+        const folder = currentFolder.value || (category === 'document' ? 'documents' : 'images/uploads')
         items.value.unshift({
           id: res.id || `up-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-          filename: file.name,
-          file: file.name,
-          format: file.name.split('.').pop()?.toUpperCase() || 'PNG',
-          size: file.size,
+          filename: res.filename || file.name,
+          file: res.filename || file.name,
+          format: res.format || file.name.split('.').pop()?.toUpperCase() || 'FILE',
+          size: res.size || file.size,
           url: res.url,
-          path: `/${targetPath}/${file.name}`,
-          folder: currentFolder.value,
-          category: 'image'
+          path: res.path || res.url,
+          folder,
+          category
         })
       }
       completed++
     }
-    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `${files.length} فایل با موفقیت آپلود گردید.` } }))
-  } catch (err) {
-    window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', text: 'خطا در آپلود برخی فایل‌ها.' } }))
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'success', text: `${files.length} فایل با موفقیت کامل آپلود گردید.` }
+    }))
+  } catch (err: any) {
+    uploadError.value = err?.message || 'خطا در بارگذاری فایل.'
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'error', text: uploadError.value }
+    }))
   } finally {
     isUploading.value = false
     uploadProgress.value = 0
+    currentUploadingFile.value = ''
+    if (fileInputRef.value) fileInputRef.value.value = ''
   }
+}
+
+function openDocPreview(item: any) {
+  previewDocItem.value = item
+  showDocPreviewModal.value = true
+}
+
+function openInNewTab(url: string) {
+  if (typeof window !== 'undefined' && url) {
+    window.open(url, '_blank')
+  }
+}
+
+function downloadFile(item: any) {
+  if (typeof window !== 'undefined' && item?.url) {
+    const a = document.createElement('a')
+    a.href = item.url
+    a.download = item.filename || 'download'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
+}
+
+function openRenameModal(item: any) {
+  editingRenameItem.value = item
+  newNameInput.value = item.filename || ''
+  showRenameModal.value = true
+}
+
+async function confirmRenameFile() {
+  if (!editingRenameItem.value || !newNameInput.value.trim()) return
+  const item = editingRenameItem.value
+  const newName = newNameInput.value.trim()
+  item.filename = newName
+  item.file = newName
+  showRenameModal.value = false
+  window.dispatchEvent(new CustomEvent('toast', {
+    detail: { type: 'success', text: `نام فایل به "${newName}" تغییر یافت.` }
+  }))
 }
 
 function openNewFolderModal() {
@@ -1056,24 +1377,27 @@ async function confirmMoveFile() {
   if (movingTargetItem.value) {
     // Single move
     const it = movingTargetItem.value
+    const oldPath = it.path || it.url
     it.folder = dest
     const fn = it.filename || 'file'
     it.path = dest ? `/${dest}/${fn}` : `/${fn}`
-    await $fetch('/api/admin/media/move', {
+    const res: any = await $fetch('/api/admin/media/move', {
       method: 'POST',
-      body: { id: it.id, targetPath: it.path }
+      body: { id: it.id, targetPath: it.path, oldPath, url: it.url }
     }).catch(() => null)
+    if (res?.url) it.url = res.url
   } else if (selectedFileIds.value.length > 0) {
     // Batch move
     for (const id of selectedFileIds.value) {
       const it = items.value.find(i => i.id === id)
       if (it) {
+        const oldPath = it.path || it.url
         it.folder = dest
         const fn = it.filename || 'file'
         it.path = dest ? `/${dest}/${fn}` : `/${fn}`
         $fetch('/api/admin/media/move', {
           method: 'POST',
-          body: { id: it.id, targetPath: it.path }
+          body: { id: it.id, targetPath: it.path, oldPath, url: it.url }
         }).catch(() => null)
       }
     }
@@ -1088,7 +1412,7 @@ async function deleteItem(item: any) {
   items.value = items.value.filter(i => i.id !== item.id)
   await $fetch('/api/admin/media/delete', {
     method: 'POST',
-    body: { id: item.id }
+    body: { id: item.id, url: item.url, path: item.path }
   }).catch(() => null)
   window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: 'فایل با موفقیت حذف شد.' } }))
 }

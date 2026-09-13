@@ -313,22 +313,89 @@
           </div>
         </div>
 
-        <!-- Download URL & Visual Media Picker Tray -->
+        <!-- Download URL & Direct File Upload & Media Tray -->
         <div class="pt-4 border-t border-white/10 space-y-3">
-          <div class="flex items-center justify-between">
-            <label class="font-bold text-zinc-200 text-xs font-d4">فایل دانلودی / تصویر شاخص:</label>
-            <span class="text-[11px] font-mono text-emerald-400">{{ editingItem.downloadUrl }}</span>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <label class="font-bold text-zinc-200 text-xs font-d4">فایل دانلودی نهایی:</label>
+              <a
+                v-if="editingItem.downloadUrl"
+                :href="editingItem.downloadUrl"
+                target="_blank"
+                class="text-[11px] font-mono text-emerald-400 hover:underline flex items-center gap-1"
+                title="تست و باز کردن فایل دانلودی"
+              >
+                <span>{{ editingItem.downloadUrl }}</span>
+                <AdminIcon name="link" class="w-3 h-3" />
+              </a>
+            </div>
+
+            <!-- Direct Upload Button -->
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                @click="resourceFileInputRef?.click()"
+                class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold font-d4 flex items-center gap-1.5 shadow-sm cursor-pointer"
+              >
+                <AdminIcon name="upload" class="w-3.5 h-3.5" />
+                <span>آپلود مستقیم فایل (PDF / AI / ZIP)</span>
+              </button>
+              <input
+                ref="resourceFileInputRef"
+                type="file"
+                class="hidden"
+                accept=".pdf,.ai,.psd,.eps,.cdr,.doc,.docx,.zip,.png,.jpg,.jpeg,.webp"
+                @change="onResourceFileSelected"
+              />
+            </div>
           </div>
 
-          <div class="h-36 overflow-y-auto rounded-2xl bg-zinc-950 border border-white/10 p-2.5 grid grid-cols-4 sm:grid-cols-8 gap-2 custom-scrollbar">
-            <div
-              v-for="item in galleryAssets"
-              :key="item.url"
-              @click="editingItem.downloadUrl = item.url"
-              class="aspect-square rounded-xl bg-zinc-900 border overflow-hidden p-1 flex items-center justify-center cursor-pointer transition-all hover:scale-105"
-              :class="editingItem.downloadUrl === item.url ? 'border-emerald-500 shadow-md shadow-emerald-500/20' : 'border-white/10 hover:border-white/30'"
-            >
-              <img :src="item.url" :alt="item.filename" class="max-w-full max-h-full object-contain" />
+          <!-- Upload Progress Indicator -->
+          <div v-if="isUploadingResource" class="p-3 rounded-xl bg-zinc-950 border border-emerald-500/30 space-y-1.5">
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-zinc-300 truncate max-w-xs">{{ uploadingResourceName }}</span>
+              <span class="text-emerald-400 font-bold">{{ resourceUploadPercent }}%</span>
+            </div>
+            <div class="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-500 rounded-full transition-all" :style="{ width: `${resourceUploadPercent}%` }"></div>
+            </div>
+          </div>
+
+          <!-- Media & Documents Tray -->
+          <div class="space-y-1">
+            <div class="text-[11px] text-zinc-400 font-d4">یا انتخاب از رسانه‌ها و اسناد قبلی:</div>
+            <div class="h-40 overflow-y-auto rounded-2xl bg-zinc-950 border border-white/10 p-2.5 grid grid-cols-4 sm:grid-cols-8 gap-2 custom-scrollbar">
+              <div
+                v-for="item in galleryAssets"
+                :key="item.url"
+                @click="selectGalleryAsset(item)"
+                class="aspect-square rounded-xl bg-zinc-900 border overflow-hidden p-1 flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105 relative group"
+                :class="editingItem.downloadUrl === item.url ? 'border-emerald-500 shadow-md shadow-emerald-500/20 bg-emerald-950/20' : 'border-white/10 hover:border-white/30'"
+                :title="item.filename"
+              >
+                <img
+                  v-if="item.category === 'image' || (item.category === 'vector' && item.format === 'SVG')"
+                  :src="item.url"
+                  :alt="item.filename"
+                  class="max-w-full max-h-full object-contain"
+                />
+                <div v-else-if="item.format === 'PDF'" class="flex flex-col items-center justify-center text-rose-400">
+                  <AdminIcon name="file-text" class="w-5 h-5" />
+                  <span class="text-[8px] font-mono font-bold mt-0.5">PDF</span>
+                </div>
+                <div v-else-if="['AI', 'PSD'].includes(item.format)" class="flex flex-col items-center justify-center text-amber-400">
+                  <AdminIcon name="layout" class="w-5 h-5" />
+                  <span class="text-[8px] font-mono font-bold mt-0.5">{{ item.format }}</span>
+                </div>
+                <div v-else class="flex flex-col items-center justify-center text-zinc-400">
+                  <AdminIcon name="document" class="w-5 h-5" />
+                  <span class="text-[8px] font-mono font-bold mt-0.5">{{ item.format }}</span>
+                </div>
+
+                <span class="absolute bottom-0.5 inset-x-0 text-center text-[7px] font-mono text-zinc-400 truncate px-0.5">
+                  {{ item.filename }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -340,10 +407,13 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
+import { useAdminMedia } from '@/composables/useAdminMedia'
 
 definePageMeta({
   layout: 'dash'
 })
+
+const { formatBytes, uploadMedia } = useAdminMedia()
 
 const loading = ref(true)
 const isEditingMode = ref(false)
@@ -351,6 +421,76 @@ const searchQuery = ref('')
 const activeCategory = ref('all')
 const activeLocaleTab = ref<'fa' | 'en' | 'ar'>('fa')
 const galleryAssets = ref<any[]>([])
+
+const resourceFileInputRef = ref<HTMLInputElement | null>(null)
+const isUploadingResource = ref(false)
+const resourceUploadPercent = ref(0)
+const uploadingResourceName = ref('')
+
+function selectGalleryAsset(item: any) {
+  editingItem.downloadUrl = item.url
+  if (item.size) {
+    editingItem.fileSize = formatBytes(item.size)
+  }
+  if (item.format) {
+    editingItem.fileFormat = item.format
+  }
+}
+
+async function onResourceFileSelected(e: any) {
+  const file = e.target?.files?.[0]
+  if (!file) return
+
+  isUploadingResource.value = true
+  resourceUploadPercent.value = 0
+  uploadingResourceName.value = file.name
+
+  try {
+    const res = await uploadMedia(
+      file,
+      (p: any) => {
+        if (typeof p === 'number') resourceUploadPercent.value = p
+        else if (p?.percent) resourceUploadPercent.value = p.percent
+      },
+      'documents'
+    )
+
+    if (res.url) {
+      editingItem.downloadUrl = res.url
+      editingItem.fileSize = formatBytes(res.size)
+      editingItem.fileFormat = res.format || file.name.split('.').pop()?.toUpperCase() || 'PDF'
+
+      if (!editingItem.locales.fa.title || editingItem.locales.fa.title === 'قالب تیغ جدید') {
+        const cleanTitle = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]+/g, ' ')
+        editingItem.locales.fa.title = cleanTitle
+      }
+
+      if (!galleryAssets.value.some(g => g.url === res.url)) {
+        galleryAssets.value.unshift({
+          id: res.id,
+          filename: res.filename,
+          url: res.url,
+          format: res.format,
+          category: res.category,
+          size: res.size
+        })
+      }
+
+      window.dispatchEvent(new CustomEvent('toast', {
+        detail: { type: 'success', text: `فایل "${file.name}" با موفقیت آپلود و متصل شد.` }
+      }))
+    }
+  } catch (err: any) {
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'error', text: err?.message || 'خطا در بارگذاری فایل در سرور.' }
+    }))
+  } finally {
+    isUploadingResource.value = false
+    resourceUploadPercent.value = 0
+    uploadingResourceName.value = ''
+    if (resourceFileInputRef.value) resourceFileInputRef.value.value = ''
+  }
+}
 
 const resources = ref<any[]>([])
 

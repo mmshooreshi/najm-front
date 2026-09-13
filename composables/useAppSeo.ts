@@ -229,110 +229,6 @@ export function useAppSeo(options: SeoOptions = {}) {
     return (customFaqs && customFaqs.length > 0) ? customFaqs : defaultFaqs.value
   })
 
-  // Google Sitelinks Navigation Items (6-Pack with Titles & Rich Descriptions for Google SERP)
-  const siteNavigationItems = computed(() => {
-    if (currentLang.value === 'EN') {
-      return [
-        {
-          name: 'Contact & Location',
-          description: 'Direct sales phone lines, factory address in Tehran, business hours, and quotation inquiries.',
-          url: `${baseUrl}/en/contact`
-        },
-        {
-          name: 'Products & Packaging',
-          description: 'Custom luxury boxes, cosmetics packaging, pharmaceutical folding cartons, and food containers.',
-          url: `${baseUrl}/en/catalog`
-        },
-        {
-          name: 'Services & Offset Print',
-          description: 'Heidelberg multi-color offset sheetfed printing, hot foil stamping, auto die-cutting and laminating.',
-          url: `${baseUrl}/en/services`
-        },
-        {
-          name: 'Industrial Machinery',
-          description: 'Heidelberg Speedmaster presses, Bobst die-cutters, thermal CTP platesetters, and box gluers.',
-          url: `${baseUrl}/en/facilities`
-        },
-        {
-          name: 'About Najm Complex',
-          description: 'Over 25 years of continuous industrial excellence, ISO color management, and production ethics.',
-          url: `${baseUrl}/en/about`
-        },
-        {
-          name: 'Technical Consultation',
-          description: 'Free packaging engineering consulting, paperboard grammage selection, dummy prototyping, and pricing.',
-          url: `${baseUrl}/en/consultation`
-        }
-      ]
-    }
-    if (currentLang.value === 'AR') {
-      return [
-        {
-          name: 'اتصل بنا والعنوان',
-          description: 'خطوط الاتصال المباشرة للمبيعات، عنوان المجمع الصناعي في طهران، ساعات العمل، واستعلام الأسعار.',
-          url: `${baseUrl}/ar/contact`
-        },
-        {
-          name: 'المنتجات والعلب الفاخرة',
-          description: 'علب الكرتون الصلب، تغليف مستحضرات التجميل، عبوات الأدوية المعتمدة، وعلب المواد الغذائية الصحية.',
-          url: `${baseUrl}/ar/catalog`
-        },
-        {
-          name: 'خدمات الطباعة الصناعية',
-          description: 'طباعة أوفست ملونة بأحدث ماكينات هايدلبرغ، بصمة حرارية ذهبية، داي كت أوتوماتيكي وسلفان.',
-          url: `${baseUrl}/ar/services`
-        },
-        {
-          name: 'الآلات والتجهيزات المتطورة',
-          description: 'ماكينات هايدلبرغ سبيدماستر، أجهزة بوبست للقص، پلیت‌ستر حراري CTP، وخطوط لصق العلب الأوتوماتيكية.',
-          url: `${baseUrl}/ar/facilities`
-        },
-        {
-          name: 'عن مجمع نجم للطباعة',
-          description: 'أكثر من ۲۵ عاماً من الخبرة الصناعية المستمرة، معايير إدارة جودة الألوان والالتزام بمواعيد التسليم.',
-          url: `${baseUrl}/ar/about`
-        },
-        {
-          name: 'استشارة فنية وهندسة العلب',
-          description: 'استشارة مجانية لاختيار نوع وسماكة الورق المقوى، تصميم نموذج العلبة، وحساب التكاليف والكميات.',
-          url: `${baseUrl}/ar/consultation`
-        }
-      ]
-    }
-    return [
-      {
-        name: 'تماس با ما و موقعیت مکانی',
-        description: 'خطوط مستقیم تماس، آدرس کارخانه و دفتر فروش در تهران، ساعات کاری و نقشه مسیریابی.',
-        url: `${baseUrl}/contact`
-      },
-      {
-        name: 'محصولات و نمونه‌های بسته‌بندی',
-        description: 'جعبه‌های دارویی، آرایشی، هاردباکس‌های نفیس و بسته‌بندی‌های بهداشتی مواد غذایی با طراحی مهندسی.',
-        url: `${baseUrl}/catalog`
-      },
-      {
-        name: 'خدمات تخصصی چاپ و پس از چاپ',
-        description: 'چاپ افست ۵ رنگ ورقی هایدلبرگ، طلاکوب گرم، دایکات اتوماتیک، سلفون حرارتی و جعبه‌چسبانی پیشرفته.',
-        url: `${baseUrl}/services`
-      },
-      {
-        name: 'تجهیزات و ماشین‌آلات مدرن',
-        description: 'آشنایی با خطوط چاپ Speedmaster، ماشین‌های لیتوگرافی CTP و تجهیزات کنترل کیفی رنگ ISO.',
-        url: `${baseUrl}/facilities`
-      },
-      {
-        name: 'درباره مجتمع چاپ نجم',
-        description: 'بیش از ۲۵ سال پیشینه مستمر صنعتی، استانداردهای مدیریت کیفیت رنگ ISO و تعهد به مشتریان.',
-        url: `${baseUrl}/about`
-      },
-      {
-        name: 'مشاوره و استعلام قیمت',
-        description: 'مشاوره رایگان مهندسی بسته‌بندی، انتخاب گرماژ مقوا، طراحی ماکت و محاسبه دقیق تیراژ و هزینه.',
-        url: `${baseUrl}/consultation`
-      }
-    ]
-  })
-
   // Breadcrumbs (Fully locale-aware)
   const breadcrumbItems = computed(() => {
     const customCrumbs = toValue(options.breadcrumbs)
@@ -404,7 +300,7 @@ export function useAppSeo(options: SeoOptions = {}) {
   // Full Schema.org @graph
   const schemaGraph = computed(() => {
     const graph: any[] = [
-      // 1. WebSite Schema with Sitelinks SearchBox
+      // 1. WebSite Schema (Canonical Identity)
       {
         '@type': 'WebSite',
         '@id': `${baseUrl}/#website`,
@@ -412,15 +308,7 @@ export function useAppSeo(options: SeoOptions = {}) {
         name: brandName.value,
         alternateName: ['چاپ نجم', 'Najm Printing', 'Najm Packaging', 'مجمع نجم'],
         description: metaDescription.value,
-        inLanguage: ['fa-IR', 'en-US', 'ar-SA'],
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: `${baseUrl}/catalog?q={search_term_string}`
-          },
-          'query-input': 'required name=search_term_string'
-        }
+        inLanguage: ['fa-IR', 'en-US', 'ar-SA']
       },
 
       // 2. Organization & Corporation & LocalBusiness Knowledge Panel
@@ -554,28 +442,26 @@ export function useAppSeo(options: SeoOptions = {}) {
         ]
       },
 
-      // 3. SiteNavigationElement (Primary Sitelinks for Google SERP)
+      // 3. WebPage Semantic Node (Unified Identity & Knowledge Graph Linking)
       {
-        '@type': 'ItemList',
-        '@id': `${baseUrl}/#sitelinks`,
-        name: brandName.value + (currentLang.value === 'EN' ? ' - Quick Navigation' : ' - بخش‌های اصلی و دسترسی سریع'),
-        itemListElement: siteNavigationItems.value.map((item, idx) => ({
-          '@type': 'SiteNavigationElement',
-          position: idx + 1,
-          name: item.name,
-          description: item.description,
-          url: item.url
-        }))
+        '@type': 'WebPage',
+        '@id': `${canonicalUrl.value}/#webpage`,
+        url: canonicalUrl.value,
+        name: pageTitle.value,
+        description: metaDescription.value,
+        inLanguage: currentLang.value === 'FA' ? 'fa-IR' : (currentLang.value === 'AR' ? 'ar-SA' : 'en-US'),
+        isPartOf: {
+          '@id': `${baseUrl}/#website`
+        },
+        about: {
+          '@id': `${baseUrl}/#organization`
+        },
+        breadcrumb: {
+          '@id': `${canonicalUrl.value}/#breadcrumb`
+        }
       },
-      ...siteNavigationItems.value.map((item, idx) => ({
-        '@type': 'SiteNavigationElement',
-        '@id': `${item.url}/#navigation-${idx + 1}`,
-        name: item.name,
-        description: item.description,
-        url: item.url
-      })),
 
-      // 4. BreadcrumbList for Clean Google SERP Navigation
+      // 4. BreadcrumbList for Clean SERP Navigation
       {
         '@type': 'BreadcrumbList',
         '@id': `${canonicalUrl.value}/#breadcrumb`,
@@ -585,10 +471,12 @@ export function useAppSeo(options: SeoOptions = {}) {
           name: item.name,
           item: item.url
         }))
-      },
+      }
+    ]
 
-      // 5. Expandable FAQPage for Google Search Accordions
-      {
+    // 5. Expandable FAQPage for Search Accordions (only included if FAQs exist)
+    if (activeFaqs.value && activeFaqs.value.length > 0) {
+      graph.push({
         '@type': 'FAQPage',
         '@id': `${canonicalUrl.value}/#faq`,
         mainEntity: activeFaqs.value.map(faq => ({
@@ -599,8 +487,8 @@ export function useAppSeo(options: SeoOptions = {}) {
             text: faq.answer
           }
         }))
-      }
-    ]
+      })
+    }
 
     // Append AEO Knowledge Graph Node if configured
     if (adminSeoOverrides.value?.aeoSummary) {
@@ -611,6 +499,15 @@ export function useAppSeo(options: SeoOptions = {}) {
         description: adminSeoOverrides.value.aeoSummary,
         keywords: adminSeoOverrides.value.entities || undefined
       })
+    }
+
+    // Append custom schemas from admin overrides (if configured)
+    const customAdminSchemas = adminSeoOverrides.value?.customSchemas
+    if (customAdminSchemas && Array.isArray(customAdminSchemas) && customAdminSchemas.length > 0) {
+      const safeCustom = safeUnwrap(customAdminSchemas)
+      if (Array.isArray(safeCustom)) {
+        graph.push(...safeCustom)
+      }
     }
 
     // Append extra schemas passed by the caller

@@ -34,6 +34,25 @@ export interface CompressionResult {
   format: string
 }
 
+export interface UploadMediaResult {
+  url: string
+  id?: string
+  filename: string
+  size: number
+  format: string
+  mime: string
+  category: string
+  width?: number
+  height?: number
+  fallback?: boolean
+}
+
+export interface UploadProgressInfo {
+  percent: number
+  loaded: number
+  total: number
+}
+
 export function useAdminMedia() {
   const isProcessing = ref(false)
   const uploadProgress = ref(0)
@@ -238,30 +257,126 @@ export function useAdminMedia() {
     })
   }
 
-  /** Upload media via server endpoint with optional target folder path */
+  /** Helper to determine file category by extension or mime */
+  function getFileCategory(filename: string, mime = ''): string {
+    const ext = filename.split('.').pop()?.toLowerCase() || ''
+    if (['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv'].includes(ext) || mime.startsWith('video/')) return 'video'
+    if (['mp3', 'wav', 'm4a', 'aac', 'flac'].includes(ext) || mime.startsWith('audio/')) return 'audio'
+    if (['pdf', 'psd', 'ai', 'eps', 'cdr', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'].includes(ext) || mime === 'application/pdf') return 'document'
+    if (ext === 'svg' || mime.includes('svg')) return 'vector'
+    return 'image'
+  }
+
+  /** Helper to return an appropriate icon name */
+  function getFileIcon(filename: string, mime = ''): string {
+    const ext = filename.split('.').pop()?.toLowerCase() || ''
+    if (ext === 'pdf') return 'file-text'
+    if (['ai', 'eps', 'cdr'].includes(ext)) return 'layout'
+    if (['psd'].includes(ext)) return 'photo'
+    if (['doc', 'docx', 'txt'].includes(ext)) return 'file-text'
+    if (['mp4', 'webm', 'mov'].includes(ext)) return 'play'
+    if (['mp3', 'wav', 'm4a'].includes(ext)) return 'sparkles'
+    if (ext === 'svg') return 'sparkles'
+    return 'photo'
+  }
+
+  /** Upload media via server endpoint with real progress tracking and optional target folder path */
   async function uploadMedia(
     file: File,
-    onProgress?: (percent: number) => void,
+    onProgress?: (progress: number | UploadProgressInfo) => void,
     targetPath = ''
-  ): Promise<{ url: string; id?: string }> {
-    const formData = new FormData()
-    formData.append('file', file)
-    if (targetPath) {
-      formData.append('path', targetPath)
-    }
+  ): Promise<UploadMediaResult> {
+    isProcessing.value = true
+    uploadProgress.value = 0
 
-    onProgress?.(30)
-    try {
-      const res: any = await $fetch('/api/admin/media/upload', {
-        method: 'POST',
-        body: formData
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('filename', file.name)
+      if (targetPath) {
+        formData.append('path', targetPath)
+      }
+
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable && event.total > 0) {
+          const percent = Math.min(99, Math.round((event.loaded / event.total) * 100))
+          uploadProgress.value = percent
+          if (onProgress) {
+            onProgress({
+              percent,
+              loaded: event.loaded,
+              total: event.total
+            })
+          }
+        }
       })
-      onProgress?.(100)
-      return { url: res?.url || res?.item?.url || '', id: res?.id || res?.item?.id }
-    } catch (err: any) {
-      logger.error('AdminMedia', 'Upload failed', err)
-      throw err
-    }
+
+      xhr.addEventListener('load', () => {
+        isProcessing.value = false
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const res = JSON.parse(xhr.responseText)
+            uploadProgress.value = 100
+            if (onProgress) {
+              onProgress({
+                percent: 100,
+                loaded: file.size,
+                total: file.size
+              })
+            }
+            resolve({
+              url: res?.url || res?.item?.url || '',
+              id: res?.id || res?.item?.id || `up-${Date.now()}`,
+              filename: res?.filename || file.name,
+              size: res?.size || file.size,
+              format: res?.format || file.name.split('.').pop()?.toUpperCase() || 'FILE',
+              mime: res?.mime || file.type || 'application/octet-stream',
+              category: res?.category || getFileCategory(file.name, file.type),
+              width: res?.width || 0,
+              height: res?.height || 0,
+              fallback: res?.fallback
+            })
+          } catch (parseErr) {
+            logger.error('AdminMedia', 'JSON parse error', parseErr)
+            reject(new Error('پاسخ نامعتبر از سرور دریافت شد.'))
+          }
+        } else {
+          let errorMsg = `خطای سرور (${xhr.status})`
+          try {
+            const errJson = JSON.parse(xhr.responseText)
+            if (errJson.statusMessage || errJson.message) {
+              errorMsg = errJson.statusMessage || errJson.message
+            }
+          } catch {}
+          logger.error('AdminMedia', 'Upload failed with status ' + xhr.status, errorMsg)
+          reject(new Error(errorMsg))
+        }
+      })
+
+      xhr.addEventListener('error', () => {
+        isProcessing.value = false
+        logger.error('AdminMedia', 'XHR network error')
+        reject(new Error('خطا در برقراری ارتباط با سرور. لطفاً اتصال اینترنت خود را بررسی کنید.'))
+      })
+
+      xhr.addEventListener('abort', () => {
+        isProcessing.value = false
+        reject(new Error('آپلود لغو شد.'))
+      })
+
+      xhr.addEventListener('timeout', () => {
+        isProcessing.value = false
+        logger.error('AdminMedia', 'XHR timeout')
+        reject(new Error('زمان آپلود فایل به پایان رسید (Timeout). حجم فایل ممکن است زیاد باشد.'))
+      })
+
+      // 3 minutes timeout
+      xhr.timeout = 180000
+
+      xhr.open('POST', '/api/admin/media/upload')
+      xhr.send(formData)
+    })
   }
 
   function formatBytes(bytes: number, decimals = 1): string {
@@ -281,6 +396,9 @@ export function useAdminMedia() {
     renderAdjustments,
     compressCanvas,
     uploadMedia,
-    formatBytes
+    formatBytes,
+    getFileCategory,
+    getFileIcon
   }
 }
+

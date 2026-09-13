@@ -140,20 +140,44 @@
               </div>
 
               <!-- 4. DOCUMENT PREVIEW (PDF, PSD, AI) -->
-              <div v-if="!isLoadingMedia && mediaType === 'document'" class="p-8 rounded-3xl bg-zinc-900 border border-white/15 flex flex-col items-center gap-3 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl font-bold font-mono">
-                  {{ imageMeta.format.toUpperCase() }}
+              <div v-if="!isLoadingMedia && mediaType === 'document'" class="w-full h-full p-2 sm:p-4 flex flex-col items-center justify-center">
+                <!-- PDF Embedded Viewer -->
+                <div v-if="imageMeta.format.toLowerCase() === 'pdf' || currentMediaUrl.toLowerCase().includes('.pdf')" class="w-full h-full flex flex-col rounded-2xl border border-white/10 overflow-hidden bg-zinc-950">
+                  <div class="h-10 px-4 bg-zinc-900 flex items-center justify-between border-b border-white/10 shrink-0">
+                    <span class="font-bold text-xs text-rose-300 font-mono flex items-center gap-1.5">
+                      <AdminIcon name="file-text" class="w-3.5 h-3.5 text-rose-400" />
+                      <span>پیش‌نمایش زنده سند PDF</span>
+                    </span>
+                    <div class="flex items-center gap-2">
+                      <a :href="currentMediaUrl" target="_blank" class="px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-200 hover:text-white text-[11px] font-d4 flex items-center gap-1 cursor-pointer">
+                        <AdminIcon name="link" class="w-3 h-3 text-cyan-400" />
+                        <span>برگه جدید</span>
+                      </a>
+                      <a :href="currentMediaUrl" download class="px-2.5 py-1 rounded-lg bg-najmgreen text-white text-[11px] font-d4 font-bold flex items-center gap-1 cursor-pointer">
+                        <AdminIcon name="download" class="w-3 h-3" />
+                        <span>دانلود</span>
+                      </a>
+                    </div>
+                  </div>
+                  <iframe :src="currentMediaUrl" class="w-full flex-1 bg-white"></iframe>
                 </div>
-                <div class="text-sm font-bold text-white font-d4">فایل سورس / سند گرافیکی</div>
-                <a
-                  :href="currentMediaUrl"
-                  target="_blank"
-                  download
-                  class="px-4 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition-all cursor-pointer font-d4 flex items-center gap-2"
-                >
-                  <AdminIcon name="download" class="w-4 h-4" />
-                  <span>دانلود فایل ({{ imageMeta.format.toUpperCase() }})</span>
-                </a>
+
+                <!-- AI / PSD / Non-PDF source preview -->
+                <div v-else class="p-8 rounded-3xl bg-zinc-900 border border-white/15 flex flex-col items-center gap-3 text-center">
+                  <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl font-bold font-mono">
+                    {{ imageMeta.format.toUpperCase() }}
+                  </div>
+                  <div class="text-sm font-bold text-white font-d4">فایل سورس / سند گرافیکی</div>
+                  <a
+                    :href="currentMediaUrl"
+                    target="_blank"
+                    download
+                    class="px-4 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition-all cursor-pointer font-d4 flex items-center gap-2"
+                  >
+                    <AdminIcon name="download" class="w-4 h-4" />
+                    <span>دانلود فایل ({{ imageMeta.format.toUpperCase() }})</span>
+                  </a>
+                </div>
               </div>
 
               <!-- Active Changes Tracker Strip -->
@@ -878,17 +902,27 @@ function onFileDrop(e: DragEvent) {
 
 async function handleFile(file: File) {
   isUploading.value = true
-  uploadProgress.value = 20
+  uploadProgress.value = 0
   try {
-    const res = await uploadMedia(file, (p) => { uploadProgress.value = p })
+    const res = await uploadMedia(file, (p: any) => {
+      if (typeof p === 'number') uploadProgress.value = p
+      else if (p?.percent) uploadProgress.value = p.percent
+    })
     if (res.url) {
       currentMediaUrl.value = res.url
       await loadActiveMedia(res.url)
       activeTab.value = mediaType.value === 'image' ? 'adjust' : 'upload'
+      window.dispatchEvent(new CustomEvent('toast', {
+        detail: { type: 'success', text: `فایل "${file.name}" با موفقیت آپلود گردید.` }
+      }))
     }
-  } catch (err) {
+  } catch (err: any) {
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'error', text: err?.message || 'خطا در آپلود فایل.' }
+    }))
   } finally {
     isUploading.value = false
+    uploadProgress.value = 0
   }
 }
 
