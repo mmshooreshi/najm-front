@@ -16,9 +16,7 @@
       </div>
 
       <!-- Shared Footer -->
-      <div :class="[primaryCtaLabel || secondaryCtaLabel ? 'pb-24 sm:pb-28' : '']">
-        <Footer2 />
-      </div>
+      <Footer2 :extra-bottom-space="!!(primaryCtaLabel || secondaryCtaLabel)" />
 
       <!-- Bottom fixed CTA bar -->
       <div v-if="primaryCtaLabel || secondaryCtaLabel" class="fixed inset-x-0 bottom-0 z-40 bg-white/80 backdrop-blur-md border-t border-gray-200/60 py-3 shadow-md">

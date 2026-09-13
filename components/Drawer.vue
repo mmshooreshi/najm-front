@@ -208,10 +208,10 @@ onBeforeUnmount(() => {
 /* Backdrop Fade */
 .drawer-backdrop-appear-active,
 .drawer-backdrop-enter-active {
-  transition: opacity 0.46s cubic-bezier(0.16, 1, 0.28, 1);
+  transition: opacity 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .drawer-backdrop-leave-active {
-  transition: opacity 0.30s cubic-bezier(0.35, 0, 0.65, 0);
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 1, 1);
 }
 .drawer-backdrop-appear-from,
 .drawer-backdrop-enter-from,
@@ -224,13 +224,13 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-/* Slide Drawer RTL (FA & AR: Slides in from LEFT to RIGHT with subtle soothing cushion) */
+/* Slide Drawer RTL (FA & AR: Smooth, natural deceleration from left to right) */
 .drawer-slide-rtl-appear-active,
 .drawer-slide-rtl-enter-active {
-  transition: transform 0.46s cubic-bezier(0.16, 1.05, 0.28, 1);
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .drawer-slide-rtl-leave-active {
-  transition: transform 0.30s cubic-bezier(0.35, 0, 0.65, 0);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1);
 }
 .drawer-slide-rtl-appear-from,
 .drawer-slide-rtl-enter-from,
@@ -243,13 +243,13 @@ onBeforeUnmount(() => {
   transform: translate3d(0, 0, 0);
 }
 
-/* Slide Drawer LTR (EN: Slides in from RIGHT to LEFT with subtle soothing cushion) */
+/* Slide Drawer LTR (EN: Smooth, natural deceleration from right to left) */
 .drawer-slide-ltr-appear-active,
 .drawer-slide-ltr-enter-active {
-  transition: transform 0.46s cubic-bezier(0.16, 1.05, 0.28, 1);
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .drawer-slide-ltr-leave-active {
-  transition: transform 0.30s cubic-bezier(0.35, 0, 0.65, 0);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1);
 }
 .drawer-slide-ltr-appear-from,
 .drawer-slide-ltr-enter-from,
@@ -262,42 +262,26 @@ onBeforeUnmount(() => {
   transform: translate3d(0, 0, 0);
 }
 
-/* Alive Staggered Items Animation - subtle rubbery settling */
+/* Swift Sequential Placement: smooth micro-glide cascade with ZERO rubber bounce */
 .drawer-slide-rtl-appear-active :deep(.drawer-stagger-item),
-.drawer-slide-rtl-enter-active :deep(.drawer-stagger-item) {
-  animation: drawerItemInRTL 0.44s cubic-bezier(0.16, 1.08, 0.28, 1) backwards;
-  animation-delay: calc(0.06s + var(--item-idx, 0) * 0.045s);
-}
-
+.drawer-slide-rtl-enter-active :deep(.drawer-stagger-item),
 .drawer-slide-ltr-appear-active :deep(.drawer-stagger-item),
 .drawer-slide-ltr-enter-active :deep(.drawer-stagger-item) {
-  animation: drawerItemInLTR 0.44s cubic-bezier(0.16, 1.08, 0.28, 1) backwards;
-  animation-delay: calc(0.06s + var(--item-idx, 0) * 0.045s);
+  animation: drawerItemCascade 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(0.04s + var(--item-idx, 0) * 0.024s);
 }
 
-@keyframes drawerItemInRTL {
-  0% {
-    opacity: 0;
-    transform: translate3d(-16px, 4px, 0);
-  }
-  68% {
-    opacity: 0.95;
-    transform: translate3d(1.5px, -0.5px, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+.drawer-slide-rtl-leave-active :deep(.drawer-stagger-item),
+.drawer-slide-ltr-leave-active :deep(.drawer-stagger-item) {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  opacity: 0.4;
+  transform: translate3d(0, -3px, 0);
 }
 
-@keyframes drawerItemInLTR {
+@keyframes drawerItemCascade {
   0% {
     opacity: 0;
-    transform: translate3d(16px, 4px, 0);
-  }
-  68% {
-    opacity: 0.95;
-    transform: translate3d(-1.5px, -0.5px, 0);
+    transform: translate3d(0, 10px, 0);
   }
   100% {
     opacity: 1;

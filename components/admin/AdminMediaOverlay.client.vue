@@ -7,7 +7,7 @@
         v-if="isVisible && targetEl && !state.mediaStudioOpen"
         ref="overlayContainerEl"
         data-admin-ui="true"
-        class="admin-media-overlay-hud media-hud fixed z-[999990] pointer-events-none flex items-center justify-center select-none"
+        class="admin-media-overlay-hud media-hud absolute z-[999990] pointer-events-none flex items-center justify-center select-none"
         :style="containerStyle"
       >
         <!-- Subtle Green/Amber Overlay Mask with Cool Modern Diagonal Pattern Stripes -->
@@ -97,9 +97,11 @@ function updatePosition() {
     return
   }
 
-  // Snap directly to the element's exact bounding box with NO sliding glide across the screen
-  containerStyle.top = `${Math.round(rect.top)}px`
-  containerStyle.left = `${Math.round(rect.left)}px`
+  // Anchor to absolute document coordinates so scrolling moves overlay with the page seamlessly
+  const scrollY = typeof window !== 'undefined' ? (window.scrollY || window.pageYOffset || 0) : 0
+  const scrollX = typeof window !== 'undefined' ? (window.scrollX || window.pageXOffset || 0) : 0
+  containerStyle.top = `${Math.round(rect.top + scrollY)}px`
+  containerStyle.left = `${Math.round(rect.left + scrollX)}px`
   containerStyle.width = `${Math.round(rect.width)}px`
   containerStyle.height = `${Math.round(rect.height)}px`
 }
@@ -216,23 +218,27 @@ onMounted(() => {
     }
   }
 
-  const onScroll = () => {
-    if (isVisible.value) {
-      isVisible.value = false
-      targetEl.value = null
+  const onMediaLeave = () => {
+    scheduleHide()
+  }
+
+  const onScrollOrResize = () => {
+    if (isVisible.value && targetEl.value) {
+      if (animFrameId) cancelAnimationFrame(animFrameId)
+      animFrameId = requestAnimationFrame(updatePosition)
     }
   }
 
   window.addEventListener('admin:media-hover', onMediaHover)
   window.addEventListener('admin:media-leave', onMediaLeave)
-  window.addEventListener('scroll', onScroll, { passive: true })
-  window.addEventListener('resize', onScroll, { passive: true })
+  window.addEventListener('scroll', onScrollOrResize, { passive: true })
+  window.addEventListener('resize', onScrollOrResize, { passive: true })
 
   ;(window as any)._adminMediaOverlayCleanup = () => {
     window.removeEventListener('admin:media-hover', onMediaHover)
     window.removeEventListener('admin:media-leave', onMediaLeave)
-    window.removeEventListener('scroll', onScroll)
-    window.removeEventListener('resize', onScroll)
+    window.removeEventListener('scroll', onScrollOrResize)
+    window.removeEventListener('resize', onScrollOrResize)
     if (animFrameId) cancelAnimationFrame(animFrameId)
   }
 })

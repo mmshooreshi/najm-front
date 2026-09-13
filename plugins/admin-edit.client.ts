@@ -76,6 +76,8 @@ let currentBadgePath = ''
 let currentBadgeEl: HTMLElement | null = null
 let hoverActiveTarget: HTMLElement | null = null
 let hideBadgeTimer: any = null
+let isHoveringBadge = false
+let activeEditingEl: HTMLElement | null = null
 
 function createToolbarButton(
   text: string,
@@ -288,7 +290,14 @@ function getOrCreateHoverBadge(): HTMLDivElement {
   hoverBadgeEl.appendChild(btnCopy)
   hoverBadgeEl.appendChild(hoverBadgeRevert)
 
+  // Prevent clicks on toolbar from stealing focus or text selection from the active editable element
+  hoverBadgeEl.addEventListener('mousedown', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  })
+
   hoverBadgeEl.addEventListener('mouseenter', () => {
+    isHoveringBadge = true
     if (hideBadgeTimer) {
       clearTimeout(hideBadgeTimer)
       hideBadgeTimer = null
@@ -296,7 +305,10 @@ function getOrCreateHoverBadge(): HTMLDivElement {
   })
 
   hoverBadgeEl.addEventListener('mouseleave', () => {
-    hideHoverBadge()
+    isHoveringBadge = false
+    if (!activeEditingEl) {
+      hideHoverBadge()
+    }
   })
 
   document.body.appendChild(hoverBadgeEl)
@@ -306,6 +318,11 @@ function getOrCreateHoverBadge(): HTMLDivElement {
 function showHoverBadge(el: HTMLElement, path: string) {
   if (!state.canEdit || !state.editMode) return
   if (!el || isInsideAdminUI(el)) return
+
+  // If user is currently editing an element, lock toolbar to that element!
+  if (activeEditingEl && activeEditingEl !== el) {
+    return
+  }
 
   if (hideBadgeTimer) {
     clearTimeout(hideBadgeTimer)
@@ -340,11 +357,11 @@ function showHoverBadge(el: HTMLElement, path: string) {
   badge.style.opacity = '1'
 }
 
-function hideHoverBadge() {
+function hideHoverBadge(force = false) {
   if (hideBadgeTimer) clearTimeout(hideBadgeTimer)
   hideBadgeTimer = setTimeout(() => {
-    // If active element is focused, maintain the micro-toolbar
-    if (currentBadgeEl && (currentBadgeEl as any)._isFocused) {
+    // If active element is focused or currently being edited, maintain the micro-toolbar
+    if (!force && (activeEditingEl || (currentBadgeEl && (currentBadgeEl as any)._isFocused) || isHoveringBadge)) {
       return
     }
     if (hoverBadgeEl) {
@@ -476,6 +493,21 @@ export default defineNuxtPlugin(nuxtApp => {
     }
   })
 
+  // Outside-click handling to clear activeEditingEl and hide toolbar when clicking away
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pointerdown', (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null
+      if (!target) return
+      if (hoverBadgeEl && hoverBadgeEl.contains(target)) return
+      if (activeEditingEl && activeEditingEl.contains(target)) return
+
+      if (activeEditingEl) {
+        activeEditingEl = null
+        hideHoverBadge(true)
+      }
+    }, { capture: true, passive: true })
+  }
+
   // Directive: v-editable="path"
   nuxtApp.vueApp.directive('editable', {
     mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
@@ -552,6 +584,7 @@ export default defineNuxtPlugin(nuxtApp => {
 
       const onFocus = () => {
         (el as any)._isFocused = true
+        activeEditingEl = el
         if (state.canEdit && state.editMode) {
           setEditingActive(path, true)
           showHoverBadge(el, path)
@@ -573,16 +606,33 @@ export default defineNuxtPlugin(nuxtApp => {
           setValueSilently(path, state.language, text, targetSlug)
         }
         updateElementState(el, path, state.language)
-        hideHoverBadge()
+
+        // Allow clicking toolbar buttons without losing active lock
+        setTimeout(() => {
+          if (document.activeElement !== el && !isHoveringBadge) {
+            if (activeEditingEl === el) {
+              activeEditingEl = null
+            }
+            hideHoverBadge()
+          }
+        }, 150)
       }
 
       const onMouseEnter = () => {
-        if (state.canEdit && state.editMode && !(el as any)._isFocused && document.activeElement !== el) {
-          showHoverBadge(el, path)
+        if (state.canEdit && state.editMode) {
+          // If another element is currently being edited, do NOT let mouseover hijack the toolbar!
+          if (activeEditingEl && activeEditingEl !== el) return
+          if (!(el as any)._isFocused && document.activeElement !== el) {
+            showHoverBadge(el, path)
+          }
         }
       }
 
       const onMouseLeave = () => {
+        // If this element is currently being edited, keep the toolbar visible!
+        if (activeEditingEl === el || (el as any)._isFocused || document.activeElement === el) {
+          return
+        }
         hideHoverBadge()
       }
 

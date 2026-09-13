@@ -8,8 +8,8 @@
       class="fixed top-0 left-0 w-full z-50"
     />
 
-    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen pt-16 bg-najmback overflow-x-clip">
-      <div id="smooth-content" class="w-full max-w-full">
+    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen bg-najmback overflow-x-clip">
+      <div id="smooth-content" class="w-full max-w-full pt-16">
         <main id="main-content" class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
           <slot />
         </main>
@@ -76,6 +76,9 @@ onMounted(async () => {
 
   if (typeof window !== 'undefined') {
     window.addEventListener('load', scheduleScrollRefresh, { passive: true })
+    if ('fonts' in document) {
+      document.fonts.ready.then(scheduleScrollRefresh).catch(() => {})
+    }
   }
 })
 

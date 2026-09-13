@@ -165,6 +165,66 @@ const statusMeta = computed(() => {
   }
 })
 
+// --- Force Sync & Connectivity Diagnostics ---
+const syncing = ref(false)
+const showLogs = ref(false)
+interface SyncLog {
+  time: string
+  type: 'info' | 'success' | 'error'
+  message: string
+}
+const syncLogs = ref<SyncLog[]>([])
+
+function addSyncLog(type: 'info' | 'success' | 'error', message: string) {
+  const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  syncLogs.value.unshift({ time, type, message })
+  if (syncLogs.value.length > 30) syncLogs.value.pop()
+}
+
+async function forceSync() {
+  if (syncing.value) return
+  syncing.value = true
+
+  // If there are pending changes, save draft to server
+  if (changedCount.value > 0) {
+    addSyncLog('info', `در حال ارسال ${changedCount.value} تغییر محلی به سرور...`)
+    await saveDraft(true)
+    syncing.value = false
+    return
+  }
+
+  // Otherwise, run health/connectivity test against server
+  addSyncLog('info', 'در حال بررسی سلامت اتصال سرور و پایگاه داده PocketBase...')
+  try {
+    const res: any = await $fetch('/api/admin/pb/health')
+    if (res?.ok) {
+      state.telemetry.serverSyncedAt = new Date().toISOString()
+      addSyncLog('success', `سرور متصل است (زمان پاسخ: ${res.latency}ms) - دیتای محلی با سرور همگام است`)
+      window.dispatchEvent(new CustomEvent('toast', {
+        detail: { type: 'success', text: `اتصال سرور برقرار است (${res.latency}ms) - همگام‌سازی تایید شد.` }
+      }))
+    } else {
+      addSyncLog('error', `پاسخ ناموفق از سرور (زمان: ${res.latency}ms) - سرویس پایگاه داده در دسترس نیست`)
+      window.dispatchEvent(new CustomEvent('toast', {
+        detail: { type: 'error', text: 'خطا در ارتباط با سرور یا پایگاه داده' }
+      }))
+    }
+  } catch (err: any) {
+    const msg = err?.data?.message || err?.message || 'عدم پاسخگویی سرور یا قطعی شبکه'
+    addSyncLog('error', `خطای اتصال به سرور: ${msg}`)
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'error', text: `خطای همگام‌سازی: ${msg}` }
+    }))
+  } finally {
+    syncing.value = false
+  }
+}
+
+const popoverPlacement = computed<'down' | 'up'>(() => {
+  if (typeof window === 'undefined') return 'up'
+  return pos.y < window.innerHeight / 2 ? 'down' : 'up'
+})
+
 // --- Save Action ---
 async function saveDraft(manual = false) {
   if (!state || saving.value || changedCount.value === 0) {
@@ -203,10 +263,12 @@ async function saveDraft(manual = false) {
       })
     }
 
+    addSyncLog('success', `ذخیره ${totalSaved} تغییر روی سرور با موفقیت انجام شد`)
     window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'success', text: `Saved ${totalSaved} changes successfully across pages & footer!` } }))
   } catch (e: any) {
     const msg = e?.data?.message || e?.message || 'Failed to save draft'
     lastError.value = msg
+    addSyncLog('error', `خطای ذخیره روی سرور: ${msg}`)
     window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'error', text: `Save error: ${msg}` } }))
   } finally {
     saving.value = false
@@ -518,6 +580,20 @@ onMounted(() => {
     restoreInitialPosition()
   })
 
+  // Passive initial sync check
+  if (!state.telemetry.serverSyncedAt) {
+    $fetch('/api/admin/pb/health')
+      .then((res: any) => {
+        if (res?.ok) {
+          state.telemetry.serverSyncedAt = new Date().toISOString()
+          addSyncLog('success', `اتصال اولیه با سرور و پایگاه داده تایید شد (${res.latency}ms)`)
+        }
+      })
+      .catch((err: any) => {
+        addSyncLog('info', `عدم برقراری ارتباط با سرور در شروع: ${err?.message || ''}`)
+      })
+  }
+
   window.addEventListener('resize', fitIntoViewport, { passive: true })
 
   const onSaveEvt = () => saveDraft(true)
@@ -674,11 +750,12 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             <span class="font-mono text-[10px] tracking-tight">{{ telemetryLabel }}</span>
           </div>
 
-          <!-- Zero-Tap Observable HUD Popover (Floats smoothly on hover with 0ms lag) -->
+          <!-- Zero-Tap Observable HUD Popover (Floats smoothly on hover with dynamic top/bottom placement) -->
           <transition name="admin-modal">
             <div
               v-if="isTelemetryHovered"
-              class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-84 p-3.5 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-2xl z-[999999] pointer-events-auto select-text text-right"
+              class="absolute left-1/2 -translate-x-1/2 w-88 max-w-[calc(100vw-32px)] p-3.5 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-2xl z-[999999] pointer-events-auto select-text text-right transition-all duration-200"
+              :class="popoverPlacement === 'down' ? 'top-full mt-3' : 'bottom-full mb-3'"
               dir="rtl"
             >
               <!-- HUD Header: Dynamics Status -->
@@ -705,20 +782,62 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
                   </div>
                 </div>
 
-                <!-- Server PB Row -->
+                <!-- Server PB Row with Force Sync Action -->
                 <div class="flex items-center justify-between bg-zinc-900/80 px-2.5 py-1.5 rounded-lg border border-white/5">
                   <div class="flex items-center gap-1.5 text-zinc-300">
                     <span>☁️</span>
                     <span class="font-medium">همگام‌سازی سرور:</span>
                   </div>
-                  <div class="font-mono text-[10px] text-emerald-300" dir="ltr">
-                    {{ state.telemetry.serverSyncedAt ? formatTime(state.telemetry.serverSyncedAt) : 'همگام نشده' }}
+                  <div class="flex items-center gap-2">
+                    <div class="font-mono text-[10px]" :class="state.telemetry.serverSyncedAt ? 'text-emerald-300' : 'text-amber-300'" dir="ltr">
+                      {{ state.telemetry.serverSyncedAt ? formatTime(state.telemetry.serverSyncedAt) : 'همگام نشده' }}
+                    </div>
+                    <button
+                      type="button"
+                      @click.stop="forceSync"
+                      class="p-1 rounded-md bg-white/10 hover:bg-emerald-500/20 text-zinc-300 hover:text-emerald-300 active:scale-95 transition-all cursor-pointer flex items-center justify-center shrink-0"
+                      :class="{ 'animate-spin text-emerald-400': syncing }"
+                      title="همگام‌سازی فوری و بررسی وضعیت اتصال سرور (Force Sync)"
+                    >
+                      <AdminIcon name="refresh" class="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
 
                 <!-- Live Sync Explanation -->
                 <div class="text-[10px] text-zinc-300 leading-relaxed px-1 py-0.5">
                   {{ dynamicsNote }}
+                </div>
+
+                <!-- Connection & Sync Diagnostic Logs Toggle -->
+                <div class="pt-0.5 border-t border-white/5">
+                  <button
+                    type="button"
+                    @click.stop="showLogs = !showLogs"
+                    class="w-full flex items-center justify-between px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] text-zinc-300 hover:text-white transition-colors cursor-pointer select-none"
+                  >
+                    <span class="flex items-center gap-1.5">
+                      <span>📡</span>
+                      <span>گزارش اتصال و لاگ همگام‌سازی</span>
+                    </span>
+                    <span class="font-mono text-[9px] text-zinc-400">{{ showLogs ? '▲ بستن' : '▼ مشاهده لاگ' }}</span>
+                  </button>
+
+                  <!-- Live Diagnostic Logs Box -->
+                  <div v-if="showLogs" class="mt-1.5 p-2 rounded-lg bg-black/80 border border-white/10 max-h-36 overflow-y-auto space-y-1 font-mono text-[9px]">
+                    <div v-if="syncLogs.length === 0" class="text-zinc-500 text-center py-1.5">
+                      هنوز لاگی ثبت نشده است. دکمه چرخان همگام‌سازی را کلیک کنید.
+                    </div>
+                    <div
+                      v-for="(log, lIdx) in syncLogs"
+                      :key="lIdx"
+                      class="flex items-start gap-1.5 leading-tight text-right"
+                      :class="log.type === 'error' ? 'text-rose-400' : log.type === 'success' ? 'text-emerald-300' : 'text-zinc-300'"
+                    >
+                      <span class="text-zinc-500 shrink-0" dir="ltr">[{{ log.time }}]</span>
+                      <span class="break-words">{{ log.message }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 

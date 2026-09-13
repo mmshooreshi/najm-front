@@ -3,8 +3,7 @@
   <footer
     data-admin-slug="footer"
     :dir="isRTL ? 'rtl' : 'ltr'"
-    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 pb-8 sm:pb-6 select-text"
-    style="padding-bottom: max(2rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)));"
+    class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 select-text"
   >
     <!-- Top Centered Brand Logo -->
     <div class="flex justify-center pb-5 md:pb-6">
@@ -107,25 +106,24 @@
       </div>
     </div>
 
-    <!-- Strategic Internal Linking Capabilities Hub -->
-    <InternalAuthorityPills />
-
-    <!-- Divider Line (Thinnest) -->
-    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 my-2">
-      <div class="h-px bg-white/20 w-full"></div>
-    </div>
-
-    <!-- Bottom Copyright & Brand Bar (Thinnest, flex row on desktop, flex col on mobile) -->
-    <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-1.5 md:gap-4 py-1 text-[11px] text-white/90 font-d4 leading-tight">
-      <span 
-        class="font-medium text-center md:text-start"
-        v-editable="'copyright'"
-      >
-        {{ currentCopyrightText }}
-      </span>
-      <span class="font-mono text-[10px] md:text-[11px] shrink-0 text-center md:text-end font-semibold text-white/80 hover:text-white transition-colors" dir="ltr">
-        &copy; {{ toLocalizedDigits(year) }} ChapeNajm
-      </span>
+    <!-- Bottom Copyright & Brand Bar (Thinnest possible, responsive flex row on desktop, flex col on mobile) -->
+    <div
+      class="mt-8 border-t border-white/15"
+      :class="[extraBottomSpace ? 'pb-24 sm:pb-28' : '']"
+      :style="{ paddingBottom: extraBottomSpace ? undefined : 'max(0.65rem, env(safe-area-inset-bottom, 0.65rem))' }"
+    >
+      <div class="max-w-screen-xl mx-auto px-4 md:px-8 lg:px-12 py-2.5 sm:py-3 flex flex-col md:flex-row items-center justify-between gap-1.5 md:gap-4 text-[11px] md:text-xs text-white/80 font-d4 leading-normal">
+        <span 
+          class="font-normal text-center"
+          :class="isRTL ? 'md:text-right' : 'md:text-left'"
+          v-editable="'copyright'"
+        >
+          {{ currentCopyrightText }}
+        </span>
+        <span class="font-mono text-[10px] md:text-[11px] shrink-0 text-center text-white/70 hover:text-white transition-colors tracking-wider" dir="ltr">
+          &copy; {{ year }} ChapeNajm
+        </span>
+      </div>
     </div>
 
   </footer>
@@ -137,13 +135,22 @@ import logoWhiteFa from '~/assets/icons/najm-logo-white.svg'
 import logoWhiteEn from '~/assets/icons/najm-logo-white-en.svg'
 import logoWhiteAr from '~/assets/icons/najm-logo-white-ar.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
-import InternalAuthorityPills from '~/components/seo/InternalAuthorityPills.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useMenu } from '~/composables/useMenu'
 import { toLocalizedDigits } from '~/utils/digits'
 import { getLocalSchema } from '~/composables/ui/schemaRegistry'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Map from '~/components/map.vue'
+
+const props = withDefaults(
+  defineProps<{
+    extraBottomSpace?: boolean
+  }>(),
+  {
+    extraBottomSpace: false
+  }
+)
 
 const { language } = useLocale()
 const { preloadMenuRoutes } = useMenu()
@@ -158,6 +165,13 @@ onMounted(() => {
     } else {
       setTimeout(() => preloadMenuRoutes(), 600)
     }
+
+    // Refresh scroll triggers to guarantee exact scroll height on desktop & mobile
+    setTimeout(() => {
+      try {
+        ScrollTrigger.refresh()
+      } catch {}
+    }, 350)
   }
 })
 
