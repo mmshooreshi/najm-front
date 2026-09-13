@@ -79,13 +79,13 @@ body, [dir="rtl"], .font-sans {
    */
   left: 8px;
   right: 8px;
-  bottom: -10px;
+  bottom: -11px;
 
   height: 4px;
 
   pointer-events: auto;
 
-  opacity: 0.9;
+  opacity: 0.4;
 
   direction: ltr;
 

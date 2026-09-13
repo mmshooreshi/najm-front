@@ -9,26 +9,37 @@
         headerHidden ? 'top-0' : 'top-16 sm:top-20'
       ]"
     >
-      <div class="max-w-7xl mx-auto flex justify-center">
-<nav
+        <div class="relative max-w-7xl mx-auto flex justify-center">
+
+  <nav
   ref="subnavRef"
   class="najm-subnav flex items-center gap-1 sm:gap-2 overflow-x-auto px-2 py-0.5 scroll-smooth max-w-full"
 >
-          <button
-            v-for="item in sections"
-            :key="item.id"
-            :id="`nav-btn-${item.id}`"
-            @click="scrollToSection(item.id)"
-            class="px-3.5 sm:px-5 py-1.5 text-xs sm:text-[13px] text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none shrink-0"
-            :class="[
-              activeSection === item.id
-                ? 'bg-najmgreen text-white shadow-xs font-bold scale-[1.02]'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
-            ]"
-          >
-            {{ item.label }}
-          </button>
-        </nav>
+  <button
+    v-for="item in sections"
+    :key="item.id"
+    :id="`nav-btn-${item.id}`"
+    @click="scrollToSection(item.id)"
+    class="px-3.5 sm:px-5 py-1.5 text-xs sm:text-[13px] text-d4 rounded-full transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 select-none shrink-0"
+    :class="[
+      activeSection === item.id
+        ? 'bg-najmgreen text-white shadow-xs font-bold scale-[1.02]'
+        : 'text-gray-600 hover:text-gray-900 hover:bg-black/5 font-medium'
+    ]"
+  >
+    {{ item.label }}
+  </button>
+</nav>
+<div
+  ref="scrollbarRef"
+  class="najm-scrollbar"
+  aria-hidden="true"
+>
+  <div
+    ref="scrollbarThumbRef"
+    class="najm-scrollbar-thumb"
+  ></div>
+</div>
       </div>
     </div>
 
@@ -324,6 +335,8 @@ const defaultTimeline = [
 
 const isMounted = ref(false)
 const subnavRef = ref<HTMLElement | null>(null)
+const scrollbarRef = ref<HTMLElement | null>(null)
+const scrollbarThumbRef = ref<HTMLElement | null>(null)
 const { direction } = useScrollDirection()
 const scrollY = ref(0)
 const headerHidden = computed(() => direction.value === 'down' && scrollY.value > 80)
@@ -364,6 +377,111 @@ function scrollToSection(id: string) {
   }, 800)
 }
 
+function updateSubnavScrollbar() {
+  const nav = subnavRef.value
+  const track = scrollbarRef.value
+  const thumb = scrollbarThumbRef.value
+
+  if (!nav || !track || !thumb) return
+
+  const { scrollWidth, clientWidth, scrollLeft } = nav
+
+  // No scrollbar needed
+  if (scrollWidth <= clientWidth + 1) {
+    track.style.display = 'none'
+    return
+  }
+
+  track.style.display = 'block'
+
+  const trackWidth = track.clientWidth
+
+  // Thumb represents the visible portion of the content
+  const thumbWidth = Math.max(
+    28,
+    (clientWidth / scrollWidth) * trackWidth
+  )
+
+  const maxThumbTravel = trackWidth - thumbWidth
+
+  /*
+   * RTL browsers can report scrollLeft differently.
+   * Normalize it into a 0 → 1 progress value.
+   */
+  const maxScroll = scrollWidth - clientWidth
+
+  let progress = 0
+
+  if (isRTL.value) {
+    const raw = Math.abs(scrollLeft)
+
+    progress = Math.min(
+      1,
+      Math.max(0, raw / maxScroll)
+    )
+  } else {
+    progress = Math.min(
+      1,
+      Math.max(0, scrollLeft / maxScroll)
+    )
+  }
+
+  thumb.style.width = `${thumbWidth}px`
+  thumb.style.transform = `translateX(${progress * maxThumbTravel}px)`
+}
+
+let isDraggingScrollbar = false
+let dragStartX = 0
+let dragStartScrollLeft = 0
+
+function startScrollbarDrag(event: PointerEvent) {
+  const nav = subnavRef.value
+  const thumb = scrollbarThumbRef.value
+
+  if (!nav || !thumb) return
+
+  isDraggingScrollbar = true
+
+  dragStartX = event.clientX
+  dragStartScrollLeft = nav.scrollLeft
+
+  thumb.setPointerCapture(event.pointerId)
+
+  event.preventDefault()
+}
+
+function moveScrollbarDrag(event: PointerEvent) {
+  if (!isDraggingScrollbar) return
+
+  const nav = subnavRef.value
+  const track = scrollbarRef.value
+  const thumb = scrollbarThumbRef.value
+
+  if (!nav || !track || !thumb) return
+
+  const trackWidth = track.clientWidth
+  const thumbWidth = thumb.offsetWidth
+
+  const maxThumbTravel = trackWidth - thumbWidth
+
+  if (maxThumbTravel <= 0) return
+
+  const deltaX = event.clientX - dragStartX
+
+  const scrollRatio =
+    (nav.scrollWidth - nav.clientWidth) /
+    maxThumbTravel
+
+  nav.scrollLeft =
+    dragStartScrollLeft + deltaX * scrollRatio
+
+  updateSubnavScrollbar()
+}
+
+function endScrollbarDrag() {
+  isDraggingScrollbar = false
+}
+
 onMounted(async () => {
   await nextTick()
   if (typeof window !== 'undefined') {
@@ -392,11 +510,92 @@ onMounted(async () => {
     const el = document.getElementById(s.id)
     if (el) observer.observe(el)
   })
+
+
+
+
+  const nav = subnavRef.value
+const thumb = scrollbarThumbRef.value
+
+if (nav) {
+  nav.addEventListener('scroll', updateSubnavScrollbar, {
+    passive: true
+  })
+}
+
+if (thumb) {
+  thumb.addEventListener(
+    'pointerdown',
+    startScrollbarDrag
+  )
+
+  thumb.addEventListener(
+    'pointermove',
+    moveScrollbarDrag
+  )
+
+  thumb.addEventListener(
+    'pointerup',
+    endScrollbarDrag
+  )
+
+  thumb.addEventListener(
+    'pointercancel',
+    endScrollbarDrag
+  )
+}
+
+window.addEventListener(
+  'resize',
+  updateSubnavScrollbar
+)
+
+await nextTick()
+
+requestAnimationFrame(() => {
+  updateSubnavScrollbar()
+})
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
-    window.removeEventListener('scroll', handleScrollDirection)
+    window.removeEventListener(
+      'scroll',
+      handleScrollDirection
+    )
+
+    window.removeEventListener(
+      'resize',
+      updateSubnavScrollbar
+    )
   }
+
+  const nav = subnavRef.value
+  const thumb = scrollbarThumbRef.value
+
+  nav?.removeEventListener(
+    'scroll',
+    updateSubnavScrollbar
+  )
+
+  thumb?.removeEventListener(
+    'pointerdown',
+    startScrollbarDrag
+  )
+
+  thumb?.removeEventListener(
+    'pointermove',
+    moveScrollbarDrag
+  )
+
+  thumb?.removeEventListener(
+    'pointerup',
+    endScrollbarDrag
+  )
+
+  thumb?.removeEventListener(
+    'pointercancel',
+    endScrollbarDrag
+  )
 })
 </script>
