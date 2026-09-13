@@ -44,7 +44,7 @@ function safeUnwrap(val: any, seen = new WeakSet()): any {
 
 export function useAppSeo(options: SeoOptions = {}) {
   const route = useRoute()
-  const { language } = useLocale()
+  const { language, localePath } = useLocale()
 
   const currentLang = computed(() => {
     // 1. Inspect route path first for search engine crawlers without cookies
