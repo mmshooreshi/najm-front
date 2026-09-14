@@ -1,7 +1,11 @@
 <!-- components/InlineSvgMask.vue -->
 <template>
   <!-- Container with explicit size matching original layout -->
-  <div :style="{ position: 'relative', width: W + 'px', height: H + 'px', direction: 'ltr' }">
+  <div
+    :style="{ position: 'relative', width: W + 'px', height: H + 'px', direction: 'ltr', userSelect: 'none', WebkitUserSelect: 'none' }"
+    class="select-none"
+    @dragstart.prevent
+  >
     <!-- Exact vector silhouette mask with animated Najm green shimmer displayed while image loads -->
     <svg
       :width="W"
@@ -75,16 +79,21 @@
       :fetchpriority="priority ? 'high' : 'auto'"
       :preload="priority"
       decoding="async"
-      class="relative z-10 w-full h-full object-contain pointer-events-auto"
+      draggable="false"
+      class="relative z-10 w-full h-full object-contain pointer-events-auto select-none"
       :style="{
         position: 'relative',
         top: 0,
         left: 0,
-        right: 'auto'
+        right: 'auto',
+        userSelect: 'none',
+        WebkitUserDrag: 'none',
+        WebkitUserSelect: 'none'
       }"
       @load="onLoad"
       @mouseenter="onMouseEnter"
       @mouseleave="onMouseLeave"
+      @dragstart.prevent
     />
   </div>
 </template>

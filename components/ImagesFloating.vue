@@ -5,17 +5,19 @@
       Settings
     </button>
  -->
-  <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10" dir="ltr"
+  <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10 select-none cursor-grab active:cursor-grabbing" dir="ltr"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
-       @mousemove="throttledMouseMove" @touchstart.passive="handleTouchStart"
-       @touchmove.passive="handleTouchMove" @touchend.passive="handleTouchEnd">
+       @mousemove="handleMouseMove" @mousedown="handleMouseDown"
+       @touchstart.passive="handleTouchStart"
+       @touchmove.passive="handleTouchMove" @touchend.passive="handleTouchEnd"
+       @dragstart.prevent>
     <!-- Settings Button -->
 
     <div class="slider-inner absolute flex" dir="ltr"> 
       <div v-for="(image, index) in images" :key="index"
-      
-           class="image-item absolute"
-           :style="getStyle(image, index)">
+           class="image-item absolute select-none"
+           :style="getStyle(image, index)"
+           @dragstart.prevent>
         <InlineSvgMask
           v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
           :height="image.height"
@@ -469,6 +471,8 @@ const handleTouchEnd = () => {
 // Mouse and Hover Handlers
 ///////////////////////////////////////////
 
+let isMouseDown = false
+
 const handleMouseEnter = () => {
   isHovered.value = true
 }
@@ -478,7 +482,37 @@ const handleMouseLeave = () => {
   mouseEffect.value = { x: 0, y: 0 }
 }
 
-const handleMouseMove = (event) => {
+const handleMouseDown = (event) => {
+  if (event.button !== 0) return
+  isMouseDown = true
+  isSwiping.value = true
+  swipeInertiaActive.value = false
+  startTouchX = event.clientX
+  startTranslateX = translateX.value
+  lastTouchX.value = event.clientX
+  lastTouchTime.value = performance.now()
+  isRealSwipe.value = false
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('mouseup', handleWindowMouseUp)
+  }
+}
+
+const handleWindowMouseUp = () => {
+  if (!isMouseDown) return
+  isMouseDown = false
+  isSwiping.value = false
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('mouseup', handleWindowMouseUp)
+  }
+  if (!isRealSwipe.value) {
+    swipeVelocity.value = 0
+  } else {
+    swipeInertiaActive.value = true
+  }
+}
+
+const calculateParallax = (event) => {
   if (!slider.value) return
   const rect = slider.value.getBoundingClientRect()
   const offsetX = (((event.clientX - rect.left) - rect.width / 2) / (rect.width / 2)) * 10
@@ -486,22 +520,42 @@ const handleMouseMove = (event) => {
   mouseEffect.value = { x: offsetX, y: offsetY }
 }
 
-const throttledMouseMove = useThrottleFn(handleMouseMove, 16)
+const throttledParallax = useThrottleFn(calculateParallax, 16)
+
+const handleMouseMove = (event) => {
+  if (isMouseDown) {
+    const currentX = event.clientX
+    const deltaX = currentX - startTouchX
+    const currentTime = performance.now()
+
+    if (!isRealSwipe.value && Math.abs(deltaX) > 4) {
+      isRealSwipe.value = true
+    }
+
+    if (isRealSwipe.value) {
+      translateX.value = startTranslateX + deltaX
+      const dt = currentTime - lastTouchTime.value
+      if (dt > 0) {
+        swipeVelocity.value = (currentX - lastTouchX.value) / dt
+      }
+      lastTouchX.value = currentX
+      lastTouchTime.value = currentTime
+    }
+  }
+
+  throttledParallax(event)
+}
 
 ///////////////////////////////////////////
 // Image Hover Effects
 ///////////////////////////////////////////
 
 const handleElementHover = (image) => {
-  // If not already hovered, change hover state.
+  if (isRealSwipe.value) return
   if (!image.hovered) {
     image.hovered = true
     image.scale = 1.4
     image.hoverRotate = image.rotate + 10
-    // Optionally, you can delay the z-index change if needed.
-    // setTimeout(() => {
-    //   image._delayedZIndexSet = true;
-    // }, hoverZIndexDelay.value);
   }
 }
 
@@ -529,14 +583,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   cancelAnimationFrame(animationFrameId)
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('mouseup', handleWindowMouseUp)
+  }
 })
 </script>
-
-
-
-
-
-
 
 <style>
 .slider-container {
@@ -546,6 +597,13 @@ onUnmounted(() => {
     overflow-x: clip;
     overflow-y: visible !important;
     touch-action: pan-y;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    cursor: grab;
+}
+
+.slider-container:active {
+    cursor: grabbing;
 }
 
 .slider-inner {
@@ -566,8 +624,18 @@ onUnmounted(() => {
     overflow: visible !important;
     transition-property: transform, box-shadow, opacity, filter;
     will-change: transform, opacity, filter;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-user-drag: none !important;
 }
 
+.image-item img,
+.image-item svg {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-user-drag: none !important;
+    pointer-events: auto;
+}
 </style>
 
 
