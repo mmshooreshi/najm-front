@@ -16,6 +16,7 @@
     <div class="slider-inner absolute flex" dir="ltr"> 
       <div v-for="(image, index) in images" :key="index"
            class="image-item absolute select-none"
+           :data-index="index"
            :style="getStyle(image, index)"
            @dragstart.prevent>
         <InlineSvgMask
@@ -480,6 +481,28 @@ const handleMouseEnter = () => {
 const handleMouseLeave = () => {
   isHovered.value = false
   mouseEffect.value = { x: 0, y: 0 }
+  images.forEach(img => resetElement(img))
+}
+
+const checkHoverAtPoint = (clientX, clientY) => {
+  if (typeof document === 'undefined') return
+  const el = document.elementFromPoint(clientX, clientY)
+  const imageItem = el?.closest('.image-item')
+  if (imageItem) {
+    const idxStr = imageItem.getAttribute('data-index')
+    const idx = idxStr !== null ? parseInt(idxStr, 10) : -1
+    if (idx >= 0 && images[idx]) {
+      images.forEach((img, i) => {
+        if (i === idx) {
+          handleElementHover(img)
+        } else {
+          resetElement(img)
+        }
+      })
+      return
+    }
+  }
+  images.forEach(img => resetElement(img))
 }
 
 const handleMouseDown = (event) => {
@@ -498,7 +521,7 @@ const handleMouseDown = (event) => {
   }
 }
 
-const handleWindowMouseUp = () => {
+const handleWindowMouseUp = (event) => {
   if (!isMouseDown) return
   isMouseDown = false
   isSwiping.value = false
@@ -509,6 +532,12 @@ const handleWindowMouseUp = () => {
     swipeVelocity.value = 0
   } else {
     swipeInertiaActive.value = true
+  }
+  isRealSwipe.value = false
+
+  // Instantly restore hover focus to whatever image the cursor is currently over
+  if (event && typeof event.clientX === 'number') {
+    checkHoverAtPoint(event.clientX, event.clientY)
   }
 }
 
@@ -530,6 +559,8 @@ const handleMouseMove = (event) => {
 
     if (!isRealSwipe.value && Math.abs(deltaX) > 4) {
       isRealSwipe.value = true
+      // While actively dragging, un-hover images so they don't block the view
+      images.forEach(img => resetElement(img))
     }
 
     if (isRealSwipe.value) {
@@ -551,7 +582,8 @@ const handleMouseMove = (event) => {
 ///////////////////////////////////////////
 
 const handleElementHover = (image) => {
-  if (isRealSwipe.value) return
+  // Only suppress hover while the mouse button is actively held down and dragging
+  if (isMouseDown && isRealSwipe.value) return
   if (!image.hovered) {
     image.hovered = true
     image.scale = 1.4
@@ -560,9 +592,11 @@ const handleElementHover = (image) => {
 }
 
 const resetElement = (image) => {
-  image.hovered = false
-  image.scale = 1
-  image.hoverRotate = undefined
+  if (image.hovered || image.scale !== 1 || image.hoverRotate !== undefined) {
+    image.hovered = false
+    image.scale = 1
+    image.hoverRotate = undefined
+  }
 }
 
 ///////////////////////////////////////////
