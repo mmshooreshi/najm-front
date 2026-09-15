@@ -115,11 +115,11 @@ export default defineNuxtConfig({
   nitro: {
     // preset: process.env.VERCEL ? 'vercel' : undefined,
     compressPublicAssets: true,
-    prerender: {
-      crawlLinks: false,
-      routes: ['/'],
-      failOnError: false
-    }
+    // prerender: {
+    //   crawlLinks: false,
+    //   routes: ['/'],
+    //   failOnError: false
+    // }
   },
 
   experimental: {
