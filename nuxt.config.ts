@@ -6,7 +6,9 @@ import { fontPreloadLinks } from './utils/font-preload'
 // import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  devtools: {
+    enabled: process.env.NODE_ENV !== 'production'
+  },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },
@@ -111,7 +113,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: process.env.VERCEL ? 'vercel' : undefined,
+    // preset: process.env.VERCEL ? 'vercel' : undefined,
     compressPublicAssets: true,
     prerender: {
       crawlLinks: false,
@@ -216,8 +218,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     'nuxt-delay-hydration',
     '@nuxtjs/fontaine',
-    '@vercel/analytics',
-    '@vercel/speed-insights'
+    // '@vercel/analytics',
+    // '@vercel/speed-insights'
 
   ],
   delayHydration: {
