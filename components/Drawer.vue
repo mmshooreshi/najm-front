@@ -27,9 +27,9 @@
       >
         <aside
           v-if="open"
-          class="fixed top-0 bottom-0 z-10 w-full sm:w-[420px] md:w-[460px] h-[100dvh] bg-white flex flex-col overflow-hidden touch-manipulation will-change-transform"
+          class="fixed top-0 bottom-0 z-10 w-full max-w-full md:w-[420px] lg:w-[460px] h-[100dvh] bg-white flex flex-col overflow-hidden touch-manipulation will-change-transform inset-x-0 md:inset-x-auto"
           :class="[
-            isRTL ? 'left-0 shadow-[8px_0_36px_rgba(0,0,0,0.14)]' : 'right-0 shadow-[-8px_0_36px_rgba(0,0,0,0.14)]'
+            isRTL ? 'md:left-0 md:right-auto shadow-[8px_0_36px_rgba(0,0,0,0.14)]' : 'md:right-0 md:left-auto shadow-[-8px_0_36px_rgba(0,0,0,0.14)]'
           ]"
         >
           <!-- Drawer Top Header Bar (100% pixel-perfect match with Header.vue) -->
@@ -94,7 +94,7 @@
           <!-- Single Unified Scroll Container (Zero nested scroll traps!) -->
           <div
             ref="scrollContainer"
-            class="flex-1 overflow-y-auto overscroll-contain px-3 sm:px-6 pt-2 pb-32"
+            class="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-3 sm:px-6 pt-2 pb-32"
             style="-webkit-overflow-scrolling: touch; overscroll-behavior: contain;"
           >
             <slot>

@@ -1,7 +1,7 @@
 <!-- components/cards/EmblCards.vue -->
 <template>
   <div :key="isRTL" :dir="isRTL ? 'rtl' : 'ltr'" ref="emblContainer" class="relative overflow-x-visible absolute py-6">
-    <div class="overflow-visible w-full" ref="viewportRef">
+    <div class="overflow-visible w-full touch-pan-y" ref="viewportRef">
       <div class="flex">
         <div v-for="(card, idx) in cards" :key="card.id" :data-id="card.id" :class="[isRTL ? 'rtl' : 'ltr']"
           class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]">

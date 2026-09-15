@@ -2,11 +2,11 @@
 <template>
   <div dir="rtl" class="relative overflow-x-visible absolute py-0 absolute py-0 focus:outline-none focus-visible:outline-none" role="region" aria-roledescription="carousel"
     aria-label="Package carousel" @keydown.left.prevent="scrollNext" @keydown.right.prevent="scrollPrev" tabindex="0">
-    <div class="overflow-visible w-full" ref="viewportRef" 
+    <div class="overflow-visible w-full touch-pan-y" ref="viewportRef" 
       @pointermove="onPointerMove"
-  @pointerenter="onPointerEnter"
-  @pointerleave="onPointerLeave"
->
+      @pointerenter="onPointerEnter"
+      @pointerleave="onPointerLeave"
+    >
       <!-- <button @click="downloadAllJson()" class="z-10 m-4 pt-2 px-2 py-0 bg-green-600/20 hover:bg-green-600 text-white rounded-xl">
       <Icon name="mdi:download"/>
       </button> -->
@@ -344,7 +344,7 @@ onMounted(() => {
       speed: 10,
       align: 'start',
       direction: 'rtl',
-      dragThreshold: 1,
+      dragThreshold: 10,
       dragFree: true,
       loop: false, // autoplay is fine with false, just stops at edges
     },

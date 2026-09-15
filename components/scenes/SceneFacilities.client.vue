@@ -1,6 +1,6 @@
 <!-- components/scenes/SceneFacilities.client.vue -->
 <template>
-  <div class="snap-start flex flex-col w-full gap-12 pt-12">
+  <div class="flex flex-col w-full gap-12 pt-12">
     <SceneHeading :data="data" path="sceneFacilities"/>
 
     <!-- 1) Add h-[400px] and items-stretch here -->

@@ -2,7 +2,7 @@
 
    <!-- ScenePromo6.vue  -->
    <template>
-  <div class="rtl snap-start flex flex-col flex-grow w-full h-full gap-12 pt-12">
+  <div class="rtl flex flex-col flex-grow w-full h-full gap-12 pt-12">
     <SceneHeading :data="data" align="center" path="scenePromo" />
 
     <PromoFeatureCards :cards="data.cards"/>

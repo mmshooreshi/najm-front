@@ -8,9 +8,9 @@
       class="fixed top-0 left-0 w-full z-50"
     />
 
-    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen bg-najmback overflow-x-clip">
-      <div id="smooth-content" class="w-full max-w-full pt-16">
-        <main id="main-content" class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)]">
+    <div id="smooth-wrapper" class="relative overflow-visible min-h-screen bg-najmback overflow-x-clip touch-pan-y">
+      <div id="smooth-content" class="w-full max-w-full pt-16 touch-pan-y">
+        <main id="main-content" class="containerCustom gap-0 px-4 md:px-8 mx-auto flex flex-col min-h-[calc(100vh-64px)] touch-pan-y">
           <slot />
         </main>
 
@@ -60,26 +60,26 @@ onMounted(async () => {
       effects: true,
       smoothTouch: false,
     })
-  }
 
-  // Refresh ScrollTrigger so trigger positions are calculated accurately
-  ScrollTrigger.refresh()
+    // On desktop with ScrollSmoother, continuously synchronize scroll boundaries as dynamic content loads
+    const contentEl = document.getElementById('smooth-content')
+    if (contentEl && typeof ResizeObserver !== 'undefined') {
+      contentResizeObserver = new ResizeObserver(() => {
+        scheduleScrollRefresh()
+      })
+      contentResizeObserver.observe(contentEl)
+    }
 
-  // Continuously synchronize scroll boundaries as dynamic async content (Map, images, fonts, UI schemas) loads
-  const contentEl = document.getElementById('smooth-content')
-  if (contentEl && typeof ResizeObserver !== 'undefined') {
-    contentResizeObserver = new ResizeObserver(() => {
-      scheduleScrollRefresh()
-    })
-    contentResizeObserver.observe(contentEl)
-  }
-
-  if (typeof window !== 'undefined') {
-    window.addEventListener('load', scheduleScrollRefresh, { passive: true })
-    if ('fonts' in document) {
-      document.fonts.ready.then(scheduleScrollRefresh).catch(() => {})
+    if (typeof window !== 'undefined') {
+      window.addEventListener('load', scheduleScrollRefresh, { passive: true })
+      if ('fonts' in document) {
+        document.fonts.ready.then(scheduleScrollRefresh).catch(() => {})
+      }
     }
   }
+
+  // Initial trigger calculation for entry transitions
+  ScrollTrigger.refresh()
 })
 
 onBeforeUnmount(() => {

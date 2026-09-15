@@ -2,7 +2,7 @@
 <!-- EmbleProductCards.vue -->
 <template>
     <div dir="rtl" class="relative overflow-x-visible py-0">
-      <div  class="overflow-visible w-full" ref="viewportRef">
+      <div class="overflow-visible w-full touch-pan-y" ref="viewportRef">
         <div  class="flex w-full"  >
         <div
             v-for="(product, idx) in products"

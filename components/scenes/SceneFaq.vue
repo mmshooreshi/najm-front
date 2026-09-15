@@ -2,7 +2,7 @@
 
    <!-- SceneFaq9.vue  -->
    <template>
-    <div class="pb-8 snap-start">
+    <div class="pb-8">
       <FaqSec />
     </div>
   </template>

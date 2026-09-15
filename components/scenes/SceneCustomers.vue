@@ -10,7 +10,7 @@
     </p>
 
     <!-- Embla viewport -->
-    <div ref="viewportRef" class="absolute left-0 mt-12 overflow-visible w-full  cursor-[url(/images/mdi--company-light.png),pointer]">
+    <div ref="viewportRef" class="absolute left-0 mt-12 overflow-visible w-full touch-pan-y cursor-[url(/images/mdi--company-light.png),pointer]">
       <div class="flex">
         <div
           v-for="(logo, idx) in data.logos"

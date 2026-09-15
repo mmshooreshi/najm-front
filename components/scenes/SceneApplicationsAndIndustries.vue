@@ -2,7 +2,7 @@
 
  <!-- ScenePrinting2.vue  -->
  <template>
-  <div class="snap-start flex flex-col flex-grow  w-full h-full  gap-12  pt-12">
+  <div class="flex flex-col flex-grow w-full h-full gap-12 pt-12">
     <SceneHeading  :data="sceneApplicationsAndIndustries" path="sceneApplicationsAndIndustries"/>
 
     <div class="w-max mx-auto cursor-pointer">
