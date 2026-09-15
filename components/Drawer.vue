@@ -9,11 +9,11 @@
       aria-modal="true"
       :aria-label="isRTL ? 'منوی ناوبری' : 'Navigation Menu'"
     >
-      <!-- Backdrop Overlay (soft tint + subtle blur, zero GPU lag) -->
+      <!-- Backdrop Overlay -->
       <transition appear name="drawer-backdrop">
         <div
           v-if="open"
-          class="fixed inset-0 bg-black/45 backdrop-blur-[2px]"
+          class="fixed inset-0 bg-black/50"
           @click="closeDrawer"
           aria-hidden="true"
         />
@@ -27,13 +27,13 @@
       >
         <aside
           v-if="open"
-          class="fixed top-0 bottom-0 z-10 w-full max-w-full md:w-[420px] lg:w-[460px] h-[100dvh] bg-white flex flex-col overflow-hidden touch-manipulation will-change-transform inset-x-0 md:inset-x-auto"
+          class="fixed inset-y-0 z-10 w-full max-w-full md:w-[420px] lg:w-[460px] bg-white flex flex-col overflow-hidden touch-manipulation will-change-transform"
           :class="[
-            isRTL ? 'md:left-0 md:right-auto shadow-[8px_0_36px_rgba(0,0,0,0.14)]' : 'md:right-0 md:left-auto shadow-[-8px_0_36px_rgba(0,0,0,0.14)]'
+            isRTL ? 'left-0 right-auto shadow-[8px_0_36px_rgba(0,0,0,0.14)]' : 'right-0 left-auto shadow-[-8px_0_36px_rgba(0,0,0,0.14)]'
           ]"
         >
           <!-- Drawer Top Header Bar (100% pixel-perfect match with Header.vue) -->
-          <div class="w-full flex items-center justify-between px-3 sm:px-6 h-16 sm:h-20 border-b border-gray-100 flex-shrink-0 bg-white/95 backdrop-blur-md">
+          <div class="w-full flex items-center justify-between px-3 sm:px-6 h-16 sm:h-20 border-b border-gray-100 flex-shrink-0 bg-white">
             <!-- Brand Logo (Directly identical markup as Header.vue to ensure exact alignment) -->
             <div class="flex items-center flex-shrink-0 cursor-pointer" @click="closeDrawer">
               <Logo :menuOpen="true" class="w-24 sm:w-28 flex-shrink-0" />
@@ -162,6 +162,9 @@ function closeDrawer() {
 function onAfterLeave() {
   if (!props.open) {
     isVisible.value = false
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = ''
+    }
   }
 }
 
@@ -175,13 +178,9 @@ function onKeydown(e: KeyboardEvent) {
 watch(() => props.open, (isOpen) => {
   if (isOpen) {
     isVisible.value = true
-    preloadMenuRoutes()
-  }
-  if (typeof document === 'undefined') return
-  if (isOpen) {
-    document.body.style.overflow = 'hidden'
-  } else {
-    document.body.style.overflow = ''
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = 'hidden'
+    }
   }
 }, { immediate: true })
 
@@ -208,10 +207,10 @@ onBeforeUnmount(() => {
 /* Backdrop Fade */
 .drawer-backdrop-appear-active,
 .drawer-backdrop-enter-active {
-  transition: opacity 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.28s ease-out;
 }
 .drawer-backdrop-leave-active {
-  transition: opacity 0.22s cubic-bezier(0.4, 0, 1, 1);
+  transition: opacity 0.22s ease-in;
 }
 .drawer-backdrop-appear-from,
 .drawer-backdrop-enter-from,
@@ -227,10 +226,10 @@ onBeforeUnmount(() => {
 /* Slide Drawer RTL (FA & AR: Smooth, natural deceleration from left to right) */
 .drawer-slide-rtl-appear-active,
 .drawer-slide-rtl-enter-active {
-  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-rtl-leave-active {
-  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1);
+  transition: transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-slide-rtl-appear-from,
 .drawer-slide-rtl-enter-from,
@@ -246,10 +245,10 @@ onBeforeUnmount(() => {
 /* Slide Drawer LTR (EN: Smooth, natural deceleration from right to left) */
 .drawer-slide-ltr-appear-active,
 .drawer-slide-ltr-enter-active {
-  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .drawer-slide-ltr-leave-active {
-  transition: transform 0.22s cubic-bezier(0.4, 0, 1, 1);
+  transition: transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .drawer-slide-ltr-appear-from,
 .drawer-slide-ltr-enter-from,
@@ -262,37 +261,9 @@ onBeforeUnmount(() => {
   transform: translate3d(0, 0, 0);
 }
 
-/* Swift Sequential Placement: smooth micro-glide cascade with ZERO rubber bounce */
-.drawer-slide-rtl-appear-active :deep(.drawer-stagger-item),
-.drawer-slide-rtl-enter-active :deep(.drawer-stagger-item),
-.drawer-slide-ltr-appear-active :deep(.drawer-stagger-item),
-.drawer-slide-ltr-enter-active :deep(.drawer-stagger-item) {
-  animation: drawerItemCascade 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-  animation-delay: calc(0.04s + var(--item-idx, 0) * 0.024s);
-}
-
-.drawer-slide-rtl-leave-active :deep(.drawer-stagger-item),
-.drawer-slide-ltr-leave-active :deep(.drawer-stagger-item) {
-  transition: opacity 0.16s ease, transform 0.16s ease;
-  opacity: 0.4;
-  transform: translate3d(0, -3px, 0);
-}
-
-@keyframes drawerItemCascade {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 aside {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
   will-change: transform;
 }
 </style>

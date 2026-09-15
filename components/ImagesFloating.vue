@@ -5,7 +5,7 @@
       Settings
     </button>
  -->
-  <div ref="slider" class="slider-container relative w-full max-w-full overflow-hidden h-[20vh] -mt-10 select-none cursor-grab active:cursor-grabbing touch-pan-y" dir="ltr"
+  <div ref="slider" class="slider-container relative w-screen h-[20vh] -mt-10 select-none cursor-grab active:cursor-grabbing touch-pan-y" dir="ltr"
        @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave"
        @mousemove="handleMouseMove" @mousedown="handleMouseDown"
        @touchstart.passive="handleTouchStart"

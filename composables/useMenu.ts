@@ -21,11 +21,18 @@ export const useMenu = () => {
 
   const preloadMenuRoutes = () => {
     if (typeof window === 'undefined') return
-    try {
-      CORE_ROUTES.forEach((path) => {
-        preloadRouteComponents(localePath(path)).catch(() => {})
-      })
-    } catch {}
+    const run = () => {
+      try {
+        CORE_ROUTES.forEach((path) => {
+          preloadRouteComponents(localePath(path)).catch(() => {})
+        })
+      } catch {}
+    }
+    if ('requestIdleCallback' in window) {
+      ;(window as any).requestIdleCallback(run, { timeout: 2000 })
+    } else {
+      setTimeout(run, 400)
+    }
   }
 
   const openMenu = () => {
