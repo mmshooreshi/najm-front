@@ -1,4 +1,4 @@
-name: Build Staging
+name: Build and Deploy Staging
 
 on:
   push:
@@ -8,15 +8,14 @@ on:
 
 permissions:
   contents: read
-  actions: write
 
 concurrency:
-  group: staging-build
+  group: staging-deploy
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build staging artifact
+  build-and-deploy:
+    name: Build and deploy staging
     runs-on: ubuntu-latest
 
     steps:
@@ -39,6 +38,8 @@ jobs:
 
       - name: Build Nuxt
         run: pnpm build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Verify build output
         run: |
@@ -47,11 +48,34 @@ jobs:
 
       - name: Package release
         run: |
-          tar -czf najm-${GITHUB_SHA}.tar.gz .output package.json pnpm-lock.yaml
+          tar -czf "najm-${GITHUB_SHA}.tar.gz" \
+            .output \
+            package.json \
+            pnpm-lock.yaml
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: najm-staging-${{ github.sha }}
-          path: najm-${{ github.sha }}.tar.gz
-          retention-days: 7
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.NAJM_DEPLOY_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/najm_deploy
+          chmod 600 ~/.ssh/najm_deploy
+
+          ssh-keyscan -H "${{ secrets.NAJM_DEPLOY_HOST }}" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Upload release
+        run: |
+          scp \
+            -i ~/.ssh/najm_deploy \
+            -o IdentitiesOnly=yes \
+            "najm-${GITHUB_SHA}.tar.gz" \
+            "${{ secrets.NAJM_DEPLOY_USER }}@${{ secrets.NAJM_DEPLOY_HOST }}:/srv/deploy/najm/incoming/"
+
+      - name: Deploy release
+        run: |
+          ssh \
+            -i ~/.ssh/najm_deploy \
+            -o IdentitiesOnly=yes \
+            "${{ secrets.NAJM_DEPLOY_USER }}@${{ secrets.NAJM_DEPLOY_HOST }}" \
+            "/srv/deploy/najm/deploy.sh /srv/deploy/najm/incoming/najm-${GITHUB_SHA}.tar.gz ${GITHUB_SHA}"
