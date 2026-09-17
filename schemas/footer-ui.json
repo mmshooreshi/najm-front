@@ -72,12 +72,12 @@
           {
             "id": "faq",
             "name": "سؤالات متداول",
-            "slug": "/contact"
+            "slug": "/faq"
           },
           {
             "id": "guides",
             "name": "راهنماهای فنی چاپ",
-            "slug": "/guides"
+            "slug": "/resources/guides"
           }
         ]
       },
@@ -214,12 +214,12 @@
           {
             "id": "faq",
             "name": "FAQ & Inquiries",
-            "slug": "/contact"
+            "slug": "/faq"
           },
           {
             "id": "guides",
             "name": "Technical Guides",
-            "slug": "/guides"
+            "slug": "/resources/guides"
           }
         ]
       },
@@ -361,12 +361,12 @@
           {
             "id": "faq",
             "name": "الأسئلة الشائعة",
-            "slug": "/contact"
+            "slug": "/faq"
           },
           {
             "id": "guides",
             "name": "الأدلة الفنية للطباعة",
-            "slug": "/guides"
+            "slug": "/resources/guides"
           }
         ]
       },

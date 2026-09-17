@@ -106,9 +106,14 @@
       </div>
     </div>
 
+    <!-- Site-wide High-Authority Internal Linking Bar -->
+    <div class="mt-6 border-t border-white/10 pt-2">
+      <InternalAuthorityPills />
+    </div>
+
     <!-- Bottom Copyright & Brand Bar (Thinnest possible, responsive flex row on desktop, flex col on mobile) -->
     <div
-      class="mt-8 border-t border-white/15"
+      class="mt-4 border-t border-white/15"
       :class="[extraBottomSpace ? 'pb-24 sm:pb-28' : '']"
       :style="{ paddingBottom: extraBottomSpace ? undefined : 'max(0.65rem, env(safe-area-inset-bottom, 0.65rem))' }"
     >
@@ -135,6 +140,7 @@ import logoWhiteFa from '~/assets/icons/najm-logo-white.svg'
 import logoWhiteEn from '~/assets/icons/najm-logo-white-en.svg'
 import logoWhiteAr from '~/assets/icons/najm-logo-white-ar.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
+import InternalAuthorityPills from '~/components/seo/InternalAuthorityPills.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
