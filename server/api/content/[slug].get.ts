@@ -40,19 +40,28 @@ export default defineEventHandler(async (event) => {
     }
   } catch {}
 
-  // Merge: start with remote, apply local overrides
+  // Prevent caching at browser and CDN edge so updates propagate instantly
+  setHeader(event, 'Cache-Control', 'no-cache, no-store, must-revalidate')
+  setHeader(event, 'Pragma', 'no-cache')
+  setHeader(event, 'Expires', '0')
+
+  // Merge: Remote PocketBase is the authoritative live source of truth.
+  // Fall back to local persistent store if remote is empty or unreachable.
   let combinedUi: Record<string, any> = {}
-  if (remoteUi && typeof remoteUi === 'object') {
-    combinedUi = { ...remoteUi }
-  }
   if (localUi && typeof localUi === 'object') {
-    for (const [k, v] of Object.entries(localUi)) {
+    combinedUi = { ...localUi }
+  }
+  if (remoteUi && typeof remoteUi === 'object' && Object.keys(remoteUi).length > 0) {
+    // Remote data takes precedence
+    for (const [k, v] of Object.entries(remoteUi)) {
       if (typeof v === 'object' && v !== null && !Array.isArray(v) && typeof combinedUi[k] === 'object') {
         combinedUi[k] = { ...combinedUi[k], ...v }
       } else {
         combinedUi[k] = v
       }
     }
+    // Update local store with latest remote data
+    writeLocalContent(slug, combinedUi)
   }
 
   // Normalize uppercase/lowercase keys (FA/fa, EN/en, AR/ar)

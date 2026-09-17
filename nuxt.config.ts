@@ -247,6 +247,7 @@ export default defineNuxtConfig({
   },
 
   css: [
+    '@unocss/reset/tailwind.css',
     '~/assets/css/fontiran.css',
     '~/assets/css/main.css'
   ],

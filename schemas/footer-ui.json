@@ -2,8 +2,8 @@
   "fa": {
     "hero": {
       "paragraphs": [
-        "در دنیای رقابتی امروز، چاپ و بسته‌بندی دیگر فقط یک مرحله از تولید نیست؛ بلکه اولین نقطه تماس برند شما با مشتریان است. ما باور داریم که هر پروژه یک داستان است. داستانی که باید به‌طور ویژه و با دقت روایت شود.",
-        "از طراحی تا اجرا، همه چیز در یک مجموعه. با راهکارهای خلاقانه و انعطاف‌پذیر ما اینجا هستیم تا داستان شما را تبدیل به یک تجربه‌ی ماندگار کنیم."
+        "در دنیای پررقابت امروز، بسته‌بندی دیگر تنها یک محافظ کالا نیست، بلکه شناسنامه بصری برند شماست.",
+        "از طراحی ساختاری و مهندسی خطوط تیغ تا چاپ ۵ رنگ افست هایدلبرگ و خدمات تکمیلی مدرن؛ همه زیر یک سقف در مجتمع چاپ و بسته‌بندی نجم."
       ]
     },
     "sections": [
@@ -13,9 +13,21 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "packaging", "name": "بسته‌بندی و جعبه‌سازی", "slug": "/services/printing-and-packaging" },
-          { "id": "printing",  "name": "چاپ افست ۵ رنگ", "slug": "/services/printing-and-packaging" },
-          { "id": "finishing", "name": "خدمات تکمیلی و طلاکوب", "slug": "/services/finishing-services" }
+          {
+            "id": "packaging",
+            "name": "بسته‌بندی و جعبه‌سازی",
+            "slug": "/services/printing-and-packaging"
+          },
+          {
+            "id": "printing",
+            "name": "چاپ افست ۵ رنگ",
+            "slug": "/services/printing-and-packaging"
+          },
+          {
+            "id": "finishing",
+            "name": "خدمات تکمیلی و طلاکوب",
+            "slug": "/services/finishing-services"
+          }
         ]
       },
       {
@@ -24,11 +36,31 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "about",   "name": "درباره ما", "slug": "/about" },
-          { "id": "contact", "name": "تماس با ما", "slug": "/contact" },
-          { "id": "blog",    "name": "وبلاگ و مقالات تخصصی", "slug": "/blog" },
-          { "id": "catalog", "name": "کاتالوگ جامع", "slug": "/catalog" },
-          { "id": "news",    "name": "اخبار و رویدادها", "slug": "/news" }
+          {
+            "id": "about",
+            "name": "درباره ما",
+            "slug": "/about"
+          },
+          {
+            "id": "contact",
+            "name": "تماس با ما",
+            "slug": "/contact"
+          },
+          {
+            "id": "blog",
+            "name": "وبلاگ و مقالات تخصصی",
+            "slug": "/blog"
+          },
+          {
+            "id": "catalog",
+            "name": "کاتالوگ جامع",
+            "slug": "/catalog"
+          },
+          {
+            "id": "news",
+            "name": "اخبار و رویدادها",
+            "slug": "/news"
+          }
         ]
       },
       {
@@ -37,8 +69,16 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "faq", "name": "سؤالات متداول", "slug": "/contact" },
-          { "id": "guides", "name": "راهنماهای فنی چاپ", "slug": "/guides" }
+          {
+            "id": "faq",
+            "name": "سؤالات متداول",
+            "slug": "/contact"
+          },
+          {
+            "id": "guides",
+            "name": "راهنماهای فنی چاپ",
+            "slug": "/guides"
+          }
         ]
       },
       {
@@ -47,18 +87,55 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "resources", "name": "مرکز دانلود قالب‌ها", "slug": "/resources" },
-          { "id": "cmyk", "name": "پروفایل رنگی CMYK", "slug": "/resources/guide-cmyk-color-profile" }
+          {
+            "id": "resources",
+            "name": "مرکز دانلود قالب‌ها",
+            "slug": "/resources"
+          },
+          {
+            "id": "cmyk",
+            "name": "پروفایل رنگی CMYK",
+            "slug": "/resources/guide-cmyk-color-profile"
+          }
         ]
       }
     ],
     "contact": {
       "items": [
-        { "id": "phone",  "name": "تلفن مستقیم", "value": "۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳", "slug": "tel:+982166797911", "ltr": true },
-        { "id": "fax",    "name": "فکس و خط دوم",  "value": "۰۲۱-۶۶۷۸۹۵۷۷", "slug": "tel:+982166789577", "ltr": true },
-        { "id": "mobile", "name": "همراه و مشاوره", "value": "۰۹۹۰۳۴۰۰۰۷۴", "slug": "tel:+989903400074", "ltr": true },
-        { "id": "address", "name": "نشانی کارخانه", "value": "بزرگراه فتح، نبش کوچه تلفن‌خانه، پلاک ۱۶۶", "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA" },
-        { "id": "email",  "name": "پست الکترونیک", "value": "info@chapenajm.com", "slug": "mailto:info@chapenajm.com", "ltr": true }
+        {
+          "id": "phone",
+          "name": "تلفن مستقیم",
+          "value": "۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳",
+          "slug": "tel:+982166797911",
+          "ltr": true
+        },
+        {
+          "id": "fax",
+          "name": "فکس و خط دوم",
+          "value": "۰۲۱-۶۶۷۸۹۵۷۷",
+          "slug": "tel:+982166789577",
+          "ltr": true
+        },
+        {
+          "id": "mobile",
+          "name": "همراه و مشاوره",
+          "value": "۰۹۹۰۳۴۰۰۰۷۴",
+          "slug": "tel:+989903400074",
+          "ltr": true
+        },
+        {
+          "id": "address",
+          "name": "نشانی کارخانه",
+          "value": "بزرگراه فتح، نبش کوچه تلفن‌خانه، پلاک ۱۶۶",
+          "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
+        },
+        {
+          "id": "email",
+          "name": "پست الکترونیک",
+          "value": "info@chapenajm.com",
+          "slug": "mailto:info@chapenajm.com",
+          "ltr": true
+        }
       ],
       "mapUrl": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
     },
@@ -78,9 +155,21 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "packaging", "name": "Packaging & Box Production", "slug": "/services/printing-and-packaging" },
-          { "id": "printing",  "name": "5-Color Offset Press", "slug": "/services/printing-and-packaging" },
-          { "id": "finishing", "name": "Finishing & Hot Foil", "slug": "/services/finishing-services" }
+          {
+            "id": "packaging",
+            "name": "Packaging & Box Production",
+            "slug": "/services/printing-and-packaging"
+          },
+          {
+            "id": "printing",
+            "name": "5-Color Offset Press",
+            "slug": "/services/printing-and-packaging"
+          },
+          {
+            "id": "finishing",
+            "name": "Finishing & Hot Foil",
+            "slug": "/services/finishing-services"
+          }
         ]
       },
       {
@@ -89,11 +178,31 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "about",   "name": "About Us", "slug": "/about" },
-          { "id": "contact", "name": "Contact Us", "slug": "/contact" },
-          { "id": "catalog", "name": "Product Catalog", "slug": "/catalog" },
-          { "id": "blog",    "name": "Articles & Blog", "slug": "/blog" },
-          { "id": "news",    "name": "Company News & Events", "slug": "/news" }
+          {
+            "id": "about",
+            "name": "About Us",
+            "slug": "/about"
+          },
+          {
+            "id": "contact",
+            "name": "Contact Us",
+            "slug": "/contact"
+          },
+          {
+            "id": "catalog",
+            "name": "Product Catalog",
+            "slug": "/catalog"
+          },
+          {
+            "id": "blog",
+            "name": "Articles & Blog",
+            "slug": "/blog"
+          },
+          {
+            "id": "news",
+            "name": "Company News & Events",
+            "slug": "/news"
+          }
         ]
       },
       {
@@ -102,8 +211,16 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "faq", "name": "FAQ & Inquiries", "slug": "/contact" },
-          { "id": "guides", "name": "Technical Guides", "slug": "/guides" }
+          {
+            "id": "faq",
+            "name": "FAQ & Inquiries",
+            "slug": "/contact"
+          },
+          {
+            "id": "guides",
+            "name": "Technical Guides",
+            "slug": "/guides"
+          }
         ]
       },
       {
@@ -112,19 +229,60 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "resources", "name": "Die-Cut Download Center", "slug": "/resources" },
-          { "id": "cmyk", "name": "CMYK Color Profiles", "slug": "/resources/guide-cmyk-color-profile" }
+          {
+            "id": "resources",
+            "name": "Die-Cut Download Center",
+            "slug": "/resources"
+          },
+          {
+            "id": "cmyk",
+            "name": "CMYK Color Profiles",
+            "slug": "/resources/guide-cmyk-color-profile"
+          }
         ]
       }
     ],
     "contact": {
       "items": [
-        { "id": "phone",  "name": "Direct Phone", "value": "+98 21 6679 7911-3", "slug": "tel:+982166797911", "ltr": true },
-        { "id": "fax",    "name": "Line 2 / Fax",  "value": "+98 21 6678 9577", "slug": "tel:+982166789577", "ltr": true },
-        { "id": "mobile", "name": "Mobile Consultation", "value": "+98 990 340 0074", "slug": "tel:+989903400074", "ltr": true },
-        { "id": "address", "name": "Address", "value": "Fath Highway, Corner of Telefonkhaneh Alley, No. 166, Tehran", "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA" },
-        { "id": "email",  "name": "Email", "value": "info@chapenajm.com", "slug": "mailto:info@chapenajm.com", "ltr": true },
-        { "id": "hours1", "name": "Working Hours", "value": "Sat - Wed: 9:00 - 18:00 | Thu: 9:00 - 14:00" }
+        {
+          "id": "phone",
+          "name": "Direct Phone",
+          "value": "+98 21 6679 7911-3",
+          "slug": "tel:+982166797911",
+          "ltr": true
+        },
+        {
+          "id": "fax",
+          "name": "Line 2 / Fax",
+          "value": "+98 21 6678 9577",
+          "slug": "tel:+982166789577",
+          "ltr": true
+        },
+        {
+          "id": "mobile",
+          "name": "Mobile Consultation",
+          "value": "+98 990 340 0074",
+          "slug": "tel:+989903400074",
+          "ltr": true
+        },
+        {
+          "id": "address",
+          "name": "Address",
+          "value": "Fath Highway, Corner of Telefonkhaneh Alley, No. 166, Tehran",
+          "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
+        },
+        {
+          "id": "email",
+          "name": "Email",
+          "value": "info@chapenajm.com",
+          "slug": "mailto:info@chapenajm.com",
+          "ltr": true
+        },
+        {
+          "id": "hours1",
+          "name": "Working Hours",
+          "value": "Sat - Wed: 9:00 - 18:00 | Thu: 9:00 - 14:00"
+        }
       ],
       "mapUrl": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
     },
@@ -144,9 +302,21 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "packaging", "name": "صناعة العلب والكرتون", "slug": "/services/printing-and-packaging" },
-          { "id": "printing",  "name": "طباعة أوفست ٥ ألوان", "slug": "/services/printing-and-packaging" },
-          { "id": "finishing", "name": "خدمات التشطيب والختم الحراري", "slug": "/services/finishing-services" }
+          {
+            "id": "packaging",
+            "name": "صناعة العلب والكرتون",
+            "slug": "/services/printing-and-packaging"
+          },
+          {
+            "id": "printing",
+            "name": "طباعة أوفست ٥ ألوان",
+            "slug": "/services/printing-and-packaging"
+          },
+          {
+            "id": "finishing",
+            "name": "خدمات التشطيب والختم الحراري",
+            "slug": "/services/finishing-services"
+          }
         ]
       },
       {
@@ -155,11 +325,31 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "about",   "name": "من نحن", "slug": "/about" },
-          { "id": "contact", "name": "اتصل بنا", "slug": "/contact" },
-          { "id": "catalog", "name": "الكتالوج الشامل", "slug": "/catalog" },
-          { "id": "blog",    "name": "المدونة والمقالات", "slug": "/blog" },
-          { "id": "news",    "name": "الأخبار والفعاليات", "slug": "/news" }
+          {
+            "id": "about",
+            "name": "من نحن",
+            "slug": "/about"
+          },
+          {
+            "id": "contact",
+            "name": "اتصل بنا",
+            "slug": "/contact"
+          },
+          {
+            "id": "catalog",
+            "name": "الكتالوج الشامل",
+            "slug": "/catalog"
+          },
+          {
+            "id": "blog",
+            "name": "المدونة والمقالات",
+            "slug": "/blog"
+          },
+          {
+            "id": "news",
+            "name": "الأخبار والفعاليات",
+            "slug": "/news"
+          }
         ]
       },
       {
@@ -168,8 +358,16 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "faq", "name": "الأسئلة الشائعة", "slug": "/contact" },
-          { "id": "guides", "name": "الأدلة الفنية للطباعة", "slug": "/guides" }
+          {
+            "id": "faq",
+            "name": "الأسئلة الشائعة",
+            "slug": "/contact"
+          },
+          {
+            "id": "guides",
+            "name": "الأدلة الفنية للطباعة",
+            "slug": "/guides"
+          }
         ]
       },
       {
@@ -178,19 +376,60 @@
         "type": "accordion",
         "slug": "",
         "children": [
-          { "id": "resources", "name": "مركز تحميل القوالب", "slug": "/resources" },
-          { "id": "cmyk", "name": "ملف ألوان CMYK", "slug": "/resources/guide-cmyk-color-profile" }
+          {
+            "id": "resources",
+            "name": "مركز تحميل القوالب",
+            "slug": "/resources"
+          },
+          {
+            "id": "cmyk",
+            "name": "ملف ألوان CMYK",
+            "slug": "/resources/guide-cmyk-color-profile"
+          }
         ]
       }
     ],
     "contact": {
       "items": [
-        { "id": "phone",  "name": "الهاتف المباشر", "value": "+98 21 6679 7911-3", "slug": "tel:+982166797911", "ltr": true },
-        { "id": "fax",    "name": "الخط الثاني والفاكس",  "value": "+98 21 6678 9577", "slug": "tel:+982166789577", "ltr": true },
-        { "id": "mobile", "name": "الجوال والاستشارات", "value": "+98 990 340 0074", "slug": "tel:+989903400074", "ltr": true },
-        { "id": "address", "name": "العنوان", "value": "طريق فتح السريع، ناصية زقاق تلفن خانة، رقم ١٦٦، طهران", "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA" },
-        { "id": "email",  "name": "البريد الإلكتروني", "value": "info@chapenajm.com", "slug": "mailto:info@chapenajm.com", "ltr": true },
-        { "id": "hours1", "name": "ساعات العمل", "value": "السبت إلى الأربعاء: ٩:٠٠ - ١٨:٠٠ | الخميس: ٩:٠٠ - ١٤:٠٠" }
+        {
+          "id": "phone",
+          "name": "الهاتف المباشر",
+          "value": "+98 21 6679 7911-3",
+          "slug": "tel:+982166797911",
+          "ltr": true
+        },
+        {
+          "id": "fax",
+          "name": "الخط الثاني والفاكس",
+          "value": "+98 21 6678 9577",
+          "slug": "tel:+982166789577",
+          "ltr": true
+        },
+        {
+          "id": "mobile",
+          "name": "الجوال والاستشارات",
+          "value": "+98 990 340 0074",
+          "slug": "tel:+989903400074",
+          "ltr": true
+        },
+        {
+          "id": "address",
+          "name": "العنوان",
+          "value": "طريق فتح السريع، ناصية زقاق تلفن خانة، رقم ١٦٦، طهران",
+          "slug": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
+        },
+        {
+          "id": "email",
+          "name": "البريد الإلكتروني",
+          "value": "info@chapenajm.com",
+          "slug": "mailto:info@chapenajm.com",
+          "ltr": true
+        },
+        {
+          "id": "hours1",
+          "name": "ساعات العمل",
+          "value": "السبت إلى الأربعاء: ٩:٠٠ - ١٨:٠٠ | الخميس: ٩:٠٠ - ١٤:٠٠"
+        }
       ],
       "mapUrl": "https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA"
     },

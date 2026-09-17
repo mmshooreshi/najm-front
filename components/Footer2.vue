@@ -137,6 +137,7 @@ import logoWhiteAr from '~/assets/icons/najm-logo-white-ar.svg'
 import BaseFooterAccordion from '@/components/Base/BaseFooterAccordion.vue'
 import { useLocale } from '~/composables/useLocale'
 import { usePageUI } from '~/composables/ui/usePageUI'
+import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useMenu } from '~/composables/useMenu'
 import { toLocalizedDigits } from '~/utils/digits'
 import { getLocalSchema } from '~/composables/ui/schemaRegistry'
@@ -183,6 +184,7 @@ const activeLogoWhite = computed(() => {
 
 // Connect directly to live content engine with dual local + remote persistence
 const { ui } = usePageUI('footer')
+useAdminEditable('footer')
 
 const fallbackHero = [
   'در دنیای پررقابت امروز، بسته‌بندی دیگر تنها یک محافظ کالا نیست، بلکه شناسنامه بصری برند شماست.',

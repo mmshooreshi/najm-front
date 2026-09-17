@@ -139,9 +139,12 @@ export async function applyAndSaveContent(
 
   writeLocalContent(slug, currentUi)
 
-  syncContentToPocketBase(slug, currentUi).catch(err => {
-    console.warn(`[ContentStore] Background sync to PocketBase failed for "${slug}":`, err?.message || err)
-  })
+  // CRITICAL: Await PocketBase sync so serverless execution does not terminate before persisting
+  try {
+    await syncContentToPocketBase(slug, currentUi)
+  } catch (err: any) {
+    console.error(`[ContentStore] PocketBase sync error for "${slug}":`, err?.message || err)
+  }
 
   return currentUi
 }
@@ -151,12 +154,12 @@ export async function syncContentToPocketBase(slug: string, uiData: Record<strin
     const listRes: any = await $fetch(`${PB_SERVER_URL}/api/collections/pages/records`, {
       headers: { Authorization: PB_SUPERUSER_TOKEN },
       query: { filter: `slug="${slug}"` },
-      timeout: 4000
+      timeout: 6000
     }).catch(() => null)
 
-    const existing = listRes?.items?.[0]
-    if (existing) {
-      await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${existing.id}`, {
+    const items = listRes?.items || []
+    if (items.length > 0) {
+      await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${items[0].id}`, {
         method: 'PATCH',
         headers: {
           Authorization: PB_SUPERUSER_TOKEN,
@@ -164,6 +167,13 @@ export async function syncContentToPocketBase(slug: string, uiData: Record<strin
         },
         body: { uiData }
       })
+      // Clean up any stray duplicate records
+      for (let i = 1; i < items.length; i++) {
+        await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${items[i].id}`, {
+          method: 'DELETE',
+          headers: { Authorization: PB_SUPERUSER_TOKEN }
+        }).catch(() => {})
+      }
     } else {
       await $fetch(`${PB_SERVER_URL}/api/collections/pages/records`, {
         method: 'POST',
@@ -180,7 +190,8 @@ export async function syncContentToPocketBase(slug: string, uiData: Record<strin
       })
     }
     return true
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`[ContentStore] PocketBase sync failed for "${slug}":`, err?.message || err)
     return false
   }
 }
