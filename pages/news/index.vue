@@ -69,9 +69,18 @@
 </template>
 
 <script setup lang="ts">
+import { useAppSeo } from '~/composables/useAppSeo'
+
 definePageMeta({
   name: 'اخبار و رویدادها - چاپ نجم',
   layout: 'default'
+})
+
+useAppSeo({
+  title: 'اخبار و اطلاعیه‌های صنعتی مجتمع چاپ و بسته‌بندی نجم',
+  description: 'گزارش حضور در نمایشگاه‌های بین‌المللی چاپ و بسته‌بندی، تجهیز خطوط تولید جدید و توسعه ناوگان لجستیک مجتمع نجم.',
+  type: 'website',
+  slug: 'news'
 })
 
 const newsList = [

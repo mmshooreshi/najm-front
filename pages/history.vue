@@ -174,6 +174,7 @@
 import { computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 definePageMeta({
   name: 'تاریخچه ۲۵ ساله - مجتمع چاپ نجم',
@@ -184,4 +185,11 @@ const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
 const { ui } = usePageUI('history')
+
+useAppSeo({
+  title: computed(() => ui.value?.title || 'تاریخچه ۲۵ ساله و مسیر تکامل چاپ و بسته‌بندی نجم'),
+  description: computed(() => ui.value?.subtitle || 'داستان تبدیل یک کارگاه لیتوگرافی دقیق به یکی از مجهزترین مجتمع‌های چاپ افست و بسته‌بندی تخصصی کشور.'),
+  type: 'about',
+  slug: 'history'
+})
 </script>

@@ -143,6 +143,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Contextual Industrial Workflow Links -->
+    <ContextualFlowLinks :current-slug="slug" type="product-packaging" />
   </div>
 </template>
 
@@ -152,6 +155,8 @@ import { useRoute } from 'vue-router'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
+import ContextualFlowLinks from '~/components/seo/ContextualFlowLinks.vue'
 
 definePageMeta({
   layout: 'default'
@@ -207,5 +212,13 @@ const product = computed(() => {
     ...(ui.value || {}),
     name: ui.value?.name || slug.value.replace(/-/g, ' ') || fallbackPackaging.name
   }
+})
+
+useAppSeo({
+  title: computed(() => product.value.name || (product.value as any).title),
+  description: computed(() => product.value.description),
+  image: computed(() => product.value.image),
+  type: 'product',
+  slug: computed(() => `products/packaging/${slug.value}`)
 })
 </script>

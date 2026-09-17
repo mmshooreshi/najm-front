@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 definePageMeta({
   layout: 'default'
@@ -75,6 +76,13 @@ definePageMeta({
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
+useAppSeo({
+  title: computed(() => localizedHeader.value.title),
+  description: computed(() => localizedHeader.value.description),
+  type: 'website',
+  slug: 'products/industries'
+})
 
 const activeLang = computed(() => {
   const l = (language.value || 'fa').toLowerCase()

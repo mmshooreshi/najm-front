@@ -50,6 +50,9 @@
           جهت هماهنگی جلسات حضوری و بازدید از خطوط تولید جدید، می‌توانید با واحد روابط عمومی و توسعه بازار مجتمع تماس حاصل فرمایید.
         </p>
       </div>
+
+      <!-- Contextual Industrial Workflow Links -->
+      <ContextualFlowLinks :current-slug="slug" type="news" />
     </main>
   </div>
 </template>
@@ -57,6 +60,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useAppSeo } from '~/composables/useAppSeo'
+import ContextualFlowLinks from '~/components/seo/ContextualFlowLinks.vue'
 
 definePageMeta({
   name: 'خبر و اطلاعیه - چاپ نجم',
@@ -74,5 +79,13 @@ const currentNews = computed(() => {
     image: '/images/about/staff.png',
     date: '۲۸ اردیبهشت ۱۴۰۴'
   }
+})
+
+useAppSeo({
+  title: computed(() => currentNews.value.title),
+  description: computed(() => currentNews.value.excerpt),
+  image: computed(() => currentNews.value.image),
+  type: 'article',
+  slug: computed(() => `news/${slug.value}`)
 })
 </script>

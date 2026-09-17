@@ -2,7 +2,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const PB_SERVER_URL = 'http://65.108.80.205:8090'
+const PB_SERVER_URL = process.env.PB_URL || 'http://65.108.80.205:8090'
+const PB_SUPERUSER_TOKEN =
+  process.env.PB_SUPERUSER_TOKEN ||
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTc4NzE0NjU0MSwiaWQiOiJha3ZrOTZnNDMyODk4bDEiLCJyZWZyZXNoYWJsZSI6dHJ1ZSwidHlwZSI6ImF1dGgifQ.auLVQl1bXPsuGHbXWaqtohXZeI0wYfu-cdp-UBXmV_0'
 const LEADS_PAGE_ID = 'z2962w7ya816ei0'
 const LEADS_FILE_PATH = path.resolve(process.cwd(), '.data', 'leads.json')
 
@@ -21,6 +24,53 @@ function ensureStorageDir() {
   } catch (err) {}
 }
 
+/** Normalize and backfill missing lead properties */
+export function normalizeLeads(leads: any[]): any[] {
+  if (!Array.isArray(leads)) return []
+
+  return leads.map(l => {
+    let createdTime = l.createdTime || ''
+    let createdAt = l.createdAt || ''
+    let createdDate = l.created || ''
+
+    if (l.timestamp && (!createdTime || !createdAt)) {
+      try {
+        const d = new Date(l.timestamp)
+        if (!createdAt) createdAt = d.toISOString()
+        if (!createdTime) {
+          createdTime = new Intl.DateTimeFormat('fa-IR', {
+            timeZone: 'Asia/Tehran',
+            hour: '2-digit',
+            minute: '2-digit'
+          }).format(d)
+        }
+        if (!createdDate) {
+          createdDate = new Intl.DateTimeFormat('fa-IR', {
+            timeZone: 'Asia/Tehran',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }).format(d)
+        }
+      } catch {}
+    }
+
+    return {
+      ...l,
+      status: l.status || 'new',
+      created: createdDate || 'امروز',
+      createdAt,
+      createdTime,
+      callAttempts: typeof l.callAttempts === 'number' ? l.callAttempts : (l.status === 'contacted' ? 1 : (l.status === 'called_no_answer' ? 1 : 0)),
+      callHistory: Array.isArray(l.callHistory) ? l.callHistory : [],
+      notes: l.notes || '',
+      smsSentCount: typeof l.smsSentCount === 'number' ? l.smsSentCount : 0,
+      lastCalledAt: l.lastCalledAt || null,
+      lastSmsAt: l.lastSmsAt || null
+    }
+  })
+}
+
 export function readLocalLeads(): any[] {
   try {
     ensureStorageDir()
@@ -28,8 +78,8 @@ export function readLocalLeads(): any[] {
       const raw = fs.readFileSync(LEADS_FILE_PATH, 'utf-8')
       const parsed = JSON.parse(raw)
       if (Array.isArray(parsed)) {
-        inMemoryLeads = parsed
-        return parsed
+        inMemoryLeads = normalizeLeads(parsed)
+        return inMemoryLeads
       }
     }
   } catch (err) {}
@@ -37,10 +87,10 @@ export function readLocalLeads(): any[] {
 }
 
 export function writeLocalLeads(leads: any[]) {
-  inMemoryLeads = leads
+  inMemoryLeads = normalizeLeads(leads)
   try {
     ensureStorageDir()
-    fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), 'utf-8')
+    fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(inMemoryLeads, null, 2), 'utf-8')
   } catch (err) {}
 }
 
@@ -48,6 +98,7 @@ export function writeLocalLeads(leads: any[]) {
 export async function getAllLeads(): Promise<any[]> {
   try {
     const res: any = await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${LEADS_PAGE_ID}`, {
+      headers: { Authorization: PB_SUPERUSER_TOKEN },
       timeout: 4000
     }).catch(() => null)
 
@@ -61,14 +112,14 @@ export async function getAllLeads(): Promise<any[]> {
         }
       }
       if (Array.isArray(parsed)) {
-        inMemoryLeads = parsed
-        writeLocalLeads(parsed)
-        return parsed
+        inMemoryLeads = normalizeLeads(parsed)
+        writeLocalLeads(inMemoryLeads)
+        return inMemoryLeads
       }
     }
   } catch (err) {}
 
-  return readLocalLeads()
+  return normalizeLeads(readLocalLeads())
 }
 
 /** Save full leads array to remote PocketBase */
@@ -76,7 +127,10 @@ async function syncLeadsToPB(leads: any[]): Promise<boolean> {
   try {
     await $fetch(`${PB_SERVER_URL}/api/collections/pages/records/${LEADS_PAGE_ID}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        Authorization: PB_SUPERUSER_TOKEN,
+        'Content-Type': 'application/json'
+      },
       body: {
         uiData: leads
       },
@@ -89,16 +143,37 @@ async function syncLeadsToPB(leads: any[]): Promise<boolean> {
 }
 
 export async function createLead(lead: any): Promise<any> {
-  // Always fetch latest leads first to prevent overwriting
   let leads = await getAllLeads()
   if (!Array.isArray(leads)) leads = []
 
+  const now = new Date()
+  const ts = Date.now()
+  const iranDateStr = new Intl.DateTimeFormat('fa-IR', {
+    timeZone: 'Asia/Tehran',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(now)
+  const iranTimeStr = new Intl.DateTimeFormat('fa-IR', {
+    timeZone: 'Asia/Tehran',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(now)
+
   const newLead = {
-    id: `req-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    id: `req-${ts}-${Math.random().toString(36).slice(2, 6)}`,
     ...lead,
     status: lead.status || 'new',
-    created: new Date().toLocaleDateString('fa-IR'),
-    timestamp: Date.now()
+    created: iranDateStr,
+    createdAt: now.toISOString(),
+    createdTime: iranTimeStr,
+    timestamp: ts,
+    callAttempts: 0,
+    callHistory: [],
+    notes: lead.notes || '',
+    smsSentCount: 0,
+    lastCalledAt: null,
+    lastSmsAt: null
   }
 
   // Prepend to top
@@ -111,17 +186,23 @@ export async function createLead(lead: any): Promise<any> {
   return newLead
 }
 
-export async function updateLeadStatus(id: string, patch: any): Promise<boolean> {
+export async function updateLead(id: string, patch: any): Promise<boolean> {
   const leads = await getAllLeads()
   const idx = leads.findIndex(l => l.id === id)
   if (idx !== -1) {
-    leads[idx] = { ...leads[idx], ...patch }
+    leads[idx] = {
+      ...leads[idx],
+      ...patch,
+      updatedAt: new Date().toISOString()
+    }
     writeLocalLeads(leads)
     await syncLeadsToPB(leads)
     return true
   }
   return false
 }
+
+export const updateLeadStatus = updateLead
 
 export async function removeLead(id: string): Promise<boolean> {
   const leads = await getAllLeads()
@@ -130,3 +211,4 @@ export async function removeLead(id: string): Promise<boolean> {
   await syncLeadsToPB(updated)
   return true
 }
+

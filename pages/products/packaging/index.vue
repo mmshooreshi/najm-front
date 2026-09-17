@@ -122,6 +122,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 definePageMeta({
   layout: 'default'
@@ -129,6 +130,13 @@ definePageMeta({
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
+
+useAppSeo({
+  title: computed(() => localizedHeader.value.title),
+  description: computed(() => localizedHeader.value.description),
+  type: 'website',
+  slug: 'products/packaging'
+})
 
 const loading = ref(true)
 const activeCategory = ref('all')

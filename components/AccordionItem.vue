@@ -33,27 +33,54 @@
       </svg>
     </div>
     <div ref="contentEl" class="content overflow-hidden text-xs font-medium">
-      <div class="pb-6 md:pb-12 pt-0 px-6"  :class="[isRTL ? 'pl-8 md:pl-16' : 'pr-8 md:pr-16']">
-        <p v-editable="index !== undefined ? `accordion.${index}.content` : ''">{{ content }}</p>
+      <div class="pb-6 md:pb-10 pt-0 px-6" :class="[isRTL ? 'pl-8 md:pl-16' : 'pr-8 md:pr-16']">
+        <p v-editable="index !== undefined ? `accordion.${index}.content` : ''" class="leading-relaxed text-gray-600">{{ content }}</p>
+        
+        <!-- Subtle Organic Link Pill -->
+        <div v-if="link && link.url" class="pt-3.5">
+          <NuxtLink
+            :to="localePath(link.url)"
+            class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold text-najmgreen bg-najmgreen/10 hover:bg-najmgreen/20 border border-najmgreen/20 hover:border-najmgreen/40 transition-all duration-200 group shadow-2xs select-none"
+            @click.stop
+          >
+            <span>{{ link.text }}</span>
+            <svg
+              class="w-3.5 h-3.5 transition-transform duration-200"
+              :class="isRTL ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1 rotate-180'"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, computed } from 'vue'
 import gsap from 'gsap'
-const { language } = useLocale()
+import { useLocale } from '~/composables/useLocale'
+
+const { language, localePath } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')
 
-const props = defineProps({
-  title: String,
-  content: String,
-  isOpen: Boolean,
-  hasAnyOpen: Boolean,
-  delay: Number,
-  index: Number
-})
+const props = defineProps<{
+  title?: string
+  content?: string
+  isOpen?: boolean
+  hasAnyOpen?: boolean
+  delay?: number
+  index?: number
+  link?: { text: string; url: string }
+}>()
 
 const contentEl = ref(null)
 

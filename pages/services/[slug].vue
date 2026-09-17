@@ -262,6 +262,9 @@
           <AdminAddCardPlaceholder path="faq.items" :slug="pageKey" label="افزودن پرسش و پاسخ جدید" customClass="min-h-[70px] p-3" />
         </div>
       </section>
+
+      <!-- Contextual Industrial Workflow Links -->
+      <ContextualFlowLinks :current-slug="serviceSlug" type="service" />
     </section>
   </main>
 </template>
@@ -272,6 +275,8 @@ import { useRoute } from '#imports'
 import { usePageUI } from '@/composables/ui/usePageUI'
 import { useLocale } from '@/composables/useLocale'
 import { useAdminEditable } from '@/composables/useAdminEditable'
+import { useAppSeo } from '@/composables/useAppSeo'
+import ContextualFlowLinks from '~/components/seo/ContextualFlowLinks.vue'
 
 definePageMeta({
   layout: 'services'
@@ -353,18 +358,8 @@ useAppSeo({
   title: computed(() => `${hero.value?.title || fallbackTitle.value} | چاپ و بسته‌بندی نجم`),
   description: computed(() => hero.value?.description || 'خدمات تخصصی چاپ و بسته‌بندی نجم'),
   image: computed(() => hero.value?.topImage || '/images/sections/cards/01.png'),
-  slug: `services/${serviceSlug.value}`,
-  extraSchemas: computed(() => [
-    {
-      '@type': 'Service',
-      name: hero.value?.title || fallbackTitle.value,
-      description: hero.value?.description || 'خدمات تخصصی چاپ و بسته‌بندی نجم',
-      provider: {
-        '@type': 'LocalBusiness',
-        name: 'مجتمع چاپ و بسته‌بندی نجم'
-      },
-      serviceType: 'خدمات تخصصی چاپ افست و بسته‌بندی'
-    }
-  ])
+  type: 'service',
+  slug: computed(() => `services/${serviceSlug.value}`),
+  faqItems: computed(() => faq.value?.items || [])
 })
 </script>

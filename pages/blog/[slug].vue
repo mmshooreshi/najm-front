@@ -83,6 +83,9 @@
         </section>
       </div>
 
+      <!-- Contextual Industrial Workflow Links -->
+      <ContextualFlowLinks :current-slug="slug" type="blog" />
+
       <!-- Author Bio & CTAs -->
       <div class="bg-najmgreen text-white rounded-3xl p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-right">
         <div class="space-y-2">
@@ -110,6 +113,8 @@ import { useRoute } from 'vue-router'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
+import ContextualFlowLinks from '~/components/seo/ContextualFlowLinks.vue'
 
 const { isRTL } = useLocale()
 
@@ -141,4 +146,13 @@ const currentPost = computed(() => {
     ...(ui.value || {})
   }
 })
+
+useAppSeo({
+  title: computed(() => currentPost.value.title),
+  description: computed(() => currentPost.value.excerpt),
+  image: computed(() => currentPost.value.image),
+  type: 'article',
+  slug: computed(() => `blog/${slug.value}`)
+})
 </script>
+

@@ -87,6 +87,9 @@
         <AdminAddCardPlaceholder path="guidelines" :label="isRTL ? 'افزودن بند راهنمای جدید' : 'Add New Guideline Item'" customClass="min-h-[60px] p-2" />
       </div>
 
+      <!-- Contextual Industrial Workflow Links -->
+      <ContextualFlowLinks :current-slug="slug" type="resource" />
+
       <!-- Contact CTA -->
       <div class="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
         <span class="text-xs text-gray-500 break-words" v-editable="'contactCta'">
@@ -110,6 +113,7 @@ import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
 import { useAppSeo } from '~/composables/useAppSeo'
+import ContextualFlowLinks from '~/components/seo/ContextualFlowLinks.vue'
 
 definePageMeta({
   layout: 'default'
@@ -164,19 +168,8 @@ const currentResource = computed(() => {
 useAppSeo({
   title: computed(() => `${currentResource.value.title} | مرکز دانلود و راهنمای فنی نجم`),
   description: computed(() => currentResource.value.description),
-  slug: `resources/${slug.value}`,
-  extraSchemas: computed(() => [
-    {
-      '@type': 'DigitalDocument',
-      name: currentResource.value.title,
-      description: currentResource.value.description,
-      fileFormat: currentResource.value.fileFormat,
-      publisher: {
-        '@type': 'Organization',
-        name: 'مجتمع چاپ و بسته‌بندی نجم'
-      }
-    }
-  ])
+  type: 'resource',
+  slug: computed(() => `resources/${slug.value}`)
 })
 </script>
 

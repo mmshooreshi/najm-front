@@ -120,6 +120,7 @@ import { computed } from 'vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 definePageMeta({
   layout: 'default'
@@ -207,5 +208,12 @@ const localizedData = computed(() => {
     ...dictionaries[activeLang.value],
     ...(ui.value || {})
   }
+})
+
+useAppSeo({
+  title: computed(() => localizedData.value.title),
+  description: computed(() => localizedData.value.description),
+  type: 'resource',
+  slug: 'resources/guides'
 })
 </script>

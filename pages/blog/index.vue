@@ -98,6 +98,7 @@ import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useDynamicPosts } from '~/composables/useDynamicData'
 import { useLocale } from '~/composables/useLocale'
+import { useAppSeo } from '~/composables/useAppSeo'
 
 const { isRTL } = useLocale()
 
@@ -108,6 +109,13 @@ definePageMeta({
 
 const { ui, allUi } = usePageUI('blog')
 useAdminEditable('blog', allUi)
+
+useAppSeo({
+  title: 'وبلاگ تخصصی و دانشنامه چاپ و بسته‌بندی نجم',
+  description: 'جدیدترین مقالات، راهنماهای انتخاب متریال مقوا، تکنیک‌های پیشرفته پس از چاپ، مقایسه‌های فنی و استانداردهای طراحی بسته‌بندی صادراتی.',
+  type: 'website',
+  slug: 'blog'
+})
 
 const selectedCategory = ref('all')
 const { posts: remotePosts } = useDynamicPosts(selectedCategory)
