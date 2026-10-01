@@ -594,6 +594,14 @@ export function recordSavedVersions(lang: LangCode, paths: string[]) {
     rec.value = savedVal
     rec.draft = undefined
     addVersion(path, lang, savedVal, 'saved')
+
+    // CRITICAL: Update clientOverrides to match saved values.
+    // Without this, stale clientOverrides (from before the save) will override
+    // the correct refetched data in usePageUI's merge order (local < remote < override).
+    // This happens when saving via keyboard shortcut (Cmd+S) without blurring first,
+    // since clientOverrides is only synced on blur (syncOverrides=true).
+    const slug = (adminEditState.changes[path] as any)?.slug || adminEditState.slug || 'home'
+    updateClientOverride(path, lang, savedVal, slug)
   }
 
   saveDraftToLocalStorage()

@@ -84,14 +84,39 @@ const props = defineProps<{
 
 const contentEl = ref(null)
 
+const isMounted = ref(false)
+
+onMounted(async () => {
+  isMounted.value = true
+  await nextTick()
+  const el = contentEl.value as HTMLElement | null
+  if (!el) return
+  if (props.isOpen) {
+    const fullH = el.scrollHeight
+    gsap.fromTo(
+      el,
+      { height: 0, opacity: 0 },
+      {
+        height: fullH,
+        opacity: 1,
+        ease: 'power2.out',
+        duration: 0.3,
+        onComplete: () => (el.style.height = 'auto')
+      }
+    )
+  }
+})
+
 watch(
   () => props.isOpen,
   async (open) => {
+    if (!isMounted.value) return
     await nextTick()
     const el = contentEl.value as HTMLElement | null
     if (!el) return
 
     if (open) {
+      gsap.killTweensOf(el)
       const fullH = el.scrollHeight
       gsap.fromTo(
         el,
@@ -105,6 +130,7 @@ watch(
         }
       )
     } else {
+      gsap.killTweensOf(el)
       gsap.to(el, {
         height: 0,
         opacity: 0,
@@ -112,10 +138,7 @@ watch(
         duration: 0.3       // Changed from 0.6
       })
     }
-
-    
-  },
-  { immediate: true }
+  }
 )
 </script>
 

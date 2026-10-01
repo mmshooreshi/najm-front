@@ -3,7 +3,7 @@
   <div
   :dir="isRTL ? 'rtl' : 'ltr'"
     class="flex flex-col gap-4 p-0
-           md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2 md:max-h-[400px] md:overflow-hidden">
+           md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2">
 
 
     <!-- ACCORDION: full-width under image on mobile, right 2 cols on md+ -->
