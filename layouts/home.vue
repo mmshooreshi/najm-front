@@ -80,6 +80,22 @@ onMounted(async () => {
 
   // Initial trigger calculation for entry transitions
   ScrollTrigger.refresh()
+
+  // On refresh or initial load, if scroll was restored to a previous position, smoothly scroll to top
+  const smoothToTop = () => {
+    if (smootherInstance && smootherInstance.scrollTop() > 10) {
+      smootherInstance.scrollTo(0, true)
+    } else if (typeof window !== 'undefined' && window.scrollY > 10) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  smoothToTop()
+  requestAnimationFrame(smoothToTop)
+  setTimeout(smoothToTop, 150)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('load', smoothToTop, { once: true, passive: true })
+  }
 })
 
 onBeforeUnmount(() => {

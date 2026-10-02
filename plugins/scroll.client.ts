@@ -19,6 +19,27 @@ export default defineNuxtPlugin((nuxtApp) => {
     } catch {}
   })
 
+  // Smoothly scroll to top on refresh / initial page load if restored from previous position
+  nuxtApp.hook('app:mounted', () => {
+    const smoothToTop = () => {
+      try {
+        const smoother = ScrollSmoother.get()
+        if (smoother && smoother.scrollTop() > 10) {
+          smoother.scrollTo(0, true)
+          return
+        }
+      } catch {}
+
+      if (typeof window !== 'undefined' && window.scrollY > 10) {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+
+    smoothToTop()
+    requestAnimationFrame(smoothToTop)
+    setTimeout(smoothToTop, 150)
+  })
+
   // Once route resolves, reset horizontal offset to prevent mobile layout shift
   router.afterEach(() => {
     if (typeof window !== 'undefined' && window.scrollX !== 0) {

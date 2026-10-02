@@ -18,23 +18,7 @@
         :scrub="false"
       />
       <template #fallback>
-        <div class="flex flex-wrap items-center justify-center gap-2 text-2xl sm:text-3xl md:text-5xl font-black text-d4 text-center leading-normal py-2">
-          <template v-for="(item, idx) in highlights" :key="idx">
-            <span v-if="item.sentence">{{ item.sentence }}</span>
-            <span v-else-if="item.label === 'break'" class="w-full basis-full h-0"></span>
-            <span
-              v-else-if="item.label && item.label !== 'end'"
-              class="inline-block px-3 py-1 rounded-xl shadow-xs"
-              :style="{
-                backgroundColor: item.bgColor || '#F4FFD0',
-                color: item.textColor || '#000',
-                transform: item.rotation ? `rotate(${item.rotation})` : undefined
-              }"
-            >
-              {{ item.label }}
-            </span>
-          </template>
-        </div>
+        <div class="min-h-[100px] w-full" aria-hidden="true"></div>
       </template>
     </ClientOnly>
   </div>
