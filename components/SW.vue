@@ -2,12 +2,12 @@
 <template>
   <section
     ref="sectionEl"
-    class="relative w-full py-20 md:py-28 bg-najmback"
+    class="relative w-full pt-4 pb-20 md:pt-8 md:pb-28 bg-najmback"
   >
-          <SceneCardsIntroUsed />
+    <SceneCardsIntroUsed />
 
     <div
-      class="mx-auto flex max-w-6xl flex-col gap-16 px-4 md:flex-row md:items-start md:px-6 lg:px-8"
+      class="mx-auto flex max-w-6xl flex-col gap-16 px-4 md:flex-row md:items-start md:px-6 lg:px-8 mt-10 md:mt-20"
     >
       <!-- Left column: intro + simple card list -->
       <div class="flex w-full flex-col gap-10 md:w-1/2">

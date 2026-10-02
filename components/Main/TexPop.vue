@@ -304,9 +304,11 @@ watch(language, async () => {
               transform:  h.rotation ? `rotate(${h.rotation})` : undefined,
               'margin-inline':  h.indent ?? '3px',
             }" :class="[
-              'cursor-default select-none transition-all duration-200',
-              'hover:scale-105',
-              'active:!bg-black active:!text-white active:!rotate-0 active:scale-100'
+              'hover:transition-all',
+              '!hover:rotate-0',
+              '!hover:bg-black',
+              '!hover:text-white',
+              '!cursor-pointer'
             ]"
             v-editable="pathPrefix ? `${pathPrefix}.highlightedText.${i}.label` : ''"
           >{{ h.label }} </span>
