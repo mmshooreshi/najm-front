@@ -6,7 +6,7 @@
       :key="idx"
       class="label absolute top-8 rounded-[12px] text-d4 px-3 py-0.5 font-extrabold cursor-pointer select-none whitespace-nowrap"
       :class="{
-        '!delay-0 -translate-y-8 scale-80 z-10 flash-blur': nextIndex === idx,
+        '!delay-0 -translate-y-8 scale-80 z-10 opacity-70': nextIndex === idx,
         '!delay-0 translate-y-0 scale-100 z-30 opacity-100 py-1 rounded-2xl ring-2 ring-white/30': activeIndex === idx,
         '!delay-0 translate-y-10 scale-80 z-20 opacity-100': prevIndex === idx,
         '!delay-0 -translate-y-12 scale-50 z-0 opacity-0 pointer-events-none': next2Index === idx,
@@ -123,10 +123,19 @@ function onAdminStateChange(e: any) {
   }
 }
 
+function onMotionGlobalToggle(e: any) {
+  if (e.detail?.paused) {
+    stopTimer()
+  } else if (!isPaused.value && !userInteracting) {
+    startTimer()
+  }
+}
+
 onMounted(() => {
   startTimer()
   if (typeof window !== 'undefined') {
     window.addEventListener('najm:admin-editing-state', onAdminStateChange)
+    window.addEventListener('admin:motion-global-toggle', onMotionGlobalToggle)
   }
 })
 
@@ -135,6 +144,7 @@ onBeforeUnmount(() => {
   clearTimeout(resumeTimer)
   if (typeof window !== 'undefined') {
     window.removeEventListener('najm:admin-editing-state', onAdminStateChange)
+    window.removeEventListener('admin:motion-global-toggle', onMotionGlobalToggle)
   }
 })
 </script>
@@ -151,15 +161,6 @@ onBeforeUnmount(() => {
               opacity 0.5s ease,
               background-color 0.5s ease;
   will-change: transform, opacity;
-}
-
-@keyframes blurToClear {
-  0% { filter: blur(0px); }
-  50% { filter: blur(3px); }
-  100% { filter: blur(0); }
-}
-.flash-blur {
-  animation: blurToClear 0.35s ease;
 }
 </style>
   

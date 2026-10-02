@@ -67,8 +67,23 @@
             >
               {{ item?.name || '' }}
             </span>
+            <div
+              v-if="(item?.slug?.startsWith('tel:') || isPhoneName(item?.name)) && getPhoneLines(item?.value).length > 1"
+              class="flex flex-col divide-y divide-white/10 font-mono text-emerald-200"
+              dir="ltr"
+              v-editable="`contact.items.${index}.value`"
+            >
+              <a
+                v-for="(line, lIdx) in getPhoneLines(item.value)"
+                :key="lIdx"
+                :href="cleanPhoneUrl(line)"
+                class="py-0.5 first:pt-0 last:pb-0 hover:text-white transition-colors block text-left"
+              >
+                {{ line }}
+              </a>
+            </div>
             <a
-              v-if="item?.slug"
+              v-else-if="item?.slug"
               :href="item.slug"
               class="font-mono text-emerald-200 hover:text-white transition-colors truncate"
               dir="ltr"
@@ -243,6 +258,35 @@ const openAccordionId = ref<string | null>(null)
 
 function handleAccordionToggle(id: string) {
   openAccordionId.value = openAccordionId.value === id ? null : id
+}
+
+function isPhoneName(name?: string): boolean {
+  if (!name) return false
+  const lower = name.toLowerCase()
+  return name.includes('تلفن') || name.includes('همراه') || name.includes('فکس') || lower.includes('phone') || lower.includes('tel') || lower.includes('fax') || name.includes('هاتف')
+}
+
+function getPhoneLines(value: any): string[] {
+  if (!value) return []
+  if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean)
+  if (typeof value === 'string') {
+    const lines = value.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    return lines.length > 0 ? lines : [value]
+  }
+  return []
+}
+
+function cleanPhoneUrl(phone: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+  const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+  let res = phone
+  persianDigits.forEach((d, i) => { res = res.replaceAll(d, String(i)) })
+  arabicDigits.forEach((d, i) => { res = res.replaceAll(d, String(i)) })
+  const match = res.match(/(\+?\d[\d\s-]{5,}\d)/)
+  if (match) {
+    return 'tel:' + match[1].replace(/[\s-]/g, '')
+  }
+  return 'tel:' + res.replace(/[^\d+]/g, '')
 }
 
 const year = new Date().getFullYear()

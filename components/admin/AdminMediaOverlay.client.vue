@@ -7,19 +7,24 @@
         v-if="isVisible && targetEl && !state.mediaStudioOpen"
         ref="overlayContainerEl"
         data-admin-ui="true"
-        class="admin-media-overlay-hud media-hud absolute z-[999990] pointer-events-none flex items-center justify-center select-none"
+        class="admin-media-overlay-hud media-hud fixed z-[999990] pointer-events-none flex items-center justify-center select-none"
         :style="containerStyle"
       >
         <!-- Subtle Green/Amber Overlay Mask with Cool Modern Diagonal Pattern Stripes -->
         <div
-          class="absolute inset-0 rounded-2xl transition-opacity duration-200 pointer-events-none"
+          class="absolute inset-0 transition-opacity duration-200 pointer-events-none"
+          :style="{ borderRadius: overlayBorderRadius }"
           :class="isModified
             ? 'admin-media-pattern-amber opacity-90'
             : 'admin-media-pattern-green opacity-80'"
         ></div>
 
         <!-- Centered Glowing Pencil Badge & Format -->
-        <div class="relative z-10 flex items-center gap-2 pointer-events-auto" @click.stop="openStudioDirectly">
+        <div
+          class="relative z-10 flex items-center gap-2 pointer-events-auto"
+          :style="{ transform: currentRotation !== 0 ? `rotate(${-currentRotation}deg)` : undefined }"
+          @click.stop="openStudioDirectly"
+        >
           <button
             type="button"
             class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-xl border border-white/25"
@@ -73,9 +78,11 @@ const currentPath = ref('')
 const currentUrl = ref('')
 const mediaFormat = ref('IMG')
 const dimensions = reactive({ w: 0, h: 0 })
+const overlayBorderRadius = ref('1rem')
+const currentRotation = ref(0)
 let hideTimeout: any = null
 let isHovering = false
-let animFrameId: number | null = null
+let trackingRaf: number | null = null
 
 const isModified = computed(() => {
   if (!currentPath.value) return false
@@ -86,32 +93,115 @@ const containerStyle = reactive({
   top: '0px',
   left: '0px',
   width: '0px',
-  height: '0px'
+  height: '0px',
+  transform: 'none',
+  transformOrigin: 'center center'
 })
 
+function extractRotationAndRadius(el: HTMLElement): { angle: number; borderRadius: string } {
+  let angle = 0
+  let bRadius = '1rem'
+  let curr: HTMLElement | null = el
+
+  // Check the element and its direct parents (like .image-item)
+  for (let i = 0; i < 4 && curr && curr !== document.body; i++) {
+    const cs = window.getComputedStyle(curr)
+    if (cs.borderRadius && cs.borderRadius !== '0px' && bRadius === '1rem') {
+      bRadius = cs.borderRadius
+    }
+    const transform = cs.transform
+    if (transform && transform !== 'none') {
+      // 2D matrix: matrix(a, b, c, d, tx, ty)
+      const match2D = transform.match(/^matrix\(([^,]+),\s*([^,]+)/)
+      if (match2D) {
+        const a = parseFloat(match2D[1])
+        const b = parseFloat(match2D[2])
+        angle = Math.round(Math.atan2(b, a) * (180 / Math.PI))
+        break
+      }
+      // 3D matrix: matrix3d(a1, b1, ...
+      const match3D = transform.match(/^matrix3d\(([^,]+),\s*([^,]+)/)
+      if (match3D) {
+        const a = parseFloat(match3D[1])
+        const b = parseFloat(match3D[2])
+        angle = Math.round(Math.atan2(b, a) * (180 / Math.PI))
+        break
+      }
+    }
+    curr = curr.parentElement
+  }
+
+  return { angle, borderRadius: bRadius }
+}
+
 function updatePosition() {
-  if (!targetEl.value) return
-  const rect = targetEl.value.getBoundingClientRect()
+  if (!targetEl.value) {
+    isVisible.value = false
+    return
+  }
+
+  const el = targetEl.value
+  if (!el.isConnected) {
+    isVisible.value = false
+    return
+  }
+
+  const rect = el.getBoundingClientRect()
   if (rect.width === 0 && rect.height === 0) {
     isVisible.value = false
     return
   }
 
-  // Anchor to absolute document coordinates so scrolling moves overlay with the page seamlessly
-  const scrollY = typeof window !== 'undefined' ? (window.scrollY || window.pageYOffset || 0) : 0
-  const scrollX = typeof window !== 'undefined' ? (window.scrollX || window.pageXOffset || 0) : 0
-  containerStyle.top = `${Math.round(rect.top + scrollY)}px`
-  containerStyle.left = `${Math.round(rect.left + scrollX)}px`
-  containerStyle.width = `${Math.round(rect.width)}px`
-  containerStyle.height = `${Math.round(rect.height)}px`
+  const { angle, borderRadius } = extractRotationAndRadius(el)
+  currentRotation.value = angle
+  overlayBorderRadius.value = borderRadius
+
+  // Get unrotated dimensions if element or its parent is rotated
+  let w = el.offsetWidth || el.clientWidth
+  let h = el.offsetHeight || el.clientHeight
+
+  if (!w || !h) {
+    w = rect.width
+    h = rect.height
+  }
+
+  // Exact center of the target element in viewport coordinates
+  const centerX = rect.left + rect.width / 2
+  const centerY = rect.top + rect.height / 2
+
+  const left = centerX - w / 2
+  const top = centerY - h / 2
+
+  containerStyle.top = `${Math.round(top)}px`
+  containerStyle.left = `${Math.round(left)}px`
+  containerStyle.width = `${Math.round(w)}px`
+  containerStyle.height = `${Math.round(h)}px`
+  containerStyle.transform = angle !== 0 ? `rotate(${angle}deg)` : 'none'
+  containerStyle.transformOrigin = 'center center'
+}
+
+function trackLoop() {
+  if (!isVisible.value || !targetEl.value) {
+    trackingRaf = null
+    return
+  }
+  updatePosition()
+  trackingRaf = requestAnimationFrame(trackLoop)
 }
 
 function startTracking() {
-  if (animFrameId) {
-    cancelAnimationFrame(animFrameId)
-    animFrameId = null
+  if (trackingRaf) {
+    cancelAnimationFrame(trackingRaf)
   }
   updatePosition()
+  trackingRaf = requestAnimationFrame(trackLoop)
+}
+
+function stopTracking() {
+  if (trackingRaf) {
+    cancelAnimationFrame(trackingRaf)
+    trackingRaf = null
+  }
 }
 
 function showForElement(el: HTMLElement, path = '', url = '') {
@@ -148,13 +238,14 @@ function showForElement(el: HTMLElement, path = '', url = '') {
     mediaFormat.value = 'IMG'
   }
 
-  updatePosition()
   isVisible.value = true
+  startTracking()
 }
 
 function openStudioDirectly() {
   if (!targetEl.value && !currentUrl.value) return
   isVisible.value = false
+  stopTracking()
   openMediaStudio({
     path: currentPath.value,
     el: targetEl.value,
@@ -182,7 +273,7 @@ function scheduleHide() {
       }
       isVisible.value = false
       targetEl.value = null
-      if (animFrameId) cancelAnimationFrame(animFrameId)
+      stopTracking()
     }
   }, 200)
 }
@@ -207,6 +298,7 @@ watch(() => state.selectedMediaElement, (selEl) => {
     }
     isVisible.value = false
     targetEl.value = null
+    stopTracking()
   }
 })
 
@@ -224,8 +316,7 @@ onMounted(() => {
 
   const onScrollOrResize = () => {
     if (isVisible.value && targetEl.value) {
-      if (animFrameId) cancelAnimationFrame(animFrameId)
-      animFrameId = requestAnimationFrame(updatePosition)
+      updatePosition()
     }
   }
 
@@ -239,7 +330,7 @@ onMounted(() => {
     window.removeEventListener('admin:media-leave', onMediaLeave)
     window.removeEventListener('scroll', onScrollOrResize)
     window.removeEventListener('resize', onScrollOrResize)
-    if (animFrameId) cancelAnimationFrame(animFrameId)
+    stopTracking()
   }
 })
 

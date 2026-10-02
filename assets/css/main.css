@@ -633,7 +633,10 @@ img[data-admin-changed="true"],
 .admin-motion-paused *::after,
 body.admin-all-motions-paused *,
 body.admin-all-motions-paused *::before,
-body.admin-all-motions-paused *::after {
+body.admin-all-motions-paused *::after,
+body.admin-global-motion-paused *,
+body.admin-global-motion-paused *::before,
+body.admin-global-motion-paused *::after {
   animation-play-state: paused !important;
 }
 

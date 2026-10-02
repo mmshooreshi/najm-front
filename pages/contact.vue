@@ -40,9 +40,16 @@
           <p class="text-xs text-gray-500 mb-3 sm:mb-4" v-editable="'phoneSub'">{{ uiContent.phoneSub || 'پاسخگویی در ساعات کاری' }}</p>
         </div>
         <div class="space-y-2 border-t border-gray-100 pt-3 sm:pt-4">
-          <a :href="`tel:${uiContent.phone || '02166797911'}`" class="block text-sm font-semibold text-gray-800 hover:text-najmgreen ltr font-mono" v-editable="'phone'">
-            {{ uiContent.phone }}
-          </a>
+          <div class="divide-y divide-gray-100/80" v-editable="'phone'">
+            <a
+              v-for="(num, pIdx) in phoneList"
+              :key="pIdx"
+              :href="cleanPhoneUrl(num)"
+              class="block py-1 first:pt-0 last:pb-0 text-sm font-semibold text-gray-800 hover:text-najmgreen ltr font-mono transition-colors"
+            >
+              {{ num }}
+            </a>
+          </div>
         </div>
       </div>
 
@@ -88,7 +95,7 @@
           class="w-full py-2 px-3 rounded-xl bg-najmgrey hover:bg-gray-200 text-gray-800 text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
         >
           <Icon :name="copied ? 'mdi:check' : 'mdi:content-copy'" class="w-4 h-4" />
-          <span>{{ copied ? (uiContent.copiedText || 'کپی شد!') : (uiContent.copyAddressBtn || 'کپی نشانی') }}</span>
+          <span v-editable="'copyAddressBtn'">{{ copied ? (uiContent.copiedText || 'کپی شد!') : (uiContent.copyAddressBtn || 'کپی نشانی') }}</span>
         </button>
       </div>
 
@@ -206,6 +213,10 @@
             <div class="text-xs font-bold" v-editable="'form.successTitle'">{{ uiContent.form.successTitle || 'درخواست شما با موفقیت ثبت شد!' }}</div>
             <div class="text-[11px] text-emerald-700" v-editable="'form.successDesc'">{{ uiContent.form.successDesc || 'کارشناسان مهندسی فروش چاپ نجم به زودی با شما تماس خواهند گرفت.' }}</div>
           </div>
+
+          <div v-if="submitError" class="p-3 bg-rose-50 text-rose-700 border border-rose-200 rounded-2xl text-center text-xs font-medium">
+            {{ submitError }}
+          </div>
         </form>
       </div>
 
@@ -228,6 +239,7 @@ import SmartPhoneInput from '~/components/common/SmartPhoneInput.vue'
 import { usePageUI } from '~/composables/ui/usePageUI'
 import { useAdminEditable } from '~/composables/useAdminEditable'
 import { useLocale } from '~/composables/useLocale'
+import { getBaseSchemaForSlugAndLang } from '~/composables/ui/schemaRegistry'
 
 definePageMeta({
   name: 'تماس با ما - چاپ و بسته‌بندی نجم',
@@ -258,54 +270,44 @@ useAppSeo({
   ]
 })
 
-const fallbackContact = {
-  badge: 'راه‌های ارتباطی و مشاوره تخصصی',
-  title: 'ارتباط مستقیم با کارشناسان چاپ و بسته‌بندی نجم',
-  description: 'برای مشاوره انتخاب متریال، استعلام قیمت تیراژ، رزرو زمان چاپ یا هماهنگی بازدید حضوری از کارخانه با ما در تماس باشید.',
-  phoneLabel: 'تماس تلفنی مستقیم',
-  phoneSub: 'پاسخگویی در ساعات کاری',
-  phone: '۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳',
-  emailLabel: 'مکاتبه و ارسال فایل',
-  emailSub: 'ارسال فایل‌های طراحی و پیش‌فاکتور',
-  email: 'info@chapenajm.com',
-  addressLabel: 'دفتر مرکزی و کارخانه',
-  addressSub: 'بازدید و هماهنگی جلسه حضوری',
-  address: 'تهران، بزرگراه فتح، زیر پل شیر پاستوریزه، ابتدای ۴۵ متری زرند، نبش کوچه تلفن‌خانه، پلاک ۱۶۶',
-  copyAddressBtn: 'کپی نشانی',
-  copiedText: 'نشانی کپی شد!',
-  hoursLabel: 'ساعات کاری و پذیرش',
-  hoursSub: 'روزهای کاری شنبه تا پنج‌شنبه',
-  hours: 'شنبه تا چهارشنبه ۸:۰۰ الی ۱۷:۳۰ | پنجشنبه‌ها ۸:۰۰ الی ۱۳:۰۰',
-  form: {
-    title: 'فرم آنلاین استعلام قیمت و سفارش',
-    subtitle: 'مشخصات پروژه خود را وارد کنید تا کارشناسان فنی در کوتاه‌ترین زمان با شما تماس بگیرند.',
-    nameLabel: 'نام و نام خانوادگی *',
-    namePlaceholder: 'مثال: علی رضایی',
-    phoneLabel: 'شماره تماس همراه *',
-    phonePlaceholder: '۰۹۱۲...',
-    companyLabel: 'نام برند یا شرکت',
-    companyPlaceholder: 'نام برند، شرکت یا استارتاپ',
-    categoryLabel: 'نوع محصول یا خدمت مدنظر',
-    categoryPlaceholder: 'انتخاب کنید (جعبه مقوایی، هاردباکس، کاتالوگ...)',
-    messageLabel: 'توضیحات و مشخصات پروژه *',
-    messagePlaceholder: 'ابعاد، تیراژ تخمینی، نوع مقوا، خدمات طلاکوب/سلفون...',
-    submitBtn: 'ارسال درخواست استعلام',
-    submitting: 'در حال ارسال اطلاعات...',
-    successTitle: 'درخواست شما با موفقیت ثبت شد!',
-    successDesc: 'کارشناسان مهندسی فروش چاپ نجم به زودی با شما تماس خواهند گرفت.'
-  }
-}
+const baseSchema = computed(() => getBaseSchemaForSlugAndLang('contact', language.value) || {})
 
 const uiContent = computed(() => {
+  const base = baseSchema.value || {}
+  const remote = ui.value || {}
   return {
-    ...fallbackContact,
-    ...(ui.value || {}),
+    ...base,
+    ...remote,
     form: {
-      ...fallbackContact.form,
-      ...(ui.value?.form || {})
+      ...(base.form || {}),
+      ...(remote.form || {})
     }
   }
 })
+
+const phoneList = computed<string[]>(() => {
+  const raw = uiContent.value.phone
+  if (!raw) return []
+  if (Array.isArray(raw)) return raw.map(v => String(v).trim()).filter(Boolean)
+  if (typeof raw === 'string') {
+    const lines = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    return lines.length > 0 ? lines : [raw]
+  }
+  return []
+})
+
+function cleanPhoneUrl(phone: string): string {
+  const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+  const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+  let res = phone
+  persianDigits.forEach((d, i) => { res = res.replaceAll(d, String(i)) })
+  arabicDigits.forEach((d, i) => { res = res.replaceAll(d, String(i)) })
+  const match = res.match(/(\+?\d[\d\s-]{5,}\d)/)
+  if (match) {
+    return 'tel:' + match[1].replace(/[\s-]/g, '')
+  }
+  return 'tel:' + res.replace(/[^\d+]/g, '')
+}
 
 const form = reactive({
   name: '',
@@ -317,21 +319,46 @@ const form = reactive({
 
 const isSubmitting = ref(false)
 const submitted = ref(false)
+const submitError = ref('')
 const copied = ref(false)
 
 async function handleSubmit() {
+  if (!form.phone) return
   isSubmitting.value = true
-  await new Promise(resolve => setTimeout(resolve, 600))
-  isSubmitting.value = false
-  submitted.value = true
-  form.name = ''
-  form.company = ''
-  form.phone = ''
-  form.category = ''
-  form.message = ''
-  setTimeout(() => {
-    submitted.value = false
-  }, 5000)
+  submitError.value = ''
+  try {
+    const res: any = await $fetch('/api/consultation/submit', {
+      method: 'POST',
+      body: {
+        name: form.name || 'کاربر فرم تماس',
+        phone: form.phone,
+        company: form.company,
+        category: form.category || 'استعلام قیمت / تماس مستقیم',
+        description: form.message,
+        sourcePage: '/contact',
+        productContext: form.category || 'فرم تماس با ما'
+      }
+    })
+
+    if (res?.ok) {
+      submitted.value = true
+      form.name = ''
+      form.company = ''
+      form.phone = ''
+      form.category = ''
+      form.message = ''
+      setTimeout(() => {
+        submitted.value = false
+      }, 7000)
+    } else {
+      submitError.value = res?.error || 'خطا در ثبت درخواست'
+    }
+  } catch (err: any) {
+    console.error('Contact submission error:', err)
+    submitError.value = 'خطایی در ارسال اطلاعات رخ داد. لطفاً با شماره‌های ما تماس حاصل فرمایید.'
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 function copyAddress() {

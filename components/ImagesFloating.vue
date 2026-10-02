@@ -23,7 +23,7 @@
           v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
           :height="image.height"
           :width="image.width"
-          :priority="index === 0"
+          :priority="index <= 1"
           class="opacity-100"
           :src="`/images/${image.src}`"
           @hover="() => handleElementHover(image)"
@@ -331,68 +331,74 @@ const animate = () => {
   const dtSec = dt / 1000
   lastFrameTime = now
 
-  // Skip animation if not visible or if admin motion is paused
-  if (
-    !isVisible.value ||
-    (slider.value && (slider.value.classList.contains('admin-motion-paused') || document.body.classList.contains('admin-all-motions-paused')))
-  ) {
+  if (!isVisible.value) {
     return
   }
 
-  globalTime.value += dtSec
+  // Check if admin motion is paused globally or on this slider
+  const isMotionPaused =
+    (slider.value && slider.value.classList.contains('admin-motion-paused')) ||
+    (typeof document !== 'undefined' && (
+      document.body.classList.contains('admin-all-motions-paused') ||
+      document.body.classList.contains('admin-global-motion-paused')
+    ))
 
-  // Auto-scroll / swipe inertia logic…
-  if (!isSwiping.value) {
-    if (swipeInertiaActive.value) {
-      translateX.value += swipeVelocity.value * dt
-      swipeVelocity.value *= inertiaFriction.value
-      if (Math.abs(swipeVelocity.value) < inertiaThreshold.value) {
-        swipeInertiaActive.value = false
-        swipeVelocity.value = speed.value
-      }
-    } else {
-      translateX.value += speed.value
-    }
-  }
+  if (!isMotionPaused) {
+    globalTime.value += dtSec
 
-  // Repulsion physics between images…
-  for (let i = 0; i < images.length; i++) {
-    for (let j = i + 1; j < images.length; j++) {
-      const imgA = images[i]
-      const imgB = images[j]
-      const centerAX = getEffectiveX(imgA.left, 1) + (imgA.offsetX || 0) + imgA.width / 2
-      const centerAY = imgA.top + (imgA.offsetY || 0) + imgA.height / 2
-      const centerBX = getEffectiveX(imgB.left, 1) + (imgB.offsetX || 0) + imgB.width / 2
-      const centerBY = imgB.top + (imgB.offsetY || 0) + imgB.height / 2
-
-      const dx = centerAX - centerBX
-      const dy = centerAY - centerBY
-      const distance = Math.sqrt(dx * dx + dy * dy)
-
-      const radiusA = (imgA.width + imgA.height) / 4
-      const radiusB = (imgB.width + imgB.height) / 4
-      const minDist = radiusA + radiusB
-
-      if (distance < minDist && distance > 0) {
-        const overlap = minDist - distance
-        const force = repulsionStrength.value * overlap
-        const fx = (dx / distance) * force
-        const fy = (dy / distance) * force
-
-        imgA.vx = (imgA.vx || 0) + fx * dtSec
-        imgA.vy = (imgA.vy || 0) + fy * dtSec
-        imgB.vx = (imgB.vx || 0) - fx * dtSec
-        imgB.vy = (imgB.vy || 0) - fy * dtSec
+    // Auto-scroll / swipe inertia logic…
+    if (!isSwiping.value) {
+      if (swipeInertiaActive.value) {
+        translateX.value += swipeVelocity.value * dt
+        swipeVelocity.value *= inertiaFriction.value
+        if (Math.abs(swipeVelocity.value) < inertiaThreshold.value) {
+          swipeInertiaActive.value = false
+          swipeVelocity.value = speed.value
+        }
+      } else {
+        translateX.value += speed.value
       }
     }
-  }
 
-  images.forEach(image => {
-    image.offsetX = (image.offsetX || 0) + (image.vx || 0) * dtSec
-    image.offsetY = (image.offsetY || 0) + (image.vy || 0) * dtSec
-    image.vx = (image.vx || 0) * damping.value
-    image.vy = (image.vy || 0) * damping.value
-  })
+    // Repulsion physics between images…
+    for (let i = 0; i < images.length; i++) {
+      for (let j = i + 1; j < images.length; j++) {
+        const imgA = images[i]
+        const imgB = images[j]
+        const centerAX = getEffectiveX(imgA.left, 1) + (imgA.offsetX || 0) + imgA.width / 2
+        const centerAY = imgA.top + (imgA.offsetY || 0) + imgA.height / 2
+        const centerBX = getEffectiveX(imgB.left, 1) + (imgB.offsetX || 0) + imgB.width / 2
+        const centerBY = imgB.top + (imgB.offsetY || 0) + imgB.height / 2
+
+        const dx = centerAX - centerBX
+        const dy = centerAY - centerBY
+        const distance = Math.sqrt(dx * dx + dy * dy)
+
+        const radiusA = (imgA.width + imgA.height) / 4
+        const radiusB = (imgB.width + imgB.height) / 4
+        const minDist = radiusA + radiusB
+
+        if (distance < minDist && distance > 0) {
+          const overlap = minDist - distance
+          const force = repulsionStrength.value * overlap
+          const fx = (dx / distance) * force
+          const fy = (dy / distance) * force
+
+          imgA.vx = (imgA.vx || 0) + fx * dtSec
+          imgA.vy = (imgA.vy || 0) + fy * dtSec
+          imgB.vx = (imgB.vx || 0) - fx * dtSec
+          imgB.vy = (imgB.vy || 0) - fy * dtSec
+        }
+      }
+    }
+
+    images.forEach(image => {
+      image.offsetX = (image.offsetX || 0) + (image.vx || 0) * dtSec
+      image.offsetY = (image.offsetY || 0) + (image.vy || 0) * dtSec
+      image.vx = (image.vx || 0) * damping.value
+      image.vy = (image.vy || 0) * damping.value
+    })
+  }
 
   animationFrameId = requestAnimationFrame(animate)
 }
@@ -611,15 +617,29 @@ watch(isVisible, (visible) => {
   }
 })
 
+const onMotionToggle = (e) => {
+  if (!e.detail?.paused && isVisible.value) {
+    lastFrameTime = performance.now()
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = requestAnimationFrame(animate)
+  }
+}
+
 onMounted(() => {
   lastFrameTime = performance.now()
   animate()
+  if (typeof window !== 'undefined') {
+    window.addEventListener('admin:motion-global-toggle', onMotionToggle)
+    window.addEventListener('admin:motion-resume', onMotionToggle)
+  }
 })
 
 onUnmounted(() => {
   cancelAnimationFrame(animationFrameId)
   if (typeof window !== 'undefined') {
     window.removeEventListener('mouseup', handleWindowMouseUp)
+    window.removeEventListener('admin:motion-global-toggle', onMotionToggle)
+    window.removeEventListener('admin:motion-resume', onMotionToggle)
   }
 })
 </script>

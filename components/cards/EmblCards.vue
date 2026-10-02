@@ -76,7 +76,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import EmblaCarousel from 'embla-carousel'
-import Autoplay from 'embla-carousel-autoplay'
+import AutoScroll from 'embla-carousel-auto-scroll'
 import { useLocale } from '@/composables/useLocale'
 
 const emit = defineEmits(['visibleStackChanged'])
@@ -163,7 +163,7 @@ const onSelect = () => {
   emit('visibleStackChanged', visible)
 }
 
-let autoplayPlugin
+let autoScrollPlugin
 
 const initializeEmbla = () => {
   if (embla.value) {
@@ -171,22 +171,25 @@ const initializeEmbla = () => {
     embla.value = null
   }
 
-  autoplayPlugin = Autoplay({
-    delay: 2000,
-    stopOnInteraction: false
+  autoScrollPlugin = AutoScroll({
+    speed: 1.1, // silky-smooth, continuous linear marquee
+    startDelay: 400,
+    stopOnMouseEnter: true,
+    stopOnInteraction: false,
+    playOnInit: true
   })
 
   embla.value = EmblaCarousel(
     viewportRef.value,
     {
       draggable: true,
-      speed: 100,
+      speed: 10,
       align: 'center',
       dragFree: true,
       direction: isRTL.value ? 'rtl' : 'ltr',
       loop: true
     },
-    [autoplayPlugin]
+    [autoScrollPlugin]
   )
 
   embla.value.on('select', onSelect)
@@ -202,33 +205,46 @@ watch(isRTL, async () => {
 onMounted(() => {
   initializeEmbla()
 
+  const viewportEl = viewportRef.value
+  if (viewportEl) {
+    // Extra safeguards for instant pause on touch and resume after release
+    viewportEl.addEventListener('touchstart', () => {
+      if (autoScrollPlugin?.isPlaying?.()) autoScrollPlugin.stop()
+    }, { passive: true })
+    viewportEl.addEventListener('touchend', () => {
+      if (autoScrollPlugin && !autoScrollPlugin.isPlaying?.()) {
+        setTimeout(() => autoScrollPlugin?.play?.(), 800)
+      }
+    }, { passive: true })
+  }
+
   const dotsContainer = dotsContainerRef.value
   if (dotsContainer) {
     dotsContainer.addEventListener('mouseenter', () => {
-      if (autoplayPlugin) autoplayPlugin.stop()
+      if (autoScrollPlugin) autoScrollPlugin.stop()
     })
     dotsContainer.addEventListener('mouseleave', () => {
-      if (!autoplayPlugin || !embla.value) return
+      if (!autoScrollPlugin || !embla.value) return
       const slides = embla.value.slideNodes ? embla.value.slideNodes() : []
       if (!slides.length) return
-      autoplayPlugin.play()
+      autoScrollPlugin.play()
     })
   }
 
-  // Pause/resume autoplay on admin motion freeze events
+  // Pause/resume autoScroll on admin motion freeze events
   const onFreeze = (e) => {
-    if (!autoplayPlugin) return
+    if (!autoScrollPlugin) return
     const target = e.detail?.el
     if (!target || target === emblContainer.value || emblContainer.value?.contains(target)) {
-      if (e.detail?.paused) autoplayPlugin.stop()
-      else autoplayPlugin.play()
+      if (e.detail?.paused) autoScrollPlugin.stop()
+      else autoScrollPlugin.play()
     }
   }
 
   const onGlobalToggle = (e) => {
-    if (!autoplayPlugin) return
-    if (e.detail?.paused) autoplayPlugin.stop()
-    else autoplayPlugin.play()
+    if (!autoScrollPlugin) return
+    if (e.detail?.paused) autoScrollPlugin.stop()
+    else autoScrollPlugin.play()
   }
 
   window.addEventListener('admin:motion-element-freeze', onFreeze)

@@ -1246,6 +1246,20 @@ export function setGlobalMotionPaused(paused: boolean) {
   adminEditState.isMotionPausedGlobally = paused
   if (typeof document !== 'undefined') {
     document.body.classList.toggle('admin-global-motion-paused', paused)
+    document.body.classList.toggle('admin-all-motions-paused', paused)
+  }
+  if (typeof window !== 'undefined') {
+    try {
+      const gsap = (window as any).gsap
+      if (gsap && gsap.globalTimeline) {
+        if (paused) {
+          gsap.globalTimeline.pause()
+        } else {
+          gsap.globalTimeline.resume()
+        }
+      }
+    } catch {}
+    window.dispatchEvent(new CustomEvent('admin:motion-global-toggle', { detail: { paused } }))
   }
 }
 
