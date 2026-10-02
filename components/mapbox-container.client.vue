@@ -122,7 +122,7 @@ const ui = computed(() => {
       copied: 'Copied!',
       directCall: 'Direct Call',
       recenter: 'Recenter on Plant',
-      loading: 'Loading Liberty map...',
+      loading: 'Loading map...',
       overview: 'Overview'
     }
   }
@@ -143,7 +143,7 @@ const ui = computed(() => {
     copied: 'کپی شد!',
     directCall: 'تماس مستقیم',
     recenter: 'موقعیت کارخانه',
-    loading: 'در حال بارگذاری نقشه لیبرتی...',
+    loading: 'در حال لود نقشه...',
     overview: 'نمای کلی'
   }
 })
@@ -238,11 +238,18 @@ function buildPopupHtml(loc: LocalizedItem): string {
   `
 }
 
-// ────────────────  Pin Element Builder (NO white border, NO text label, exact squircle)  ────────────────
+// ────────────────  Pin Element Builder (Outer MapLibre Anchor + Inner Isolated Squircle)  ────────────────
 function createMarkerElement(loc: LocalizedItem): HTMLDivElement {
+  // Outer container passed to MapLibre - coordinates and center anchor managed strictly with ZERO transition lag
   const pinEl = document.createElement('div')
   pinEl.className = 'najm-marker-pin'
-  pinEl.innerHTML = loc.iconSvg
+
+  // Inner squircle with official Najm Green and warehouse icon - hover scale isolated from map coordinates
+  const squircle = document.createElement('div')
+  squircle.className = 'najm-marker-squircle'
+  squircle.innerHTML = loc.iconSvg
+
+  pinEl.appendChild(squircle)
   return pinEl
 }
 
@@ -276,9 +283,21 @@ function initMarkers() {
   activeLocations.value.forEach(loc => {
     const el = createMarkerElement(loc)
 
+    // Directional offsets ensuring generous clearance (>20px) from the 50x50 marker pin on all 8 anchors
+    const POPUP_OFFSET: Record<string, [number, number]> = {
+      'top': [0, 48],
+      'bottom': [0, -48],
+      'left': [48, 0],
+      'right': [-48, 0],
+      'top-left': [45, 45],
+      'top-right': [-45, 45],
+      'bottom-left': [45, -48],
+      'bottom-right': [-45, -48]
+    }
+
     // Smart cloud popup anchored to the icon with intelligent directional offset
     const popup = new maplibregl.Popup({
-      offset: 18,
+      offset: POPUP_OFFSET,
       closeButton: true,
       closeOnClick: true,
       closeOnMove: false,
@@ -499,7 +518,29 @@ onBeforeUnmount(() => {
 
 /* ────────────────  Exact Najm Green Warehouse Squircle Marker  ──────────────── */
 .najm-marker-pin {
-  position: relative;
+  position: absolute !important;
+  width: 50px !important;
+  height: 50px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  pointer-events: auto !important;
+  /* CRITICAL: Zero transition so MapLibre transforms update synchronously with zero lag or drift on zoom */
+  transition: none !important;
+  will-change: transform;
+}
+
+/* Ensure MapLibre marker transforms are never transitioned by global CSS */
+.maplibregl-marker {
+  transition: none !important;
+}
+
+/* Inner Visual Squircle - Isolated from MapLibre coordinates */
+.najm-marker-squircle {
   width: 50px;
   height: 50px;
   border-radius: 16px;
@@ -510,26 +551,34 @@ onBeforeUnmount(() => {
   justify-content: center;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
   color: #ffffff;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  transform-origin: center center;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
 }
 
-.najm-marker-pin:hover {
-  transform: scale(1.12) translateY(-2px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.6);
+.najm-marker-squircle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.6);
 }
 
-.najm-marker-pin svg {
+.najm-marker-squircle svg {
   display: block;
   width: 28px;
   height: 28px;
+  pointer-events: none;
 }
 
 /* ────────────────  Smart Cloud Popover (MapLibre Popup)  ──────────────── */
 .maplibregl-popup {
   font-family: inherit;
   z-index: 50;
+}
+
+/* Completely remove all popup tips/arrows across all directions and corners */
+.maplibregl-popup-tip {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: none !important;
 }
 
 .maplibregl-popup-content {
@@ -547,38 +596,12 @@ onBeforeUnmount(() => {
 @keyframes cloudFadeIn {
   0% {
     opacity: 0;
-    transform: translateY(6px) scale(0.96);
+    transform: scale(0.97);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
-}
-
-/* Directional Arrow Pointer (Tip) styled to match cloud */
-.maplibregl-popup-anchor-top .maplibregl-popup-tip {
-  border-bottom-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
-  border-top-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-left .maplibregl-popup-tip {
-  border-right-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-right .maplibregl-popup-tip {
-  border-left-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-top-left .maplibregl-popup-tip {
-  border-bottom-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
-  border-bottom-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip {
-  border-top-color: rgba(1, 68, 57, 0.96) !important;
-}
-.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
-  border-top-color: rgba(1, 68, 57, 0.96) !important;
 }
 
 /* Close Button (X) */

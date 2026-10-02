@@ -1,18 +1,20 @@
 <!-- components/scenes/SceneHero.vue -->
 <template>
   <BackgroundGradient />
-  <div class="w-full flex flex-col items-center justify-start pt-2 sm:pt-4 md:pt-6 pb-2 md:pb-6">
+  <div class="w-full flex-1 flex flex-col items-center justify-center py-6 sm:py-10 md:py-14">
     <teleport to="body">
       <RotatoryPane />
     </teleport>
 
-    <HighlightedText />
+    <div class="w-full max-w-4xl mx-auto flex flex-col items-center">
+      <HighlightedText />
+    </div>
 
-    <div class="z-10 relative flex flex-col items-center w-full mt-4 sm:mt-6 md:mt-8">
+    <div class="z-10 relative flex flex-col items-center w-full mt-6 sm:mt-10 md:mt-14">
       <ClientOnly>
         <ImagesFloating />
         <template #fallback>
-          <div class="w-full h-[220px] sm:h-[240px] md:h-[260px] -mt-6 sm:-mt-8 md:-mt-10" aria-hidden="true" />
+          <div class="w-full h-[220px] sm:h-[250px] md:h-[280px]" aria-hidden="true" />
         </template>
       </ClientOnly>
     </div>

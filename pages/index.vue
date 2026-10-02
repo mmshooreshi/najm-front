@@ -1,7 +1,7 @@
 <!-- pages/index.vue -->
 <template>
   <div class="home-page-root w-full">
-    <div class="section-snap hero-snap flex flex-col justify-start">
+    <div class="section-snap hero-snap flex flex-col justify-center items-center">
       <SceneHero />
     </div>
 
@@ -104,13 +104,6 @@ onMounted(async () => {
   position: relative;              /* make ::before sit on top */
   min-height: calc(100vh - 64px);
   min-height: calc(100svh - 64px);
-}
-
-@media (max-width: 768px) {
-  .section-snap.hero-snap {
-    min-height: auto;
-    padding-bottom: 2rem;
-  }
 }
 
 .section-snap.debug-grid::before {
