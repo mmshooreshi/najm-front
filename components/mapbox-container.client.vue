@@ -1,6 +1,6 @@
 <!-- components/mapbox-container.client.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { useLocale } from '~/composables/useLocale'
@@ -80,7 +80,7 @@ const LOCATIONS: LocalizedItem[] = [
       ar: 'طهران، طريق فتح السريع (طريق كرج القديم)، تحت جسر حليب بستره، بداية جادة ٤٥ متري زرند، ناصية زقاق تلفن خانة، رقم ١٦٦'
     },
     // Exact warehouse SVG matching user screenshot (mdi:warehouse)
-    iconSvg: `<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M6 19h2v2H6zm6-16L2 8v13h2v-8h16v8h2V8zm-4 8H4V9h4zm6 0h-4V9h4zm6 0h-4V9h4zM6 15h2v2H6zm4 0h2v2h-2zm0 4h2v2h-2zm4 0h2v2h-2z"/></svg>`
+    iconSvg: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M6 19h2v2H6zm6-16L2 8v13h2v-8h16v8h2V8zm-4 8H4V9h4zm6 0h-4V9h4zm6 0h-4V9h4zM6 15h2v2H6zm4 0h2v2h-2zm0 4h2v2h-2zm4 0h2v2h-2z"/></svg>`
   },
   {
     id: 'office',
@@ -108,7 +108,7 @@ const LOCATIONS: LocalizedItem[] = [
       en: 'No. 117, 3rd Floor, Shohada-ye Zhandarmeri St., South Kargar St., Enqelab Sq., Tehran',
       ar: 'ساحة انقلاب، شارع كاركر الجنوبي، شارع شهداء الجندرمة، رقم ۱۱۷، الطابق الثالث، طهران'
     },
-    iconSvg: `<svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M18 15H16V17H18M18 11H16V13H18M18 7H16V9H18M14 7H12V9H14M14 11H12V13H14M14 15H12V17H14M10 7H8V9H10M10 11H8V13H10M10 15H8V17H10M20 3H4C2.89 3 2 3.89 2 5V21H22V5C22 3.89 21.1 3 20 3M20 19H4V5H20V19Z"/></svg>`
+    iconSvg: `<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18 15H16V17H18M18 11H16V13H18M18 7H16V9H18M14 7H12V9H14M14 11H12V13H14M14 15H12V17H14M10 7H8V9H10M10 11H8V13H10M10 15H8V17H10M20 3H4C2.89 3 2 3.89 2 5V21H22V5C22 3.89 21.1 3 20 3M20 19H4V5H20V19Z"/></svg>`
   }
 ]
 
@@ -154,97 +154,77 @@ const primaryLocation = computed(() => activeLocations.value[0] || LOCATIONS[0])
 const mapContainer = ref<HTMLDivElement | null>(null)
 let map: maplibregl.Map | null = null
 const markers: maplibregl.Marker[] = []
-let activePopup: maplibregl.Popup | null = null
 
 const isMapLoaded = ref(false)
+const isCloudOpen = ref(false)
+const isCopied = ref(false)
+const cloudCardRef = ref<HTMLDivElement | null>(null)
+const cloudPos = ref<{ x: number; y: number; visible: boolean }>({ x: 0, y: 0, visible: false })
+
 let resizeTimer: ReturnType<typeof setTimeout> | null = null
 let fallbackTimer: ReturnType<typeof setTimeout> | null = null
 
-// ────────────────  HTML Builder for Smart Cloud Popover  ────────────────
-function buildPopupHtml(loc: LocalizedItem): string {
-  const lang = currentLangCode.value
-  const title = loc.title[lang] || loc.title.fa
-  const sublabel = loc.sublabel[lang] || loc.sublabel.fa
-  const address = loc.address[lang] || loc.address.fa
-  const dir = isRTL.value ? 'rtl' : 'ltr'
-
-  // Correct Persian phone typography with separate bdi spans so "الی" sits naturally in the middle
-  const phoneMarkup = lang === 'en'
-    ? `<span class="najm-phone-digits">+98 21 6679 7911 to 13</span>`
-    : (lang === 'ar'
-      ? `<div dir="rtl" class="najm-phone-persian"><bdi>۰۲۱-۶۶۷۹۷۹۱۱</bdi> <span class="phone-ali">إلى</span> <bdi>۱۳</bdi></div>`
-      : `<div dir="rtl" class="najm-phone-persian"><bdi>۰۲۱-۶۶۷۹۷۹۱۱</bdi> <span class="phone-ali">الی</span> <bdi>۱۳</bdi></div>`)
-
-  return `
-    <div class="najm-cloud-card" dir="${dir}">
-      <!-- Header with warehouse icon and exact brand title -->
-      <div class="najm-cloud-header">
-        <div class="najm-cloud-icon">${loc.iconSvg}</div>
-        <div class="najm-cloud-title-group">
-          <h3 class="najm-cloud-title">${title}</h3>
-          <p class="najm-cloud-sub">${sublabel}</p>
-        </div>
-      </div>
-
-      <!-- Full Factory Address with One-Click Copy -->
-      <div class="najm-cloud-address-row">
-        <div class="najm-cloud-address-text">
-          <span class="najm-geo-pin">📍</span>
-          <span class="najm-address-content">${address}</span>
-        </div>
-        <button type="button" class="najm-cloud-copy-btn" id="najm-copy-trigger" data-address="${address.replace(/"/g, '&quot;')}">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
-            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
-          </svg>
-          <span id="najm-copy-label">${ui.value.copyAddress}</span>
-        </button>
-      </div>
-
-      <!-- Direct Phone Call Row with correct RTL alignment -->
-      <div class="najm-cloud-phone-row">
-        <div class="najm-phone-label-group">
-          <span>📞</span>
-          <span>${ui.value.directCall}:</span>
-        </div>
-        <a href="${loc.phoneHref}" class="najm-cloud-phone-link">
-          ${phoneMarkup}
-        </a>
-      </div>
-
-      <!-- Verified 4-App Navigation Routing Buttons -->
-      <div class="najm-cloud-routing">
-        <span class="najm-cloud-routing-title">${ui.value.navTitle}</span>
-        <div class="najm-cloud-routing-grid">
-          <a href="${loc.googlePlaceUrl}" target="_blank" rel="noopener noreferrer" class="najm-cloud-route-btn google" title="Google Maps">
-            <svg class="route-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-            <span>Google</span>
-          </a>
-          <a href="${loc.neshanUrl}" target="_blank" rel="noopener noreferrer" class="najm-cloud-route-btn neshan" title="نشان">
-            <svg class="route-icon" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4"/></svg>
-            <span>نشان</span>
-          </a>
-          <a href="${loc.baladUrl}" target="_blank" rel="noopener noreferrer" class="najm-cloud-route-btn balad" title="بلد">
-            <svg class="route-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>بلد</span>
-          </a>
-          <a href="${loc.wazeUrl}" target="_blank" rel="noopener noreferrer" class="najm-cloud-route-btn waze" title="Waze">
-            <svg class="route-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-            <span>Waze</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  `
+// ────────────────  One-Click Address Copy  ────────────────
+async function copyAddress() {
+  const addr = primaryLocation.value.address[currentLangCode.value] || primaryLocation.value.address.fa
+  try {
+    await navigator.clipboard.writeText(addr)
+    isCopied.value = true
+    setTimeout(() => {
+      isCopied.value = false
+    }, 2000)
+  } catch {
+    isCopied.value = true
+  }
 }
 
-// ────────────────  Pin Element Builder (Outer MapLibre Anchor + Inner Isolated Squircle)  ────────────────
+// ────────────────  Dynamic, Fluid Viewport Positioning Engine  ────────────────
+function updateCloudPosition() {
+  if (!map || !isCloudOpen.value) return
+  const loc = primaryLocation.value
+  const container = mapContainer.value
+  if (!container) return
+
+  const pt = map.project(loc.coords)
+  const W = container.clientWidth
+  const H = container.clientHeight
+
+  // Hide if marker has moved far off the screen
+  if (pt.x < -160 || pt.x > W + 160 || pt.y < -160 || pt.y > H + 160) {
+    cloudPos.value = { ...cloudPos.value, visible: false }
+    return
+  }
+
+  const cardEl = cloudCardRef.value
+  const cardW = cardEl && cardEl.offsetWidth > 50 ? cardEl.offsetWidth : Math.min(320, W - 28)
+  const cardH = cardEl && cardEl.offsetHeight > 50 ? cardEl.offsetHeight : 195
+
+  // Continuously slide horizontally, safely clamped inside viewport bounds
+  let x = pt.x - cardW / 2
+  x = Math.max(12, Math.min(x, W - cardW - 12))
+
+  // Continuously position vertically: prefer floating comfortably above marker
+  const safeTop = 60 // space for top floating recenter bar
+  const markerRadius = 26
+  const clearance = 14
+
+  let y = pt.y - cardH - clearance
+  if (y < safeTop) {
+    // If not enough room above, smoothly position below marker
+    y = pt.y + markerRadius + clearance
+  }
+  // Clamp to bottom safe margin
+  y = Math.min(y, H - cardH - 12)
+  y = Math.max(safeTop, y)
+
+  cloudPos.value = { x, y, visible: true }
+}
+
+// ────────────────  Pin Element Builder  ────────────────
 function createMarkerElement(loc: LocalizedItem): HTMLDivElement {
-  // Outer container passed to MapLibre - coordinates and center anchor managed strictly with ZERO transition lag
   const pinEl = document.createElement('div')
   pinEl.className = 'najm-marker-pin'
 
-  // Inner squircle with official Najm Green and warehouse icon - hover scale isolated from map coordinates
   const squircle = document.createElement('div')
   squircle.className = 'najm-marker-squircle'
   squircle.innerHTML = loc.iconSvg
@@ -253,135 +233,84 @@ function createMarkerElement(loc: LocalizedItem): HTMLDivElement {
   return pinEl
 }
 
-function attachPopupEvents(popup: maplibregl.Popup) {
-  popup.on('open', () => {
-    const copyBtn = document.getElementById('najm-copy-trigger')
-    const copyLabel = document.getElementById('najm-copy-label')
-    if (copyBtn && copyLabel) {
-      copyBtn.onclick = async (e) => {
-        e.stopPropagation()
-        const addr = copyBtn.getAttribute('data-address') || ''
-        try {
-          await navigator.clipboard.writeText(addr)
-          copyLabel.textContent = ui.value.copied
-          copyBtn.classList.add('copied')
-          setTimeout(() => {
-            copyLabel.textContent = ui.value.copyAddress
-            copyBtn.classList.remove('copied')
-          }, 2200)
-        } catch {
-          copyLabel.textContent = ui.value.copied
-        }
-      }
-    }
-  })
-}
-
 function initMarkers() {
   if (!map || markers.length > 0) return
 
   activeLocations.value.forEach(loc => {
     const el = createMarkerElement(loc)
 
-    // Directional offsets ensuring generous clearance (>20px) from the 50x50 marker pin on all 8 anchors
-    const POPUP_OFFSET: Record<string, [number, number]> = {
-      'top': [0, 48],
-      'bottom': [0, -48],
-      'left': [48, 0],
-      'right': [-48, 0],
-      'top-left': [45, 45],
-      'top-right': [-45, 45],
-      'bottom-left': [45, -48],
-      'bottom-right': [-45, -48]
-    }
-
-    // Smart cloud popup anchored to the icon with intelligent directional offset
-    const popup = new maplibregl.Popup({
-      offset: POPUP_OFFSET,
-      closeButton: true,
-      closeOnClick: true,
-      closeOnMove: false,
-      className: 'najm-cloud-popup',
-      maxWidth: 'min(380px, calc(100vw - 28px))'
-    })
-
-    popup.setHTML(buildPopupHtml(loc))
-    attachPopupEvents(popup)
-
     const marker = new maplibregl.Marker({
       element: el,
       anchor: 'center'
     })
       .setLngLat(loc.coords)
-      .setPopup(popup)
       .addTo(map!)
 
-    // Open smart cloud popup automatically on initial load
-    if (loc.id === 'print') {
-      activePopup = popup
-      setTimeout(() => {
-        if (map && !popup.isOpen()) {
-          marker.togglePopup()
-        }
-      }, 300)
-    }
+    // Clicking marker toggles the cloud popover smoothly
+    el.addEventListener('click', (e) => {
+      e.stopPropagation()
+      isCloudOpen.value = !isCloudOpen.value
+      if (isCloudOpen.value) {
+        nextTick(() => updateCloudPosition())
+      }
+    })
 
     markers.push(marker)
   })
 }
 
+// ────────────────  Smooth Zoom & Fly-in Animation  ────────────────
 function focusFactory(openCloud = true) {
   if (!map) return
   const loc = primaryLocation.value
+
   map.flyTo({
     center: loc.coords,
-    zoom: 16.2,
+    zoom: 16.3,
     pitch: 35,
     bearing: 0,
-    speed: 1.3,
-    curve: 1.3,
+    speed: 0.82,
+    curve: 1.42,
     essential: true
   })
 
-  if (openCloud && activePopup && !activePopup.isOpen() && markers[0]) {
-    markers[0].togglePopup()
+  if (openCloud) {
+    let opened = false
+    const openIt = () => {
+      if (!opened) {
+        opened = true
+        isCloudOpen.value = true
+        nextTick(() => updateCloudPosition())
+      }
+    }
+    map.once('moveend', openIt)
+    setTimeout(openIt, 1800)
   }
 }
-
-watch(currentLangCode, () => {
-  // Update popup HTML dynamically when language changes
-  if (activePopup && markers[0]) {
-    const loc = primaryLocation.value
-    activePopup.setHTML(buildPopupHtml(loc))
-    attachPopupEvents(activePopup)
-  }
-})
 
 onMounted(() => {
   if (!mapContainer.value) return
 
-  // Configure local Web Worker for MapLibre GL
   maplibregl.setWorkerUrl('/js/maplibre-gl-worker.mjs')
 
-  // Enable Persian / Arabic RTL text rendering plugin locally
   try {
     if (maplibregl.getRTLTextPluginStatus() === 'unavailable') {
       maplibregl.setRTLTextPlugin('/js/mapbox-gl-rtl-text.js', null, true)
     }
   } catch {}
 
-  // Initialize MapLibre GL JS with Detailed Liberty style
+  // 1. Initialize MapLibre GL JS at LOW ZOOM showing FULL TEHRAN
   map = new maplibregl.Map({
     container: mapContainer.value,
     style: LIBERTY_STYLE,
-    center: primaryLocation.value.coords,
-    zoom: 16,
-    pitch: 35,
+    center: [51.35, 35.70], // Full Tehran overview center
+    zoom: 10.3,             // Low zoom showing full Tehran (Tajrish to Rey, West to East)
+    pitch: 0,
     bearing: 0,
     antialias: true
   })
 
-  // Add navigation and geolocate controls
+  // Navigation and controls
   const navPosition = isRTL.value ? 'bottom-left' : 'bottom-right'
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), navPosition)
   map.addControl(
@@ -394,13 +323,22 @@ onMounted(() => {
   )
   map.addControl(new maplibregl.ScaleControl({ maxWidth: 100, unit: 'metric' }), isRTL.value ? 'bottom-right' : 'bottom-left')
 
-  // Trigger resize once layout settles
-  requestAnimationFrame(() => {
-    map?.resize()
+  requestAnimationFrame(() => map?.resize())
+  resizeTimer = setTimeout(() => map?.resize(), 350)
+
+  // Fluid 60fps tracking on EVERY render frame (pan, zoom, pitch, bearing)
+  map.on('render', () => {
+    if (isCloudOpen.value) {
+      updateCloudPosition()
+    }
   })
-  resizeTimer = setTimeout(() => {
-    map?.resize()
-  }, 350)
+
+  // Clicking map canvas closes the cloud popover
+  map.on('click', () => {
+    isCloudOpen.value = false
+  })
+
+  window.addEventListener('resize', updateCloudPosition)
 
   map.on('load', () => {
     isMapLoaded.value = true
@@ -409,34 +347,34 @@ onMounted(() => {
       fallbackTimer = null
     }
     initMarkers()
-    focusFactory(true)
+
+    // 2. Smooth cinematic fly-in from Tehran overview to factory
+    setTimeout(() => {
+      focusFactory(true)
+    }, 280)
   })
 
-  // Fallback to fast raster if Liberty takes over 4 seconds
   fallbackTimer = setTimeout(() => {
     if (!isMapLoaded.value && map) {
-      console.warn('Liberty style timed out, using fallback raster')
       map.setStyle(FALLBACK_STYLE as any)
       isMapLoaded.value = true
       initMarkers()
-      focusFactory(true)
+      setTimeout(() => focusFactory(true), 280)
     }
   }, 4000)
 
   map.on('error', (e) => {
     if (e.error?.message?.includes('style') || e.error?.message?.includes('Failed to fetch')) {
-      console.warn('Liberty style fallback triggered:', e.error?.message)
-      if (map) {
-        map.setStyle(FALLBACK_STYLE as any)
-      }
+      if (map) map.setStyle(FALLBACK_STYLE as any)
       isMapLoaded.value = true
       initMarkers()
-      focusFactory(true)
+      setTimeout(() => focusFactory(true), 280)
     }
   })
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateCloudPosition)
   if (resizeTimer) clearTimeout(resizeTimer)
   if (fallbackTimer) clearTimeout(fallbackTimer)
   if (map) {
@@ -465,14 +403,162 @@ onBeforeUnmount(() => {
       <span class="text-sm font-bold text-emerald-300">{{ ui.loading }}</span>
     </div>
 
+    <!-- ────────────────  Smart Dynamic Floating Cloud Card  ──────────────── -->
+    <div
+      class="najm-dynamic-cloud-wrapper absolute top-0 left-0 z-30 pointer-events-none will-change-transform"
+      :style="{
+        transform: `translate3d(${cloudPos.x}px, ${cloudPos.y}px, 0)`,
+        opacity: cloudPos.visible ? 1 : 0,
+        transition: 'opacity 0.15s ease'
+      }"
+    >
+      <Transition name="cloud-pop">
+        <div
+          v-if="isCloudOpen"
+          ref="cloudCardRef"
+          class="najm-cloud-card bg-[#014439]/95 text-[#f4fbf7] border border-emerald-400/40 rounded-2xl p-2.5 sm:p-3 shadow-2xl backdrop-blur-xl w-[calc(100vw-28px)] max-w-[320px] pointer-events-auto select-text"
+          :dir="isRTL ? 'rtl' : 'ltr'"
+          @click.stop
+        >
+          <!-- Header with warehouse icon, brand title & Centered X Close Button -->
+          <div class="flex items-center justify-between gap-2 pb-2 border-b border-white/10">
+            <div class="flex items-center gap-2 min-w-0">
+              <div
+                class="w-7 h-7 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-white"
+                v-html="primaryLocation.iconSvg"
+              />
+              <div class="min-w-0">
+                <h3 class="text-xs sm:text-[12.5px] font-bold text-white truncate leading-tight">
+                  {{ primaryLocation.title[currentLangCode] || primaryLocation.title.fa }}
+                </h3>
+                <p class="text-[9.5px] sm:text-[10px] text-emerald-300/80 truncate">
+                  {{ primaryLocation.sublabel[currentLangCode] || primaryLocation.sublabel.fa }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Perfectly Centered X Close Button -->
+            <button
+              type="button"
+              class="w-6 h-6 rounded-full flex items-center justify-center bg-white/10 hover:bg-red-500/80 hover:text-white text-zinc-300 transition-all cursor-pointer shrink-0"
+              @click="isCloudOpen = false"
+              title="Close"
+              aria-label="Close"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Full Factory Address with One-Click Copy -->
+          <div class="py-1.5 flex items-start justify-between gap-1.5 border-b border-white/10">
+            <div class="flex items-start gap-1 text-[10.5px] leading-relaxed text-zinc-200 min-w-0">
+              <span class="shrink-0 text-xs">📍</span>
+              <span class="line-clamp-2">{{ primaryLocation.address[currentLangCode] || primaryLocation.address.fa }}</span>
+            </div>
+            <button
+              type="button"
+              class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-[9.5px] font-medium text-emerald-200 transition-all cursor-pointer"
+              :class="{ 'bg-emerald-600 text-white': isCopied }"
+              @click="copyAddress"
+            >
+              <svg v-if="!isCopied" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+              <svg v-else class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span>{{ isCopied ? ui.copied : ui.copyAddress }}</span>
+            </button>
+          </div>
+
+          <!-- Direct Phone Call Row with correct RTL typography -->
+          <div class="py-1.5 flex items-center justify-between border-b border-white/10 text-xs">
+            <div class="flex items-center gap-1 text-zinc-300 text-[11px]">
+              <span>📞</span>
+              <span>{{ ui.directCall }}:</span>
+            </div>
+            <a
+              :href="primaryLocation.phoneHref"
+              class="font-bold text-emerald-300 hover:text-emerald-200 hover:underline transition-colors dir-ltr font-mono text-[11.5px]"
+            >
+              <template v-if="currentLangCode === 'en'">
+                +98 21 6679 7911 to 13
+              </template>
+              <template v-else-if="currentLangCode === 'ar'">
+                <div dir="rtl" class="inline-flex items-center gap-1">
+                  <bdi>۰۲۱-۶۶۷۹۷۹۱۱</bdi> <span>إلى</span> <bdi>۱۳</bdi>
+                </div>
+              </template>
+              <template v-else>
+                <div dir="rtl" class="inline-flex items-center gap-1">
+                  <bdi>۰۲۱-۶۶۷۹۷۹۱۱</bdi> <span>الی</span> <bdi>۱۳</bdi>
+                </div>
+              </template>
+            </a>
+          </div>
+
+          <!-- Verified 4-App Navigation Routing Buttons -->
+          <div class="pt-1.5">
+            <span class="block text-[9.5px] text-zinc-400 mb-1">{{ ui.navTitle }}</span>
+            <div class="grid grid-cols-4 gap-1">
+              <a
+                :href="primaryLocation.googlePlaceUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-1 py-1 rounded-lg bg-white/10 hover:bg-[#4285F4]/30 hover:border-[#4285F4]/50 border border-white/10 text-[9.5px] font-semibold text-white transition-all"
+                title="Google Maps"
+              >
+                <svg class="w-3 h-3 text-[#4285F4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                <span>Google</span>
+              </a>
+              <a
+                :href="primaryLocation.neshanUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-1 py-1 rounded-lg bg-white/10 hover:bg-emerald-500/30 hover:border-emerald-500/50 border border-white/10 text-[9.5px] font-semibold text-white transition-all"
+                title="نشان"
+              >
+                <svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4"/></svg>
+                <span>نشان</span>
+              </a>
+              <a
+                :href="primaryLocation.baladUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-1 py-1 rounded-lg bg-white/10 hover:bg-teal-500/30 hover:border-teal-500/50 border border-white/10 text-[9.5px] font-semibold text-white transition-all"
+                title="بلد"
+              >
+                <svg class="w-3 h-3 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>بلد</span>
+              </a>
+              <a
+                :href="primaryLocation.wazeUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-1 py-1 rounded-lg bg-white/10 hover:bg-[#33CCFF]/30 hover:border-[#33CCFF]/50 border border-white/10 text-[9.5px] font-semibold text-white transition-all"
+                title="Waze"
+              >
+                <svg class="w-3 h-3 text-[#33CCFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                <span>Waze</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </div>
+
     <!-- ────────────────  Top Floating Control Pill  ──────────────── -->
     <div
-      class="absolute top-4 inset-x-0 z-30 flex items-center justify-between px-4 sm:px-6 pointer-events-none"
+      class="absolute top-4 inset-x-0 z-20 flex items-center justify-between px-4 sm:px-6 pointer-events-none"
     >
       <!-- Recenter Button on Factory -->
       <button
         type="button"
-        class="pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-2xl bg-[#014439]/90 hover:bg-[#014439] text-white text-xs font-bold border border-emerald-400/40 shadow-2xl backdrop-blur-xl transition-all cursor-pointer hover:scale-103 active:scale-97"
+        class="pointer-events-auto flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-[#014439]/90 hover:bg-[#014439] text-white text-xs font-bold border border-emerald-400/40 shadow-2xl backdrop-blur-xl transition-all cursor-pointer hover:scale-103 active:scale-97"
         @click="focusFactory(true)"
         :title="ui.recenter"
       >
@@ -508,8 +594,6 @@ onBeforeUnmount(() => {
 /* ────────────────  Universal Najm Font Integration  ──────────────── */
 .najm-map-root,
 .najm-map-root *,
-.maplibregl-popup,
-.maplibregl-popup-content,
 .maplibregl-ctrl,
 .maplibregl-ctrl-attrib,
 .maplibregl-ctrl-scale {
@@ -519,8 +603,8 @@ onBeforeUnmount(() => {
 /* ────────────────  Exact Najm Green Warehouse Squircle Marker  ──────────────── */
 .najm-marker-pin {
   position: absolute !important;
-  width: 50px !important;
-  height: 50px !important;
+  width: 48px !important;
+  height: 48px !important;
   margin: 0 !important;
   padding: 0 !important;
   border: none !important;
@@ -541,9 +625,9 @@ onBeforeUnmount(() => {
 
 /* Inner Visual Squircle - Isolated from MapLibre coordinates */
 .najm-marker-squircle {
-  width: 50px;
-  height: 50px;
-  border-radius: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
   background-color: #014439 !important; /* Official Najm Green */
   border: none !important; /* NO white border */
   display: flex;
@@ -562,290 +646,20 @@ onBeforeUnmount(() => {
 
 .najm-marker-squircle svg {
   display: block;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   pointer-events: none;
 }
 
-/* ────────────────  Smart Cloud Popover (MapLibre Popup)  ──────────────── */
-.maplibregl-popup {
-  font-family: inherit;
-  z-index: 50;
+/* ────────────────  Dynamic Cloud Transition  ──────────────── */
+.cloud-pop-enter-active,
+.cloud-pop-leave-active {
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Completely remove all popup tips/arrows across all directions and corners */
-.maplibregl-popup-tip {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-  border: none !important;
-}
-
-.maplibregl-popup-content {
-  background: rgba(1, 68, 57, 0.96) !important;
-  color: #f4fbf7 !important;
-  border: 1.5px solid rgba(16, 185, 129, 0.4) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-radius: 1.25rem !important;
-  padding: 1.15rem 1.15rem 1rem !important;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.65) !important;
-  animation: cloudFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-}
-
-@keyframes cloudFadeIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Close Button (X) */
-.maplibregl-popup-close-button {
-  width: 26px;
-  height: 26px;
-  top: 10px;
-  inset-inline-end: 10px;
-  inset-inline-start: auto;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  color: #e5e7eb;
-  font-size: 18px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  border: none;
-  cursor: pointer;
-}
-
-.maplibregl-popup-close-button:hover {
-  background: rgba(239, 68, 68, 0.4);
-  color: #ffffff;
-  transform: rotate(90deg);
-}
-
-/* ────────────────  Cloud Card Inner Content Structure  ──────────────── */
-.najm-cloud-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  font-size: 12px;
-}
-
-.najm-cloud-header {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding-bottom: 0.6rem;
-  padding-inline-end: 1.5rem;
-}
-
-.najm-cloud-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: rgba(16, 185, 129, 0.2);
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.najm-cloud-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.najm-cloud-title {
-  margin: 0;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #ffffff;
-  line-height: 1.3;
-}
-
-.najm-cloud-sub {
-  margin: 0;
-  font-size: 10.5px;
-  color: #a7f3d0;
-  line-height: 1.25;
-}
-
-.najm-cloud-address-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-  background: rgba(0, 0, 0, 0.22);
-  padding: 0.55rem 0.65rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.najm-cloud-address-text {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.35rem;
-  line-height: 1.5;
-  flex: 1;
-}
-
-.najm-geo-pin {
-  font-size: 13px;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.najm-address-content {
-  font-size: 11.5px;
-  color: #f1f5f9;
-  user-select: text;
-}
-
-.najm-cloud-copy-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  font-size: 10px;
-  font-weight: 700;
-  flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.12);
-  color: #a7f3d0;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.najm-cloud-copy-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-}
-
-.najm-cloud-copy-btn.copied {
-  background: #10b981;
-  color: #ffffff;
-  border-color: #10b981;
-}
-
-.najm-cloud-phone-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.45rem 0.65rem;
-  border-radius: 0.75rem;
-  background: rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 11.5px;
-}
-
-.najm-phone-label-group {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: #a7f3d0;
-  font-weight: 700;
-}
-
-.najm-cloud-phone-link {
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.najm-cloud-phone-link:hover {
-  opacity: 0.85;
-}
-
-.najm-phone-persian {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-weight: 800;
-  color: #6ee7b7;
-  font-size: 12px;
-}
-
-.phone-ali {
-  color: #d1fae5;
-  font-weight: 600;
-  font-size: 11px;
-}
-
-.najm-cloud-routing {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding-top: 0.55rem;
-}
-
-.najm-cloud-routing-title {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  color: #a7f3d0;
-  margin-bottom: 0.45rem;
-}
-
-.najm-cloud-routing-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.35rem;
-}
-
-.najm-cloud-route-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0.45rem 0.35rem;
-  border-radius: 0.65rem;
-  font-size: 10.5px;
-  font-weight: 700;
-  text-decoration: none;
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
-
-.najm-cloud-route-btn:hover {
-  transform: translateY(-2px);
-  color: #ffffff;
-}
-
-.najm-cloud-route-btn.google:hover {
-  background: rgba(66, 133, 244, 0.4);
-  border-color: #4285f4;
-}
-
-.najm-cloud-route-btn.neshan:hover {
-  background: rgba(24, 119, 242, 0.4);
-  border-color: #1877f2;
-}
-
-.najm-cloud-route-btn.balad:hover {
-  background: rgba(16, 185, 129, 0.4);
-  border-color: #10b981;
-}
-
-.najm-cloud-route-btn.waze:hover {
-  background: rgba(51, 204, 255, 0.4);
-  border-color: #33ccff;
-}
-
-.route-icon {
-  width: 18px;
-  height: 18px;
-  margin-bottom: 0.15rem;
+.cloud-pop-enter-from,
+.cloud-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.94);
 }
 </style>
