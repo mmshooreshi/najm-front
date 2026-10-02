@@ -1,6 +1,9 @@
 <!-- components/map.vue -->
 <script setup lang="ts">
-import { ref, defineAsyncComponent, onMounted } from 'vue'
+import { ref, computed, defineAsyncComponent, onMounted, onBeforeUnmount } from 'vue'
+import { useLocale } from '~/composables/useLocale'
+
+const { currentLangCode, isRTL } = useLocale()
 
 /* lazy‑load the client‑only map container */
 const MapboxContainer = defineAsyncComponent(() =>
@@ -10,8 +13,35 @@ const MapboxContainer = defineAsyncComponent(() =>
 const isFullScreen = ref(false)
 const isMounted = ref(false)
 
+const thumbnailText = computed(() => {
+  if (currentLangCode.value === 'en') return 'Directions & Full Map'
+  if (currentLangCode.value === 'ar') return 'الملاحة وعرض الخريطة كاملة'
+  return 'مسیریابی و مشاهده نقشه کامل'
+})
+
+const closeLabel = computed(() => {
+  if (currentLangCode.value === 'en') return 'Close map (ESC)'
+  if (currentLangCode.value === 'ar') return 'إغلاق الخريطة (ESC)'
+  return 'بستن نقشه (ESC)'
+})
+
+function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && isFullScreen.value) {
+    closeMap()
+  }
+}
+
 onMounted(() => {
   isMounted.value = true
+  if (typeof window !== 'undefined') {
+    window.addEventListener('keydown', handleKeydown)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('keydown', handleKeydown)
+  }
 })
 
 const preloadMap = () => {
@@ -34,6 +64,7 @@ const closeMap = () => {
   <div
     v-motion-pop-visible
     class="w-full h-full min-h-[220px] sm:min-h-[260px] rounded-2xl overflow-hidden relative bg-gray-100 dark:bg-gray-800 cursor-pointer transition-[transform,box-shadow] duration-300 hover:shadow-md group select-none"
+    :dir="isRTL ? 'rtl' : 'ltr'"
     @click="openMap"
     @pointerenter="preloadMap"
   >
@@ -47,9 +78,9 @@ const closeMap = () => {
     />
     <!-- Click to Expand Pill Badge -->
     <div class="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none">
-      <span class="px-3 py-1 rounded-full bg-najmgreen/90 text-white text-[11px] font-bold font-d4 shadow-sm backdrop-blur-xs flex items-center gap-1.5 group-hover:bg-najmgreen transition-colors">
+      <span class="px-3.5 py-1.5 rounded-full bg-najmgreen/95 text-white text-[11px] font-bold font-d4 shadow-md backdrop-blur-xs flex items-center gap-1.5 group-hover:bg-najmgreen transition-colors border border-white/20">
         <Icon name="mdi:map-marker-radius" class="w-3.5 h-3.5 text-emerald-300" />
-        مسیریابی و مشاهده نقشه کامل
+        {{ thumbnailText }}
       </span>
     </div>
   </div>
@@ -59,18 +90,20 @@ const closeMap = () => {
     <Transition name="bounce-up">
       <div
         v-if="isFullScreen"
-        class="fixed inset-0 z-100 flex flex-col bg-najmgreen dark:bg-black"
+        class="fixed inset-0 z-100 flex flex-col bg-najmgreen dark:bg-black font-d4"
+        :dir="isRTL ? 'rtl' : 'ltr'"
       >
         <!-- close btn -->
         <button
-          class="self-end m-2 p-2 rounded-full 
-                 backdrop-blur 
-                 text-2xl leading-none hover:scale-110 transition text-white cursor-pointer"
+          class="self-end m-3 p-2 rounded-full 
+                 bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/20
+                 text-2xl leading-none hover:scale-110 active:scale-95 transition text-white cursor-pointer z-50 shadow-lg"
           @click="closeMap"
-          aria-label="بستن نقشه"
+          :aria-label="closeLabel"
+          :title="closeLabel"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 6L6 18M18 18L6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M18 18L6 6" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
 

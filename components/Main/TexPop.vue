@@ -297,19 +297,16 @@ watch(language, async () => {
           <span
             v-if="h.label !== ''"
             :ref="el => (highlightRefs[i] = el as HTMLElement)"
-            class="inline-block rounded-xl px-2 py-1 text-2xl font-extrabold text-d4"
+            class="hero-highlight-pill inline-block rounded-xl px-2.5 py-1 text-2xl font-extrabold text-d4 cursor-default select-none"
             :style="{
+              '--base-bg': h.bgColor ?? '#6D28D9',
+              '--base-color': h.textColor ?? 'white',
+              '--base-rot': h.rotation ?? '0deg',
               backgroundColor: h.bgColor ?? '#6D28D9',
-              color:           h.textColor ?? 'white',
-              transform:  h.rotation ? `rotate(${h.rotation})` : undefined,
-              'margin-inline':  h.indent ?? '3px',
-            }" :class="[
-              'hover:transition-all',
-              '!hover:rotate-0',
-              '!hover:bg-black',
-              '!hover:text-white',
-              '!cursor-pointer'
-            ]"
+              color: h.textColor ?? 'white',
+              transform: h.rotation ? `rotate(${h.rotation})` : undefined,
+              'margin-inline': h.indent ?? '3px',
+            }"
             v-editable="pathPrefix ? `${pathPrefix}.highlightedText.${i}.label` : ''"
           >{{ h.label }} </span>
           <span v-else :style="{ 'margin-inline': h.indent ?? '3px' }"></span>
@@ -336,5 +333,29 @@ watch(language, async () => {
 </template>
 
 <style scoped lang="scss">
+.hero-highlight-pill {
+  transform-origin: center center;
+  cursor: default !important;
+  transition: transform 0.35s cubic-bezier(0.34, 1.45, 0.64, 1),
+              background-color 0.2s ease,
+              color 0.2s ease,
+              box-shadow 0.3s ease;
+  will-change: transform;
+
+  &:hover {
+    cursor: default !important;
+    transform: rotate(var(--base-rot)) scale(1.04) !important;
+    box-shadow: 0 6px 16px -2px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    cursor: default !important;
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    transform: rotate(0deg) scale(1.02) !important;
+    box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.25);
+  }
+}
+
 .split-line { display: block; overflow: hidden; }
 </style>
