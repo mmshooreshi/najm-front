@@ -1,8 +1,8 @@
 <!-- components/mapbox-container.client.vue -->
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
+import * as maplibregl from 'maplibre-gl'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 interface LocationItem {
   id: string
@@ -15,10 +15,35 @@ interface LocationItem {
   phoneHref: string
 }
 
-// Mapbox Token & Style Configuration
+// Map Style Configuration (Free Open-Source vector maps, NO accounts or API keys needed)
 const config = useRuntimeConfig()
-const MAPBOX_TOKEN = config.public?.mapbox?.accessToken || 'pk.eyJ1IjoibW1zaG9vcmVzaGkiLCJhIjoiY205eGJla2tyMTB3ejJrc2Vma2VwY2VlaiJ9.PGekyHty46Af6FxyKY3HIw'
-const MAPBOX_STYLE = config.public?.mapbox?.style || 'mapbox://styles/mmshooreshi/cm9xbga9n009p01sictvq5wgu'
+const MAP_STYLE = config.public?.mapbox?.style?.startsWith('http')
+  ? config.public.mapbox.style
+  : 'https://tiles.openfreemap.org/styles/bright'
+
+// Universal OSM Raster fallback style in case vector CDN is unreachable
+const OSM_FALLBACK_STYLE = {
+  version: 8 as const,
+  sources: {
+    'osm-tiles': {
+      type: 'raster' as const,
+      tiles: [
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+      ],
+      tileSize: 256,
+      attribution: '© OpenStreetMap contributors'
+    }
+  },
+  layers: [
+    {
+      id: 'osm-tiles-layer',
+      type: 'raster' as const,
+      source: 'osm-tiles',
+      minzoom: 0,
+      maxzoom: 19
+    }
+  ]
+}
 
 // Najm Locations
 const LOCATIONS: LocationItem[] = [
@@ -45,8 +70,8 @@ const LOCATIONS: LocationItem[] = [
 ]
 
 const mapContainer = ref<HTMLDivElement | null>(null)
-let map: mapboxgl.Map | null = null
-const markers: mapboxgl.Marker[] = []
+let map: maplibregl.Map | null = null
+const markers: maplibregl.Marker[] = []
 const activeLocationId = ref<string>('print')
 const isMapLoaded = ref(false)
 
@@ -138,7 +163,7 @@ function flyToLocation(loc: LocationItem, zoom = 16.5) {
 function fitAllLocations() {
   if (!map) return
   activeLocationId.value = 'all'
-  const bounds = new mapboxgl.LngLatBounds()
+  const bounds = new maplibregl.LngLatBounds()
   LOCATIONS.forEach(loc => bounds.extend(loc.coords))
   map.fitBounds(bounds, {
     padding: { top: 90, bottom: 90, left: 70, right: 70 },
@@ -153,11 +178,19 @@ function fitAllLocations() {
 onMounted(() => {
   if (!mapContainer.value) return
 
-  mapboxgl.accessToken = MAPBOX_TOKEN
+  // Enable Persian / Arabic RTL text rendering plugin locally
+  try {
+    if (maplibregl.getRTLTextPluginStatus() === 'unavailable') {
+      maplibregl.setRTLTextPlugin('/js/mapbox-gl-rtl-text.js', null, true)
+    }
+  } catch {
+    // Already set or unsupported environment
+  }
 
-  map = new mapboxgl.Map({
+  // Initialize MapLibre GL JS map with zero accounts or tokens
+  map = new maplibregl.Map({
     container: mapContainer.value,
-    style: MAPBOX_STYLE,
+    style: MAP_STYLE,
     center: LOCATIONS[0].coords,
     zoom: 12,
     pitch: 35,
@@ -166,16 +199,16 @@ onMounted(() => {
   })
 
   // Add navigation and geolocate controls
-  map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'bottom-left')
+  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-left')
   map.addControl(
-    new mapboxgl.GeolocateControl({
+    new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true,
       showUserHeading: true
     }),
     'bottom-left'
   )
-  map.addControl(new mapboxgl.ScaleControl({ maxWidth: 100, unit: 'metric' }), 'bottom-right')
+  map.addControl(new maplibregl.ScaleControl({ maxWidth: 100, unit: 'metric' }), 'bottom-right')
 
   map.on('load', () => {
     isMapLoaded.value = true
@@ -183,18 +216,14 @@ onMounted(() => {
     // Add markers and popups for Najm locations
     LOCATIONS.forEach(loc => {
       const el = createMarkerElement(loc)
-      const popup = new mapboxgl.Popup({
+      const popup = new maplibregl.Popup({
         offset: 35,
         closeButton: true,
         closeOnClick: false,
         maxWidth: '340px'
       }).setHTML(createPopupHtml(loc))
 
-      popup.on('close', () => {
-        // When popup closes, if still focused on that point, keep active state
-      })
-
-      const marker = new mapboxgl.Marker({
+      const marker = new maplibregl.Marker({
         element: el,
         anchor: 'bottom'
       })
@@ -222,11 +251,14 @@ onMounted(() => {
     fitAllLocations()
   })
 
-  // Fallback in case custom style fails: load standard mapbox dark or light style
+  // Automatic robust fallback if external vector CDN fails to load
+  let fallbackAttempted = false
   map.on('error', (e) => {
-    if (e.error?.message?.includes('style') || (e as any)?.status === 401) {
-      if (map && map.getStyle().sprite !== 'mapbox://sprites/mapbox/dark-v11') {
-        map.setStyle('mapbox://styles/mapbox/dark-v11')
+    if (!fallbackAttempted && (e.error?.message?.includes('style') || e.error?.message?.includes('Failed to fetch') || (e as any)?.status === 401 || (e as any)?.status === 403)) {
+      fallbackAttempted = true
+      console.warn('Map style fallback triggered:', e.error?.message)
+      if (map) {
+        map.setStyle(OSM_FALLBACK_STYLE)
       }
     }
   })
@@ -367,11 +399,13 @@ onBeforeUnmount(() => {
 }
 
 /* Glassmorphism Popup Window */
+.maplibregl-popup,
 .mapboxgl-popup {
   font-family: inherit;
   z-index: 40;
 }
 
+.maplibregl-popup-content,
 .mapboxgl-popup-content {
   background: rgba(8, 28, 23, 0.95) !important;
   color: #f4fbf7 !important;
@@ -395,6 +429,7 @@ onBeforeUnmount(() => {
   }
 }
 
+.maplibregl-popup-tip,
 .mapboxgl-popup-tip {
   border-top-color: rgba(8, 28, 23, 0.95) !important;
   border-bottom-color: rgba(8, 28, 23, 0.95) !important;
@@ -402,6 +437,7 @@ onBeforeUnmount(() => {
   border-right-color: rgba(8, 28, 23, 0.95) !important;
 }
 
+.maplibregl-popup-close-button,
 .mapboxgl-popup-close-button {
   width: 26px;
   height: 26px;
@@ -421,6 +457,7 @@ onBeforeUnmount(() => {
   cursor: pointer;
 }
 
+.maplibregl-popup-close-button:hover,
 .mapboxgl-popup-close-button:hover {
   background: rgba(239, 68, 68, 0.3);
   color: #ffffff;
