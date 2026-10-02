@@ -1,4 +1,4 @@
-<!-- components/scenes/SceneFacilities.client.vue -->
+<!-- components/scenes/SceneFacilities.vue -->
 <template>
   <div class="flex flex-col w-full gap-12 pt-12">
     <SceneHeading :data="data" path="sceneFacilities"/>
@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { inject, computed } from 'vue'
-import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
+import SceneHeading from '~/components/scenes/SceneHeading.vue'
 import r3col from '@/components/scenes/r3col.vue'
 import SliderSqr from '@/components/scenes/SliderSqr.vue'
 import labelz from '@/components/scenes/labelz.vue'
@@ -116,6 +116,3 @@ const data = computed(() => {
   }
 })
 </script>
-
-
-

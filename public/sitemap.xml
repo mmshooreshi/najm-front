@@ -8,7 +8,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -18,7 +38,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/catalog" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/catalog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/catalog" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/catalog</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/catalog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/catalog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/catalog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/catalog" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/catalog</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/catalog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/catalog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/catalog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/catalog" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -28,7 +68,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/facilities" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/facilities" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/facilities" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/facilities</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/facilities" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/facilities" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/facilities" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/facilities" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/facilities</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/facilities" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/facilities" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/facilities" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/facilities" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -38,7 +98,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/consultation" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/consultation" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/consultation" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/consultation</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/consultation" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/consultation" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/consultation" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/consultation" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/consultation</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/consultation" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/consultation" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/consultation" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/consultation" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -48,7 +128,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/about" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/about" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/about" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/about" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/about</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/about" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/about" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -58,7 +158,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/contact" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/contact" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/contact" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/contact" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/contact" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/contact" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/contact" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -68,7 +188,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/history" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/history" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/history" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/history</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/history" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/history" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/history" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/history" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/history</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/history" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/history" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/history" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/history" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -78,7 +218,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/faq" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/faq" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/faq" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/faq</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/faq" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/faq" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/faq</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/faq" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/faq" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/faq" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/faq" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -88,7 +248,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -98,7 +278,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -108,7 +308,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging/boxes" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging/boxes" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging/boxes" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/packaging/boxes</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/packaging/boxes" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging/boxes" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging/boxes" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging/boxes" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/packaging/boxes</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/packaging/boxes" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging/boxes" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging/boxes" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging/boxes" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -118,7 +338,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging/labels" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging/labels" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging/labels" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/packaging/labels</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/packaging/labels" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging/labels" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging/labels" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging/labels" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/packaging/labels</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/packaging/labels" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/packaging/labels" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/packaging/labels" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/packaging/labels" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -128,7 +368,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/printing</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/printing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/printing</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/printing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -138,7 +398,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing/catalogs" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing/catalogs" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing/catalogs" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/printing/catalogs</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/printing/catalogs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing/catalogs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing/catalogs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing/catalogs" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/printing/catalogs</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/printing/catalogs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing/catalogs" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing/catalogs" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing/catalogs" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -148,7 +428,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing/letterhead" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing/letterhead" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing/letterhead" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/printing/letterhead</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/printing/letterhead" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing/letterhead" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing/letterhead" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing/letterhead" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/printing/letterhead</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/printing/letterhead" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/printing/letterhead" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/printing/letterhead" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/printing/letterhead" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -158,7 +458,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/industries</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/industries</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -168,7 +488,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/food-beverage" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/food-beverage" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/food-beverage" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/industries/food-beverage</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries/food-beverage" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/food-beverage" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/food-beverage" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/food-beverage" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/industries/food-beverage</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries/food-beverage" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/food-beverage" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/food-beverage" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/food-beverage" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -178,7 +518,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/cosmetics" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/cosmetics" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/cosmetics" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/industries/cosmetics</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries/cosmetics" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/cosmetics" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/cosmetics" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/cosmetics" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/industries/cosmetics</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries/cosmetics" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/cosmetics" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/cosmetics" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/cosmetics" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -188,7 +548,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/pharmaceutical" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/pharmaceutical" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/pharmaceutical" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/industries/pharmaceutical</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries/pharmaceutical" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/pharmaceutical" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/pharmaceutical" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/pharmaceutical" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/industries/pharmaceutical</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/industries/pharmaceutical" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/industries/pharmaceutical" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/industries/pharmaceutical" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/industries/pharmaceutical" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -198,7 +578,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/applications</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/applications" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/applications</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/applications" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -208,7 +608,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications/luxury-packaging" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications/luxury-packaging" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications/luxury-packaging" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/applications/luxury-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/applications/luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications/luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications/luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications/luxury-packaging" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/applications/luxury-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/applications/luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications/luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications/luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications/luxury-packaging" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -218,7 +638,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications/shipping-cartons" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications/shipping-cartons" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications/shipping-cartons" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/products/applications/shipping-cartons</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/applications/shipping-cartons" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications/shipping-cartons" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications/shipping-cartons" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications/shipping-cartons" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/products/applications/shipping-cartons</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/products/applications/shipping-cartons" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/products/applications/shipping-cartons" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/products/applications/shipping-cartons" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/products/applications/shipping-cartons" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -228,7 +668,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -238,7 +698,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/pre-press" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/pre-press" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/pre-press" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services/pre-press</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/pre-press" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/pre-press" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/pre-press" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/pre-press" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services/pre-press</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/pre-press" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/pre-press" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/pre-press" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/pre-press" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -248,7 +728,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/design-and-layout" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/design-and-layout" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/design-and-layout" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services/design-and-layout</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/design-and-layout" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/design-and-layout" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/design-and-layout" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/design-and-layout" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services/design-and-layout</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/design-and-layout" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/design-and-layout" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/design-and-layout" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/design-and-layout" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -258,7 +758,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/lithography-and-plates" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/lithography-and-plates" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/lithography-and-plates" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services/lithography-and-plates</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/lithography-and-plates" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/lithography-and-plates" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/lithography-and-plates" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/lithography-and-plates" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services/lithography-and-plates</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/lithography-and-plates" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/lithography-and-plates" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/lithography-and-plates" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/lithography-and-plates" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -268,7 +788,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/printing-and-packaging" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/printing-and-packaging" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/printing-and-packaging" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services/printing-and-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/printing-and-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/printing-and-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/printing-and-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/printing-and-packaging" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services/printing-and-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/printing-and-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/printing-and-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/printing-and-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/printing-and-packaging" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -278,7 +818,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/finishing-services" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/finishing-services" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/finishing-services" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services/finishing-services</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/finishing-services" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/finishing-services" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/finishing-services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/finishing-services" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services/finishing-services</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/finishing-services" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/finishing-services" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/finishing-services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/finishing-services" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -288,7 +848,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/storage-and-warehousing" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/storage-and-warehousing" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/storage-and-warehousing" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/services/storage-and-warehousing</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/storage-and-warehousing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/storage-and-warehousing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/storage-and-warehousing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/storage-and-warehousing" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/services/storage-and-warehousing</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/services/storage-and-warehousing" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/services/storage-and-warehousing" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/services/storage-and-warehousing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/services/storage-and-warehousing" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -298,7 +878,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -308,7 +908,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guides" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guides" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guides" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/guides</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/guides" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guides" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guides" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guides" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/guides</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/guides" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guides" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guides" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guides" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -318,7 +938,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/dielines" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/dielines" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/dielines" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/dielines</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/dielines" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/dielines" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/dielines" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/dielines" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/dielines</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/dielines" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/dielines" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/dielines" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/dielines" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -328,7 +968,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/catalog-general-2026" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/catalog-general-2026" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/catalog-general-2026" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/catalog-general-2026</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/catalog-general-2026" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/catalog-general-2026" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/catalog-general-2026" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/catalog-general-2026" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/catalog-general-2026</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/catalog-general-2026" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/catalog-general-2026" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/catalog-general-2026" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/catalog-general-2026" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -338,7 +998,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/catalog-luxury-packaging" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/catalog-luxury-packaging" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/catalog-luxury-packaging" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/catalog-luxury-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/catalog-luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/catalog-luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/catalog-luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/catalog-luxury-packaging" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/catalog-luxury-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/catalog-luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/catalog-luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/catalog-luxury-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/catalog-luxury-packaging" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -348,7 +1028,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guide-cmyk-color-profile" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guide-cmyk-color-profile" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guide-cmyk-color-profile" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/guide-cmyk-color-profile</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/guide-cmyk-color-profile" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guide-cmyk-color-profile" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guide-cmyk-color-profile" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guide-cmyk-color-profile" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/guide-cmyk-color-profile</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/guide-cmyk-color-profile" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guide-cmyk-color-profile" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guide-cmyk-color-profile" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guide-cmyk-color-profile" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -358,7 +1058,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guide-bleed-and-margins" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guide-bleed-and-margins" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guide-bleed-and-margins" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/guide-bleed-and-margins</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/guide-bleed-and-margins" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guide-bleed-and-margins" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guide-bleed-and-margins" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guide-bleed-and-margins" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/guide-bleed-and-margins</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/guide-bleed-and-margins" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/guide-bleed-and-margins" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/guide-bleed-and-margins" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/guide-bleed-and-margins" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -368,7 +1088,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-tuck-end-box" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-tuck-end-box" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-tuck-end-box" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/template-tuck-end-box</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/template-tuck-end-box" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-tuck-end-box" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-tuck-end-box" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-tuck-end-box" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/template-tuck-end-box</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/template-tuck-end-box" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-tuck-end-box" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-tuck-end-box" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-tuck-end-box" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -378,7 +1118,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-auto-bottom-box" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-auto-bottom-box" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-auto-bottom-box" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/template-auto-bottom-box</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/template-auto-bottom-box" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-auto-bottom-box" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-auto-bottom-box" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-auto-bottom-box" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/template-auto-bottom-box</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/template-auto-bottom-box" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-auto-bottom-box" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-auto-bottom-box" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-auto-bottom-box" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -388,7 +1148,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-magnetic-rigid-box" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-magnetic-rigid-box" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-magnetic-rigid-box" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/resources/template-magnetic-rigid-box</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/template-magnetic-rigid-box" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-magnetic-rigid-box" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-magnetic-rigid-box" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-magnetic-rigid-box" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/resources/template-magnetic-rigid-box</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/resources/template-magnetic-rigid-box" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/resources/template-magnetic-rigid-box" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/resources/template-magnetic-rigid-box" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/resources/template-magnetic-rigid-box" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -398,7 +1178,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/blog</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/blog</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -408,7 +1208,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/inboard-vs-greyboard-packaging" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/inboard-vs-greyboard-packaging" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/inboard-vs-greyboard-packaging" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/blog/inboard-vs-greyboard-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog/inboard-vs-greyboard-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/inboard-vs-greyboard-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/inboard-vs-greyboard-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/inboard-vs-greyboard-packaging" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/blog/inboard-vs-greyboard-packaging</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog/inboard-vs-greyboard-packaging" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/inboard-vs-greyboard-packaging" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/inboard-vs-greyboard-packaging" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/inboard-vs-greyboard-packaging" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -418,7 +1238,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/luxury-hardbox-finishing-guide" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/luxury-hardbox-finishing-guide" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/luxury-hardbox-finishing-guide" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/blog/luxury-hardbox-finishing-guide</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog/luxury-hardbox-finishing-guide" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/luxury-hardbox-finishing-guide" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/luxury-hardbox-finishing-guide" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/luxury-hardbox-finishing-guide" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/blog/luxury-hardbox-finishing-guide</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog/luxury-hardbox-finishing-guide" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/luxury-hardbox-finishing-guide" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/luxury-hardbox-finishing-guide" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/luxury-hardbox-finishing-guide" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -428,7 +1268,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/offset-vs-digital-printing-guide" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/offset-vs-digital-printing-guide" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/offset-vs-digital-printing-guide" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/blog/offset-vs-digital-printing-guide</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog/offset-vs-digital-printing-guide" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/offset-vs-digital-printing-guide" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/offset-vs-digital-printing-guide" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/offset-vs-digital-printing-guide" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/blog/offset-vs-digital-printing-guide</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/blog/offset-vs-digital-printing-guide" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/blog/offset-vs-digital-printing-guide" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/blog/offset-vs-digital-printing-guide" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/blog/offset-vs-digital-printing-guide" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -438,7 +1298,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/news</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/news</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -448,7 +1328,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/tehran-pack-print-expo-2026" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/tehran-pack-print-expo-2026" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/tehran-pack-print-expo-2026" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/news/tehran-pack-print-expo-2026</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news/tehran-pack-print-expo-2026" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/tehran-pack-print-expo-2026" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/tehran-pack-print-expo-2026" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/tehran-pack-print-expo-2026" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/news/tehran-pack-print-expo-2026</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news/tehran-pack-print-expo-2026" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/tehran-pack-print-expo-2026" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/tehran-pack-print-expo-2026" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/tehran-pack-print-expo-2026" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -458,7 +1358,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/heidelberg-new-press-installation" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/heidelberg-new-press-installation" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/heidelberg-new-press-installation" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/news/heidelberg-new-press-installation</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news/heidelberg-new-press-installation" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/heidelberg-new-press-installation" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/heidelberg-new-press-installation" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/heidelberg-new-press-installation" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/news/heidelberg-new-press-installation</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news/heidelberg-new-press-installation" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/heidelberg-new-press-installation" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/heidelberg-new-press-installation" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/heidelberg-new-press-installation" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -468,7 +1388,27 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/iso-12647-color-certificate-renewal" />
     <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/iso-12647-color-certificate-renewal" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/iso-12647-color-certificate-renewal" />
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/en/news/iso-12647-color-certificate-renewal</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news/iso-12647-color-certificate-renewal" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/iso-12647-color-certificate-renewal" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/iso-12647-color-certificate-renewal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/iso-12647-color-certificate-renewal" />
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://chapenajm.com/ar/news/iso-12647-color-certificate-renewal</loc>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chapenajm.com/news/iso-12647-color-certificate-renewal" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://chapenajm.com/en/news/iso-12647-color-certificate-renewal" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://chapenajm.com/ar/news/iso-12647-color-certificate-renewal" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chapenajm.com/news/iso-12647-color-certificate-renewal" />
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>

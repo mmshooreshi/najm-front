@@ -9,24 +9,122 @@
     "sections": [
       {
         "id": "services",
-        "name": "خدمات",
+        "name": "خدمات و ماشین‌آلات چاپ",
         "type": "accordion",
         "slug": "",
         "children": [
           {
+            "id": "services_main",
+            "name": "تمامی خدمات چاپ و بسته‌بندی",
+            "slug": "/services"
+          },
+          {
             "id": "packaging",
-            "name": "بسته‌بندی و جعبه‌سازی",
+            "name": "بسته‌بندی و جعبه‌سازی صنعتی",
             "slug": "/services/printing-and-packaging"
           },
           {
             "id": "printing",
-            "name": "چاپ افست ۵ رنگ",
+            "name": "چاپ افست ۵ رنگ هایدلبرگ",
             "slug": "/services/printing-and-packaging"
           },
           {
             "id": "finishing",
-            "name": "خدمات تکمیلی و طلاکوب",
+            "name": "خدمات تکمیلی، طلاکوب و دایکات",
             "slug": "/services/finishing-services"
+          },
+          {
+            "id": "lithography",
+            "name": "لیتوگرافی و پلیت هوشمند CTP",
+            "slug": "/services/lithography-and-plates"
+          },
+          {
+            "id": "prepress",
+            "name": "پیش از چاپ و مهندسی محصول",
+            "slug": "/services/pre-press"
+          },
+          {
+            "id": "design",
+            "name": "طراحی ساختاری و مهندسی قالب",
+            "slug": "/services/design-and-layout"
+          },
+          {
+            "id": "storage",
+            "name": "انبارداری و مدیریت توزیع",
+            "slug": "/services/storage-and-warehousing"
+          },
+          {
+            "id": "facilities",
+            "name": "امکانات و خطوط تولید کارخانه",
+            "slug": "/facilities"
+          }
+        ]
+      },
+      {
+        "id": "products",
+        "name": "محصولات و بسته‌بندی",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          {
+            "id": "products_main",
+            "name": "همه محصولات و نمونه‌کارها",
+            "slug": "/products"
+          },
+          {
+            "id": "pkg_main",
+            "name": "بسته‌بندی و کارتن‌سازی",
+            "slug": "/products/packaging"
+          },
+          {
+            "id": "boxes",
+            "name": "جعبه مقوایی و هاردباکس لوکس",
+            "slug": "/products/packaging/boxes"
+          },
+          {
+            "id": "labels",
+            "name": "لیبل رول و برچسب‌های صنعتی",
+            "slug": "/products/packaging/labels"
+          },
+          {
+            "id": "print_main",
+            "name": "اوراق و اقلام چاپی تجاری",
+            "slug": "/products/printing"
+          },
+          {
+            "id": "catalogs",
+            "name": "کاتالوگ، بروشور و فولدر",
+            "slug": "/products/printing/catalogs"
+          },
+          {
+            "id": "letterhead",
+            "name": "سربرگ و ست اداری سازمانی",
+            "slug": "/products/printing/letterhead"
+          },
+          {
+            "id": "luxury_pkg",
+            "name": "بسته‌بندی صادراتی و لوکس",
+            "slug": "/products/applications/luxury-packaging"
+          },
+          {
+            "id": "cartons",
+            "name": "کارتن‌های ۵ لایه و بسته‌بندی پستی",
+            "slug": "/products/applications/shipping-cartons"
+          },
+          {
+            "id": "food_bev",
+            "name": "بسته‌بندی صنایع غذایی و دارویی",
+            "slug": "/products/industries/food-beverage"
+          },
+          {
+            "id": "cosmetics",
+            "name": "بسته‌بندی آرایشی و بهداشتی",
+            "slug": "/products/industries/cosmetics"
+          },
+          {
+            "id": "pharma",
+            "name": "بسته‌بندی تجهیزات دارویی و پزشکی",
+            "slug": "/products/industries/pharmaceutical"
           }
         ]
       },
@@ -42,60 +140,82 @@
             "slug": "/about"
           },
           {
+            "id": "history",
+            "name": "تاریخچه و افتخارات نجم",
+            "slug": "/history"
+          },
+          {
+            "id": "consultation",
+            "name": "مشاوره فنی و نمونه‌سازی رایگان",
+            "slug": "/consultation"
+          },
+          {
             "id": "contact",
-            "name": "تماس با ما",
+            "name": "تماس با واحد فروش و کارخانه",
             "slug": "/contact"
           },
           {
-            "id": "blog",
-            "name": "وبلاگ و مقالات تخصصی",
-            "slug": "/blog"
-          },
-          {
             "id": "catalog",
-            "name": "کاتالوگ جامع",
+            "name": "کاتالوگ جامع محصولات و نمونه‌ها",
             "slug": "/catalog"
           },
           {
+            "id": "blog",
+            "name": "وبلاگ تخصصی و مقالات فنی",
+            "slug": "/blog"
+          },
+          {
             "id": "news",
-            "name": "اخبار و رویدادها",
+            "name": "اخبار و رویدادهای صنعت چاپ",
             "slug": "/news"
           }
         ]
       },
       {
-        "id": "customer-service",
-        "name": "سرویس مشتریان",
+        "id": "resources",
+        "name": "منابع فنی و قالب‌های تیغ",
         "type": "accordion",
         "slug": "",
         "children": [
           {
-            "id": "faq",
-            "name": "سؤالات متداول",
-            "slug": "/faq"
-          },
-          {
-            "id": "guides",
-            "name": "راهنماهای فنی چاپ",
-            "slug": "/resources/guides"
-          }
-        ]
-      },
-      {
-        "id": "latest",
-        "name": "منابع و فایل‌ها",
-        "type": "accordion",
-        "slug": "",
-        "children": [
-          {
-            "id": "resources",
-            "name": "مرکز دانلود قالب‌ها",
+            "id": "resources_main",
+            "name": "مرکز دانلود منابع و فایل‌ها",
             "slug": "/resources"
           },
           {
+            "id": "dielines",
+            "name": "دانلود خط تیغ و قالب‌های برداری",
+            "slug": "/resources/dielines"
+          },
+          {
+            "id": "guides",
+            "name": "راهنماهای فنی آماده‌سازی فایل",
+            "slug": "/resources/guides"
+          },
+          {
             "id": "cmyk",
-            "name": "پروفایل رنگی CMYK",
+            "name": "پروفایل رنگی استاندارد CMYK",
             "slug": "/resources/guide-cmyk-color-profile"
+          },
+          {
+            "id": "bleed",
+            "name": "راهنمای حاشیه امن و خط برش",
+            "slug": "/resources/guide-bleed-and-margins"
+          },
+          {
+            "id": "template_tuck",
+            "name": "قالب جعبه دارویی دردار",
+            "slug": "/resources/template-tuck-end-box"
+          },
+          {
+            "id": "template_rigid",
+            "name": "قالب هاردباکس مگنتی لوکس",
+            "slug": "/resources/template-magnetic-rigid-box"
+          },
+          {
+            "id": "faq",
+            "name": "پرسش‌های متداول مشتریان",
+            "slug": "/faq"
           }
         ]
       }
@@ -151,10 +271,15 @@
     "sections": [
       {
         "id": "services",
-        "name": "Services",
+        "name": "Industrial Print & Plant",
         "type": "accordion",
         "slug": "",
         "children": [
+          {
+            "id": "services_main",
+            "name": "All Services & Capabilities",
+            "slug": "/services"
+          },
           {
             "id": "packaging",
             "name": "Packaging & Box Production",
@@ -162,13 +287,106 @@
           },
           {
             "id": "printing",
-            "name": "5-Color Offset Press",
+            "name": "5-Color Heidelberg Offset Press",
             "slug": "/services/printing-and-packaging"
           },
           {
             "id": "finishing",
-            "name": "Finishing & Hot Foil",
+            "name": "Finishing, Hot Foil & Die-Cutting",
             "slug": "/services/finishing-services"
+          },
+          {
+            "id": "lithography",
+            "name": "CTP Thermal Plates & Litho",
+            "slug": "/services/lithography-and-plates"
+          },
+          {
+            "id": "prepress",
+            "name": "Pre-Press File Engineering",
+            "slug": "/services/pre-press"
+          },
+          {
+            "id": "design",
+            "name": "Structural Package Design",
+            "slug": "/services/design-and-layout"
+          },
+          {
+            "id": "storage",
+            "name": "Warehousing & Distribution",
+            "slug": "/services/storage-and-warehousing"
+          },
+          {
+            "id": "facilities",
+            "name": "Plant Machinery & Facilities",
+            "slug": "/facilities"
+          }
+        ]
+      },
+      {
+        "id": "products",
+        "name": "Products & Packaging",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          {
+            "id": "products_main",
+            "name": "All Products & Portfolio",
+            "slug": "/products"
+          },
+          {
+            "id": "pkg_main",
+            "name": "Industrial Packaging",
+            "slug": "/products/packaging"
+          },
+          {
+            "id": "boxes",
+            "name": "Folding Cartons & Rigid Boxes",
+            "slug": "/products/packaging/boxes"
+          },
+          {
+            "id": "labels",
+            "name": "Roll Labels & Industrial Stickers",
+            "slug": "/products/packaging/labels"
+          },
+          {
+            "id": "print_main",
+            "name": "Commercial Stationery",
+            "slug": "/products/printing"
+          },
+          {
+            "id": "catalogs",
+            "name": "Product Catalogs & Folders",
+            "slug": "/products/printing/catalogs"
+          },
+          {
+            "id": "letterhead",
+            "name": "Corporate Letterhead Sets",
+            "slug": "/products/printing/letterhead"
+          },
+          {
+            "id": "luxury_pkg",
+            "name": "Export Luxury Packaging",
+            "slug": "/products/applications/luxury-packaging"
+          },
+          {
+            "id": "cartons",
+            "name": "Corrugated Shipping Cartons",
+            "slug": "/products/applications/shipping-cartons"
+          },
+          {
+            "id": "food_bev",
+            "name": "Food & Beverage Packaging",
+            "slug": "/products/industries/food-beverage"
+          },
+          {
+            "id": "cosmetics",
+            "name": "Cosmetic Packaging",
+            "slug": "/products/industries/cosmetics"
+          },
+          {
+            "id": "pharma",
+            "name": "Pharmaceutical Packaging",
+            "slug": "/products/industries/pharmaceutical"
           }
         ]
       },
@@ -184,18 +402,28 @@
             "slug": "/about"
           },
           {
+            "id": "history",
+            "name": "History & Achievements",
+            "slug": "/history"
+          },
+          {
+            "id": "consultation",
+            "name": "Free Consultation & Prototyping",
+            "slug": "/consultation"
+          },
+          {
             "id": "contact",
-            "name": "Contact Us",
+            "name": "Contact Sales & Factory",
             "slug": "/contact"
           },
           {
             "id": "catalog",
-            "name": "Product Catalog",
+            "name": "Comprehensive Product Catalog",
             "slug": "/catalog"
           },
           {
             "id": "blog",
-            "name": "Articles & Blog",
+            "name": "Technical Blog & Guides",
             "slug": "/blog"
           },
           {
@@ -206,38 +434,50 @@
         ]
       },
       {
-        "id": "customer-service",
-        "name": "Client Services",
+        "id": "resources",
+        "name": "Resources & Vector Dielines",
         "type": "accordion",
         "slug": "",
         "children": [
           {
-            "id": "faq",
-            "name": "FAQ & Inquiries",
-            "slug": "/faq"
-          },
-          {
-            "id": "guides",
-            "name": "Technical Guides",
-            "slug": "/resources/guides"
-          }
-        ]
-      },
-      {
-        "id": "latest",
-        "name": "Resources",
-        "type": "accordion",
-        "slug": "",
-        "children": [
-          {
-            "id": "resources",
-            "name": "Die-Cut Download Center",
+            "id": "resources_main",
+            "name": "Download Center & Files",
             "slug": "/resources"
           },
           {
+            "id": "dielines",
+            "name": "Vector Dieline Templates",
+            "slug": "/resources/dielines"
+          },
+          {
+            "id": "guides",
+            "name": "File Preparation Guides",
+            "slug": "/resources/guides"
+          },
+          {
             "id": "cmyk",
-            "name": "CMYK Color Profiles",
+            "name": "Standard CMYK Color Profiles",
             "slug": "/resources/guide-cmyk-color-profile"
+          },
+          {
+            "id": "bleed",
+            "name": "Bleed & Margin Specifications",
+            "slug": "/resources/guide-bleed-and-margins"
+          },
+          {
+            "id": "template_tuck",
+            "name": "Tuck-End Box Template",
+            "slug": "/resources/template-tuck-end-box"
+          },
+          {
+            "id": "template_rigid",
+            "name": "Magnetic Rigid Box Template",
+            "slug": "/resources/template-magnetic-rigid-box"
+          },
+          {
+            "id": "faq",
+            "name": "Frequently Asked Questions",
+            "slug": "/faq"
           }
         ]
       }
@@ -298,24 +538,122 @@
     "sections": [
       {
         "id": "services",
-        "name": "الخدمات",
+        "name": "خدمات وتجهيزات الطباعة",
         "type": "accordion",
         "slug": "",
         "children": [
           {
+            "id": "services_main",
+            "name": "كافة خدمات الطباعة والتغليف",
+            "slug": "/services"
+          },
+          {
             "id": "packaging",
-            "name": "صناعة العلب والكرتون",
+            "name": "صناعة العلب والكرتون الصناعي",
             "slug": "/services/printing-and-packaging"
           },
           {
             "id": "printing",
-            "name": "طباعة أوفست ٥ ألوان",
+            "name": "طباعة أوفست ۵ ألوان هايدلبرغ",
             "slug": "/services/printing-and-packaging"
           },
           {
             "id": "finishing",
             "name": "خدمات التشطيب والختم الحراري",
             "slug": "/services/finishing-services"
+          },
+          {
+            "id": "lithography",
+            "name": "الليثوغرافيا وصفائح CTP الذكية",
+            "slug": "/services/lithography-and-plates"
+          },
+          {
+            "id": "prepress",
+            "name": "هندسة الملفات قبل الطباعة",
+            "slug": "/services/pre-press"
+          },
+          {
+            "id": "design",
+            "name": "تصميم الهيكل وقوالب السكاكين",
+            "slug": "/services/design-and-layout"
+          },
+          {
+            "id": "storage",
+            "name": "التخزين وإدارة سلاسل التوريد",
+            "slug": "/services/storage-and-warehousing"
+          },
+          {
+            "id": "facilities",
+            "name": "الآلات وخطوط الإنتاج في المصنع",
+            "slug": "/facilities"
+          }
+        ]
+      },
+      {
+        "id": "products",
+        "name": "المنتجات والعلب",
+        "type": "accordion",
+        "slug": "",
+        "children": [
+          {
+            "id": "products_main",
+            "name": "كافة المنتجات والنماذج",
+            "slug": "/products"
+          },
+          {
+            "id": "pkg_main",
+            "name": "صناعة التغليف والعلب",
+            "slug": "/products/packaging"
+          },
+          {
+            "id": "boxes",
+            "name": "علب هاردبوكس وكرتون مقوى فاخر",
+            "slug": "/products/packaging/boxes"
+          },
+          {
+            "id": "labels",
+            "name": "ملصقات الرول والستيكرات الصناعية",
+            "slug": "/products/packaging/labels"
+          },
+          {
+            "id": "print_main",
+            "name": "المطبوعات الورقية والتجارية",
+            "slug": "/products/printing"
+          },
+          {
+            "id": "catalogs",
+            "name": "الكتالوجات والبروشورات التعريفية",
+            "slug": "/products/printing/catalogs"
+          },
+          {
+            "id": "letterhead",
+            "name": "المطبوعات المكتبية والورق الرسمي",
+            "slug": "/products/printing/letterhead"
+          },
+          {
+            "id": "luxury_pkg",
+            "name": "علب وتغليف فاخر للتصدير",
+            "slug": "/products/applications/luxury-packaging"
+          },
+          {
+            "id": "cartons",
+            "name": "كرتون شحن مضلع ۵ طبقات",
+            "slug": "/products/applications/shipping-cartons"
+          },
+          {
+            "id": "food_bev",
+            "name": "تغليف المواد الغذائية والمشروبات",
+            "slug": "/products/industries/food-beverage"
+          },
+          {
+            "id": "cosmetics",
+            "name": "تغليف مستحضرات التجميل",
+            "slug": "/products/industries/cosmetics"
+          },
+          {
+            "id": "pharma",
+            "name": "تغليف الأدوية والمستلزمات الطبية",
+            "slug": "/products/industries/pharmaceutical"
           }
         ]
       },
@@ -331,60 +669,82 @@
             "slug": "/about"
           },
           {
+            "id": "history",
+            "name": "تاريخ وإنجازات مجمع نجم",
+            "slug": "/history"
+          },
+          {
+            "id": "consultation",
+            "name": "استشارة فنية ونموذج أولي مجاني",
+            "slug": "/consultation"
+          },
+          {
             "id": "contact",
-            "name": "اتصل بنا",
+            "name": "اتصل بالمصنع وقسم المبيعات",
             "slug": "/contact"
           },
           {
             "id": "catalog",
-            "name": "الكتالوج الشامل",
+            "name": "الكتالوج الشامل للمنتجات والنماذج",
             "slug": "/catalog"
           },
           {
             "id": "blog",
-            "name": "المدونة والمقالات",
+            "name": "المدونة والمقالات التخصصية",
             "slug": "/blog"
           },
           {
             "id": "news",
-            "name": "الأخبار والفعاليات",
+            "name": "أخبار وفعاليات صناعة الطباعة",
             "slug": "/news"
           }
         ]
       },
       {
-        "id": "customer-service",
-        "name": "خدمة العملاء",
+        "id": "resources",
+        "name": "المصادر وقوالب السكاكين",
         "type": "accordion",
         "slug": "",
         "children": [
           {
-            "id": "faq",
-            "name": "الأسئلة الشائعة",
-            "slug": "/faq"
-          },
-          {
-            "id": "guides",
-            "name": "الأدلة الفنية للطباعة",
-            "slug": "/resources/guides"
-          }
-        ]
-      },
-      {
-        "id": "latest",
-        "name": "المصادر والقوالب",
-        "type": "accordion",
-        "slug": "",
-        "children": [
-          {
-            "id": "resources",
-            "name": "مركز تحميل القوالب",
+            "id": "resources_main",
+            "name": "مركز تنزيل المصادر والملفات",
             "slug": "/resources"
           },
           {
+            "id": "dielines",
+            "name": "تحميل قوالب السكاكين الفيكتور",
+            "slug": "/resources/dielines"
+          },
+          {
+            "id": "guides",
+            "name": "أدلة إعداد وتجهيز الملفات",
+            "slug": "/resources/guides"
+          },
+          {
             "id": "cmyk",
-            "name": "ملف ألوان CMYK",
+            "name": "بروفايل الألوان القياسي CMYK",
             "slug": "/resources/guide-cmyk-color-profile"
+          },
+          {
+            "id": "bleed",
+            "name": "دليل هوامش الأمان وخطوط القص",
+            "slug": "/resources/guide-bleed-and-margins"
+          },
+          {
+            "id": "template_tuck",
+            "name": "قالب علبة دوائية بأطراف متداخلة",
+            "slug": "/resources/template-tuck-end-box"
+          },
+          {
+            "id": "template_rigid",
+            "name": "قالب هاردبوكس مغناطيسي فاخر",
+            "slug": "/resources/template-magnetic-rigid-box"
+          },
+          {
+            "id": "faq",
+            "name": "الأسئلة الشائعة للعملاء",
+            "slug": "/faq"
           }
         ]
       }

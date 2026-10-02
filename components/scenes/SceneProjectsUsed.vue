@@ -24,7 +24,7 @@ import {
   type PropType,
 } from "vue"
 
-import SceneHeading from "~/components/scenes/SceneHeading.client.vue"
+import SceneHeading from "~/components/scenes/SceneHeading.vue"
 import EmblCards from "@/components/cards/EmblCards.vue"
 import { useLocale } from "@/composables/useLocale"
 

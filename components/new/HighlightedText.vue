@@ -17,34 +17,51 @@
         animation-type="split"
         :scrub="false"
       />
+      <template #fallback>
+        <div class="flex flex-wrap items-center justify-center gap-2 text-2xl sm:text-3xl md:text-5xl font-black text-d4 text-center leading-normal py-2">
+          <template v-for="(item, idx) in highlights" :key="idx">
+            <span v-if="item.sentence">{{ item.sentence }}</span>
+            <span v-else-if="item.label === 'break'" class="w-full basis-full h-0"></span>
+            <span
+              v-else-if="item.label && item.label !== 'end'"
+              class="inline-block px-3 py-1 rounded-xl shadow-xs"
+              :style="{
+                backgroundColor: item.bgColor || '#F4FFD0',
+                color: item.textColor || '#000',
+                transform: item.rotation ? `rotate(${item.rotation})` : undefined
+              }"
+            >
+              {{ item.label }}
+            </span>
+          </template>
+        </div>
+      </template>
     </ClientOnly>
   </div>
 </template>
 
-
-
 <script lang="ts" setup>
+import { inject, computed } from 'vue'
 import HighlightedMotion from '@/components/Main/HighlightedMotion.vue'
+import { useLocale } from '@/composables/useLocale'
 
-import { useLocale } from '@/composables/useLocale' // ADD THIS IMPORT
+const { language } = useLocale()
 
-const { language } = useLocale() // GET THE LANGUAGE STATE
+const defaultHighlights = [
+  { label: '', sentence: 'یه راهکار خلاقانه برای ' },
+  { label: 'چاپ', bgColor: '#F4FFD0', textColor: 'black', rotation: '-3.2deg' },
+  { label: '', sentence: ' و ' },
+  { label: 'break' },
+  { label: 'بسته‌بندی', bgColor: '#B9ADFF', textColor: 'black', rotation: '3.36deg' },
+  { label: '', sentence: ' مورد نیاز شما' }
+]
 
 const homeUI = inject<any>('homeUI') ?? {}
-const highlights = computed(() => homeUI.value?.highlightedText ?? [])
-
-
-        // :highlights="[
-
-        //   { label:'', sentence: 'یه راهکار خلاقانه برای ' },
-        //   { label: 'چاپ', bgColor: '#F4FFD0', textColor: 'black', rotation: '-3.2deg' },
-        //   { label:'', sentence: ' و ' },
-        //   { label:'break'},
-        //   { label: 'بسته‌بندی', bgColor: '#B9ADFF', textColor: 'black', rotation: '3.36deg' },
-        //   { label:'', sentence: ' مورد نیاز شما' },
-        //   { label: 'end' } // invisible, only used for timeline alignment
-
-        // ]"
+const highlights = computed(() => {
+  const val = homeUI.value?.highlightedText
+  if (Array.isArray(val) && val.length > 0) return val
+  return defaultHighlights
+})
 
 
 </script>

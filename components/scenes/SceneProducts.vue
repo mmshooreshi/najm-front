@@ -72,7 +72,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick, type Ref } from 'vue'
-import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
+import SceneHeading from '~/components/scenes/SceneHeading.vue'
 import EmbleProductCards from '@/components/cards/EmbleProductCards.vue'
 import JsonModal from '@/components/JsonModal.vue'
 import { useProductsAll } from '@/composables/useProductsAll'

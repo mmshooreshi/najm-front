@@ -18,22 +18,34 @@
 
 
 <template>
-  <div
-    @click="nextLanguage"
-    class="z-100 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl active:bg-gray-200/80 bg-white 
-           flex items-center justify-center text-gray-700 select-none
-           hover:bg-gray-100 hover:text-gray-900 cursor-pointer border border-gray-200/80 shadow-2xs active:scale-95 transition-transform duration-100"
-    aria-label="Switch Language"
-  >
-    <transition name="lang-flip" mode="out-in">
-      <span :key="modelValue" class="inline-block origin-center text-base sm:text-lg ">
-        {{ modelValue }}
-      </span>
-    </transition>
+  <div class="relative inline-flex items-center">
+    <button
+      type="button"
+      @click="nextLanguage"
+      class="z-100 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl active:bg-gray-200/80 bg-white 
+             flex items-center justify-center text-gray-700 select-none
+             hover:bg-gray-100 hover:text-gray-900 cursor-pointer border border-gray-200/80 shadow-2xs active:scale-95 transition-transform duration-100"
+      aria-label="Switch Language"
+    >
+      <transition name="lang-flip" mode="out-in">
+        <span :key="modelValue" class="inline-block origin-center text-base sm:text-lg font-bold">
+          {{ modelValue }}
+        </span>
+      </transition>
+    </button>
+
+    <!-- Semantic Crawlable Alternates for Googlebot & Accessibility -->
+    <nav class="sr-only" aria-label="Language Alternates">
+      <NuxtLink :to="localePath(currentPath, 'FA')" hreflang="fa" rel="alternate">فارسی</NuxtLink>
+      <NuxtLink :to="localePath(currentPath, 'EN')" hreflang="en" rel="alternate">English</NuxtLink>
+      <NuxtLink :to="localePath(currentPath, 'AR')" hreflang="ar" rel="alternate">العربية</NuxtLink>
+    </nav>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from '#app'
 import { useLocale } from "@/composables/useLocale"
 
 defineProps<{ modelValue: string }>()
@@ -41,7 +53,10 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
 }>()
 
-const { nextLanguage: localNext, language } = useLocale()
+const route = useRoute()
+const currentPath = computed(() => route?.path || '/')
+
+const { nextLanguage: localNext, language, localePath } = useLocale()
 
 function nextLanguage() {
   localNext()

@@ -5,7 +5,7 @@
     class="fixed top-0 z-50 w-full backdrop-blur-sm bg-white/80 flex items-center justify-between p-2"
   >
     <!-- Mobile: Logo + Profile + Language + Search + Hamburger -->
-    <div v-if="width < 768" class="flex items-center gap-4 w-full">
+    <div class="flex md:hidden items-center gap-4 w-full">
       <!-- Logo -->
       <NuxtLink to="/" class="flex-shrink-0" aria-label="صفحه اصلی مجتمع چاپ و بسته‌بندی نجم - Najm Printing & Packaging">
         <NajmLogo class="h-12 w-12" />
@@ -74,7 +74,6 @@
 
     <!-- Desktop Navigation -->
     <nav
-      v-else
       class="hidden md:flex items-center justify-between w-full"
     >
       <!-- Logo + Title -->

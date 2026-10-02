@@ -1,4 +1,4 @@
-<!-- components/scenes/SceneHeading.client.vue -->
+<!-- components/scenes/SceneHeading.vue -->
 <template>
   <div class="flex flex-col gap-4" :class="itemsClass">
     <div
@@ -36,8 +36,10 @@ import gsap from 'gsap'
 import CustomEase from 'gsap/CustomEase'
 import { useLocale } from '@/composables/useLocale'
 
-gsap.registerPlugin(CustomEase)
-CustomEase.create('smoothPop', '0.25, 0.1, 0.25, 1')
+if (import.meta.client) {
+  gsap.registerPlugin(CustomEase)
+  CustomEase.create('smoothPop', '0.25, 0.1, 0.25, 1')
+}
 
 const { language } = useLocale()
 const isRTL = computed(() => language.value === 'FA' || language.value === 'AR')

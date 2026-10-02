@@ -25,7 +25,7 @@
 
 
 <script setup lang="ts">
-import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
+import SceneHeading from '~/components/scenes/SceneHeading.vue'
 import EmblPackageCards  from '@/components/cards/EmblPackageCards.vue'
 import { usePackages } from '@/composables/usePackages'
 const pkgsRef = ref<InstanceType<typeof EmblPackageCards> | null>(null)

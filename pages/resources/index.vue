@@ -130,10 +130,14 @@ useAppSeo({
   slug: 'resources'
 })
 
-const loading = ref(true)
+const { data: resourcesData, pending: loading } = await useAsyncData(
+  'resources-index',
+  () => $fetch<any>('/api/resources'),
+  { default: () => ({ items: [] }) }
+)
+const liveResources = computed(() => resourcesData.value?.items || [])
 const searchQuery = ref('')
 const activeCategory = ref('all')
-const liveResources = ref<any[]>([])
 
 const activeLang = computed(() => {
   const l = (language.value || 'fa').toLowerCase()
@@ -213,20 +217,5 @@ const filteredResources = computed(() => {
     }
     return true
   })
-})
-
-async function fetchResources() {
-  loading.value = true
-  try {
-    const res: any = await $fetch('/api/resources')
-    liveResources.value = res?.items || []
-  } catch {
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  fetchResources()
 })
 </script>

@@ -138,9 +138,13 @@ useAppSeo({
   slug: 'products/packaging'
 })
 
-const loading = ref(true)
+const { data: packagingData, pending: loading } = await useAsyncData(
+  'products-packaging',
+  () => $fetch<any>('/api/products?division=packaging'),
+  { default: () => ({ items: [] }) }
+)
+const items = computed(() => packagingData.value?.items || [])
 const activeCategory = ref('all')
-const items = ref<any[]>([])
 
 const activeLang = computed(() => {
   const l = (language.value || 'fa').toLowerCase()
@@ -210,25 +214,10 @@ function getItemDescription(item: any): string {
 }
 
 const filteredItems = computed(() => {
-  return items.value.filter((it) => {
+  return items.value.filter((it: any) => {
     if (it.division && it.division !== 'packaging') return false
     if (activeCategory.value !== 'all' && it.category !== activeCategory.value) return false
     return true
   })
-})
-
-async function fetchProducts() {
-  loading.value = true
-  try {
-    const res: any = await $fetch('/api/products?division=packaging')
-    items.value = res?.items || []
-  } catch {
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  fetchProducts()
 })
 </script>

@@ -13,7 +13,7 @@
   
   <script setup lang="ts">
   import PromoFeatureCards from '@/components/sections/PromoFeatureCards.vue'
-  import SceneHeading from '~/components/scenes/SceneHeading.client.vue'
+  import SceneHeading from '~/components/scenes/SceneHeading.vue'
 
 
   const dataPrev = {
