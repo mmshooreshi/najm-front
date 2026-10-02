@@ -260,6 +260,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       pbUrl: process.env.PB_URL,
+      mapbox: {
+        accessToken: process.env.MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoibW1zaG9vcmVzaGkiLCJhIjoiY205eGJla2tyMTB3ejJrc2Vma2VwY2VlaiJ9.PGekyHty46Af6FxyKY3HIw',
+        style: process.env.MAPBOX_STYLE || 'mapbox://styles/mmshooreshi/cm9xbga9n009p01sictvq5wgu'
+      },
       motion: {
         directives: {
           'pop-bottom': {

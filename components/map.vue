@@ -3,8 +3,8 @@
 import { ref, defineAsyncComponent } from 'vue'
 
 /* lazy‑load the client‑only map container the moment we need it */
-const NeshanContainer = defineAsyncComponent(() =>
-  import('~/components/neshan-container.client.vue')
+const MapboxContainer = defineAsyncComponent(() =>
+  import('~/components/mapbox-container.client.vue')
 )
 
 const isFullScreen = ref(false)
@@ -58,10 +58,10 @@ const closeMap = () => (isFullScreen.value = false)
       <!-- 100 vh map (loads lazily) -->
       <client-only>
         <Suspense>
-          <NeshanContainer class="flex-1 w-full h-full mt-0 overflow-hidden" />
+          <MapboxContainer class="flex-1 w-full h-full mt-0 overflow-hidden" />
           <template #fallback>
             <div class="flex-1 grid place-items-center">
-              <span class="animate-pulse text-sm opacity-70 rtl">…در حال بارگیری نقشه</span>
+              <span class="animate-pulse text-sm opacity-70 rtl text-white">…در حال بارگیری نقشه</span>
             </div>
           </template>
         </Suspense>
