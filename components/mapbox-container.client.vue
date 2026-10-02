@@ -25,20 +25,22 @@ const MAP_STYLE = config.public?.mapbox?.style?.startsWith('http')
 const OSM_FALLBACK_STYLE = {
   version: 8 as const,
   sources: {
-    'osm-tiles': {
+    'raster-tiles': {
       type: 'raster' as const,
       tiles: [
-        'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+        'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
+        'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
+        'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png'
       ],
       tileSize: 256,
-      attribution: '© OpenStreetMap contributors'
+      attribution: '© OpenStreetMap contributors, © CARTO'
     }
   },
   layers: [
     {
-      id: 'osm-tiles-layer',
+      id: 'raster-tiles-layer',
       type: 'raster' as const,
-      source: 'osm-tiles',
+      source: 'raster-tiles',
       minzoom: 0,
       maxzoom: 19
     }
@@ -74,6 +76,44 @@ let map: maplibregl.Map | null = null
 const markers: maplibregl.Marker[] = []
 const activeLocationId = ref<string>('print')
 const isMapLoaded = ref(false)
+let resizeTimer: ReturnType<typeof setTimeout> | null = null
+let fallbackTimer: ReturnType<typeof setTimeout> | null = null
+
+function initMarkers() {
+  if (!map || markers.length > 0) return
+
+  // Add markers and popups for Najm locations
+  LOCATIONS.forEach(loc => {
+    const el = createMarkerElement(loc)
+    const popup = new maplibregl.Popup({
+      offset: 35,
+      closeButton: true,
+      closeOnClick: false,
+      maxWidth: '340px'
+    }).setHTML(createPopupHtml(loc))
+
+    const marker = new maplibregl.Marker({
+      element: el,
+      anchor: 'bottom'
+    })
+      .setLngLat(loc.coords)
+      .setPopup(popup)
+      .addTo(map!)
+
+    el.addEventListener('click', (e) => {
+      e.stopPropagation()
+      flyToLocation(loc)
+      popup.addTo(map!)
+    })
+
+    markers.push(marker)
+  })
+
+  // Initially open popup for the print facility
+  if (markers[0]) {
+    markers[0].togglePopup()
+  }
+}
 
 function createPopupHtml(loc: LocationItem): string {
   const [lng, lat] = loc.coords
@@ -178,6 +218,9 @@ function fitAllLocations() {
 onMounted(() => {
   if (!mapContainer.value) return
 
+  // Configure local Web Worker for MapLibre GL to ensure immediate loading with zero 404/worker errors
+  maplibregl.setWorkerUrl('/js/maplibre-gl-worker.mjs')
+
   // Enable Persian / Arabic RTL text rendering plugin locally
   try {
     if (maplibregl.getRTLTextPluginStatus() === 'unavailable') {
@@ -210,41 +253,32 @@ onMounted(() => {
   )
   map.addControl(new maplibregl.ScaleControl({ maxWidth: 100, unit: 'metric' }), 'bottom-right')
 
+  // Trigger resize once layout settles after modal animation
+  requestAnimationFrame(() => {
+    map?.resize()
+  })
+  resizeTimer = setTimeout(() => {
+    map?.resize()
+  }, 350)
+
   map.on('load', () => {
     isMapLoaded.value = true
-
-    // Add markers and popups for Najm locations
-    LOCATIONS.forEach(loc => {
-      const el = createMarkerElement(loc)
-      const popup = new maplibregl.Popup({
-        offset: 35,
-        closeButton: true,
-        closeOnClick: false,
-        maxWidth: '340px'
-      }).setHTML(createPopupHtml(loc))
-
-      const marker = new maplibregl.Marker({
-        element: el,
-        anchor: 'bottom'
-      })
-        .setLngLat(loc.coords)
-        .setPopup(popup)
-        .addTo(map!)
-
-      el.addEventListener('click', (e) => {
-        e.stopPropagation()
-        flyToLocation(loc)
-        popup.addTo(map!)
-      })
-
-      markers.push(marker)
-    })
-
-    // Initially open popup for the print facility
-    if (markers[0]) {
-      markers[0].togglePopup()
+    if (fallbackTimer) {
+      clearTimeout(fallbackTimer)
+      fallbackTimer = null
     }
+    initMarkers()
   })
+
+  // If vector tiles or style take longer than 3.5s (e.g. restrictive network), switch to fast raster fallback
+  fallbackTimer = setTimeout(() => {
+    if (!isMapLoaded.value && map) {
+      console.warn('Vector map style timed out, switching to high-speed raster fallback')
+      map.setStyle(OSM_FALLBACK_STYLE)
+      isMapLoaded.value = true
+      initMarkers()
+    }
+  }, 3500)
 
   // Double-click resets to overview
   map.on('dblclick', () => {
@@ -260,11 +294,15 @@ onMounted(() => {
       if (map) {
         map.setStyle(OSM_FALLBACK_STYLE)
       }
+      isMapLoaded.value = true
+      initMarkers()
     }
   })
 })
 
 onBeforeUnmount(() => {
+  if (resizeTimer) clearTimeout(resizeTimer)
+  if (fallbackTimer) clearTimeout(fallbackTimer)
   if (map) {
     markers.forEach(m => m.remove())
     markers.length = 0
@@ -285,7 +323,7 @@ onBeforeUnmount(() => {
       class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm pointer-events-none transition-opacity duration-300"
     >
       <div class="w-10 h-10 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin mb-3"></div>
-      <span class="text-sm font-semibold text-emerald-300">در حال بارگذاری نقشه مپ‌باکس...</span>
+      <span class="text-sm font-semibold text-emerald-300">در حال بارگذاری نقشه...</span>
     </div>
 
     <!-- Floating Top Navigation Pill Bar -->

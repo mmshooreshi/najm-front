@@ -1,15 +1,32 @@
 <!-- components/map.vue -->
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue'
+import { ref, defineAsyncComponent, onMounted } from 'vue'
 
-/* lazy‑load the client‑only map container the moment we need it */
+/* lazy‑load the client‑only map container */
 const MapboxContainer = defineAsyncComponent(() =>
   import('~/components/mapbox-container.client.vue')
 )
 
 const isFullScreen = ref(false)
-const openMap  = () => (isFullScreen.value = true)
-const closeMap = () => (isFullScreen.value = false)
+const isMounted = ref(false)
+
+onMounted(() => {
+  isMounted.value = true
+})
+
+const preloadMap = () => {
+  // Preload component code in the background on hover or interaction
+  import('~/components/mapbox-container.client.vue')
+}
+
+const openMap = () => {
+  preloadMap()
+  isFullScreen.value = true
+}
+
+const closeMap = () => {
+  isFullScreen.value = false
+}
 </script>
 
 <template>
@@ -18,6 +35,7 @@ const closeMap = () => (isFullScreen.value = false)
     v-motion-pop-visible
     class="w-full h-full min-h-[220px] sm:min-h-[260px] rounded-2xl overflow-hidden relative bg-gray-100 dark:bg-gray-800 cursor-pointer transition-[transform,box-shadow] duration-300 hover:shadow-md group select-none"
     @click="openMap"
+    @pointerenter="preloadMap"
   >
     <!-- a tiny blurred preview image for faster paint; swap for your own -->
     <img
@@ -37,38 +55,30 @@ const closeMap = () => (isFullScreen.value = false)
   </div>
 
   <!-- ────────────────  Fullscreen modal  ──────────────── -->
-  <Transition name="bounce-up">
-    
-    <teleport to="body">
-    <div
-      v-if="isFullScreen"
-      class="fixed inset-0 z-100 flex flex-col bg-najmgreen dark:bg-black  "
-    >
-      <!-- close btn -->
-      <button
-        class="self-end m-2 p-2 rounded-full 
-               backdrop-blur 
-               text-2xl leading-none hover:scale-110 transition text-white"
-        @click="closeMap"
+  <Teleport to="body" v-if="isMounted">
+    <Transition name="bounce-up">
+      <div
+        v-if="isFullScreen"
+        class="fixed inset-0 z-100 flex flex-col bg-najmgreen dark:bg-black"
       >
-        
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M18 6L6 18M18 18L6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </svg>
-      </button>
+        <!-- close btn -->
+        <button
+          class="self-end m-2 p-2 rounded-full 
+                 backdrop-blur 
+                 text-2xl leading-none hover:scale-110 transition text-white cursor-pointer"
+          @click="closeMap"
+          aria-label="بستن نقشه"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M18 18L6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
 
-      <!-- 100 vh map (loads lazily) -->
-      <client-only>
-        <Suspense>
-          <MapboxContainer class="flex-1 w-full h-full mt-0 overflow-hidden" />
-          <template #fallback>
-            <div class="flex-1 grid place-items-center">
-              <span class="animate-pulse text-sm opacity-70 rtl text-white">…در حال بارگیری نقشه</span>
-            </div>
-          </template>
-        </Suspense>
-      </client-only>
-    </div>
-  </teleport>
-  </Transition>
+        <!-- 100 vh map -->
+        <MapboxContainer class="flex-1 w-full h-full mt-0 overflow-hidden" />
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
