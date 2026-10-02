@@ -1,10 +1,10 @@
 <!-- components/cards/EmblCards.vue -->
 <template>
   <div :key="isRTL" :dir="isRTL ? 'rtl' : 'ltr'" ref="emblContainer" class="relative overflow-x-visible absolute py-6">
-    <div class="overflow-visible w-full touch-pan-y" ref="viewportRef">
+    <div class="overflow-visible w-full touch-pan-y cursor-grab active:cursor-grabbing select-none" ref="viewportRef">
       <div class="flex">
         <div v-for="(card, idx) in cards" :key="card.id" :data-id="card.id" :class="[isRTL ? 'rtl' : 'ltr']"
-          class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px]">
+          class="embla-slide shrink-0 grow-0 basis-[80%] md:basis-[70%] mx-2 h-[300px] md:h-[400px] max-h-[400px] max-w-[500px] bg-najmgrey relative rounded-[1.5rem] overflow-visible sm:max-w-[400px] sm:h-[400px] sm:min-h-[400px] sm:min-w-[300px] max-w-[80vw] h-[55vw] min-h-[260px] min-w-[220px] cursor-grab active:cursor-grabbing select-none">
           <NuxtImg
             v-gsap.magnetic
             :src="card.loop"
@@ -18,7 +18,11 @@
             loading="lazy"
             decoding="async"
             v-media-editable="`sceneProjects.cards.${idx}.loop`"
-            class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8"
+            @mouseenter="onImageEnter"
+            @mouseleave="onImageLeave"
+            @touchstart.passive="onImageTouchStart"
+            @touchend.passive="onImageTouchEnd"
+            class="object-contain h-full w-[80%] mx-auto rounded-[1.5rem] -mt-8 cursor-grab active:cursor-grabbing select-none"
           />
 
           <div v-gsap.magnetic :class="[isRTL ? 'right-6' : 'left-6']" :duration="100"
@@ -165,6 +169,34 @@ const onSelect = () => {
 
 let autoScrollPlugin
 
+function onImageEnter() {
+  if (autoScrollPlugin?.isPlaying?.()) {
+    autoScrollPlugin.stop()
+  }
+}
+
+function onImageLeave() {
+  if (autoScrollPlugin && !autoScrollPlugin.isPlaying?.()) {
+    autoScrollPlugin.play()
+  }
+}
+
+function onImageTouchStart() {
+  if (autoScrollPlugin?.isPlaying?.()) {
+    autoScrollPlugin.stop()
+  }
+}
+
+function onImageTouchEnd() {
+  if (autoScrollPlugin && !autoScrollPlugin.isPlaying?.()) {
+    setTimeout(() => {
+      if (autoScrollPlugin && !autoScrollPlugin.isPlaying?.()) {
+        autoScrollPlugin.play()
+      }
+    }, 800)
+  }
+}
+
 const initializeEmbla = () => {
   if (embla.value) {
     embla.value.destroy()
@@ -174,7 +206,7 @@ const initializeEmbla = () => {
   autoScrollPlugin = AutoScroll({
     speed: 1.1, // silky-smooth, continuous linear marquee
     startDelay: 400,
-    stopOnMouseEnter: true,
+    stopOnMouseEnter: false, // Motion stops only when mouse/tap is specifically on the photo itself!
     stopOnInteraction: false,
     playOnInit: true
   })
@@ -204,19 +236,6 @@ watch(isRTL, async () => {
 
 onMounted(() => {
   initializeEmbla()
-
-  const viewportEl = viewportRef.value
-  if (viewportEl) {
-    // Extra safeguards for instant pause on touch and resume after release
-    viewportEl.addEventListener('touchstart', () => {
-      if (autoScrollPlugin?.isPlaying?.()) autoScrollPlugin.stop()
-    }, { passive: true })
-    viewportEl.addEventListener('touchend', () => {
-      if (autoScrollPlugin && !autoScrollPlugin.isPlaying?.()) {
-        setTimeout(() => autoScrollPlugin?.play?.(), 800)
-      }
-    }, { passive: true })
-  }
 
   const dotsContainer = dotsContainerRef.value
   if (dotsContainer) {
