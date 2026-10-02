@@ -4,7 +4,7 @@
     <transition name="seo-drawer-fade">
       <div
         v-if="open"
-        class="fixed inset-0 z-[999998] flex justify-end bg-black/70 backdrop-blur-sm"
+        class="fixed inset-0 z-[999998] flex justify-end bg-black/75 backdrop-blur-sm"
         @click.self="close"
         role="dialog"
         aria-modal="true"
@@ -24,7 +24,7 @@
                 <h2 class="text-sm font-bold flex items-center gap-2 text-white">
                   <span>SEO & AEO Management Studio</span>
                   <span class="px-2 py-0.5 text-[10px] rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
-                    AI Ready
+                    Live Inspector
                   </span>
                 </h2>
                 <p class="text-[11px] text-zinc-400 font-mono" dir="ltr">
@@ -81,6 +81,170 @@
           <!-- Studio Content Body (Single unified scroll container) -->
           <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 overscroll-contain">
             
+            <!-- TAB 0: LIVE ACTIVE TAGS AUDIT (What currently exists on this page) -->
+            <div v-if="activeTab === 'audit'" class="space-y-4">
+              <div class="bg-gradient-to-r from-emerald-950/40 via-zinc-900 to-zinc-900 p-4 rounded-2xl border border-emerald-500/20 flex items-center justify-between">
+                <div>
+                  <h3 class="text-xs font-bold text-emerald-300 flex items-center gap-1.5">
+                    <span>📊</span>
+                    <span>شناسنامه و ممیزی زنده تگ‌های فعال صفحه</span>
+                  </h3>
+                  <p class="text-[11px] text-zinc-400 mt-1">
+                    تمام متادیتاها و تگ‌های زیر هم‌اکنون به صورت زنده در کدهای این صفحه قرار دارند و به موتورهای جستجو ارائه می‌شوند.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  @click="refreshLiveHead"
+                  class="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-zinc-300 text-xs font-semibold transition cursor-pointer flex items-center gap-1"
+                >
+                  <AdminIcon name="refresh" class="w-3.5 h-3.5" />
+                  <span>اسکن مجدد</span>
+                </button>
+              </div>
+
+              <!-- Grid of Active Metadata Cards -->
+              <div class="grid grid-cols-1 gap-3">
+                <!-- Card 1: Page Title -->
+                <div class="bg-zinc-900/80 p-3.5 rounded-xl border border-white/10 flex items-start justify-between gap-3">
+                  <div class="space-y-1 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-zinc-200">&lt;title&gt;</span>
+                      <span
+                        class="text-[10px] px-1.5 py-0.5 rounded font-mono"
+                        :class="titleCharCount >= 45 && titleCharCount <= 65 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
+                      >
+                        {{ titleCharCount }} کاراکتر (استاندارد ۵۰ تا ۶۰)
+                      </span>
+                    </div>
+                    <div class="text-xs text-white font-medium break-words leading-relaxed font-sans">
+                      {{ displayTitle }}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    @click="activeTab = 'serp'"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-semibold border border-emerald-500/30 shrink-0 cursor-pointer"
+                  >
+                    ویرایش
+                  </button>
+                </div>
+
+                <!-- Card 2: Meta Description -->
+                <div class="bg-zinc-900/80 p-3.5 rounded-xl border border-white/10 flex items-start justify-between gap-3">
+                  <div class="space-y-1 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-zinc-200">&lt;meta name="description"&gt;</span>
+                      <span
+                        class="text-[10px] px-1.5 py-0.5 rounded font-mono"
+                        :class="descCharCount >= 135 && descCharCount <= 170 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
+                      >
+                        {{ descCharCount }} کاراکتر (استاندارد ۱۴۰ تا ۱۶۰)
+                      </span>
+                    </div>
+                    <div class="text-xs text-zinc-300 break-words leading-relaxed">
+                      {{ displayDescription }}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    @click="activeTab = 'serp'"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-semibold border border-emerald-500/30 shrink-0 cursor-pointer"
+                  >
+                    ویرایش
+                  </button>
+                </div>
+
+                <!-- Card 3: Social & OG Banner -->
+                <div class="bg-zinc-900/80 p-3.5 rounded-xl border border-white/10 flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <div class="w-16 h-11 bg-zinc-950 rounded-lg overflow-hidden border border-white/10 shrink-0 flex items-center justify-center">
+                      <img v-if="seoState.image" :src="seoState.image" alt="OG Preview" class="w-full h-full object-cover" />
+                      <span v-else class="text-xs">🖼️</span>
+                    </div>
+                    <div class="space-y-0.5 min-w-0 flex-1">
+                      <div class="text-xs font-bold text-zinc-200">&lt;meta property="og:image"&gt;</div>
+                      <div class="text-[11px] text-zinc-400 font-mono truncate" dir="ltr">{{ seoState.image || '/social-image.png' }}</div>
+                      <div class="text-[10px] text-emerald-300">کارت شبکه‌های اجتماعی (1.91:1) فعال است</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    @click="activeTab = 'social'"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-semibold border border-emerald-500/30 shrink-0 cursor-pointer"
+                  >
+                    ویرایش تصویر / متن
+                  </button>
+                </div>
+
+                <!-- Card 4: Canonical & Robots -->
+                <div class="bg-zinc-900/80 p-3.5 rounded-xl border border-white/10 flex items-start justify-between gap-3">
+                  <div class="space-y-1 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-zinc-200">&lt;link rel="canonical"&gt; &amp; Robots</span>
+                      <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono">
+                        {{ seoState.indexable ? 'index, follow' : 'noindex, nofollow' }}
+                      </span>
+                    </div>
+                    <div class="text-xs text-zinc-400 font-mono break-all" dir="ltr">
+                      {{ seoState.canonical || 'https://chapenajm.com/' }}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    @click="activeTab = 'serp'"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-semibold border border-emerald-500/30 shrink-0 cursor-pointer"
+                  >
+                    ویرایش
+                  </button>
+                </div>
+
+                <!-- Card 5: JSON-LD Graph -->
+                <div class="bg-zinc-900/80 p-3.5 rounded-xl border border-white/10 flex items-start justify-between gap-3">
+                  <div class="space-y-1 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-zinc-200">&lt;script type="application/ld+json"&gt;</span>
+                      <span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-mono">
+                        {{ seoState.faqs.filter(f => f.question).length }} سوال FAQPage &middot; WebSite &middot; Organization
+                      </span>
+                    </div>
+                    <div class="text-[11px] text-zinc-400">
+                      اسکیماهای معتبر Schema.org جهت نمایش ستاره‌ها، سوالات آکاردئونی و لوگوی سازمانی در نتایج گوگل.
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    @click="activeTab = 'schema'"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-semibold border border-emerald-500/30 shrink-0 cursor-pointer"
+                  >
+                    مدیریت اسکیما
+                  </button>
+                </div>
+
+                <!-- Card 6: AEO Knowledge Graph -->
+                <div class="bg-zinc-900/80 p-3.5 rounded-xl border border-white/10 flex items-start justify-between gap-3">
+                  <div class="space-y-1 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-bold text-zinc-200">AEO &amp; AI Citations (پاسخ‌های هوش مصنوعی)</span>
+                      <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono">
+                        {{ seoState.aeoFacts.length }} فکت مرجع &middot; llms.txt آماده
+                      </span>
+                    </div>
+                    <div class="text-[11px] text-zinc-400">
+                      مشخصات صنعتی، فکت‌ها و انتیتی‌های ساختاریافته جهت آموزش و استناد در ChatGPT, Perplexity و Gemini.
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    @click="activeTab = 'aeo'"
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-semibold border border-emerald-500/30 shrink-0 cursor-pointer"
+                  >
+                    ویرایش فکت‌ها
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- TAB 1: SERP & Search Meta -->
             <div v-if="activeTab === 'serp'" class="space-y-6">
               
@@ -117,7 +281,6 @@
                   :class="serpDevice === 'mobile' ? 'max-w-sm mx-auto' : 'w-full'"
                   :dir="currentLang === 'fa' || currentLang === 'ar' ? 'rtl' : 'ltr'"
                 >
-                  <!-- Google Header: Favicon + Domain + Breadcrumb -->
                   <div class="flex items-center gap-2 mb-1 text-xs text-zinc-700">
                     <div class="w-6 h-6 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-[10px]">
                       N
@@ -130,12 +293,10 @@
                     </div>
                   </div>
 
-                  <!-- Google Blue Title -->
                   <h3 class="text-[#1a0dab] hover:underline text-base sm:text-lg font-medium leading-snug cursor-pointer line-clamp-2">
                     {{ displayTitle }}
                   </h3>
 
-                  <!-- Google Grey Snippet Description -->
                   <p class="text-zinc-600 text-xs sm:text-sm mt-1 leading-relaxed line-clamp-2">
                     {{ displayDescription }}
                   </p>
@@ -150,7 +311,7 @@
                     <label class="font-bold text-zinc-200">عنوان سئو صفحه (SEO Page Title)</label>
                     <span
                       class="text-[10px] font-mono px-1.5 py-0.5 rounded"
-                      :class="titleCharCount >= 50 && titleCharCount <= 60 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
+                      :class="titleCharCount >= 45 && titleCharCount <= 65 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
                     >
                       {{ titleCharCount }} / 60 کاراکتر
                     </span>
@@ -163,7 +324,7 @@
                     class="w-full bg-zinc-950 text-white border border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition"
                   />
                   <p class="text-[11px] text-zinc-400">
-                    توصیه: ۵۰ تا ۶۰ کاراکتر. نام برند به انتهای عنوان متصل می‌شود.
+                    توصیه: ۵۰ تا ۶۰ کاراکتر. نام برند در انتها قرار می‌گیرد.
                   </p>
                 </div>
 
@@ -173,7 +334,7 @@
                     <label class="font-bold text-zinc-200">توضیحات متا (Meta Description)</label>
                     <span
                       class="text-[10px] font-mono px-1.5 py-0.5 rounded"
-                      :class="descCharCount >= 140 && descCharCount <= 165 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
+                      :class="descCharCount >= 135 && descCharCount <= 170 ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'"
                     >
                       {{ descCharCount }} / 160 کاراکتر
                     </span>
@@ -185,9 +346,6 @@
                     placeholder="خلاصه‌ای جذاب و ترغیب‌کننده برای کلیک در موتور جستجو..."
                     class="w-full bg-zinc-950 text-white border border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:border-emerald-500 focus:outline-none transition leading-relaxed"
                   />
-                  <p class="text-[11px] text-zinc-400">
-                    توصیه: ۱۴۰ تا ۱۶۰ کاراکتر حاوی پیشنهاد ارزش منحصربه‌فرد و دعوت به اقدام (Call to Action).
-                  </p>
                 </div>
 
                 <!-- Canonical URL -->
@@ -235,7 +393,7 @@
               <div class="bg-zinc-900/90 rounded-2xl border border-white/10 p-4 space-y-3">
                 <div class="text-xs font-bold text-zinc-300 flex items-center gap-2">
                   <span>📱</span>
-                  <span>پیش‌نمایش اشتراک‌گذاری شبکه‌های اجتماعی (Social Card 1.91:1)</span>
+                  <span>پیش‌نمایش کارت شبکه‌های اجتماعی (Social Card 1.91:1 - WhatsApp, Telegram, Twitter, LinkedIn)</span>
                 </div>
 
                 <div class="max-w-md mx-auto bg-zinc-900 rounded-2xl overflow-hidden border border-white/15 shadow-xl text-left font-sans">
@@ -293,13 +451,22 @@
                 <div class="space-y-1.5">
                   <div class="flex items-center justify-between text-xs">
                     <label class="font-bold text-zinc-200">آدرس تصویر کارت (OG Image URL - 1200x630)</label>
-                    <button
-                      type="button"
-                      @click="seoState.image = 'https://chapenajm.com/social-image.png'; onFieldInput('image')"
-                      class="text-[11px] text-emerald-400 hover:underline cursor-pointer"
-                    >
-                      تنظیم پیش‌فرض
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <button
+                        type="button"
+                        @click="openMediaPicker"
+                        class="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
+                      >
+                        🖼️ انتخاب از مدیا استودیو
+                      </button>
+                      <button
+                        type="button"
+                        @click="seoState.image = 'https://chapenajm.com/social-image.png'; onFieldInput('image')"
+                        class="text-[11px] text-zinc-400 hover:underline cursor-pointer"
+                      >
+                        تنظیم پیش‌فرض
+                      </button>
+                    </div>
                   </div>
                   <input
                     v-model="seoState.image"
@@ -448,31 +615,27 @@
                       v-model="faq.answer"
                       @input="onFieldInput('faqs')"
                       rows="2"
-                      placeholder="پاسخ کامل و شفاف..."
+                      placeholder="پاسخ کوتاه و شفاف به پرسش..."
                       class="w-full bg-zinc-900 text-white border border-white/10 rounded-lg px-3 py-1.5 text-xs focus:border-emerald-500 focus:outline-none leading-relaxed"
                     />
                   </div>
                 </div>
               </div>
 
-              <!-- Live Schema.org Graph Inspector -->
-              <div class="bg-zinc-900/90 rounded-2xl border border-white/10 p-4 space-y-3">
+              <!-- Live JSON-LD Code Inspector -->
+              <div class="space-y-2 bg-zinc-900/60 p-4 rounded-2xl border border-white/5">
                 <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-2 text-xs font-bold text-zinc-300">
-                    <span>⚡</span>
-                    <span>گراف زنده ساختاریافته (Live Schema.org @graph Inspector)</span>
-                  </div>
-
+                  <label class="text-xs font-bold text-zinc-200">
+                    کد نهایی Schema.org JSON-LD تزریق شده در &lt;head&gt;
+                  </label>
                   <div class="flex items-center gap-2">
                     <button
                       type="button"
                       @click="copyJsonLd"
-                      class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-zinc-300 hover:text-white text-xs font-mono transition cursor-pointer flex items-center gap-1"
+                      class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold border border-white/10 transition cursor-pointer"
                     >
-                      <span>📋</span>
-                      <span>کپی JSON-LD</span>
+                      📋 کپی JSON-LD
                     </button>
-
                     <a
                       href="https://search.google.com/test/rich-results"
                       target="_blank"
@@ -492,18 +655,29 @@
           </div>
 
           <!-- Drawer Footer Bar -->
-          <div class="p-4 border-t border-white/10 bg-zinc-900/90 flex items-center justify-between gap-3 flex-shrink-0">
-            <div class="text-[11px] text-zinc-400">
-              تغییرات به صورت خودکار به عنوان پیش‌نویس ذخیره می‌شوند.
+          <div class="p-4 border-t border-white/10 bg-zinc-900/95 flex items-center justify-between gap-3 flex-shrink-0">
+            <div class="text-[11px] text-zinc-400 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>ویرایش آنی و خودکار در استور فعال است</span>
             </div>
 
             <div class="flex items-center gap-2">
               <button
                 type="button"
-                @click="close"
-                class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-zinc-200 transition cursor-pointer"
+                @click="saveSeoToServer"
+                :disabled="isSaving"
+                class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
-                بستن پنجره
+                <AdminIcon v-if="isSaving" name="spinner" class="w-3.5 h-3.5 animate-spin" />
+                <AdminIcon v-else name="save" class="w-3.5 h-3.5" />
+                <span>{{ isSaving ? 'در حال ذخیره...' : 'ذخیره سئو در دیتابیس (Save)' }}</span>
+              </button>
+              <button
+                type="button"
+                @click="close"
+                class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-zinc-300 transition cursor-pointer"
+              >
+                بستن
               </button>
             </div>
           </div>
@@ -514,22 +688,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from 'vue'
+import { ref, computed, reactive, watch, onMounted } from 'vue'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
 import {
   adminEditState as state,
   setDraftValue,
-  deepClone
+  deepClone,
+  openMediaStudio,
+  recordSavedVersions
 } from '@/store/adminEditStore'
+import { invalidatePageUI } from '~/composables/ui/pageUiCache'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ (e: 'update:open', val: boolean): void }>()
 
-const activeTab = ref<'serp' | 'social' | 'aeo' | 'schema'>('serp')
+const activeTab = ref<'audit' | 'serp' | 'social' | 'aeo' | 'schema'>('audit')
 const serpDevice = ref<'desktop' | 'mobile'>('desktop')
 const currentLang = ref(state.language || 'fa')
+const isSaving = ref(false)
 
 const tabs = [
+  { id: 'audit', label: 'ممیزی زنده تگ‌ها (Live Audit)', icon: '📊' },
   { id: 'serp', label: 'گوگل و متا (SERP)', icon: '🔍' },
   { id: 'social', label: 'شبکه‌های اجتماعی (OG)', icon: '📱' },
   { id: 'aeo', label: 'استناد هوش مصنوعی (AEO)', icon: '🤖' },
@@ -557,6 +736,11 @@ const seoState = reactive({
 function switchLang(l: string) {
   currentLang.value = l
   loadFromStore()
+}
+
+function refreshLiveHead() {
+  loadFromStore()
+  window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: 'تگ‌های متادیتا مجدداً از صفحه خوانده شدند.' } }))
 }
 
 function loadFromStore() {
@@ -596,6 +780,29 @@ function loadFromStore() {
           answer: 'نمونه‌سازی ماکت فیزیکی رایگان ظرف ۴۸ ساعت و تولید صنعتی ظرف ۵ تا ۷ روز کاری پس از تأیید نهایی انجام می‌پذیرد.'
         }
       ]
+
+  // Pre-fill from current live document tags if empty
+  if (typeof document !== 'undefined') {
+    if (!seoState.title && document.title) {
+      seoState.title = document.title.replace(/\s*\|\s*(مجتمع|Najm).*$/, '').trim()
+    }
+    if (!seoState.description) {
+      const el = document.querySelector('meta[name="description"]')
+      if (el?.getAttribute('content')) seoState.description = el.getAttribute('content')!
+    }
+    if (!seoState.ogTitle) {
+      const el = document.querySelector('meta[property="og:title"]')
+      if (el?.getAttribute('content')) seoState.ogTitle = el.getAttribute('content')!
+    }
+    if (!seoState.ogDescription) {
+      const el = document.querySelector('meta[property="og:description"]')
+      if (el?.getAttribute('content')) seoState.ogDescription = el.getAttribute('content')!
+    }
+    if ((!seoState.image || seoState.image.includes('social-image.png'))) {
+      const el = document.querySelector('meta[property="og:image"]')
+      if (el?.getAttribute('content')) seoState.image = el.getAttribute('content')!
+    }
+  }
 }
 
 watch([() => props.open, () => state.slug], () => {
@@ -615,8 +822,8 @@ const displayDescription = computed(() => {
   return 'طراحی و تولید انواع جعبه‌های مقوایی، هاردباکس و بسته‌بندی‌های لوکس با بالاترین استانداردهای چاپ در تهران.'
 })
 
-const titleCharCount = computed(() => seoState.title.length)
-const descCharCount = computed(() => seoState.description.length)
+const titleCharCount = computed(() => (seoState.title || displayTitle.value).length)
+const descCharCount = computed(() => (seoState.description || displayDescription.value).length)
 
 function onFieldInput(field: string) {
   const slug = currentSlug.value
@@ -626,9 +833,40 @@ function onFieldInput(field: string) {
   // Persist into store
   setDraftValue('seo', lang, JSON.stringify(payload), slug, true)
 
+  // Live in-place DOM reflection for instant feedback
+  if (typeof document !== 'undefined') {
+    if (seoState.title) {
+      document.title = `${seoState.title} | ${currentLang.value === 'en' ? 'Najm Printing' : currentLang.value === 'ar' ? 'مجمع نجم' : 'مجتمع چاپ و بسته‌بندی نجم'}`
+    }
+    const metaDesc = document.querySelector('meta[name="description"]')
+    if (metaDesc && seoState.description) {
+      metaDesc.setAttribute('content', seoState.description)
+    }
+    const ogTitle = document.querySelector('meta[property="og:title"]')
+    if (ogTitle && (seoState.ogTitle || seoState.title)) {
+      ogTitle.setAttribute('content', seoState.ogTitle || seoState.title)
+    }
+    const ogDesc = document.querySelector('meta[property="og:description"]')
+    if (ogDesc && (seoState.ogDescription || seoState.description)) {
+      ogDesc.setAttribute('content', seoState.ogDescription || seoState.description)
+    }
+    const ogImg = document.querySelector('meta[property="og:image"]')
+    if (ogImg && seoState.image) {
+      ogImg.setAttribute('content', seoState.image)
+    }
+  }
+
   window.dispatchEvent(new CustomEvent('najm:admin-change', {
     detail: { path: `seo.${field}`, lang, slug }
   }))
+}
+
+function openMediaPicker() {
+  openMediaStudio({
+    path: 'seo.image',
+    url: seoState.image,
+    meta: { width: 1200, height: 630 }
+  })
 }
 
 function addFact() {
@@ -649,6 +887,38 @@ function addFaq() {
 function removeFaq(idx: number) {
   seoState.faqs.splice(idx, 1)
   onFieldInput('faqs')
+}
+
+async function saveSeoToServer() {
+  if (isSaving.value) return
+  isSaving.value = true
+  const slug = currentSlug.value
+  const lang = currentLang.value
+
+  try {
+    const payload = { ...seoState }
+    await $fetch('/api/admin/ui/save-draft', {
+      method: 'POST',
+      body: {
+        slug,
+        language: lang,
+        changes: [{ path: 'seo', value: payload }]
+      }
+    })
+
+    recordSavedVersions(lang, ['seo'])
+    invalidatePageUI(slug)
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'success', text: `اطلاعات سئو، OG و اسکیماهای صفحه /${slug} در دیتابیس ثبت و ذخیره شد.` }
+    }))
+  } catch (err: any) {
+    const msg = err?.data?.message || err?.message || 'خطا در ذخیره‌سازی سئو'
+    window.dispatchEvent(new CustomEvent('toast', {
+      detail: { type: 'error', text: msg }
+    }))
+  } finally {
+    isSaving.value = false
+  }
 }
 
 const formattedJsonLd = computed(() => {
@@ -722,6 +992,18 @@ function copyJsonLd() {
 function close() {
   emit('update:open', false)
 }
+
+onMounted(() => {
+  // Listen for media selector events
+  if (typeof window !== 'undefined') {
+    window.addEventListener('admin:media-changed', (e: any) => {
+      if (e.detail?.path === 'seo.image' && e.detail.url) {
+        seoState.image = e.detail.url
+        onFieldInput('image')
+      }
+    })
+  }
+})
 </script>
 
 <style scoped>

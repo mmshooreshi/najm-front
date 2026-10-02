@@ -127,9 +127,15 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { isr: 3600 },
-    '/en': { isr: 3600 },
-    '/ar': { isr: 3600 },
+    '/': { swr: 3600 },
+    '/en': { swr: 3600 },
+    '/ar': { swr: 3600 },
+    '/services/**': { swr: 3600 },
+    '/products/**': { swr: 3600 },
+    '/catalog': { swr: 3600 },
+    '/about': { swr: 3600 },
+    '/contact': { swr: 3600 },
+    '/faq': { swr: 3600 },
     '/admin': { redirect: { to: '/dash', statusCode: 301 } },
     '/admin/**': { redirect: { to: '/dash', statusCode: 301 } },
     '/dashboard': { redirect: { to: '/dash', statusCode: 301 } },

@@ -12,7 +12,7 @@
       @click="toggleOpen"
     >
       <div class="flex items-center gap-2">
-        <span>{{ title }}</span>
+        <span v-editable="editPath || ''">{{ title }}</span>
         <span
           v-if="activeFiltersCount > 0"
           class="text-[11px] font-semibold bg-najmgreen text-white px-2 py-0.5 rounded-full"
@@ -73,12 +73,14 @@ const props = withDefaults(
     open?: boolean
     activeFiltersCount?: number
     panes?: Array<{ name: string; slug: string }>
+    editPath?: string
   }>(),
   {
     open: false,
     tabs: false,
     activeFiltersCount: 0,
-    panes: () => []
+    panes: () => [],
+    editPath: ''
   }
 )
 

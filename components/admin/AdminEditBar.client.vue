@@ -53,7 +53,7 @@ const paletteActiveIndex = ref(0)
 const autosaveDelayMs = 2000
 let autosaveTimer: any = null
 
-const isTelemetryHovered = ref(false)
+const isTelemetryOpen = ref(false)
 
 function formatTime(iso: string | null): string {
   if (!iso) return 'None'
@@ -612,8 +612,19 @@ onMounted(() => {
     }
   })
 
+  const onOutsidePointer = (e: PointerEvent) => {
+    if (isTelemetryOpen.value) {
+      const target = e.target as HTMLElement | null
+      if (target && !target.closest('.admin-floating-dock')) {
+        isTelemetryOpen.value = false
+      }
+    }
+  }
+  window.addEventListener('pointerdown', onOutsidePointer)
+
   ;(window as any)._adminBarCleanup = () => {
     window.removeEventListener('resize', fitIntoViewport)
+    window.removeEventListener('pointerdown', onOutsidePointer)
     window.removeEventListener('admin-save', onSaveEvt)
     window.removeEventListener('admin-discard', onDiscardEvt)
     window.removeEventListener('admin-toggle-edit', onToggleEvt)
@@ -734,28 +745,26 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
           </div>
         </div>
 
-        <!-- Zero-Tap Observable Telemetry Capsule & HUD -->
-        <div
-          class="relative flex items-center"
-          @mouseenter="isTelemetryHovered = true"
-          @mouseleave="isTelemetryHovered = false"
-        >
-          <!-- Sleek Minimal Capsule Button (No tap needed - hover reveals live telemetry!) -->
-          <div
-            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-medium transition-all cursor-default select-none shadow-xs"
+        <!-- Click-to-Toggle Observable Telemetry Capsule & HUD -->
+        <div class="relative flex items-center">
+          <!-- Sleek Minimal Capsule Button (Click to toggle live telemetry pane) -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-medium transition-all cursor-pointer select-none shadow-xs hover:brightness-110 active:scale-95"
             :class="telemetryBorder"
-            title="وضعیت همگام‌سازی دیتای محلی و سرور (برای جزئیات ماوس را نگه دارید)"
+            @click.stop="isTelemetryOpen = !isTelemetryOpen"
+            title="وضعیت همگام‌سازی دیتای محلی و سرور (کلیک برای مشاهده جزئیات و همگام‌سازی)"
           >
             <span class="w-2 h-2 rounded-full shrink-0" :class="telemetryDot"></span>
             <span class="font-mono text-[10px] tracking-tight">{{ telemetryLabel }}</span>
-          </div>
+          </button>
 
-          <!-- Zero-Tap Observable HUD Popover (Floats smoothly on hover with dynamic top/bottom placement) -->
+          <!-- Observable HUD Popover (Floats steadily on click with dynamic top/bottom placement) -->
           <transition name="admin-modal">
             <div
-              v-if="isTelemetryHovered"
-              class="absolute left-1/2 -translate-x-1/2 w-88 max-w-[calc(100vw-32px)] p-3.5 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-2xl z-[999999] pointer-events-auto select-text text-right transition-all duration-200"
-              :class="popoverPlacement === 'down' ? 'top-full mt-3' : 'bottom-full mb-3'"
+              v-if="isTelemetryOpen"
+              class="absolute left-1/2 -translate-x-1/2 w-88 max-w-[calc(100vw-32px)] p-3.5 rounded-2xl bg-zinc-950/98 text-white border border-white/20 shadow-2xl backdrop-blur-2xl z-[999999] pointer-events-auto select-text text-right transition-all duration-200"
+              :class="popoverPlacement === 'down' ? 'top-full mt-2' : 'bottom-full mb-2'"
               dir="rtl"
             >
               <!-- HUD Header: Dynamics Status -->
@@ -764,9 +773,19 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
                   <span class="w-2.5 h-2.5 rounded-full" :class="telemetryDot"></span>
                   <span class="font-semibold text-zinc-100">وضعیت همگام‌سازی محلی و سرور</span>
                 </div>
-                <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-zinc-300 font-mono" dir="ltr">
-                  /{{ state.slug || 'home' }}
-                </span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-zinc-300 font-mono" dir="ltr">
+                    /{{ state.slug || 'home' }}
+                  </span>
+                  <button
+                    type="button"
+                    @click.stop="isTelemetryOpen = false"
+                    class="p-0.5 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                    title="بستن پنجره"
+                  >
+                    <AdminIcon name="close" class="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
 
               <!-- Sync Dynamics Details -->
@@ -905,6 +924,23 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
               :class="{ 'animate-spin': saving }"
             />
             <span>Save</span>
+          </button>
+
+          <!-- Page Content Explorer & Modified Fields Button -->
+          <button
+            type="button"
+            class="h-8 px-2.5 rounded-xl border flex items-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold"
+            :class="state.inspectorOpen
+              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 ring-1 ring-amber-500/30'
+              : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/5'"
+            @click="state.inspectorOpen = !state.inspectorOpen"
+            title="کاوشگر کل محتوای صفحه و تغییرات (Content Explorer & Changes)"
+          >
+            <AdminIcon name="diff" class="w-3.5 h-3.5" />
+            <span class="hidden md:inline">کاوشگر محتوا</span>
+            <span v-if="changedCount > 0" class="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-200 text-[10px] font-mono">
+              {{ changedCount }}
+            </span>
           </button>
 
           <!-- History Toggle -->

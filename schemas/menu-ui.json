@@ -1,555 +1,1768 @@
 {
-  "products": {
-    "id": 1,
-    "name": "دسته‌بندی محصولات",
-    "slug": "/products",
-    "type": "label",
-    "order": 1,
-    "children": [
+  "FA": {
+    "products": {
+      "id": 1,
+      "name": "دسته‌بندی محصولات",
+      "slug": "/products",
+      "type": "label",
+      "order": 1,
+      "children": [
+        {
+          "id": 1,
+          "name": "چاپ و بسته‌بندی",
+          "slug": "",
+          "type": "accordion",
+          "order": 1,
+          "tabs": true,
+          "children": [
+            {
+              "id": 1,
+              "name": "چاپ",
+              "slug": "printing",
+              "type": "label",
+              "order": 1,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "سربرگ",
+                  "slug": "letterhead",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "پاکت‌نامه",
+                  "slug": "envelopes",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "کارت ویزیت",
+                  "slug": "business-cards",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "بروشور و کاتالوگ",
+                  "slug": "brochures-catalogs",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "کتاب و مجلات",
+                  "slug": "books-magazines",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "تقویم و سررسید",
+                  "slug": "calendars-planners",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پوستر و تراکت",
+                  "slug": "posters-flyers",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                },
+                {
+                  "id": 8,
+                  "name": "لیبل و استیکر",
+                  "slug": "labels-stickers",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 8,
+                  "children": []
+                },
+                {
+                  "id": 9,
+                  "name": "سربرگ و تقویم",
+                  "slug": "letterhead-calendars",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 9,
+                  "children": []
+                },
+                {
+                  "id": 10,
+                  "name": "بنر و استند مناسبتی",
+                  "slug": "banners-stands",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 10,
+                  "children": []
+                },
+                {
+                  "id": 11,
+                  "name": "کارت دعوت و یادبود",
+                  "slug": "invitations-souvenirs",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 11,
+                  "children": []
+                },
+                {
+                  "id": 12,
+                  "name": "فولدر و پوشه",
+                  "slug": "folders",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 12,
+                  "children": []
+                },
+                {
+                  "id": 13,
+                  "name": "اوراق و اسناد مالی و اداری",
+                  "slug": "financial-documents",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 13,
+                  "children": []
+                },
+                {
+                  "id": 14,
+                  "name": "دفترچه راهنما",
+                  "slug": "manuals",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 14,
+                  "children": []
+                },
+                {
+                  "id": 15,
+                  "name": "کارت ضمانت",
+                  "slug": "warranty-cards",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 15,
+                  "children": []
+                },
+                {
+                  "id": 16,
+                  "name": "پاکت CD و DVD",
+                  "slug": "cd-dvd-cases",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 16,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "بسته‌بندی",
+              "slug": "packaging",
+              "type": "label",
+              "order": 2,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "جعبه",
+                  "slug": "boxes",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "ساک دستی",
+                  "slug": "shopping-bags",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "کارت ویزیت",
+                  "slug": "business-card-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "بروشور و کاتالوگ",
+                  "slug": "brochure-catalog-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "کتاب و مجلات",
+                  "slug": "book-magazine-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "تقویم و سررسید",
+                  "slug": "calendar-planner-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پوستر و تراکت",
+                  "slug": "poster-flyer-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "بر اساس کاربرد و صنعت",
+          "slug": "",
+          "type": "accordion",
+          "order": 1,
+          "tabs": true,
+          "children": [
+            {
+              "id": 1,
+              "name": "کاربردها",
+              "slug": "applications",
+              "type": "label",
+              "order": 1,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "پکیج سازمانی و اداری",
+                  "slug": "office-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "پکیج تبلیغاتی و بازاریابی",
+                  "slug": "marketing-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "پکیج صنعتی و فنی",
+                  "slug": "industrial-technical-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "پکیج آموزشی و فرهنگی",
+                  "slug": "educational-cultural-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "پکیج مناسبتی و سفارشی",
+                  "slug": "custom-occasional-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "پکیج نمایشگاهی و رویدادی",
+                  "slug": "exhibition-event-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پکیج لوکس و هدیه",
+                  "slug": "luxury-gift-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "صنایع",
+              "slug": "industries",
+              "type": "label",
+              "order": 2,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "غذا، نوشیدنی و رستوران",
+                  "slug": "food-beverage-restaurant",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "آرایشی و بهداشتی",
+                  "slug": "beauty-health",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "پزشکی و دارویی",
+                  "slug": "medical-pharmaceutical",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "مد، پوشاک و اکسسوری",
+                  "slug": "fashion-apparel-accessories",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "جواهرات و زیورآلات",
+                  "slug": "jewelry",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "فناوری و الکترونیک",
+                  "slug": "technology-electronics",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "بازاریابی و عمومی",
+                  "slug": "marketing-general",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                },
+                {
+                  "id": 8,
+                  "name": "هدیه و مناسبت",
+                  "slug": "gifts-occasions",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 8,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "services": {
+      "id": 2,
+      "name": "خدمات",
+      "slug": "/services",
+      "type": "label",
+      "order": 2,
+      "children": [
+        {
+          "id": 1,
+          "name": "طراحی و فرم‌بندی",
+          "slug": "design-and-layout",
+          "type": "link",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "لیتوگرافی و زینک",
+          "slug": "lithography-and-plates",
+          "type": "link",
+          "order": 2,
+          "children": []
+        },
+        {
+          "id": 3,
+          "name": "چاپ و چاپ بسته‌بندی",
+          "slug": "printing-and-packaging",
+          "type": "link",
+          "order": 3,
+          "children": []
+        },
+        {
+          "id": 4,
+          "name": "خدمات تکمیلی",
+          "slug": "finishing-services",
+          "type": "link",
+          "order": 4,
+          "children": []
+        },
+        {
+          "id": 5,
+          "name": "نگهداری و انبارداری",
+          "slug": "storage-and-warehousing",
+          "type": "link",
+          "order": 5,
+          "children": []
+        }
+      ]
+    },
+    "links": {
+      "id": 1,
+      "name": "منابع",
+      "slug": "",
+      "type": "hidden",
+      "order": 3,
+      "children": [
+        {
+          "id": 1,
+          "name": "کاتالوگ",
+          "slug": "/catalog",
+          "type": "link-simple",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "فایل‌های راهنما",
+          "slug": "/resources",
+          "type": "link-simple",
+          "order": 4,
+          "children": []
+        }
+      ]
+    },
+    "contact": {
+      "id": 1,
+      "name": "تماس با ما",
+      "slug": "",
+      "type": "hidden",
+      "order": 4,
+      "children": [
+        {
+          "id": 1,
+          "name": "درباره‌ما",
+          "slug": "/about",
+          "type": "link-simple",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "تماس با ما",
+          "slug": "/contact",
+          "type": "link-simple",
+          "order": 2,
+          "children": []
+        }
+      ]
+    },
+    "headerNav": [
       {
         "id": 1,
-        "name": "چاپ و بسته‌بندی",
-        "slug": "",
-        "type": "accordion",
-        "order": 1,
-        "tabs": true,
-        "children": [
-          {
-            "id": 1,
-            "name": "چاپ",
-            "slug": "printing",
-            "type": "label",
-            "order": 1,
-            "children": [
-              {
-                "id": 1,
-                "name": "سربرگ",
-                "slug": "letterhead",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 1,
-                "children": []
-              },
-              {
-                "id": 2,
-                "name": "پاکت‌نامه",
-                "slug": "envelopes",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 2,
-                "children": []
-              },
-              {
-                "id": 3,
-                "name": "کارت ویزیت",
-                "slug": "business-cards",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 3,
-                "children": []
-              },
-              {
-                "id": 4,
-                "name": "بروشور و کاتالوگ",
-                "slug": "brochures-catalogs",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 4,
-                "children": []
-              },
-              {
-                "id": 5,
-                "name": "کتاب و مجلات",
-                "slug": "books-magazines",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 5,
-                "children": []
-              },
-              {
-                "id": 6,
-                "name": "تقویم و سررسید",
-                "slug": "calendars-planners",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 6,
-                "children": []
-              },
-              {
-                "id": 7,
-                "name": "پوستر و تراکت",
-                "slug": "posters-flyers",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 7,
-                "children": []
-              },
-              {
-                "id": 8,
-                "name": "لیبل و استیکر",
-                "slug": "labels-stickers",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 8,
-                "children": []
-              },
-              {
-                "id": 9,
-                "name": "سربرگ و تقویم",
-                "slug": "letterhead-calendars",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 9,
-                "children": []
-              },
-              {
-                "id": 10,
-                "name": "بنر و استند مناسبتی",
-                "slug": "banners-stands",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 10,
-                "children": []
-              },
-              {
-                "id": 11,
-                "name": "کارت دعوت و یادبود",
-                "slug": "invitations-souvenirs",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 11,
-                "children": []
-              },
-              {
-                "id": 12,
-                "name": "فولدر و پوشه",
-                "slug": "folders",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 12,
-                "children": []
-              },
-              {
-                "id": 13,
-                "name": "اوراق و اسناد مالی و اداری",
-                "slug": "financial-documents",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 13,
-                "children": []
-              },
-              {
-                "id": 14,
-                "name": "دفترچه راهنما",
-                "slug": "manuals",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 14,
-                "children": []
-              },
-              {
-                "id": 15,
-                "name": "کارت ضمانت",
-                "slug": "warranty-cards",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 15,
-                "children": []
-              },
-              {
-                "id": 16,
-                "name": "پاکت CD و DVD",
-                "slug": "cd-dvd-cases",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 16,
-                "children": []
-              }
-            ]
-          },
-          {
-            "id": 2,
-            "name": "بسته‌بندی",
-            "slug": "packaging",
-            "type": "label",
-            "order": 2,
-            "children": [
-              {
-                "id": 1,
-                "name": "جعبه",
-                "slug": "boxes",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 1,
-                "children": []
-              },
-              {
-                "id": 2,
-                "name": "ساک دستی",
-                "slug": "shopping-bags",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 2,
-                "children": []
-              },
-              {
-                "id": 3,
-                "name": "کارت ویزیت",
-                "slug": "business-card-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 3,
-                "children": []
-              },
-              {
-                "id": 4,
-                "name": "بروشور و کاتالوگ",
-                "slug": "brochure-catalog-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 4,
-                "children": []
-              },
-              {
-                "id": 5,
-                "name": "کتاب و مجلات",
-                "slug": "book-magazine-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 5,
-                "children": []
-              },
-              {
-                "id": 6,
-                "name": "تقویم و سررسید",
-                "slug": "calendar-planner-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 6,
-                "children": []
-              },
-              {
-                "id": 7,
-                "name": "پوستر و تراکت",
-                "slug": "poster-flyer-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 7,
-                "children": []
-              }
-            ]
-          }
-        ]
-
+        "name": "محصولات و بسته‌بندی",
+        "slug": "/products",
+        "order": 1
       },
       {
         "id": 2,
-        "name": "بر اساس کاربرد و صنعت",
-        "slug": "",
-        "type": "accordion",
-        "order": 1,
-        "tabs": true,
-
-        "children": [
-          {
-            "id": 1,
-            "name": "کاربردها",
-            "slug": "applications",
-            "type": "label",
-            "order": 1,
-            "children": [
-              {
-                "id": 1,
-                "name": "پکیج سازمانی و اداری",
-                "slug": "office-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 1,
-                "children": []
-              },
-              {
-                "id": 2,
-                "name": "پکیج تبلیغاتی و بازاریابی",
-                "slug": "marketing-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 2,
-                "children": []
-              },
-              {
-                "id": 3,
-                "name": "پکیج صنعتی و فنی",
-                "slug": "industrial-technical-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 3,
-                "children": []
-              },
-              {
-                "id": 4,
-                "name": "پکیج آموزشی و فرهنگی",
-                "slug": "educational-cultural-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 4,
-                "children": []
-              },
-              {
-                "id": 5,
-                "name": "پکیج مناسبتی و سفارشی",
-                "slug": "custom-occasional-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 5,
-                "children": []
-              },
-              {
-                "id": 6,
-                "name": "پکیج نمایشگاهی و رویدادی",
-                "slug": "exhibition-event-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 6,
-                "children": []
-              },
-              {
-                "id": 7,
-                "name": "پکیج لوکس و هدیه",
-                "slug": "luxury-gift-packaging",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 7,
-                "children": []
-              }
-            ]
-          },
-          {
-            "id": 2,
-            "name": "صنایع",
-            "slug": "industries",
-            "type": "label",
-            "order": 2,
-            "children": [
-              {
-                "id": 1,
-                "name": "غذا، نوشیدنی و رستوران",
-                "slug": "food-beverage-restaurant",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 1,
-                "children": []
-              },
-              {
-                "id": 2,
-                "name": "آرایشی و بهداشتی",
-                "slug": "beauty-health",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 2,
-                "children": []
-              },
-              {
-                "id": 3,
-                "name": "پزشکی و دارویی",
-                "slug": "medical-pharmaceutical",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 3,
-                "children": []
-              },
-              {
-                "id": 4,
-                "name": "مد، پوشاک و اکسسوری",
-                "slug": "fashion-apparel-accessories",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 4,
-                "children": []
-              },
-              {
-                "id": 5,
-                "name": "جواهرات و زیورآلات",
-                "slug": "jewelry",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 5,
-                "children": []
-              },
-              {
-                "id": 6,
-                "name": "فناوری و الکترونیک",
-                "slug": "technology-electronics",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 6,
-                "children": []
-              },
-              {
-                "id": 7,
-                "name": "بازاریابی و عمومی",
-                "slug": "marketing-general",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 7,
-                "children": []
-              },
-              {
-                "id": 8,
-                "name": "هدیه و مناسبت",
-                "slug": "gifts-occasions",
-                "type": "link-simple-xs",
-                "count": 5,
-                "value": false,
-                "order": 8,
-                "children": []
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  "services": {
-    "id": 2,
-    "name": "خدمات",
-    "slug": "/services",
-    "type": "label",
-    "order": 2,
-    "children": [
-      {
-        "id": 1,
-        "name": "طراحی و فرم‌بندی",
-        "slug": "design-and-layout",
-        "type": "link",
-        "order": 1,
-        "children": []
-      },
-      {
-        "id": 2,
-        "name": "لیتوگرافی و زینک",
-        "slug": "lithography-and-plates",
-        "type": "link",
-        "order": 2,
-        "children": []
+        "name": "خدمات چاپ افست",
+        "slug": "/services/printing-and-packaging",
+        "order": 2
       },
       {
         "id": 3,
-        "name": "چاپ و چاپ بسته‌بندی",
-        "slug": "printing-and-packaging",
-        "type": "link",
-        "order": 3,
-        "children": []
+        "name": "کاتالوگ جامع",
+        "slug": "/catalog",
+        "order": 3
       },
       {
         "id": 4,
-        "name": "خدمات تکمیلی",
-        "slug": "finishing-services",
-        "type": "link",
-        "order": 4,
-        "children": []
+        "name": "درباره ما",
+        "slug": "/about",
+        "order": 4
       },
       {
         "id": 5,
-        "name": "نگهداری و انبارداری",
-        "slug": "storage-and-warehousing",
-        "type": "link",
-        "order": 5,
-        "children": []
-      }
-    ]
-  },
-  "links": {
-    "id": 1,
-    "name": "منابع",
-    "slug": "",
-    "type": "hidden",
-    "order": 3,
-    "children": [
-      {
-        "id": 1,
-        "name": "کاتالوگ",
-        "slug": "/catalog",
-        "type": "link-simple",
-        "order": 1,
-        "children": []
-      },
-      {
-        "id": 2,
-        "name": "فایل‌های راهنما",
-        "slug": "/resources",
-        "type": "link-simple",
-        "order": 4,
-        "children": []
-      }
-    ]
-  },
-  "contact": {
-    "id": 1,
-    "name": "تماس با ما",
-    "slug": "",
-    "type": "hidden",
-    "order": 4,
-    "children": [
-      {
-        "id": 1,
-        "name": "درباره‌ما",
-        "slug": "/about",
-        "type": "link-simple",
-        "order": 1,
-        "children": []
-      },
-      {
-        "id": 2,
         "name": "تماس با ما",
         "slug": "/contact",
-        "type": "link-simple",
-        "order": 2,
-        "children": []
+        "order": 5
       }
     ]
   },
-  "headerNav": [
-    { "id": 1, "name": "محصولات و بسته‌بندی", "slug": "/products", "order": 1 },
-    { "id": 2, "name": "خدمات چاپ افست", "slug": "/services/printing-and-packaging", "order": 2 },
-    { "id": 3, "name": "کاتالوگ جامع", "slug": "/catalog", "order": 3 },
-    { "id": 4, "name": "درباره ما", "slug": "/about", "order": 4 },
-    { "id": 5, "name": "تماس با ما", "slug": "/contact", "order": 5 }
-  ]
+  "EN": {
+    "products": {
+      "id": 1,
+      "name": "Products & Packaging",
+      "slug": "/products",
+      "type": "label",
+      "order": 1,
+      "children": [
+        {
+          "id": 1,
+          "name": "Printing & Packaging",
+          "slug": "",
+          "type": "accordion",
+          "order": 1,
+          "tabs": true,
+          "children": [
+            {
+              "id": 1,
+              "name": "چاپ",
+              "slug": "printing",
+              "type": "label",
+              "order": 1,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "سربرگ",
+                  "slug": "letterhead",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "پاکت‌نامه",
+                  "slug": "envelopes",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "کارت ویزیت",
+                  "slug": "business-cards",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "بروشور و کاتالوگ",
+                  "slug": "brochures-catalogs",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "کتاب و مجلات",
+                  "slug": "books-magazines",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "تقویم و سررسید",
+                  "slug": "calendars-planners",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پوستر و تراکت",
+                  "slug": "posters-flyers",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                },
+                {
+                  "id": 8,
+                  "name": "لیبل و استیکر",
+                  "slug": "labels-stickers",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 8,
+                  "children": []
+                },
+                {
+                  "id": 9,
+                  "name": "سربرگ و تقویم",
+                  "slug": "letterhead-calendars",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 9,
+                  "children": []
+                },
+                {
+                  "id": 10,
+                  "name": "بنر و استند مناسبتی",
+                  "slug": "banners-stands",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 10,
+                  "children": []
+                },
+                {
+                  "id": 11,
+                  "name": "کارت دعوت و یادبود",
+                  "slug": "invitations-souvenirs",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 11,
+                  "children": []
+                },
+                {
+                  "id": 12,
+                  "name": "فولدر و پوشه",
+                  "slug": "folders",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 12,
+                  "children": []
+                },
+                {
+                  "id": 13,
+                  "name": "اوراق و اسناد مالی و اداری",
+                  "slug": "financial-documents",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 13,
+                  "children": []
+                },
+                {
+                  "id": 14,
+                  "name": "دفترچه راهنما",
+                  "slug": "manuals",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 14,
+                  "children": []
+                },
+                {
+                  "id": 15,
+                  "name": "کارت ضمانت",
+                  "slug": "warranty-cards",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 15,
+                  "children": []
+                },
+                {
+                  "id": 16,
+                  "name": "پاکت CD و DVD",
+                  "slug": "cd-dvd-cases",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 16,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "بسته‌بندی",
+              "slug": "packaging",
+              "type": "label",
+              "order": 2,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "جعبه",
+                  "slug": "boxes",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "ساک دستی",
+                  "slug": "shopping-bags",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "کارت ویزیت",
+                  "slug": "business-card-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "بروشور و کاتالوگ",
+                  "slug": "brochure-catalog-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "کتاب و مجلات",
+                  "slug": "book-magazine-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "تقویم و سررسید",
+                  "slug": "calendar-planner-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پوستر و تراکت",
+                  "slug": "poster-flyer-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "بر اساس کاربرد و صنعت",
+          "slug": "",
+          "type": "accordion",
+          "order": 1,
+          "tabs": true,
+          "children": [
+            {
+              "id": 1,
+              "name": "کاربردها",
+              "slug": "applications",
+              "type": "label",
+              "order": 1,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "پکیج سازمانی و اداری",
+                  "slug": "office-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "پکیج تبلیغاتی و بازاریابی",
+                  "slug": "marketing-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "پکیج صنعتی و فنی",
+                  "slug": "industrial-technical-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "پکیج آموزشی و فرهنگی",
+                  "slug": "educational-cultural-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "پکیج مناسبتی و سفارشی",
+                  "slug": "custom-occasional-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "پکیج نمایشگاهی و رویدادی",
+                  "slug": "exhibition-event-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پکیج لوکس و هدیه",
+                  "slug": "luxury-gift-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "صنایع",
+              "slug": "industries",
+              "type": "label",
+              "order": 2,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "غذا، نوشیدنی و رستوران",
+                  "slug": "food-beverage-restaurant",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "آرایشی و بهداشتی",
+                  "slug": "beauty-health",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "پزشکی و دارویی",
+                  "slug": "medical-pharmaceutical",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "مد، پوشاک و اکسسوری",
+                  "slug": "fashion-apparel-accessories",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "جواهرات و زیورآلات",
+                  "slug": "jewelry",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "فناوری و الکترونیک",
+                  "slug": "technology-electronics",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "بازاریابی و عمومی",
+                  "slug": "marketing-general",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                },
+                {
+                  "id": 8,
+                  "name": "هدیه و مناسبت",
+                  "slug": "gifts-occasions",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 8,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "services": {
+      "id": 2,
+      "name": "Printing & Finishing Services",
+      "slug": "",
+      "type": "label",
+      "order": 2,
+      "children": [
+        {
+          "id": 1,
+          "name": "Design & Layout",
+          "slug": "design-and-layout",
+          "type": "link",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "CTP Lithography",
+          "slug": "lithography-and-plates",
+          "type": "link",
+          "order": 2,
+          "children": []
+        },
+        {
+          "id": 3,
+          "name": "Offset Printing & Packaging",
+          "slug": "printing-and-packaging",
+          "type": "link",
+          "order": 3,
+          "children": []
+        },
+        {
+          "id": 4,
+          "name": "Post-Press Finishing",
+          "slug": "finishing-services",
+          "type": "link",
+          "order": 4,
+          "children": []
+        },
+        {
+          "id": 5,
+          "name": "Storage & Warehousing",
+          "slug": "storage-and-warehousing",
+          "type": "link",
+          "order": 5,
+          "children": []
+        }
+      ]
+    },
+    "links": {
+      "id": 1,
+      "name": "Resources & Articles",
+      "slug": "",
+      "type": "hidden",
+      "order": 3,
+      "children": [
+        {
+          "id": 1,
+          "name": "Product Catalog",
+          "slug": "/catalog",
+          "type": "link-simple",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "Articles & Blog",
+          "slug": "/blog",
+          "type": "link-simple",
+          "order": 2,
+          "children": []
+        },
+        {
+          "id": 3,
+          "name": "News & Events",
+          "slug": "/news",
+          "type": "link-simple",
+          "order": 3,
+          "children": []
+        },
+        {
+          "id": 4,
+          "name": "Technical Guides",
+          "slug": "/guides",
+          "type": "link-simple",
+          "order": 4,
+          "children": []
+        }
+      ]
+    },
+    "contact": {
+      "id": 1,
+      "name": "About & Contact",
+      "slug": "",
+      "type": "hidden",
+      "order": 4,
+      "children": [
+        {
+          "id": 1,
+          "name": "About Us",
+          "slug": "/about",
+          "type": "link-simple",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "Contact Us",
+          "slug": "/contact",
+          "type": "link-simple",
+          "order": 2,
+          "children": []
+        }
+      ]
+    },
+    "headerNav": [
+      {
+        "id": 1,
+        "name": "Products & Packaging",
+        "slug": "/products",
+        "order": 1
+      },
+      {
+        "id": 2,
+        "name": "Offset Printing",
+        "slug": "/services/printing-and-packaging",
+        "order": 2
+      },
+      {
+        "id": 3,
+        "name": "Catalog",
+        "slug": "/catalog",
+        "order": 3
+      },
+      {
+        "id": 4,
+        "name": "About Us",
+        "slug": "/about",
+        "order": 4
+      },
+      {
+        "id": 5,
+        "name": "Contact",
+        "slug": "/contact",
+        "order": 5
+      }
+    ]
+  },
+  "AR": {
+    "products": {
+      "id": 1,
+      "name": "المنتجات والتغليف",
+      "slug": "/products",
+      "type": "label",
+      "order": 1,
+      "children": [
+        {
+          "id": 1,
+          "name": "طباعة وتغليف",
+          "slug": "",
+          "type": "accordion",
+          "order": 1,
+          "tabs": true,
+          "children": [
+            {
+              "id": 1,
+              "name": "چاپ",
+              "slug": "printing",
+              "type": "label",
+              "order": 1,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "سربرگ",
+                  "slug": "letterhead",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "پاکت‌نامه",
+                  "slug": "envelopes",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "کارت ویزیت",
+                  "slug": "business-cards",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "بروشور و کاتالوگ",
+                  "slug": "brochures-catalogs",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "کتاب و مجلات",
+                  "slug": "books-magazines",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "تقویم و سررسید",
+                  "slug": "calendars-planners",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پوستر و تراکت",
+                  "slug": "posters-flyers",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                },
+                {
+                  "id": 8,
+                  "name": "لیبل و استیکر",
+                  "slug": "labels-stickers",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 8,
+                  "children": []
+                },
+                {
+                  "id": 9,
+                  "name": "سربرگ و تقویم",
+                  "slug": "letterhead-calendars",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 9,
+                  "children": []
+                },
+                {
+                  "id": 10,
+                  "name": "بنر و استند مناسبتی",
+                  "slug": "banners-stands",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 10,
+                  "children": []
+                },
+                {
+                  "id": 11,
+                  "name": "کارت دعوت و یادبود",
+                  "slug": "invitations-souvenirs",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 11,
+                  "children": []
+                },
+                {
+                  "id": 12,
+                  "name": "فولدر و پوشه",
+                  "slug": "folders",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 12,
+                  "children": []
+                },
+                {
+                  "id": 13,
+                  "name": "اوراق و اسناد مالی و اداری",
+                  "slug": "financial-documents",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 13,
+                  "children": []
+                },
+                {
+                  "id": 14,
+                  "name": "دفترچه راهنما",
+                  "slug": "manuals",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 14,
+                  "children": []
+                },
+                {
+                  "id": 15,
+                  "name": "کارت ضمانت",
+                  "slug": "warranty-cards",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 15,
+                  "children": []
+                },
+                {
+                  "id": 16,
+                  "name": "پاکت CD و DVD",
+                  "slug": "cd-dvd-cases",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 16,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "بسته‌بندی",
+              "slug": "packaging",
+              "type": "label",
+              "order": 2,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "جعبه",
+                  "slug": "boxes",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "ساک دستی",
+                  "slug": "shopping-bags",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "کارت ویزیت",
+                  "slug": "business-card-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "بروشور و کاتالوگ",
+                  "slug": "brochure-catalog-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "کتاب و مجلات",
+                  "slug": "book-magazine-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "تقویم و سررسید",
+                  "slug": "calendar-planner-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پوستر و تراکت",
+                  "slug": "poster-flyer-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "بر اساس کاربرد و صنعت",
+          "slug": "",
+          "type": "accordion",
+          "order": 1,
+          "tabs": true,
+          "children": [
+            {
+              "id": 1,
+              "name": "کاربردها",
+              "slug": "applications",
+              "type": "label",
+              "order": 1,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "پکیج سازمانی و اداری",
+                  "slug": "office-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "پکیج تبلیغاتی و بازاریابی",
+                  "slug": "marketing-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "پکیج صنعتی و فنی",
+                  "slug": "industrial-technical-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "پکیج آموزشی و فرهنگی",
+                  "slug": "educational-cultural-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "پکیج مناسبتی و سفارشی",
+                  "slug": "custom-occasional-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "پکیج نمایشگاهی و رویدادی",
+                  "slug": "exhibition-event-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "پکیج لوکس و هدیه",
+                  "slug": "luxury-gift-packaging",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "name": "صنایع",
+              "slug": "industries",
+              "type": "label",
+              "order": 2,
+              "children": [
+                {
+                  "id": 1,
+                  "name": "غذا، نوشیدنی و رستوران",
+                  "slug": "food-beverage-restaurant",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 1,
+                  "children": []
+                },
+                {
+                  "id": 2,
+                  "name": "آرایشی و بهداشتی",
+                  "slug": "beauty-health",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 2,
+                  "children": []
+                },
+                {
+                  "id": 3,
+                  "name": "پزشکی و دارویی",
+                  "slug": "medical-pharmaceutical",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 3,
+                  "children": []
+                },
+                {
+                  "id": 4,
+                  "name": "مد، پوشاک و اکسسوری",
+                  "slug": "fashion-apparel-accessories",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 4,
+                  "children": []
+                },
+                {
+                  "id": 5,
+                  "name": "جواهرات و زیورآلات",
+                  "slug": "jewelry",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 5,
+                  "children": []
+                },
+                {
+                  "id": 6,
+                  "name": "فناوری و الکترونیک",
+                  "slug": "technology-electronics",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 6,
+                  "children": []
+                },
+                {
+                  "id": 7,
+                  "name": "بازاریابی و عمومی",
+                  "slug": "marketing-general",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 7,
+                  "children": []
+                },
+                {
+                  "id": 8,
+                  "name": "هدیه و مناسبت",
+                  "slug": "gifts-occasions",
+                  "type": "link-simple-xs",
+                  "count": 5,
+                  "value": false,
+                  "order": 8,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "services": {
+      "id": 2,
+      "name": "خدمات الطباعة والتشطيب",
+      "slug": "",
+      "type": "label",
+      "order": 2,
+      "children": [
+        {
+          "id": 1,
+          "name": "التصميم والتجهيز",
+          "slug": "design-and-layout",
+          "type": "link",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "الليثوغرافيا وصفائح CTP",
+          "slug": "lithography-and-plates",
+          "type": "link",
+          "order": 2,
+          "children": []
+        },
+        {
+          "id": 3,
+          "name": "طباعة الأوفست والتغليف",
+          "slug": "printing-and-packaging",
+          "type": "link",
+          "order": 3,
+          "children": []
+        },
+        {
+          "id": 4,
+          "name": "خدمات ما بعد الطباعة",
+          "slug": "finishing-services",
+          "type": "link",
+          "order": 4,
+          "children": []
+        },
+        {
+          "id": 5,
+          "name": "التخزين والخدمات اللوجستية",
+          "slug": "storage-and-warehousing",
+          "type": "link",
+          "order": 5,
+          "children": []
+        }
+      ]
+    },
+    "links": {
+      "id": 1,
+      "name": "المصادر والمقالات",
+      "slug": "",
+      "type": "hidden",
+      "order": 3,
+      "children": [
+        {
+          "id": 1,
+          "name": "الكتالوج الشامل",
+          "slug": "/catalog",
+          "type": "link-simple",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "المدونة والمقالات",
+          "slug": "/blog",
+          "type": "link-simple",
+          "order": 2,
+          "children": []
+        },
+        {
+          "id": 3,
+          "name": "الأخبار والفعاليات",
+          "slug": "/news",
+          "type": "link-simple",
+          "order": 3,
+          "children": []
+        },
+        {
+          "id": 4,
+          "name": "الأدلة الفنية",
+          "slug": "/guides",
+          "type": "link-simple",
+          "order": 4,
+          "children": []
+        }
+      ]
+    },
+    "contact": {
+      "id": 1,
+      "name": "اتصل بنا",
+      "slug": "",
+      "type": "hidden",
+      "order": 4,
+      "children": [
+        {
+          "id": 1,
+          "name": "حول الشركة",
+          "slug": "/about",
+          "type": "link-simple",
+          "order": 1,
+          "children": []
+        },
+        {
+          "id": 2,
+          "name": "اتصل بنا",
+          "slug": "/contact",
+          "type": "link-simple",
+          "order": 2,
+          "children": []
+        }
+      ]
+    },
+    "headerNav": [
+      {
+        "id": 1,
+        "name": "المنتجات والتغليف",
+        "slug": "/products",
+        "order": 1
+      },
+      {
+        "id": 2,
+        "name": "طباعة الأوفست",
+        "slug": "/services/printing-and-packaging",
+        "order": 2
+      },
+      {
+        "id": 3,
+        "name": "الكتالوج",
+        "slug": "/catalog",
+        "order": 3
+      },
+      {
+        "id": 4,
+        "name": "حول الشركة",
+        "slug": "/about",
+        "order": 4
+      },
+      {
+        "id": 5,
+        "name": "اتصل بنا",
+        "slug": "/contact",
+        "order": 5
+      }
+    ]
+  }
 }

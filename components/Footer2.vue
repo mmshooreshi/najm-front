@@ -190,7 +190,7 @@ const activeLogoWhite = computed(() => {
 
 // Connect directly to live content engine with dual local + remote persistence
 const { ui } = usePageUI('footer')
-useAdminEditable('footer')
+useAdminEditable('footer', false)
 
 const fallbackHero = [
   'در دنیای پررقابت امروز، بسته‌بندی دیگر تنها یک محافظ کالا نیست، بلکه شناسنامه بصری برند شماست.',

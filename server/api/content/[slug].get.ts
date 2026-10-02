@@ -40,10 +40,17 @@ export default defineEventHandler(async (event) => {
     }
   } catch {}
 
-  // Prevent caching at browser and CDN edge so updates propagate instantly
-  setHeader(event, 'Cache-Control', 'no-cache, no-store, must-revalidate')
-  setHeader(event, 'Pragma', 'no-cache')
-  setHeader(event, 'Expires', '0')
+  const adminCookie = getCookie(event, 'pb_admin')
+  const isEditing = !!adminCookie || event.node.req.url?.includes('edit=true')
+
+  if (isEditing) {
+    setHeader(event, 'Cache-Control', 'no-cache, no-store, must-revalidate')
+    setHeader(event, 'Pragma', 'no-cache')
+    setHeader(event, 'Expires', '0')
+  } else {
+    // Fast edge caching with background revalidation for maximum visitor speed
+    setHeader(event, 'Cache-Control', 'public, max-age=60, s-maxage=3600, stale-while-revalidate=600')
+  }
 
   // Merge: Remote PocketBase is the authoritative live source of truth.
   // Fall back to local persistent store if remote is empty or unreachable.

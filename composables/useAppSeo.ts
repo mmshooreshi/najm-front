@@ -3,6 +3,7 @@ import { computed, toValue, type Ref, type ComputedRef } from 'vue'
 import { useHead, useRoute } from '#app'
 import { useLocale } from '~/composables/useLocale'
 import { adminEditState } from '@/store/adminEditStore'
+import { usePageUI } from '~/composables/ui/usePageUI'
 
 export interface SeoOptions {
   title?: string | Ref<string> | ComputedRef<string> | { fa?: string; en?: string; ar?: string }
@@ -62,15 +63,26 @@ export function useAppSeo(options: SeoOptions = {}) {
 
   const isRTL = computed(() => currentLang.value === 'FA' || currentLang.value === 'AR')
 
-  // Dynamic SEO overrides from active admin editing session
+  const rawSlug = toValue(options.slug) || route?.path?.replace(/^\/(?:en|ar)(?=\/|$)/, '').replace(/^\//, '') || 'home'
+  const cleanSlug = rawSlug === '' ? 'home' : rawSlug
+  const { allUi } = usePageUI(cleanSlug)
+
+  // Dynamic SEO overrides from active admin editing session or authoritative database content
   const adminSeoOverrides = computed(() => {
-    const s = toValue(options.slug) || route?.path?.replace(/^\/(?:en|ar)(?=\/|$)/, '').replace(/^\//, '') || 'home'
-    const cleanSlug = s === '' ? 'home' : s
-    const langKey = currentLang.value.toLowerCase()
-    return (adminEditState?.clientOverrides?.[cleanSlug]?.[langKey] as any)?.seo ||
-           (adminEditState?.clientOverrides?.[cleanSlug]?.[currentLang.value] as any)?.seo ||
-           (adminEditState?.allLangUIBySlug?.[cleanSlug]?.[langKey] as any)?.seo ||
-           null
+    const langLower = currentLang.value.toLowerCase()
+    const langUpper = currentLang.value.toUpperCase()
+
+    // 1. Live in-place admin client override
+    const live = (adminEditState?.clientOverrides?.[cleanSlug]?.[langLower] as any)?.seo ||
+                 (adminEditState?.clientOverrides?.[cleanSlug]?.[langUpper] as any)?.seo ||
+                 (adminEditState?.allLangUIBySlug?.[cleanSlug]?.[langLower] as any)?.seo
+    if (live) return live
+
+    // 2. Authoritative UI schema from PocketBase
+    const pbSeo = (allUi.value?.[langLower] as any)?.seo || (allUi.value?.[langUpper] as any)?.seo
+    if (pbSeo) return pbSeo
+
+    return null
   })
 
   // Brand Name localized

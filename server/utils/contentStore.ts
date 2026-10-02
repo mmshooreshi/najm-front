@@ -139,14 +139,45 @@ export async function applyAndSaveContent(
 
   writeLocalContent(slug, currentUi)
 
-  // CRITICAL: Await PocketBase sync so serverless execution does not terminate before persisting
-  try {
-    await syncContentToPocketBase(slug, currentUi)
-  } catch (err: any) {
-    console.error(`[ContentStore] PocketBase sync error for "${slug}":`, err?.message || err)
+  // CRITICAL: Await PocketBase sync and verify persistence so false saves never occur
+  const pbSuccess = await syncContentToPocketBase(slug, currentUi)
+  if (!pbSuccess) {
+    throw new Error(`Failed to persist changes for "${slug}" to PocketBase database. Please verify connection.`)
   }
 
+  // On-demand cache invalidation and instant pre-warming
+  await purgeServerPageCache(slug)
+  warmupServerPageCache(slug)
+
   return currentUi
+}
+
+export async function purgeServerPageCache(slug: string): Promise<void> {
+  try {
+    const storage = useStorage('cache')
+    const keys = await storage.getKeys('nitro:routes')
+    const target = slug === 'home' || slug === '/' ? '' : slug
+    for (const key of keys) {
+      if (
+        (target === '' && (key.includes('_.') || key.includes('_en.') || key.includes('_ar.'))) ||
+        (target && key.includes(target))
+      ) {
+        await storage.removeItem(key)
+      }
+    }
+  } catch (err) {
+    console.warn(`[ContentStore] Cache purge warning for "${slug}":`, err)
+  }
+}
+
+export function warmupServerPageCache(slug: string): void {
+  try {
+    const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
+    const paths = slug === 'home' || slug === '/' ? ['/', '/en', '/ar'] : [`/${slug}`, `/en/${slug}`, `/ar/${slug}`]
+    for (const p of paths) {
+      $fetch(`${baseUrl}${p}`, { timeout: 4000 }).catch(() => {})
+    }
+  } catch {}
 }
 
 export async function syncContentToPocketBase(slug: string, uiData: Record<string, any>): Promise<boolean> {

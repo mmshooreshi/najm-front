@@ -1,6 +1,6 @@
 <!-- components/Menu.vue -->
 <template>
-  <nav class="w-full max-w-xl mx-auto py-2" :dir="isRTL ? 'rtl' : 'ltr'" aria-label="Sidebar Navigation">
+  <nav class="w-full max-w-xl mx-auto py-2" :dir="isRTL ? 'rtl' : 'ltr'" aria-label="Sidebar Navigation" data-admin-slug="menu">
     <div
       v-for="(section, sIdx) in sections || []"
       :key="section?.id || sIdx"
@@ -12,6 +12,7 @@
       <BaseAccordionGroupNew 
         v-if="section && section.type === 'accordion'"
         :title="section.name"
+        :edit-path="`menu:${section.key}.name`"
         :tabs="section.tabs"
         :panes="section.children"
         class="mb-3"
@@ -20,6 +21,7 @@
           <MenuLevel
             :items="section.children"
             :parent-slug="section.slug"
+            :parent-path="`menu:${section.key}.children`"
             @link-click="emit('close')"
           />
         </template>
@@ -31,12 +33,13 @@
         class="mb-4"
       >
         <div class="text-gray-400 font-bold text-xs uppercase tracking-wider px-2 mb-2 mt-4 flex items-center justify-between">
-          <span>{{ section.name }}</span>
+          <span v-editable="`menu:${section.key}.name`">{{ section.name }}</span>
         </div>
 
         <MenuLevel
           :items="section.children"
           :parent-slug="section.slug"
+          :parent-path="`menu:${section.key}.children`"
           @link-click="emit('close')"
         />
       </div>
@@ -46,9 +49,14 @@
         v-else-if="section && section.type === 'hidden'"
         class="my-3 border-t border-gray-100 pt-3"
       >
+        <div v-if="section.name" class="text-gray-400 font-bold text-[11px] uppercase tracking-wider px-2 mb-1.5 flex items-center justify-between">
+          <span v-editable="`menu:${section.key}.name`">{{ section.name }}</span>
+        </div>
+
         <MenuLevel
           :items="section.children"
           :parent-slug="section.slug"
+          :parent-path="`menu:${section.key}.children`"
           @link-click="emit('close')"
         />
       </div>
@@ -75,11 +83,14 @@ const isRTL = computed(() => {
   return l === 'FA' || l === 'AR'
 })
 
-const sections = computed(() => [
-  menuUIData?.value?.products,
-  menuUIData?.value?.services,
-  menuUIData?.value?.links,
-  menuUIData?.value?.contact
-])
+const sections = computed(() => {
+  const data = menuUIData?.value || {}
+  return [
+    data.products ? { key: 'products', ...data.products } : null,
+    data.services ? { key: 'services', ...data.services } : null,
+    data.links ? { key: 'links', ...data.links } : null,
+    data.contact ? { key: 'contact', ...data.contact } : null
+  ].filter(Boolean)
+})
 </script>
   

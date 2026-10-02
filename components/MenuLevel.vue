@@ -12,6 +12,7 @@
         :activeFiltersCount="trueCounts[item.id]"
         :open="false"
         :title="item.name"
+        :edit-path="parentPath ? `${parentPath}.${idx}.name` : ''"
         :tabs="item.tabs"
         :panes="item.children"
         class="border border-gray-200/80 rounded-2xl overflow-hidden bg-gray-50/60"
@@ -21,6 +22,7 @@
           <MenuLevel
             :items="pane.children"
             :parent-slug="fullSlug(pane)"
+            :parent-path="parentPath ? `${parentPath}.${idx}.children` : ''"
             @link-click="emit('link-click')"
           />
         </template>
@@ -30,6 +32,7 @@
           <MenuLevel
             :items="item.children"
             :parent-slug="fullSlug(item)"
+            :parent-path="parentPath ? `${parentPath}.${idx}.children` : ''"
             @link-click="emit('link-click')"
           />
         </template>
@@ -39,6 +42,7 @@
       <div
         v-else-if="item.type === 'label'"
         class="text-gray-400 font-bold text-xs uppercase tracking-wider px-3 pt-3 pb-1"
+        v-editable="parentPath ? `${parentPath}.${idx}.name` : ''"
       >
         {{ item.name }}
       </div>
@@ -52,7 +56,7 @@
         @focus.passive="onLinkHover(item)"
         class="min-h-[44px] py-2.5 px-3 sm:px-4 flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-najmgreen hover:bg-gray-100/80 active:bg-gray-200/70 active:scale-[0.99] rounded-xl transition-all duration-200"
       >
-        <span class="truncate">{{ item.name }}</span>
+        <span class="truncate" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">{{ item.name }}</span>
         <Icon
           :name="isRTL ? 'mdi:chevron-left' : 'mdi:chevron-right'"
           class="w-5 h-5 text-gray-400 group-hover:text-najmgreen transition-transform group-hover:-translate-x-1 flex-shrink-0"
@@ -76,7 +80,7 @@
           name="mdi:checkbox-blank-outline"
           class="w-5 h-5 text-gray-400 hover:text-gray-600 flex-shrink-0"
         />
-        <div class="text-xs font-semibold" :class="item.value ? 'text-gray-900 font-bold' : 'text-gray-600'">
+        <div class="text-xs font-semibold" :class="item.value ? 'text-gray-900 font-bold' : 'text-gray-600'" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">
           {{ item.name }}
         </div>
         <div v-if="item.count" class="text-[11px] text-gray-400">
@@ -93,7 +97,7 @@
         @focus.passive="onLinkHover(item)"
         class="min-h-[44px] py-2.5 px-3 sm:px-4 flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-najmgreen hover:bg-gray-100/80 active:bg-gray-200/70 active:scale-[0.99] rounded-xl transition-all duration-200"
       >
-        <span class="truncate">{{ item.name }}</span>
+        <span class="truncate" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">{{ item.name }}</span>
         <div v-if="item.count" class="text-xs font-normal text-gray-400 flex-shrink-0">
           ({{ toLocalizedDigits(item.count) }} {{ countSuffix }})
         </div>
@@ -110,7 +114,7 @@
       >
         <div class="flex items-center gap-2 truncate">
           <span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>
-          <span class="truncate">{{ item.name }}</span>
+          <span class="truncate" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">{{ item.name }}</span>
         </div>
         <span v-if="item.count" class="text-[11px] text-gray-400 flex-shrink-0">
           ({{ toLocalizedDigits(item.count) }})
@@ -134,6 +138,7 @@ const emit = defineEmits<{
 const props = defineProps<{
   items?: Array<any>
   parentSlug?: string
+  parentPath?: string
 }>()
 
 const { language, localePath } = useLocale()

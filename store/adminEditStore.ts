@@ -735,7 +735,7 @@ export function setEditingActive(path: string | null, active: boolean) {
 }
 
 /** Helper: Load active working copy of UI schema */
-function getActiveWorkingUI(slug: string, lang: LangCode): { currentUI: any; baseSchema: any } {
+export function getActiveWorkingUI(slug: string, lang: LangCode): { currentUI: any; baseSchema: any } {
   const upper = lang.toUpperCase()
   const lower = lang.toLowerCase()
 
@@ -747,7 +747,8 @@ function getActiveWorkingUI(slug: string, lang: LangCode): { currentUI: any; bas
   let currentUI = adminEditState.clientOverrides[slug][upper] || adminEditState.clientOverrides[slug][lower]
 
   if (!currentUI || Object.keys(currentUI).length === 0) {
-    const snap = adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
+    const slugSnap = adminEditState.allLangUIBySlug?.[slug]?.[upper] || adminEditState.allLangUIBySlug?.[slug]?.[lower]
+    const snap = slugSnap || adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
     if (snap && Object.keys(snap).length > 0) {
       currentUI = deepClone(snap)
     } else {
@@ -1022,6 +1023,119 @@ export function getAllLangs(): string[] {
   }
   if (!a.size) return ['fa', 'en', 'ar']
   return Array.from(a)
+}
+
+export function getActiveSlugs(): string[] {
+  const slugs = new Set<string>()
+  if (adminEditState.slug) slugs.add(adminEditState.slug)
+  if (adminEditState.allLangUIBySlug) {
+    Object.keys(adminEditState.allLangUIBySlug).forEach(s => slugs.add(s))
+  }
+  slugs.add('menu')
+  slugs.add('footer')
+  return Array.from(slugs).filter(Boolean)
+}
+
+export interface PageContentItem {
+  section: string
+  sectionLabel: string
+  key: string
+  path: string
+  current: string
+  original: string
+  isChanged: boolean
+  isMultiline: boolean
+  slug: string
+  lang: string
+}
+
+export function getPageContentItems(slug?: string, lang?: LangCode): PageContentItem[] {
+  const currentSlug = slug || adminEditState.slug || 'home'
+  const currentLang = (lang || adminEditState.language || 'FA').toUpperCase()
+  const { currentUI, baseSchema } = getActiveWorkingUI(currentSlug, currentLang)
+
+  const items: PageContentItem[] = []
+
+  const sectionLabels: Record<string, string> = {
+    sceneHero: 'بخش اصلی و هدر (Hero)',
+    highlightedText: 'تایپوگرافی برجسته (Typography)',
+    sceneServicesAndCapabilities: 'خدمات و توانایی‌ها (Services)',
+    accordion: 'مراحل و گام‌ها (Process Steps)',
+    sceneProducts: 'محصولات (Products)',
+    scenePartners: 'همکاران تجاری (Partners)',
+    sceneCustomers: 'مشتریان و نظرات (Customers)',
+    sceneFaq: 'سوالات متداول (FAQ)',
+    sceneContact: 'اطلاعات تماس (Contact)',
+    categories: 'دسته‌بندی‌ها (Categories)',
+    links: 'پیوندها (Links)',
+    featured: 'ویژه‌ها (Featured)',
+    columns: 'ستون‌های فوتر (Footer Columns)',
+    socials: 'شبکه‌های اجتماعی (Socials)',
+    copyright: 'کپی‌رایت (Copyright)',
+    about: 'درباره ما (About)',
+    seo: 'سئو و متادیتا (SEO & Meta)'
+  }
+
+  function getHumanSection(sectionKey: string): string {
+    if (sectionLabels[sectionKey]) return sectionLabels[sectionKey]
+    return sectionKey
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^scene\s*/i, '')
+      .replace(/^./, str => str.toUpperCase())
+      .trim()
+  }
+
+  function walk(node: any, prefix = '', topSection = '') {
+    if (node === null || node === undefined) return
+
+    if (typeof node === 'string' || typeof node === 'number' || typeof node === 'boolean') {
+      const fullPath = prefix
+      const rec = adminEditState.changes[fullPath]?.[currentLang] || adminEditState.changes[fullPath]?.[currentLang.toLowerCase()]
+      const baseVal = getByPath(baseSchema, fullPath)
+      const orig = rec?.original ?? (baseVal !== undefined ? String(baseVal) : String(node))
+      const curr = rec?.draft ?? rec?.value ?? String(node)
+
+      const sectionKey = topSection || fullPath.split('.')[0] || 'general'
+      const key = fullPath.startsWith(sectionKey + '.') ? fullPath.slice(sectionKey.length + 1) : fullPath
+
+      const changed = isChanged(fullPath, currentLang) || isChanged(fullPath, currentLang.toLowerCase()) || (normForCompare(curr, currentLang) !== normForCompare(orig, currentLang))
+
+      items.push({
+        section: sectionKey,
+        sectionLabel: getHumanSection(sectionKey),
+        key,
+        path: fullPath,
+        current: curr,
+        original: orig,
+        isChanged: changed,
+        isMultiline: curr.includes('\n') || curr.length > 70,
+        slug: currentSlug,
+        lang: currentLang
+      })
+      return
+    }
+
+    if (Array.isArray(node)) {
+      node.forEach((item, index) => {
+        const itemPath = prefix ? `${prefix}.${index}` : `${index}`
+        const sec = topSection || prefix || 'general'
+        walk(item, itemPath, sec)
+      })
+      return
+    }
+
+    if (typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) {
+        if (k.startsWith('_') || k === 'id') continue
+        const childPath = prefix ? `${prefix}.${k}` : k
+        const sec = topSection || prefix || k
+        walk(v, childPath, sec)
+      }
+    }
+  }
+
+  walk(currentUI)
+  return items
 }
 
 /** Media Studio In-Place Handlers */

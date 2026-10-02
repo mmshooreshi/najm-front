@@ -7,7 +7,8 @@ import {
   adminEditState as state,
   setSlug,
   syncLanguage,
-  captureLanguageSnapshot
+  captureLanguageSnapshot,
+  applySnapshotToBaselines
 } from '@/store/adminEditStore'
 
 /**
@@ -17,13 +18,17 @@ import {
  * - Hydrates baselines when data is loaded
  * - Keeps capturing snapshots on subsequent updates
  */
-export function useAdminEditable(slug: string) {
+export function useAdminEditable(slug: string, isPage = true) {
   const { language } = useLocale()
   const { ui, allUi } = usePageUI(slug)
 
-  setSlug(slug)
+  // Only top-level page components set the primary active slug; layout components (footer, menu) must not overwrite it
+  const isLayoutComponent = slug === 'footer' || slug === 'menu'
+  if (isPage && !isLayoutComponent) {
+    setSlug(slug)
+  }
   if (process.dev) {
-    logger.info('Admin:Edit', `Attached useAdminEditable to slug: "${slug}"`)
+    logger.info('Admin:Edit', `Attached useAdminEditable to slug: "${slug}" (isPage: ${isPage && !isLayoutComponent})`)
   }
 
   // Keep language in sync
@@ -47,6 +52,7 @@ export function useAdminEditable(slug: string) {
     // Capture snapshot for live clientOverrides and saving
     if (!state.canEdit) return
     captureLanguageSnapshot(lang, currentUI, slug)
+    applySnapshotToBaselines(lang, slug)
   }, { immediate: true })
 
   return { state }
