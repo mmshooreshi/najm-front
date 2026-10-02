@@ -473,18 +473,10 @@ export function useAppSeo(options: SeoOptions = {}) {
           inLanguage: ['fa-IR', 'en-US', 'ar-SA'],
           publisher: {
             '@id': `${baseUrl}/#organization`
-          },
-          potentialAction: {
-            '@type': 'SearchAction',
-            target: {
-              '@type': 'EntryPoint',
-              urlTemplate: `${baseUrl}/catalog?q={search_term_string}`
-            },
-            'query-input': 'required name=search_term_string'
           }
         },
         {
-          '@type': ['LocalBusiness', 'ProfessionalService', 'Corporation'],
+          '@type': 'LocalBusiness',
           '@id': `${baseUrl}/#localbusiness`,
           name: brandName.value,
           parentOrganization: {
@@ -509,8 +501,8 @@ export function useAppSeo(options: SeoOptions = {}) {
           },
           geo: {
             '@type': 'GeoCoordinates',
-            latitude: 35.6734868,
-            longitude: 51.3090102
+            latitude: 35.6735935,
+            longitude: 51.3085833
           },
           hasMap: 'https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA',
           openingHoursSpecification: [
@@ -525,74 +517,6 @@ export function useAppSeo(options: SeoOptions = {}) {
               dayOfWeek: ['Thursday'],
               opens: '08:00',
               closes: '13:00'
-            }
-          ],
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '4.9',
-            bestRating: '5',
-            worstRating: '1',
-            ratingCount: '156',
-            reviewCount: '128'
-          }
-        },
-        {
-          '@type': 'ItemList',
-          '@id': `${baseUrl}/#sitelinks`,
-          name: computed(() => {
-            if (currentLang.value === 'EN') return 'Key Navigation Sitelinks'
-            if (currentLang.value === 'AR') return 'أقسام الموقع الرئيسية'
-            return 'بخش‌های اصلی سایت نجم'
-          }).value,
-          itemListElement: [
-            {
-              '@type': 'SiteNavigationElement',
-              position: 1,
-              name: computed(() => currentLang.value === 'EN' ? 'Packaging & Boxes Catalog' : (currentLang.value === 'AR' ? 'كتالوج المنتجات والعلب' : 'کاتالوگ محصولات و جعبه‌ها')).value,
-              description: computed(() => currentLang.value === 'EN' ? 'Custom folding cartons, rigid boxes & luxury packaging' : (currentLang.value === 'AR' ? 'علب الكرتون الصلب والفاخر وتغليف المنتجات' : 'تولید انواع جعبه مقوایی، هاردباکس و بسته‌بندی لوکس')).value,
-              url: computed(() => localePath('/catalog')).value
-            },
-            {
-              '@type': 'SiteNavigationElement',
-              position: 2,
-              name: computed(() => currentLang.value === 'EN' ? 'Printing Facilities & Machinery' : (currentLang.value === 'AR' ? 'المعدات والماكينات الصناعية' : 'ماشین‌آلات و تجهیزات چاپ')).value,
-              description: computed(() => currentLang.value === 'EN' ? '5-Color Heidelberg Speedmaster offset press, thermal lamination & die-cutting' : (currentLang.value === 'AR' ? 'ماكينات هايدلبرغ الألمانية ۵ ألوان وخطوط التكسير والسلفان' : 'هایدلبرگ ۵ رنگ، سلفون حرارتی اتوماتیک و لترپرس')).value,
-              url: computed(() => localePath('/facilities')).value
-            },
-            {
-              '@type': 'SiteNavigationElement',
-              position: 3,
-              name: computed(() => currentLang.value === 'EN' ? 'Industrial Printing & Packaging Services' : (currentLang.value === 'AR' ? 'خدمات الطباعة والتغليف الصناعي' : 'خدمات چاپ و بسته‌بندی')).value,
-              description: computed(() => currentLang.value === 'EN' ? 'Commercial offset printing, carton manufacturing and finishing' : (currentLang.value === 'AR' ? 'خدمات الطباعة الصناعية المتكاملة' : 'طراحی ساختاری، چاپ افست تجاری و جعبه‌سازی صنعتی')).value,
-              url: computed(() => localePath('/services/printing-and-packaging')).value
-            },
-            {
-              '@type': 'SiteNavigationElement',
-              position: 4,
-              name: computed(() => currentLang.value === 'EN' ? 'About Najm Complex' : (currentLang.value === 'AR' ? 'عن مجمع نجم للطباعة' : 'درباره مجتمع چاپ نجم')).value,
-              description: computed(() => currentLang.value === 'EN' ? 'Over 25 years of legacy, quality certifications and factory infrastructure' : (currentLang.value === 'AR' ? 'أكثر من ۲۵ عاماً من الخبرة والشهادات والقدرات الصناعية' : 'بیش از ۲۵ سال پیشینه، گواهینامه‌ها و توانمندی‌های کارخانه')).value,
-              url: computed(() => localePath('/about')).value
-            },
-            {
-              '@type': 'SiteNavigationElement',
-              position: 5,
-              name: computed(() => currentLang.value === 'EN' ? 'Price Inquiry & Contact' : (currentLang.value === 'AR' ? 'طلب استعلام الأسعار والتواصل' : 'تماس و استعلام قیمت')).value,
-              description: computed(() => currentLang.value === 'EN' ? 'Request official quotations, phone numbers and factory address' : (currentLang.value === 'AR' ? 'طلب عروض الأسعار الرسمية وأرقام الهواتف والعنوان' : 'دریافت پیش‌فاکتور، شماره تماس مستقیم و لوکیشن کارخانه')).value,
-              url: computed(() => localePath('/contact')).value
-            },
-            {
-              '@type': 'SiteNavigationElement',
-              position: 6,
-              name: computed(() => currentLang.value === 'EN' ? 'Specialized Packaging Consultation' : (currentLang.value === 'AR' ? 'استشارة التغليف الهندسية' : 'مشاوره تخصصی بسته‌بندی')).value,
-              description: computed(() => currentLang.value === 'EN' ? 'Structural design, material optimization & cost engineering' : (currentLang.value === 'AR' ? 'استشارة هندسية في اختيار الخامات والتصميم' : 'مشاوره مهندسی ساختار، گرماژ مقوا و کاهش هزینه')).value,
-              url: computed(() => localePath('/consultation')).value
-            },
-            {
-              '@type': 'SiteNavigationElement',
-              position: 7,
-              name: computed(() => currentLang.value === 'EN' ? 'Technical Blog & Guides' : (currentLang.value === 'AR' ? 'المدونة والمقالات التعليمية' : 'وبلاگ و مقالات آموزشی')).value,
-              description: computed(() => currentLang.value === 'EN' ? 'Offset printing standards, packaging design tutorials & guides' : (currentLang.value === 'AR' ? 'مقالات وأدلة تقنيات الطباعة الأوفست وتصميم العلب' : 'راهنماهای فنی چاپ افست، استانداردهای بهداشتی جعبه')).value,
-              url: computed(() => localePath('/blog')).value
             }
           ]
         }
@@ -680,18 +604,7 @@ export function useAppSeo(options: SeoOptions = {}) {
         manufacturer: {
           '@id': `${baseUrl}/#organization`
         },
-        category: toValue(options.category) || 'Industrial Packaging & Custom Boxes',
-        offers: {
-          '@type': 'Offer',
-          url: canonicalUrl.value,
-          priceCurrency: 'IRR',
-          price: '0',
-          priceValidUntil: '2026-12-31',
-          availability: 'https://schema.org/InStock',
-          seller: {
-            '@id': `${baseUrl}/#organization`
-          }
-        }
+        category: toValue(options.category) || 'Industrial Packaging & Custom Boxes'
       })
     } else if (pageType === 'service') {
       graph.push({

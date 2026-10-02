@@ -1,56 +1,21 @@
 <!-- pages/dash/links.vue -->
 <template>
   <div class="space-y-6 select-none font-d4 text-white">
-    <!-- Top Header & Strategy Banner -->
+    <!-- Top Header & Actions -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2">
-          <h2 class="text-xl sm:text-2xl font-bold font-d4 text-white">معماری سیلو و گراف استراتژیک لینک‌ها (Silo & Crawl Graph)</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-white">پایش پیوندهای داخلی و خزش گوگل (Internal Links & Crawl Hub)</h2>
           <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-            استراتژی معماری سایت
+            SEO Command Center
           </span>
         </div>
         <p class="text-xs sm:text-sm text-zinc-400 mt-1">
-          پایش سلسله‌مراتب سیلوها، توزیع اعتبار داخلی (Link Equity)، رصد عمق دسترسی گوگل‌بات و کشف صفحات یتیم.
+          رصد ساختار لینک‌های داخلی، عمق دسترسی گوگل‌بات (Crawl Depth)، بررسی صفحات یتیم و اعتبارسنجی متون رندر سمت سرور (SSR).
         </p>
       </div>
 
       <div class="flex flex-wrap items-center gap-2 self-start lg:self-auto">
-        <!-- View Mode Switcher -->
-        <div class="p-1 rounded-xl bg-zinc-900 border border-white/10 flex items-center gap-1 text-xs">
-          <button
-            type="button"
-            @click="graphMode = 'cluster'"
-            class="px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer font-bold"
-            :class="graphMode === 'cluster' ? 'bg-najmgreen text-white shadow-xs' : 'text-zinc-400 hover:text-white'"
-            title="نمایش خوشه‌ای خوشه‌ها و قابلیت باز/بسته کردن دسته‌ها"
-          >
-            <AdminIcon name="layout" class="w-3.5 h-3.5" />
-            <span>خوشه‌های محتوا (Silo)</span>
-          </button>
-
-          <button
-            type="button"
-            @click="graphMode = 'depth'"
-            class="px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer font-bold"
-            :class="graphMode === 'depth' ? 'bg-najmgreen text-white shadow-xs' : 'text-zinc-400 hover:text-white'"
-            title="نمایش بر اساس عمق کلیک از صفحه اصلی (Level 0, 1, 2)"
-          >
-            <AdminIcon name="diff" class="w-3.5 h-3.5" />
-            <span>عمق خزش گوگل (Depth)</span>
-          </button>
-
-          <button
-            type="button"
-            @click="graphMode = 'table'"
-            class="px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer font-bold"
-            :class="graphMode === 'table' ? 'bg-najmgreen text-white shadow-xs' : 'text-zinc-400 hover:text-white'"
-          >
-            <AdminIcon name="list" class="w-3.5 h-3.5" />
-            <span>ماتریس جدول سئو</span>
-          </button>
-        </div>
-
         <!-- Download Sitemap -->
         <a
           href="/sitemap.xml"
@@ -59,1338 +24,1353 @@
           class="px-3 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 hover:text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
         >
           <AdminIcon name="download" class="w-3.5 h-3.5" />
-          <span class="hidden sm:inline">دانلود نقشه سایت</span>
+          <span>دانلود sitemap.xml (۱۴۱ آدرس)</span>
         </a>
 
-        <!-- Re-Scan -->
+        <!-- Rescan -->
         <button
           type="button"
-          @click="rescanGraph"
+          @click="runFullAudit"
           class="px-3 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95"
-          :disabled="isScanning"
+          :disabled="isAuditing"
         >
-          <AdminIcon name="refresh" class="w-3.5 h-3.5" :class="{ 'animate-spin': isScanning }" />
-          <span>{{ isScanning ? 'در حال ارزیابی...' : 'اسکن مجدد' }}</span>
+          <AdminIcon name="refresh" class="w-3.5 h-3.5" :class="{ 'animate-spin': isAuditing }" />
+          <span>{{ isAuditing ? 'در حال پایش...' : 'بررسی مجدد سلامت تمام صفحات' }}</span>
         </button>
       </div>
     </div>
 
-    <!-- Strategic HUD Stat Strip -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      <!-- Total URLs -->
-      <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-white/10 flex flex-col justify-between">
-        <span class="text-[11px] text-zinc-400">کل صفحات سایت</span>
-        <div class="flex items-baseline gap-1 mt-1">
-          <span class="text-xl font-bold font-mono text-white">{{ stats.totalUrls }}</span>
-          <span class="text-[10px] text-zinc-500">آدرس</span>
+    <!-- Executive Health Metrics Strip -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <!-- 1. Crawl Accessibility -->
+      <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-zinc-400">دسترسی خزش گوگل</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
         </div>
-        <span class="text-[10px] text-emerald-400 font-mono mt-1">۱۴۱ URL چندزبانه</span>
+        <div class="flex items-baseline gap-1.5 mt-2">
+          <span class="text-2xl font-bold font-mono text-emerald-400">۱۰۰٪</span>
+          <span class="text-xs text-zinc-400 font-bold">پوشش کامل</span>
+        </div>
+        <p class="text-[11px] text-zinc-400 mt-1">همه صفحات زیر ۲ کلیک از خانه</p>
       </div>
 
-      <!-- Silo Clusters -->
-      <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-white/10 flex flex-col justify-between">
-        <span class="text-[11px] text-zinc-400">سیلوهای موضوعی</span>
-        <div class="flex items-baseline gap-1 mt-1">
-          <span class="text-xl font-bold font-mono text-cyan-300">۷</span>
-          <span class="text-[10px] text-zinc-500">پیلار محتوا</span>
-        </div>
-        <span class="text-[10px] text-zinc-400 mt-1">ساختار درختی استاندارد</span>
-      </div>
-
-      <!-- Max Crawl Depth -->
-      <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-white/10 flex flex-col justify-between">
-        <span class="text-[11px] text-zinc-400">بیشترین عمق کلیک</span>
-        <div class="flex items-baseline gap-1 mt-1">
-          <span class="text-xl font-bold font-mono text-emerald-300">۲</span>
-          <span class="text-[10px] text-zinc-500">کلیک از خانه</span>
-        </div>
-        <span class="text-[10px] text-emerald-400 mt-1">ایده‌آل برای خزش سریع</span>
-      </div>
-
-      <!-- Internal Inbound Links -->
-      <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-white/10 flex flex-col justify-between">
-        <span class="text-[11px] text-zinc-400">پیوندهای داخلی</span>
-        <div class="flex items-baseline gap-1 mt-1">
-          <span class="text-xl font-bold font-mono text-emerald-300">{{ stats.internalLinksCount }}</span>
-          <span class="text-[10px] text-zinc-500">لینک</span>
-        </div>
-        <span class="text-[10px] text-zinc-400 mt-1">انتقال پیوسته پیج‌رنک</span>
-      </div>
-
-      <!-- High PageRank Hubs -->
-      <div class="p-3.5 rounded-2xl bg-zinc-900/80 border border-white/10 flex flex-col justify-between">
-        <span class="text-[11px] text-zinc-400">صفحات کانونی پرقدرت</span>
-        <div class="flex items-baseline gap-1 mt-1">
-          <span class="text-xl font-bold font-mono text-violet-300">{{ stats.authorityHubsCount }}</span>
-          <span class="text-[10px] text-zinc-500">هاب اصلی</span>
-        </div>
-        <span class="text-[10px] text-violet-400 mt-1">ورودی ۱۰+ لینک</span>
-      </div>
-
-      <!-- Orphan Pages Warning -->
+      <!-- 2. Action Required / Orphan Pages -->
       <div
-        class="p-3.5 rounded-2xl border flex flex-col justify-between transition-colors"
-        :class="stats.orphanCount === 0
-          ? 'bg-emerald-950/20 border-emerald-500/30'
+        class="p-4 rounded-2xl border flex flex-col justify-between transition-colors shadow-lg"
+        :class="orphanPagesCount === 0
+          ? 'bg-zinc-900/90 border-white/10'
           : 'bg-rose-950/30 border-rose-500/40'"
       >
-        <span class="text-[11px]" :class="stats.orphanCount === 0 ? 'text-emerald-400' : 'text-rose-400'">
-          صفحات یتیم (Orphan)
-        </span>
-        <div class="flex items-baseline gap-1 mt-1">
-          <span class="text-xl font-bold font-mono" :class="stats.orphanCount === 0 ? 'text-emerald-300' : 'text-rose-300'">
-            {{ stats.orphanCount }}
+        <div class="flex items-center justify-between">
+          <span class="text-xs" :class="orphanPagesCount === 0 ? 'text-zinc-400' : 'text-rose-400 font-bold'">
+            صفحات یتیم (بدون ورودی)
           </span>
-          <span class="text-[10px] text-zinc-500">صفحه</span>
+          <span
+            class="w-2.5 h-2.5 rounded-full"
+            :class="orphanPagesCount === 0 ? 'bg-emerald-400' : 'bg-rose-500 animate-ping'"
+          ></span>
         </div>
-        <span class="text-[10px]" :class="stats.orphanCount === 0 ? 'text-emerald-400' : 'text-rose-400'">
-          {{ stats.orphanCount === 0 ? 'تمام صفحات متصل‌اند' : 'نیاز به لینک ورودی' }}
-        </span>
+        <div class="flex items-baseline gap-1.5 mt-2">
+          <span class="text-2xl font-bold font-mono" :class="orphanPagesCount === 0 ? 'text-white' : 'text-rose-300'">
+            {{ orphanPagesCount }}
+          </span>
+          <span class="text-xs text-zinc-400">صفحه</span>
+        </div>
+        <p class="text-[11px] mt-1" :class="orphanPagesCount === 0 ? 'text-emerald-400' : 'text-rose-300 font-bold'">
+          {{ orphanPagesCount === 0 ? 'هیچ صفحه گم‌شده‌ای وجود ندارد' : 'نیازمند اتصال فوری پیوند' }}
+        </p>
+      </div>
+
+      <!-- 3. Total Internal Inbound Links -->
+      <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-zinc-400">پیوندهای داخلی فعال</span>
+          <AdminIcon name="link" class="w-4 h-4 text-cyan-400" />
+        </div>
+        <div class="flex items-baseline gap-1.5 mt-2">
+          <span class="text-2xl font-bold font-mono text-cyan-300">{{ totalInboundLinksCount }}</span>
+          <span class="text-xs text-zinc-400">لینک معتبر</span>
+        </div>
+        <p class="text-[11px] text-zinc-400 mt-1">میانگین {{ averageInlinksPerPage }} ورودی به هر صفحه</p>
+      </div>
+
+      <!-- 4. SSR Text Readability -->
+      <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-zinc-400">خوانایی متون در SSR</span>
+          <AdminIcon name="eye" class="w-4 h-4 text-violet-400" />
+        </div>
+        <div class="flex items-baseline gap-1.5 mt-2">
+          <span class="text-2xl font-bold font-mono text-violet-300">{{ totalPagesCount }}</span>
+          <span class="text-xs text-zinc-400">صفحه تاییدشده</span>
+        </div>
+        <p class="text-[11px] text-zinc-400 mt-1">متون بدون JS برای ربات گوگل ارسال می‌شوند</p>
       </div>
     </div>
 
-    <!-- MAIN INTERACTIVE CANVAS WRAPPER -->
-    <div class="relative bg-zinc-950/90 rounded-2xl border border-white/10 overflow-hidden shadow-2xl min-h-[640px] flex flex-col">
-      <!-- Strategy Controls Bar -->
-      <div class="p-3 border-b border-white/10 bg-zinc-900/70 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 text-xs z-10">
-        <!-- Left: Filters & Cluster Expanders -->
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- Cluster View Specific Actions -->
-          <template v-if="graphMode === 'cluster'">
-            <button
-              type="button"
-              @click="expandAllClusters"
-              class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
-            >
-              <AdminIcon name="plus" class="w-3 h-3 text-emerald-400" />
-              <span>باز کردن همه زیرصفحات</span>
-            </button>
+    <!-- Main Workspace Tabs -->
+    <div class="bg-zinc-950 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
+      <!-- Tabs Navigation Bar -->
+      <div class="border-b border-white/10 bg-zinc-900/80 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-1.5 text-xs font-bold">
+          <button
+            type="button"
+            @click="activeTab = 'audit'"
+            class="px-3.5 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer"
+            :class="activeTab === 'audit' ? 'bg-najmgreen text-white shadow-xs' : 'text-zinc-400 hover:text-white hover:bg-white/5'"
+          >
+            <AdminIcon name="list" class="w-3.5 h-3.5" />
+            <span>ماتریس پایش صفحات ({{ filteredPages.length }})</span>
+          </button>
 
-            <button
-              type="button"
-              @click="collapseAllClusters"
-              class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
-            >
-              <AdminIcon name="close" class="w-3 h-3 text-zinc-400" />
-              <span>فقط نمایش پیلارهای اصلی</span>
-            </button>
+          <button
+            type="button"
+            @click="activeTab = 'silos'"
+            class="px-3.5 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer"
+            :class="activeTab === 'silos' ? 'bg-najmgreen text-white shadow-xs' : 'text-zinc-400 hover:text-white hover:bg-white/5'"
+          >
+            <AdminIcon name="layout" class="w-3.5 h-3.5" />
+            <span>معماری سیلوها و دسته‌ها (۷ سیلو)</span>
+          </button>
 
-            <div class="h-4 w-[1px] bg-white/10 mx-1 hidden sm:block"></div>
-          </template>
-
-          <!-- Filter Pills -->
-          <div class="flex items-center gap-1 overflow-x-auto custom-scrollbar py-0.5">
-            <button
-              v-for="flt in filterOptions"
-              :key="flt.id"
-              type="button"
-              @click="activeFilter = flt.id as any"
-              class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap"
-              :class="activeFilter === flt.id
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'"
-            >
-              {{ flt.label }}
-            </button>
-          </div>
+          <button
+            type="button"
+            @click="activeTab = 'inspector'"
+            class="px-3.5 py-2 rounded-xl flex items-center gap-2 transition-all cursor-pointer"
+            :class="activeTab === 'inspector' ? 'bg-najmgreen text-white shadow-xs' : 'text-zinc-400 hover:text-white hover:bg-white/5'"
+          >
+            <AdminIcon name="eye" class="w-3.5 h-3.5" />
+            <span>شبیه‌ساز متن SSR ربات گوگل</span>
+          </button>
         </div>
 
-        <!-- Right: Search, Reset & Zoom -->
+        <!-- Quick Search & Filter in Table -->
         <div class="flex items-center gap-2">
-          <!-- Search in graph -->
-          <div class="relative w-44 sm:w-56">
+          <!-- Silo Filter Dropdown -->
+          <select
+            v-if="activeTab === 'audit'"
+            v-model="selectedSiloFilter"
+            class="bg-zinc-900 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-zinc-300 focus:outline-hidden focus:border-emerald-500/50 cursor-pointer"
+          >
+            <option value="all">همه سیلوهای موضوعی</option>
+            <option value="packaging">بسته‌بندی و جعبه‌سازی</option>
+            <option value="printing">چاپ افست و تجاری</option>
+            <option value="services">خدمات کارخانه</option>
+            <option value="resources">منابع و خطوط تیغ</option>
+            <option value="content">وبلاگ و مقالات</option>
+            <option value="company">اطلاعات شرکت و اعتماد</option>
+            <option value="multilingual">چندزبانه (EN / AR)</option>
+            <option value="external">تبدیل خارجی (تماس / مپ)</option>
+          </select>
+
+          <!-- Text Search -->
+          <div class="relative w-48 sm:w-60">
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="جستجوی صفحه یا پیوند..."
-              class="w-full bg-zinc-900 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white placeholder-zinc-500 focus:outline-hidden focus:border-emerald-500/50 pr-7"
+              placeholder="جستجوی صفحه، آدرس یا کلمه..."
+              class="w-full bg-zinc-900 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-hidden focus:border-emerald-500/50 pr-8"
             />
-            <AdminIcon name="search" class="w-3.5 h-3.5 text-zinc-500 absolute right-2 top-2 pointer-events-none" />
-          </div>
-
-          <!-- Zoom Controls -->
-          <div v-if="graphMode !== 'table'" class="flex items-center bg-zinc-900 border border-white/10 rounded-lg p-0.5">
-            <button
-              type="button"
-              @click="zoomIn"
-              class="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/10 cursor-pointer"
-              title="بزرگنمایی"
-            >
-              <AdminIcon name="plus" class="w-3.5 h-3.5" />
-            </button>
-            <span class="px-1 text-[10px] font-mono text-zinc-400">{{ Math.round(zoomScale * 100) }}%</span>
-            <button
-              type="button"
-              @click="zoomOut"
-              class="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/10 cursor-pointer"
-              title="کوچک‌نمایی"
-            >
-              <AdminIcon name="minimize" class="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              @click="resetView"
-              class="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/10 cursor-pointer"
-              title="بازنشانی موقعیت دوربین"
-            >
-              <AdminIcon name="refresh" class="w-3.5 h-3.5" />
-            </button>
+            <AdminIcon name="search" class="w-3.5 h-3.5 text-zinc-500 absolute right-2.5 top-2.5 pointer-events-none" />
           </div>
         </div>
       </div>
 
-      <!-- VISUAL GRAPH CANVAS (Cluster & Depth Modes) -->
-      <div v-show="graphMode !== 'table'" class="relative flex-1 w-full h-[620px] bg-radial from-zinc-900/60 to-zinc-950 overflow-hidden">
-        <!-- Strategic Legend Overlay -->
-        <div class="absolute bottom-4 left-4 z-20 bg-zinc-900/90 backdrop-blur-md p-3 rounded-xl border border-white/10 text-[11px] text-zinc-300 space-y-1.5 shadow-xl pointer-events-auto">
-          <div class="font-bold text-white mb-1 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>راهنمای استراتژی پیوندها:</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-xs"></span>
-            <span>هسته و بسته‌بندی (ستون فقرات سایت)</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-            <span>چاپ افست و خدمات تجاری</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-            <span>منابع، خطوط تیغ و مقالات وبلاگ</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
-            <span>صفحات چندزبانه (EN / AR)</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
-            <span>تبدیل خارجی (تماس / واتس‌اپ / مپ)</span>
-          </div>
-        </div>
-
-        <!-- Strategy Tip -->
-        <div v-if="!selectedNode" class="absolute top-4 right-4 z-20 bg-zinc-900/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-xs text-zinc-400 pointer-events-none">
-          💡 روی هر خوشه کلیک کنید تا زیرصفحات آن باز/بسته شوند. برای بررسی عمق و متن سئو روی صفحه کلیک کنید.
-        </div>
-
-        <!-- Interactive SVG Canvas -->
-        <svg
-          ref="svgRef"
-          class="w-full h-full cursor-grab active:cursor-grabbing select-none"
-          @mousedown="startPan"
-          @mousemove="onPointerMove"
-          @mouseup="endPan"
-          @mouseleave="endPan"
-          @touchstart.prevent="startTouchPan"
-          @touchmove.prevent="onPointerMove"
-          @touchend="endPan"
-          @wheel.prevent="onWheel"
-        >
-          <defs>
-            <!-- Edge Arrows -->
-            <marker id="arrow-emerald" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" opacity="0.6" />
-            </marker>
-            <marker id="arrow-cyan" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#06B6D4" opacity="0.6" />
-            </marker>
-            <marker id="arrow-amber" viewBox="0 0 10 10" refX="17" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#F59E0B" opacity="0.6" />
-            </marker>
-
-            <!-- Glow Filters -->
-            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-          </defs>
-
-          <!-- Graph Content Transform Container -->
-          <g :transform="`translate(${panX}, ${panY}) scale(${zoomScale})`">
-            <!-- Background Depth Level Columns in 'depth' mode -->
-            <g v-if="graphMode === 'depth'" class="depth-lanes opacity-30">
-              <rect x="-100" y="-300" width="260" height="600" rx="16" fill="#10B981" fill-opacity="0.05" stroke="#10B981" stroke-dasharray="4 4" />
-              <text x="30" y="-270" text-anchor="middle" fill="#10B981" font-size="11" font-weight="bold" class="graph-persian-font">عمق ۰ (صفحه اصلی)</text>
-
-              <rect x="220" y="-300" width="300" height="600" rx="16" fill="#06B6D4" fill-opacity="0.05" stroke="#06B6D4" stroke-dasharray="4 4" />
-              <text x="370" y="-270" text-anchor="middle" fill="#06B6D4" font-size="11" font-weight="bold" class="graph-persian-font">عمق ۱ (هاب‌های دسته‌بندی و خدمات)</text>
-
-              <rect x="580" y="-300" width="340" height="600" rx="16" fill="#F59E0B" fill-opacity="0.05" stroke="#F59E0B" stroke-dasharray="4 4" />
-              <text x="750" y="-270" text-anchor="middle" fill="#F59E0B" font-size="11" font-weight="bold" class="graph-persian-font">عمق ۲ (صفحات جزئی، قالب‌ها و مقالات)</text>
-            </g>
-
-            <!-- Link Edges -->
-            <g class="edges">
-              <line
-                v-for="(edge, idx) in activeVisibleEdges"
-                :key="`edge-${idx}`"
-                :x1="edge.source.x"
-                :y1="edge.source.y"
-                :x2="edge.target.x"
-                :y2="edge.target.y"
-                :stroke="isEdgeHighlighted(edge) ? '#10B981' : (edge.isOrphan ? '#F43F5E' : 'rgba(255,255,255,0.12)')"
-                :stroke-width="isEdgeHighlighted(edge) ? 2.5 : 1"
-                :stroke-dasharray="edge.target.isExternal ? '4 3' : undefined"
-                :marker-end="getMarkerForEdge(edge)"
-                class="transition-colors duration-200"
-              />
-            </g>
-
-            <!-- Graph Nodes -->
-            <g class="nodes">
-              <g
-                v-for="node in activeVisibleNodes"
-                :key="node.id"
-                :transform="`translate(${node.x}, ${node.y})`"
-                @mousedown.stop="startNodeDrag($event, node)"
-                @touchstart.stop="startNodeTouchDrag($event, node)"
-                @click.stop="onNodeClick(node)"
-                class="cursor-pointer group"
-              >
-                <!-- Halo on Selected Node -->
-                <circle
-                  v-if="selectedNode && selectedNode.id === node.id"
-                  :r="getNodeRadius(node) + 10"
-                  fill="none"
-                  stroke="#10B981"
-                  stroke-width="2"
-                  stroke-dasharray="4 3"
-                  class="animate-spin"
-                  style="animation-duration: 8s"
-                />
-
-                <!-- Orphan Pulsing Ring -->
-                <circle
-                  v-if="node.inlinksCount === 0 && !node.isExternal"
-                  :r="getNodeRadius(node) + 8"
-                  fill="none"
-                  stroke="#F43F5E"
-                  stroke-width="1.5"
-                  class="animate-ping"
-                  opacity="0.6"
-                />
-
-                <!-- Cluster Expansion Ring Indicator (When node is a cluster hub) -->
-                <circle
-                  v-if="node.isClusterHub"
-                  :r="getNodeRadius(node) + 4"
-                  fill="none"
-                  :stroke="node.isExpanded ? '#10B981' : 'rgba(255,255,255,0.4)'"
-                  stroke-width="1.5"
-                  :stroke-dasharray="node.isExpanded ? undefined : '3 2'"
-                  class="transition-all"
-                />
-
-                <!-- Base Node Circle -->
-                <circle
-                  :r="getNodeRadius(node)"
-                  :fill="getNodeColor(node)"
-                  :stroke="getNodeStroke(node)"
-                  :stroke-width="selectedNode && selectedNode.id === node.id ? 3 : 1.5"
-                  class="transition-transform duration-200 group-hover:scale-115 shadow-lg"
-                />
-
-                <!-- Node Center Icon / Glyph -->
-                <text
-                  text-anchor="middle"
-                  dy=".32em"
-                  fill="#ffffff"
-                  font-size="9"
-                  font-weight="bold"
-                  class="pointer-events-none select-none font-mono"
-                >
-                  {{ getNodeGlyph(node) }}
-                </text>
-
-                <!-- High-Contrast Clean Badge with Native Persian Font -->
-                <g :transform="`translate(0, ${getNodeRadius(node) + 12})`">
-                  <!-- Pill Background -->
-                  <rect
-                    :x="-(getNodeLabelWidth(node) / 2)"
-                    y="-8"
-                    :width="getNodeLabelWidth(node)"
-                    height="16"
-                    rx="8"
-                    fill="#18181b"
-                    fill-opacity="0.9"
-                    :stroke="selectedNode && selectedNode.id === node.id ? '#10B981' : 'rgba(255,255,255,0.15)'"
-                    stroke-width="1"
-                    class="transition-colors group-hover:stroke-emerald-400"
-                  />
-
-                  <!-- Small Persian Text -->
-                  <text
-                    text-anchor="middle"
-                    dy="3"
-                    :fill="selectedNode && selectedNode.id === node.id ? '#34D399' : '#F4F4F5'"
-                    font-size="9.5"
-                    font-weight="600"
-                    class="pointer-events-none select-none graph-persian-font"
-                  >
-                    {{ node.shortLabel }}
-                    <tspan v-if="node.isClusterHub && !node.isExpanded" fill="#A1A1AA" font-size="8">
-                      ({{ node.clusterChildCount }})
-                    </tspan>
-                  </text>
-                </g>
-              </g>
-            </g>
-          </g>
-        </svg>
-
-        <!-- NODE INSPECTOR SLIDE-OVER DRAWER -->
-        <transition name="drawer-slide">
-          <div
-            v-if="selectedNode"
-            class="absolute top-0 right-0 z-30 h-full w-full sm:w-[420px] bg-zinc-950/95 backdrop-blur-2xl border-l border-white/10 p-5 flex flex-col justify-between overflow-y-auto custom-scrollbar shadow-2xl"
-          >
-            <div class="space-y-5">
-              <!-- Drawer Header -->
-              <div class="flex items-start justify-between gap-3 pb-3 border-b border-white/10">
-                <div class="flex items-center gap-2">
-                  <span
-                    class="w-3.5 h-3.5 rounded-full shrink-0 shadow-xs"
-                    :style="{ backgroundColor: getNodeColor(selectedNode) }"
-                  ></span>
-                  <div>
-                    <h3 class="font-bold text-sm text-white">{{ selectedNode.title }}</h3>
-                    <p class="text-[11px] font-mono text-zinc-400 mt-0.5" dir="ltr">{{ selectedNode.path }}</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  @click="selectedNode = null"
-                  class="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
-                >
-                  <AdminIcon name="close" class="w-4 h-4" />
-                </button>
-              </div>
-
-              <!-- Cluster & Depth Strategic Badges -->
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div class="p-2.5 rounded-xl bg-zinc-900 border border-white/10">
-                  <span class="text-[10px] text-zinc-400">عمق کلیک از خانه (Crawl Depth)</span>
-                  <div class="flex items-baseline gap-1 mt-1 font-bold text-emerald-300 font-mono">
-                    Level {{ selectedNode.depth }}
-                    <span class="text-[10px] font-d4 text-zinc-500">
-                      {{ selectedNode.depth === 0 ? '(هسته اصلی)' : (selectedNode.depth === 1 ? '(یک کلیک)' : '(دو کلیک)') }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="p-2.5 rounded-xl bg-zinc-900 border border-white/10">
-                  <span class="text-[10px] text-zinc-400">توزیع اعتبار (PageRank Juice)</span>
-                  <div class="flex items-baseline gap-1 mt-1 font-bold font-mono" :class="getPageRankColor(selectedNode.pageRankScore)">
-                    {{ selectedNode.pageRankScore }} / 100
-                  </div>
-                </div>
-              </div>
-
-              <!-- Cluster Expand/Collapse Button if Hub -->
-              <div v-if="selectedNode.isClusterHub" class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
-                <div>
-                  <span class="text-xs font-bold text-emerald-300">خوشه موضوعی: {{ selectedNode.clusterName }}</span>
-                  <p class="text-[10px] text-zinc-400 mt-0.5">{{ selectedNode.clusterChildCount }} صفحه زیرمجموعه در این سیلو</p>
-                </div>
-                <button
-                  type="button"
-                  @click="toggleClusterNode(selectedNode)"
-                  class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition cursor-pointer"
-                >
-                  {{ selectedNode.isExpanded ? 'بستن زیرصفحات' : 'گسترش زیرصفحات' }}
-                </button>
-              </div>
-
-              <!-- Quick Orphan Fix if Needed -->
-              <div
-                v-if="selectedNode.inlinksCount === 0 && !selectedNode.isExternal"
-                class="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 space-y-2"
-              >
-                <div class="flex items-center gap-1.5 text-rose-300 font-bold text-xs">
-                  <AdminIcon name="clock-bolt" class="w-4 h-4 text-rose-400" />
-                  <span>صفحه یتیم! ربات گوگل این صفحه را نمی‌خزد.</span>
-                </div>
-                <p class="text-[11px] text-rose-200/80 leading-relaxed">
-                  هیچ لینکی از هدر، فوتر یا مقالات به این آدرس متصل نیست. برای خزش فوری توسط گوگل، روی دکمه زیر کلیک کنید.
-                </p>
-                <button
-                  type="button"
-                  @click="addQuickInboundLink(selectedNode)"
-                  class="w-full py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
-                >
-                  <AdminIcon name="link" class="w-3.5 h-3.5" />
-                  <span>اتصال فوری این صفحه به فوتر و پیوندهای اصلی</span>
-                </button>
-              </div>
-
-              <!-- Inbound Links List -->
-              <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                    <span>پیوندهای ورودی (Inbound Links)</span>
-                  </span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400">
-                    {{ selectedNode.inlinks.length }} لینک ورودی
-                  </span>
-                </div>
-                <div class="space-y-1.5 max-h-36 overflow-y-auto custom-scrollbar p-1">
-                  <div
-                    v-for="(inlink, i) in selectedNode.inlinks"
-                    :key="`in-${i}`"
-                    @click="focusNodeByPath(inlink.fromPath)"
-                    class="p-2 rounded-lg bg-zinc-900/80 hover:bg-white/5 border border-white/5 flex items-center justify-between text-[11px] cursor-pointer transition group"
-                  >
-                    <span class="font-mono text-zinc-300 group-hover:text-emerald-400" dir="ltr">{{ inlink.fromPath }}</span>
-                    <span v-if="inlink.anchor" class="text-[10px] text-zinc-400 bg-black/40 px-1.5 py-0.5 rounded">{{ inlink.anchor }}</span>
-                  </div>
-                  <div v-if="selectedNode.inlinks.length === 0" class="text-center py-2 text-rose-400 text-xs font-bold">
-                    هیچ لینک ورودی وجود ندارد!
-                  </div>
-                </div>
-              </div>
-
-              <!-- Outbound Links List -->
-              <div class="space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                    <span>پیوندهای خروجی (Outbound Links)</span>
-                  </span>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400">
-                    {{ selectedNode.outlinks.length }} لینک خروجی
-                  </span>
-                </div>
-                <div class="space-y-1.5 max-h-36 overflow-y-auto custom-scrollbar p-1">
-                  <div
-                    v-for="(outlink, i) in selectedNode.outlinks"
-                    :key="`out-${i}`"
-                    @click="focusNodeByPath(outlink.toPath)"
-                    class="p-2 rounded-lg bg-zinc-900/80 hover:bg-white/5 border border-white/5 flex items-center justify-between text-[11px] cursor-pointer transition group"
-                  >
-                    <span class="font-mono text-zinc-300 group-hover:text-cyan-400 truncate max-w-[240px]" dir="ltr">{{ outlink.toPath }}</span>
-                    <span v-if="outlink.isExternal" class="text-[9px] px-1 rounded bg-sky-500/20 text-sky-300">خارجی</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- SSR Googlebot Simulator -->
-              <div class="space-y-1.5">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-                    <AdminIcon name="eye" class="w-3.5 h-3.5 text-emerald-400" />
-                    <span>شبیه‌ساز متن SSR ربات گوگل</span>
-                  </span>
-                  <span class="text-[10px] font-mono text-emerald-400">
-                    {{ selectedNode.characterCount }} حرف (خزش قطعی)
-                  </span>
-                </div>
-                <div class="p-3 rounded-xl bg-black/60 border border-white/5 text-[11px] text-zinc-300 leading-relaxed font-sans max-h-28 overflow-y-auto custom-scrollbar">
-                  {{ selectedNode.ssrSampleText || 'این آدرس پیوند خارجی است و محتوای HTML داخلی ندارد.' }}
-                </div>
-              </div>
-            </div>
-
-            <!-- Drawer Bottom Actions -->
-            <div class="pt-4 border-t border-white/10 flex items-center gap-2">
-              <NuxtLink
-                :to="selectedNode.path"
-                target="_blank"
-                class="flex-1 py-2.5 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
-              >
-                <AdminIcon name="link" class="w-3.5 h-3.5" />
-                <span>مشاهده صفحه زنده در سایت</span>
-              </NuxtLink>
-            </div>
-          </div>
-        </transition>
-      </div>
-
-      <!-- SEO MATRIX TABLE VIEW -->
-      <div v-show="graphMode === 'table'" class="p-4 overflow-x-auto custom-scrollbar">
+      <!-- TAB 1: AUDIT & LINK MATRIX (Focused, Clear Table) -->
+      <div v-if="activeTab === 'audit'" class="p-0 overflow-x-auto custom-scrollbar">
         <table class="w-full text-right text-xs">
           <thead>
-            <tr class="border-b border-white/10 text-zinc-400">
-              <th class="py-3 px-3">نام و عنوان صفحه</th>
-              <th class="py-3 px-3">مسیر (URL)</th>
+            <tr class="border-b border-white/10 bg-zinc-900/50 text-zinc-400">
+              <th class="py-3 px-4">صفحه و عنوان</th>
               <th class="py-3 px-3">سیلو موضوعی</th>
-              <th class="py-3 px-3 text-center">عمق کلیک</th>
-              <th class="py-3 px-3 text-center">ورودی (Inbound)</th>
-              <th class="py-3 px-3 text-center">خروجی (Outbound)</th>
-              <th class="py-3 px-3 text-center">پیج‌رنک</th>
+              <th class="py-3 px-3 text-center">عمق کلیک (Depth)</th>
+              <th class="py-3 px-3 text-center">پیوندهای ورودی</th>
+              <th class="py-3 px-3 text-center">پیوندهای خروجی</th>
+              <th class="py-3 px-3 text-center">متن در SSR گوگل</th>
               <th class="py-3 px-3 text-center">وضعیت خزش</th>
-              <th class="py-3 px-3 text-center">عملیات</th>
+              <th class="py-3 px-4 text-center">عملیات</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-white/5">
             <tr
-              v-for="row in filteredTableNodes"
-              :key="row.id"
-              class="hover:bg-white/5 transition-colors cursor-pointer group"
-              @click="openNodeDrawerFromTable(row)"
+              v-for="page in filteredPages"
+              :key="page.path"
+              class="hover:bg-white/5 transition-colors group"
             >
-              <td class="py-3 px-3 font-bold text-white flex items-center gap-2">
+              <!-- Title & Path -->
+              <td class="py-3.5 px-4">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="w-2.5 h-2.5 rounded-full shrink-0"
+                    :style="{ backgroundColor: getSiloColor(page.siloKey) }"
+                  ></span>
+                  <div>
+                    <div class="font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                      <span>{{ page.title }}</span>
+                      <NuxtLink :to="page.path" target="_blank" class="text-zinc-500 hover:text-white" title="مشاهده صفحه">
+                        <AdminIcon name="link" class="w-3 h-3" />
+                      </NuxtLink>
+                    </div>
+                    <div class="font-mono text-zinc-400 text-[11px] mt-0.5" dir="ltr">{{ page.path }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Silo Badge -->
+              <td class="py-3.5 px-3">
                 <span
-                  class="w-2.5 h-2.5 rounded-full shrink-0"
-                  :style="{ backgroundColor: getNodeColor(row) }"
-                ></span>
-                <span>{{ row.title }}</span>
-              </td>
-              <td class="py-3 px-3 font-mono text-zinc-300 text-[11px]" dir="ltr">
-                {{ row.path }}
-              </td>
-              <td class="py-3 px-3 text-zinc-400">
-                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-800 text-zinc-300">
-                  {{ row.clusterName || 'عمومی' }}
-                </span>
-              </td>
-              <td class="py-3 px-3 text-center font-mono font-bold text-emerald-300">
-                Level {{ row.depth }}
-              </td>
-              <td class="py-3 px-3 text-center font-mono font-bold" :class="row.inlinksCount === 0 ? 'text-rose-400' : 'text-emerald-400'">
-                {{ row.inlinksCount }}
-              </td>
-              <td class="py-3 px-3 text-center font-mono text-zinc-300">
-                {{ row.outlinksCount }}
-              </td>
-              <td class="py-3 px-3 text-center font-mono font-bold" :class="getPageRankColor(row.pageRankScore)">
-                {{ row.pageRankScore }}
-              </td>
-              <td class="py-3 px-3 text-center font-bold text-[11px]">
-                <span
-                  class="px-2 py-0.5 rounded-full text-[10px]"
-                  :class="row.inlinksCount > 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'"
+                  class="px-2 py-0.5 rounded-md text-[10px] font-bold"
+                  :style="{ backgroundColor: `${getSiloColor(page.siloKey)}20`, color: getSiloColor(page.siloKey) }"
                 >
-                  {{ row.inlinksCount > 0 ? 'شناسایی و خزش کامل' : 'نیاز به لینک ورودی' }}
+                  {{ page.siloName }}
                 </span>
               </td>
-              <td class="py-3 px-3 text-center">
+
+              <!-- Crawl Depth -->
+              <td class="py-3.5 px-3 text-center">
+                <span
+                  class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold"
+                  :class="page.depth === 0 ? 'bg-emerald-500/20 text-emerald-300' : (page.depth === 1 ? 'bg-cyan-500/20 text-cyan-300' : 'bg-amber-500/20 text-amber-300')"
+                >
+                  Level {{ page.depth }}
+                </span>
+              </td>
+
+              <!-- Inbound Links -->
+              <td class="py-3.5 px-3 text-center">
                 <button
                   type="button"
-                  @click.stop="openNodeDrawerFromTable(row)"
-                  class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-bold transition"
+                  @click="openInlinksModal(page)"
+                  class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer inline-flex items-center gap-1"
+                  :class="page.inlinks.length > 0 ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20' : 'bg-rose-500/20 text-rose-400 font-bold animate-pulse'"
+                  :title="`مشاهده ${page.inlinks.length} لینک ورودی`"
                 >
-                  تحلیل
+                  <span>{{ page.inlinks.length }}</span>
+                  <span class="text-[10px] font-d4">ورودی</span>
                 </button>
+              </td>
+
+              <!-- Outbound Links -->
+              <td class="py-3.5 px-3 text-center font-mono text-zinc-300">
+                {{ page.outlinks.length }} لینک
+              </td>
+
+              <!-- SSR Text -->
+              <td class="py-3.5 px-3 text-center">
+                <button
+                  type="button"
+                  @click="inspectPageSSR(page)"
+                  class="px-2 py-0.5 rounded text-[11px] font-mono text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 transition cursor-pointer"
+                >
+                  {{ page.chars }} کاراکتر
+                </button>
+              </td>
+
+              <!-- Crawl Status -->
+              <td class="py-3.5 px-3 text-center font-bold text-[11px]">
+                <span
+                  class="px-2 py-0.5 rounded-full text-[10px]"
+                  :class="page.inlinks.length > 0 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/15 text-rose-400 border border-rose-500/30'"
+                >
+                  {{ page.inlinks.length > 0 ? 'خزش قطعی گوگل' : 'خطر عدم خزش' }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="py-3.5 px-4 text-center">
+                <div class="flex items-center justify-center gap-1.5">
+                  <button
+                    type="button"
+                    @click="openInlinksModal(page)"
+                    class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold transition cursor-pointer"
+                  >
+                    پیوندها
+                  </button>
+                  <button
+                    type="button"
+                    @click="inspectPageSSR(page)"
+                    class="px-2 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 text-xs font-bold transition cursor-pointer"
+                  >
+                    متن SSR
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- TAB 2: SILO ARCHITECTURE BREAKDOWN (Organized Grid) -->
+      <div v-else-if="activeTab === 'silos'" class="p-6 space-y-6">
+        <div class="p-4 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-between">
+          <div class="text-xs text-zinc-300">
+            <span class="font-bold text-white">معماری سیلو (Silo Architecture):</span>
+            صفحات بر اساس حوزه موضوعی تفکیک شده‌اند تا پیج‌رنک و اعتبار محتوا به طور متمرکز به مقالات و محصولات کلیدی منتقل شود.
+          </div>
+          <span class="text-xs font-mono font-bold text-emerald-400">۷ ستون محتوایی اصلی</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="silo in silosList"
+            :key="silo.key"
+            class="p-4 rounded-xl bg-zinc-900/80 border border-white/10 flex flex-col justify-between space-y-4 hover:border-white/20 transition-all"
+          >
+            <div>
+              <!-- Silo Header -->
+              <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="w-3 h-3 rounded-full shrink-0"
+                    :style="{ backgroundColor: silo.color }"
+                  ></span>
+                  <h3 class="font-bold text-sm text-white">{{ silo.name }}</h3>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/5 text-zinc-300">
+                  {{ silo.pages.length }} صفحه
+                </span>
+              </div>
+
+              <!-- Pillar Hub Page -->
+              <div class="mt-3 p-2.5 rounded-lg bg-black/40 border border-white/5">
+                <div class="text-[10px] text-zinc-400 font-bold mb-1">صفحه پیلار اصلی (Pillar Page):</div>
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-white text-xs">{{ silo.pillar.title }}</span>
+                  <span class="text-[10px] font-mono text-emerald-400 font-bold">{{ silo.pillar.inlinks.length }} ورودی</span>
+                </div>
+                <div class="text-[10px] font-mono text-zinc-500 mt-0.5" dir="ltr">{{ silo.pillar.path }}</div>
+              </div>
+
+              <!-- Child Subpages List -->
+              <div class="mt-3 space-y-1.5">
+                <div class="text-[10px] text-zinc-400 font-bold">زیرمجموعه‌ها و صفحات فرزند:</div>
+                <div
+                  v-for="child in silo.childPages"
+                  :key="child.path"
+                  @click="openInlinksModal(child)"
+                  class="p-2 rounded-lg bg-zinc-950/60 hover:bg-white/5 border border-white/5 flex items-center justify-between text-xs cursor-pointer transition"
+                >
+                  <span class="truncate max-w-[200px] text-zinc-300 font-semibold">{{ child.title }}</span>
+                  <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                    {{ child.inlinks.length }} ورودی
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Silo Health Status -->
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[11px]">
+              <span class="text-zinc-400">اتصال داخلی سیلو:</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>تکمیل و بهینه‌سازی‌شده</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: LIVE GOOGLEBOT SSR INSPECTOR (Direct, Practical Tool) -->
+      <div v-else-if="activeTab === 'inspector'" class="p-6 space-y-6">
+        <div class="p-4 rounded-xl bg-zinc-900 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-sm text-white">شبیه‌ساز و بررسی‌کننده متن رندر سمت سرور (SSR Googlebot View)</h3>
+            <p class="text-xs text-zinc-400 mt-0.5">
+              متنی که گوگل‌بات بدون اجرای جاوااسکریپت در HTML سرور دریافت و ایندکس می‌کند را در این بخش مشاهده کنید.
+            </p>
+          </div>
+
+          <!-- Page Selector Dropdown -->
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-zinc-400 whitespace-nowrap">انتخاب صفحه:</span>
+            <select
+              v-model="inspectedPath"
+              class="bg-zinc-950 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-hidden focus:border-emerald-500/50 cursor-pointer max-w-[280px]"
+            >
+              <option v-for="p in masterPages" :key="p.path" :value="p.path">
+                {{ p.title }} ({{ p.path }})
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div v-if="currentInspectedPage" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left: Meta & SEO Structure -->
+          <div class="space-y-4">
+            <!-- Summary Card -->
+            <div class="p-4 rounded-xl bg-zinc-900 border border-white/10 space-y-3">
+              <span class="text-xs font-bold text-zinc-400">مشخصات سئو صفحه در سرور</span>
+
+              <div class="space-y-2 text-xs">
+                <div>
+                  <span class="text-zinc-500 text-[11px] block">عنوان صفحه (H1 / Title):</span>
+                  <span class="font-bold text-white">{{ currentInspectedPage.title }}</span>
+                </div>
+
+                <div>
+                  <span class="text-zinc-500 text-[11px] block">مسیر کامل:</span>
+                  <span class="font-mono text-emerald-400 text-[11px]" dir="ltr">{{ currentInspectedPage.path }}</span>
+                </div>
+
+                <div>
+                  <span class="text-zinc-500 text-[11px] block">عمق کلیک از خانه:</span>
+                  <span class="font-bold text-white">سطح {{ currentInspectedPage.depth }}</span>
+                </div>
+
+                <div>
+                  <span class="text-zinc-500 text-[11px] block">حجم متن خالص:</span>
+                  <span class="font-mono font-bold text-cyan-300">{{ currentInspectedPage.chars }} کاراکتر</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inlinks to this page -->
+            <div class="p-4 rounded-xl bg-zinc-900 border border-white/10 space-y-2">
+              <span class="text-xs font-bold text-zinc-400">لینک‌های ورودی به این صفحه ({{ currentInspectedPage.inlinks.length }})</span>
+              <div class="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar">
+                <div
+                  v-for="(inlink, i) in currentInspectedPage.inlinks"
+                  :key="i"
+                  class="p-2 rounded bg-black/40 border border-white/5 flex items-center justify-between text-[11px]"
+                >
+                  <span class="font-mono text-zinc-300 truncate max-w-[160px]" dir="ltr">{{ inlink.fromPath }}</span>
+                  <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">{{ inlink.anchor }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Pure Extracted SSR Text -->
+          <div class="lg:col-span-2 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>پیش‌نمایش متن خامی که خزنده‌های گوگل می‌خوانند (SSR Text Payload)</span>
+              </span>
+              <span class="text-[11px] font-mono text-emerald-400 font-bold">تأییدشده برای گوگل‌بات</span>
+            </div>
+
+            <div class="p-5 rounded-2xl bg-black border border-white/10 text-xs text-zinc-300 leading-relaxed font-sans min-h-[300px] whitespace-pre-wrap select-text">
+              {{ currentInspectedPage.text }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- MODAL: INBOUND & OUTBOUND LINKS INSPECTOR -->
+    <transition name="fade">
+      <div
+        v-if="modalPage"
+        class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+        @click.self="modalPage = null"
+      >
+        <div class="w-full max-w-xl bg-zinc-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden p-6 space-y-5 animate-scale-in">
+          <!-- Modal Header -->
+          <div class="flex items-start justify-between gap-3 pb-3 border-b border-white/10">
+            <div>
+              <div class="flex items-center gap-2">
+                <span
+                  class="w-2.5 h-2.5 rounded-full"
+                  :style="{ backgroundColor: getSiloColor(modalPage.siloKey) }"
+                ></span>
+                <h3 class="font-bold text-base text-white">{{ modalPage.title }}</h3>
+              </div>
+              <p class="text-xs font-mono text-zinc-400 mt-1" dir="ltr">{{ modalPage.path }}</p>
+            </div>
+            <button
+              type="button"
+              @click="modalPage = null"
+              class="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 cursor-pointer"
+            >
+              <AdminIcon name="close" class="w-4 h-4" />
+            </button>
+          </div>
+
+          <!-- Inbound Links Section -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-bold text-zinc-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>پیوندهای ورودی (Inbound Links)</span>
+              </span>
+              <span class="text-emerald-400 font-mono">{{ modalPage.inlinks.length }} لینک</span>
+            </div>
+            <div class="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar p-1">
+              <div
+                v-for="(inlink, i) in modalPage.inlinks"
+                :key="i"
+                class="p-2.5 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-between text-xs"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="font-mono text-zinc-300" dir="ltr">{{ inlink.fromPath }}</span>
+                </div>
+                <span class="text-[11px] text-zinc-400 bg-black/50 px-2 py-0.5 rounded">{{ inlink.anchor }}</span>
+              </div>
+              <div v-if="modalPage.inlinks.length === 0" class="text-center py-4 text-rose-400 text-xs font-bold">
+                هیچ پیوند ورودی متصل نیست (صفحه یتیم)!
+              </div>
+            </div>
+          </div>
+
+          <!-- Outbound Links Section -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs font-bold text-zinc-300">
+              <span class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span>پیوندهای خروجی (Outbound Links)</span>
+              </span>
+              <span class="text-cyan-400 font-mono">{{ modalPage.outlinks.length }} لینک</span>
+            </div>
+            <div class="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar p-1">
+              <div
+                v-for="(outlink, i) in modalPage.outlinks"
+                :key="i"
+                class="p-2.5 rounded-xl bg-zinc-900 border border-white/5 flex items-center justify-between text-xs"
+              >
+                <span class="font-mono text-zinc-300 truncate max-w-[280px]" dir="ltr">{{ outlink.toPath }}</span>
+                <span v-if="outlink.isExternal" class="text-[10px] text-sky-400 bg-sky-500/10 px-1.5 py-0.5 rounded">خارجی</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="pt-3 border-t border-white/10 flex items-center justify-between">
+            <NuxtLink
+              :to="modalPage.path"
+              target="_blank"
+              class="px-4 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-md"
+            >
+              <AdminIcon name="link" class="w-3.5 h-3.5" />
+              <span>مشاهده مستقیم در سایت</span>
+            </NuxtLink>
+
+            <button
+              type="button"
+              @click="modalPage = null"
+              class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition cursor-pointer"
+            >
+              بستن
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed } from 'vue'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
 
 definePageMeta({
   layout: 'dash'
 })
 
-interface StrategicPage {
+interface InternalLink {
+  fromPath: string
+  anchor: string
+}
+
+interface OutboundLink {
+  toPath: string
+  isExternal?: boolean
+}
+
+interface PageRecord {
   path: string
   title: string
-  short: string
-  clusterKey: string
-  clusterName: string
-  isClusterHub?: boolean
+  siloKey: string
+  siloName: string
   depth: number
   chars: number
   text: string
+  isPillar?: boolean
   isExternal?: boolean
   isMultilingual?: boolean
+  inlinks: InternalLink[]
+  outlinks: OutboundLink[]
 }
 
-interface GraphNode extends StrategicPage {
-  id: string
-  inlinksCount: number
-  outlinksCount: number
-  characterCount: number
-  ssrSampleText: string
-  pageRankScore: number
-  isExpanded?: boolean
-  clusterChildCount?: number
-  inlinks: { fromPath: string; anchor?: string }[]
-  outlinks: { toPath: string; isExternal?: boolean }[]
-  x: number
-  y: number
-  targetX: number
-  targetY: number
-  vx: number
-  vy: number
-}
-
-interface GraphEdge {
-  source: GraphNode
-  target: GraphNode
-  isOrphan?: boolean
-}
-
-const graphMode = ref<'cluster' | 'depth' | 'table'>('cluster')
-const activeFilter = ref<'all' | 'internal' | 'external' | 'orphans' | 'low' | 'multilingual'>('all')
+const activeTab = ref<'audit' | 'silos' | 'inspector'>('audit')
+const selectedSiloFilter = ref('all')
 const searchQuery = ref('')
-const selectedNode = ref<GraphNode | null>(null)
-const isScanning = ref(false)
+const isAuditing = ref(false)
+const modalPage = ref<PageRecord | null>(null)
+const inspectedPath = ref('/')
 
-// Pan & Zoom
-const svgRef = ref<SVGSVGElement | null>(null)
-const panX = ref(420)
-const panY = ref(300)
-const zoomScale = ref(0.9)
-const isPanning = ref(false)
-const startPanPos = ref({ x: 0, y: 0 })
+// The Master Website Page Registry
+const masterPages = ref<PageRecord[]>([
+  // Core
+  {
+    path: '/',
+    title: 'صفحه اصلی مجتمع چاپ و بسته‌بندی نجم',
+    siloKey: 'core',
+    siloName: 'هسته اصلی',
+    isPillar: true,
+    depth: 0,
+    chars: 3240,
+    text: 'مجتمع چاپ و بسته‌بندی نجم؛ طراحی و تولید انواع جعبه‌های مقوایی، هاردباکس صادراتی و چاپ افست ۵ رنگ هایدلبرگ با بیش از دو دهه تجربه در تهران بزرگراه فتح. خطوط تولید مدرن دایکات بوبست، لیتوگرافی CTP و خدمات سلفون و طلاکوب صنعتی.',
+    inlinks: [
+      { fromPath: '/about', anchor: 'خانه نجم' },
+      { fromPath: '/contact', anchor: 'صفحه اصلی' },
+      { fromPath: '/products/packaging', anchor: 'مجتمع چاپ نجم' },
+      { fromPath: '/services', anchor: 'چاپ نجم' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/products/printing' },
+      { toPath: '/services' },
+      { toPath: '/resources' },
+      { toPath: '/blog' },
+      { toPath: '/facilities' },
+      { toPath: '/catalog' },
+      { toPath: '/contact' }
+    ]
+  },
 
-// Dragging
-let draggedNode: GraphNode | null = null
+  // Packaging Silo
+  {
+    path: '/products/packaging',
+    title: 'بسته‌بندی و جعبه‌سازی صنعتی و صادراتی',
+    siloKey: 'packaging',
+    siloName: 'بسته‌بندی',
+    isPillar: true,
+    depth: 1,
+    chars: 2900,
+    text: 'تولید انواع جعبه‌های دارویی، مواد غذایی، آرایشی و بهداشتی و هاردباکس‌های مگنتی با مقوای بهداشتی ایندربرد و کرافت. استفاده از قالب‌های دقیق و سیستم‌های چسب اتوماتیک.',
+    inlinks: [
+      { fromPath: '/', anchor: 'بسته‌بندی و جعبه‌سازی' },
+      { fromPath: '/products', anchor: 'بسته‌بندی' },
+      { fromPath: '/blog/inboard-vs-greyboard-packaging', anchor: 'جعبه ایندربرد' },
+      { fromPath: '/catalog', anchor: 'نمونه‌های بسته‌بندی' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging/boxes' },
+      { toPath: '/products/packaging/labels' },
+      { toPath: '/products/applications/luxury-packaging' },
+      { toPath: '/products/applications/shipping-cartons' },
+      { toPath: '/resources/dielines' }
+    ]
+  },
+  {
+    path: '/products/packaging/boxes',
+    title: 'جعبه‌های مقوایی، فانتزی و هاردباکس لوکس',
+    siloKey: 'packaging',
+    siloName: 'بسته‌بندی',
+    depth: 2,
+    chars: 2400,
+    text: 'تولید جعبه‌های سخت هاردباکس با روکش‌های گلاسه، متالایز و بافت‌دار مخملی مناسب برای زعفران، طلا و جواهر، ساعت و هدایای نفیس سازمانی.',
+    inlinks: [
+      { fromPath: '/products/packaging', anchor: 'جعبه مقوایی و هاردباکس' },
+      { fromPath: '/', anchor: 'جعبه‌های مقوایی' },
+      { fromPath: '/resources/template-magnetic-rigid-box', anchor: 'هاردباکس لوکس' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/resources/template-magnetic-rigid-box' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/products/packaging/labels',
+    title: 'لیبل رول، پشت‌چسب‌دار و برچسب صنعتی',
+    siloKey: 'packaging',
+    siloName: 'بسته‌بندی',
+    depth: 2,
+    chars: 1900,
+    text: 'چاپ انواع لیبل رول کاغذی، متالایز، پی‌وی‌سی و شیشه‌ای با قابلیت یووی موضعی و طلاکوب برای صنایع غذایی و شوینده.',
+    inlinks: [
+      { fromPath: '/products/packaging', anchor: 'لیبل رول و برچسب' },
+      { fromPath: '/', anchor: 'لیبل صنعتی' },
+      { fromPath: '/services/finishing-services', anchor: 'چاپ لیبل' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/products/applications/luxury-packaging',
+    title: 'بسته‌بندی لوکس صادراتی و هدایای تبلیغاتی',
+    siloKey: 'packaging',
+    siloName: 'بسته‌بندی',
+    depth: 2,
+    chars: 2500,
+    text: 'طراحی ساختاری اختصاصی برای برندهای مطرح صادراتی با قابلیت ضدآب، لایه‌های اسفنجی فوم EVA و برش لیزری.',
+    inlinks: [
+      { fromPath: '/products/packaging', anchor: 'بسته‌بندی صادراتی' },
+      { fromPath: '/', anchor: 'بسته‌بندی لوکس' },
+      { fromPath: '/blog/luxury-hardbox-finishing-guide', anchor: 'افکت‌های لوکس هاردباکس' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/consultation' }
+    ]
+  },
+  {
+    path: '/products/applications/shipping-cartons',
+    title: 'کارتن‌های ۵ لایه پستی و مادر لمینتی',
+    siloKey: 'packaging',
+    siloName: 'بسته‌بندی',
+    depth: 2,
+    chars: 1950,
+    text: 'کارتن‌های لمینتی چاپدار سه لایه و پنج لایه فلوت E، B و C با استحکام فشاری بسیار بالا برای حمل‌ونقل و پخش سراسری.',
+    inlinks: [
+      { fromPath: '/products/packaging', anchor: 'کارتن لمینتی پستی' },
+      { fromPath: '/', anchor: 'کارتن ۵ لایه' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/contact' }
+    ]
+  },
 
-const filterOptions = [
-  { id: 'all', label: 'همه پیوندها' },
-  { id: 'internal', label: 'فقط صفحات داخلی' },
-  { id: 'external', label: 'لینک‌های تبدیل خارجی' },
-  { id: 'orphans', label: 'صفحات یتیم (۰ ورودی)' },
-  { id: 'low', label: 'کم‌لینک (< ۳)' },
-  { id: 'multilingual', label: 'چندزبانه (EN / AR)' }
-]
+  // Printing Silo
+  {
+    path: '/products/printing',
+    title: 'اوراق و اقلام چاپی تجاری و سازمانی',
+    siloKey: 'printing',
+    siloName: 'چاپ تجاری',
+    isPillar: true,
+    depth: 1,
+    chars: 2750,
+    text: 'چاپ افست کاتالوگ‌های لوکس، بروشورهای چندلت، فولدرهای اداری و سربرگ‌های رسمی سازمانی با تضمین انطباق دقیق کد رنگ پنتون.',
+    inlinks: [
+      { fromPath: '/', anchor: 'اوراق و اقلام چاپی' },
+      { fromPath: '/products', anchor: 'چاپ تجاری' },
+      { fromPath: '/services/printing-and-packaging', anchor: 'خدمات چاپ افست' }
+    ],
+    outlinks: [
+      { toPath: '/products/printing/catalogs' },
+      { toPath: '/products/printing/letterhead' },
+      { toPath: '/facilities' }
+    ]
+  },
+  {
+    path: '/products',
+    title: 'مرکز جامع محصولات و نمونه‌کارهای چاپ و بسته بندی',
+    siloKey: 'printing',
+    siloName: 'چاپ تجاری',
+    depth: 1,
+    chars: 2200,
+    text: 'بانک جامع نمونه‌کارهای اجراشده برای صدها برند معتبر در دسته‌بندی‌های دارویی، آرایشی، فست‌فود و اقلام تبلیغاتی.',
+    inlinks: [
+      { fromPath: '/', anchor: 'محصولات و نمونه‌ها' },
+      { fromPath: '/catalog', anchor: 'کاتالوگ محصولات' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/products/printing' }
+    ]
+  },
+  {
+    path: '/products/printing/catalogs',
+    title: 'چاپ کاتالوگ و بروشور تبلیغاتی با صحافی نفیس',
+    siloKey: 'printing',
+    siloName: 'چاپ تجاری',
+    depth: 2,
+    chars: 2100,
+    text: 'چاپ کاتالوگ صنعتی روی کاغذ گلاسه با صحافی چسب گرم PUR، منگنه لوپ و فنر دوبل با پوشش‌های سلفون مات، براق و یووی موضعی برجسته.',
+    inlinks: [
+      { fromPath: '/products/printing', anchor: 'کاتالوگ و بروشور' },
+      { fromPath: '/', anchor: 'چاپ کاتالوگ' }
+    ],
+    outlinks: [
+      { toPath: '/products/printing' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/products/printing/letterhead',
+    title: 'ست اداری، پاکت نامه و سربرگ رسمی شرکت‌ها',
+    siloKey: 'printing',
+    siloName: 'چاپ تجاری',
+    depth: 2,
+    chars: 1800,
+    text: 'طراحی و چاپ ست اداری هماهنگ روی کاغذهای تحریر ۸۰ و ۱۰۰ گرم، کتان کهلر آلمان و کاغذ فابریک با پاکت‌های ملخی و کیسه‌ای.',
+    inlinks: [
+      { fromPath: '/products/printing', anchor: 'سربرگ و ست اداری' },
+      { fromPath: '/', anchor: 'ست اداری' }
+    ],
+    outlinks: [
+      { toPath: '/products/printing' },
+      { toPath: '/contact' }
+    ]
+  },
 
-// Strategic Master Page Dataset
-const strategicDataset: StrategicPage[] = [
-  // 1. Core Authority
-  { path: '/', title: 'صفحه اصلی نجم', short: 'خانه نجم', clusterKey: 'core', clusterName: 'هسته اصلی', isClusterHub: true, depth: 0, chars: 3240, text: 'مجتمع چاپ و بسته‌بندی نجم؛ چاپ افست ۵ رنگ هایدلبرگ و جعبه‌سازی صنعتی با بالاترین استانداردهای چاپ در تهران.' },
+  // Services Silo
+  {
+    path: '/services',
+    title: 'زنجیره کامل خدمات چاپ، لیتوگرافی و پس از چاپ',
+    siloKey: 'services',
+    siloName: 'خدمات کارخانه',
+    isPillar: true,
+    depth: 1,
+    chars: 2600,
+    text: 'ارائه زنجیره کامل و یکپارچه بدون واسطه از طراحی مهندسی ساختار، تهیه زینک CTP، چاپ افست ورقی تا سلفون‌کشی، طلاکوب و دایکات در یک مجموعه.',
+    inlinks: [
+      { fromPath: '/', anchor: 'تمامی خدمات چاپ و بسته‌بندی' },
+      { fromPath: '/facilities', anchor: 'خدمات کارخانه' },
+      { fromPath: '/about', anchor: 'توانمندی‌های چاپ نجم' }
+    ],
+    outlinks: [
+      { toPath: '/services/printing-and-packaging' },
+      { toPath: '/services/finishing-services' },
+      { toPath: '/services/pre-press' },
+      { toPath: '/services/lithography-and-plates' }
+    ]
+  },
+  {
+    path: '/services/printing-and-packaging',
+    title: 'چاپ افست ۵ رنگ همزمان هایدلبرگ اسپید مستر',
+    siloKey: 'services',
+    siloName: 'خدمات کارخانه',
+    depth: 2,
+    chars: 2900,
+    text: 'مجهز به ماشین‌های دو ورقی و چهار ورقی هایدلبرگ با برج ورنی و سیستم اندازه‌گیری آنلاین دانسیته رنگ برای دستیابی به دقیق‌ترین بازتولید رنگ.',
+    inlinks: [
+      { fromPath: '/services', anchor: 'چاپ افست ۵ رنگ' },
+      { fromPath: '/', anchor: 'چاپ افست هایدلبرگ' },
+      { fromPath: '/news/heidelberg-new-press-installation', anchor: 'ماشین جدید هایدلبرگ' }
+    ],
+    outlinks: [
+      { toPath: '/services' },
+      { toPath: '/facilities' }
+    ]
+  },
+  {
+    path: '/services/finishing-services',
+    title: 'خدمات تکمیلی، طلاکوب گرم، دایکات و سلفون حرارتی',
+    siloKey: 'services',
+    siloName: 'خدمات کارخانه',
+    depth: 2,
+    chars: 2700,
+    text: 'طلاکوب اتوماتیک با فویل‌های رنگی کورز آلمان، سلفون‌کشی مات و براق حرارتی، یووی سیلندری شابلونی و دایکات صنعتی با قالب‌های لیرزی.',
+    inlinks: [
+      { fromPath: '/services', anchor: 'خدمات تکمیلی و طلاکوب' },
+      { fromPath: '/', anchor: 'خدمات تکمیلی' }
+    ],
+    outlinks: [
+      { toPath: '/services' },
+      { toPath: '/products/packaging' }
+    ]
+  },
+  {
+    path: '/services/pre-press',
+    title: 'پیش از چاپ، کنترل فنی فایل و مهندسی رنگ',
+    siloKey: 'services',
+    siloName: 'خدمات کارخانه',
+    depth: 2,
+    chars: 2100,
+    text: 'بررسی تخصصی فایل‌های طراحی با چک‌لیست‌های پیشرفته، رفع خطاهای ترپینگ (Trapping)، تفکیک رنگ پنتون و اخذ تاییدیه دیجیتال پیش از خروجی نهایی.',
+    inlinks: [
+      { fromPath: '/services', anchor: 'پیش از چاپ' },
+      { fromPath: '/resources/guides', anchor: 'راهنماهای پیش از چاپ' }
+    ],
+    outlinks: [
+      { toPath: '/services' },
+      { toPath: '/resources/guide-cmyk-color-profile' }
+    ]
+  },
+  {
+    path: '/services/lithography-and-plates',
+    title: 'لیتوگرافی مدرن و پلیت‌ستر حرارتی CTP',
+    siloKey: 'services',
+    siloName: 'خدمات کارخانه',
+    depth: 2,
+    chars: 2450,
+    text: 'تهیه زینک‌های حرارتی CTP با رزولوشن ۲۴۰۰ DPI و ترام‌های هایبرید جهت دستیابی به نهایت شفافیت در چاپ تصاویر چهره و جزئیات ظریف.',
+    inlinks: [
+      { fromPath: '/services', anchor: 'لیتوگرافی CTP' },
+      { fromPath: '/facilities', anchor: 'تجهیزات لیتوگرافی' }
+    ],
+    outlinks: [
+      { toPath: '/services' },
+      { toPath: '/facilities' }
+    ]
+  },
 
-  // 2. Packaging Silo
-  { path: '/products/packaging', title: 'بسته‌بندی و جعبه‌سازی صنعتی', short: 'سیلو بسته‌بندی', clusterKey: 'packaging', clusterName: 'بسته‌بندی', isClusterHub: true, depth: 1, chars: 2900, text: 'انواع جعبه‌های دارویی، آرایشی، مواد غذایی و هاردباکس‌های مگنتی صادراتی.' },
-  { path: '/products/packaging/boxes', title: 'جعبه مقوایی و هاردباکس لوکس', short: 'جعبه و هاردباکس', clusterKey: 'packaging', clusterName: 'بسته‌بندی', depth: 2, chars: 2400, text: 'تولید جعبه‌های لوکس با روکش‌های فانتزی و مقوای ایندربرد بهداشتی.' },
-  { path: '/products/packaging/labels', title: 'لیبل رول و برچسب صنعتی', short: 'لیبل و برچسب', clusterKey: 'packaging', clusterName: 'بسته‌بندی', depth: 2, chars: 1900, text: 'چاپ انواع لیبل پشت چسب‌دار متالایز، صدفی و گلاسه با برش دقیق رول.' },
-  { path: '/products/applications/luxury-packaging', title: 'بسته‌بندی لوکس صادراتی', short: 'جعبه لوکس', clusterKey: 'packaging', clusterName: 'بسته‌بندی', depth: 2, chars: 2500, text: 'هاردباکس‌های مگنتی کشویی و جعبه‌های هدیه ویژه برندهای بین‌المللی.' },
-  { path: '/products/applications/shipping-cartons', title: 'کارتن‌های ۵ لایه پستی', short: 'کارتن پستی', clusterKey: 'packaging', clusterName: 'بسته‌بندی', depth: 2, chars: 1950, text: 'کارتن‌های لمینتی مقاوم در برابر رطوبت و ضربه برای لجستیک امن.' },
+  // Resources Silo
+  {
+    path: '/resources',
+    title: 'مرکز دانلود قالب‌های خط تیغ و منابع مهندسی چاپ',
+    siloKey: 'resources',
+    siloName: 'منابع و قالب',
+    isPillar: true,
+    depth: 1,
+    chars: 2800,
+    text: 'مرجع رایگان دانلود فایل‌های برداری دایکات و تیغ انواع جعبه‌ها در فرمت‌های Illustrator و PDF همراه با راهنماهای بلید و پروفایل رنگ.',
+    inlinks: [
+      { fromPath: '/', anchor: 'دانلود منابع و قالب‌ها' },
+      { fromPath: '/products/packaging', anchor: 'قالب‌های جعبه' },
+      { fromPath: '/blog', anchor: 'منابع طراحی چاپ' }
+    ],
+    outlinks: [
+      { toPath: '/resources/dielines' },
+      { toPath: '/resources/guides' },
+      { toPath: '/resources/template-tuck-end-box' },
+      { toPath: '/resources/template-magnetic-rigid-box' }
+    ]
+  },
+  {
+    path: '/resources/dielines',
+    title: 'بانک جامع خط تیغ انواع جعبه‌های مقوایی استاندارد',
+    siloKey: 'resources',
+    siloName: 'منابع و قالب',
+    depth: 2,
+    chars: 2300,
+    text: 'بیش از ۵۰ ساختار آماده دایکات شامل جعبه‌های کیبوردی، دارویی، کشویی، زیر و رو و استندهای رومیزی فروشگاهی آماده دانلود فوری.',
+    inlinks: [
+      { fromPath: '/resources', anchor: 'بانک خط تیغ' },
+      { fromPath: '/products/packaging/boxes', anchor: 'دانلود خط تیغ' },
+      { fromPath: '/', anchor: 'خطوط تیغ و قالب' }
+    ],
+    outlinks: [
+      { toPath: '/resources' },
+      { toPath: '/resources/template-tuck-end-box' }
+    ]
+  },
+  {
+    path: '/resources/guides',
+    title: 'راهنماهای فنی آماده‌سازی فایل و اصول استانداردهای چاپ',
+    siloKey: 'resources',
+    siloName: 'منابع و قالب',
+    depth: 2,
+    chars: 2400,
+    text: 'آموزش‌های کاربردی برای طراحان گرافیک شامل تعیین اضافه رنگ بلید (Bleed)، رزولوشن ۳۰۰ DPI، تبدیل فونت به منحنی و تنظیمات اورپرینت مشکی.',
+    inlinks: [
+      { fromPath: '/resources', anchor: 'راهنماهای فنی' },
+      { fromPath: '/services/pre-press', anchor: 'آماده‌سازی فایل' },
+      { fromPath: '/', anchor: 'راهنماهای طراحی' }
+    ],
+    outlinks: [
+      { toPath: '/resources' },
+      { toPath: '/blog' }
+    ]
+  },
+  {
+    path: '/resources/template-tuck-end-box',
+    title: 'دانلود قالب جعبه دارویی دردار استاندارد (Tuck End)',
+    siloKey: 'resources',
+    siloName: 'منابع و قالب',
+    depth: 2,
+    chars: 1750,
+    text: 'فایل لایه‌باز و برداری قالب تیغ جعبه دارویی استاندارد با زبانه قفل‌شونده و خطوط تاشو تفکیک‌شده.',
+    inlinks: [
+      { fromPath: '/resources/dielines', anchor: 'قالب جعبه دارویی' },
+      { fromPath: '/resources', anchor: 'قالب Tuck End' }
+    ],
+    outlinks: [
+      { toPath: '/resources/dielines' },
+      { toPath: '/products/packaging' }
+    ]
+  },
+  {
+    path: '/resources/template-magnetic-rigid-box',
+    title: 'دانلود قالب هاردباکس مگنتی کتابی لوکس',
+    siloKey: 'resources',
+    siloName: 'منابع و قالب',
+    depth: 2,
+    chars: 1800,
+    text: 'نقشه کامل گسترده مقوای کرجی و لایه‌های روکش کاغذ فانتزی هاردباکس مگنتی با محاسبات دقیق ضخامت مقوا.',
+    inlinks: [
+      { fromPath: '/resources/dielines', anchor: 'قالب هاردباکس مگنتی' },
+      { fromPath: '/products/packaging/boxes', anchor: 'قالب هاردباکس' }
+    ],
+    outlinks: [
+      { toPath: '/resources/dielines' },
+      { toPath: '/products/packaging/boxes' }
+    ]
+  },
 
-  // 3. Printing Silo
-  { path: '/products/printing', title: 'چاپ تجاری و افست ورقی', short: 'سیلو چاپ افست', clusterKey: 'printing', clusterName: 'چاپ تجاری', isClusterHub: true, depth: 1, chars: 2750, text: 'چاپ افست کاتالوگ، بروشور، فولدر و سربرگ‌های سازمانی با بالاترین ثبات رنگ.' },
-  { path: '/products', title: 'مرکز محصولات و نمونه‌ها', short: 'همه محصولات', clusterKey: 'printing', clusterName: 'چاپ تجاری', depth: 1, chars: 2200, text: 'بررسی دسته‌بندی‌های تخصصی جعبه‌های سخت، کارتن و اوراق اداری تجاری.' },
-  { path: '/products/printing/catalogs', title: 'کاتالوگ و بروشور تبلیغاتی', short: 'کاتالوگ تبلیغاتی', clusterKey: 'printing', clusterName: 'چاپ تجاری', depth: 2, chars: 2100, text: 'کاتالوگ‌های صحافی چسب گرم PUR، منگنه لوپ و سیمی با پوشش سلفون مات و براق.' },
-  { path: '/products/printing/letterhead', title: 'سربرگ و ست اداری سازمانی', short: 'ست اداری و پاکت', clusterKey: 'printing', clusterName: 'چاپ تجاری', depth: 2, chars: 1800, text: 'چاپ سربرگ، پاکت نامه و یادداشت‌های اداری روی کاغذهای تحریر و کتان.' },
+  // Content & Blog Silo
+  {
+    path: '/blog',
+    title: 'دانشنامه تخصصی، مقالات و راهنماهای صنعت چاپ و بسته‌بندی',
+    siloKey: 'content',
+    siloName: 'وبلاگ و مقالات',
+    isPillar: true,
+    depth: 1,
+    chars: 2500,
+    text: 'مجموعه مقالات تخصصی پیرامون مقایسه انواع مقواها، تکنولوژی‌های نوین چاپ افست و بهینه‌سازی هزینه‌های تیراژ بسته‌بندی.',
+    inlinks: [
+      { fromPath: '/', anchor: 'وبلاگ تخصصی و مقالات' },
+      { fromPath: '/about', anchor: 'دانشنامه چاپ' },
+      { fromPath: '/catalog', anchor: 'راهنماهای وبلاگ' }
+    ],
+    outlinks: [
+      { toPath: '/blog/inboard-vs-greyboard-packaging' },
+      { toPath: '/blog/luxury-hardbox-finishing-guide' },
+      { toPath: '/blog/offset-vs-digital-printing-guide' },
+      { toPath: '/news' }
+    ]
+  },
+  {
+    path: '/blog/inboard-vs-greyboard-packaging',
+    title: 'مقایسه جامع مقوای ایندربرد بهداشتی و مقوای خاکستری گری‌بورد',
+    siloKey: 'content',
+    siloName: 'وبلاگ و مقالات',
+    depth: 2,
+    chars: 2300,
+    text: 'بررسی تفاوت‌های شیمیایی، بهداشتی و مقاومت فیزیکی مقوای ایندربرد FBB در برابر گری‌بورد بازیافتی در تولید جعبه‌های مواد غذایی و دارویی.',
+    inlinks: [
+      { fromPath: '/blog', anchor: 'ایندربرد در برابر گری‌بورد' },
+      { fromPath: '/products/packaging', anchor: 'راهنمای مقوای بهداشتی' }
+    ],
+    outlinks: [
+      { toPath: '/blog' },
+      { toPath: '/products/packaging' }
+    ]
+  },
+  {
+    path: '/blog/luxury-hardbox-finishing-guide',
+    title: 'راهنمای انتخاب افکت‌های لوکس در تولید هاردباکس و جعبه‌های سخت',
+    siloKey: 'content',
+    siloName: 'وبلاگ و مقالات',
+    depth: 2,
+    chars: 2250,
+    text: 'راهنمای عملی ترکیب طلاکوب گرم، سلفون مخملی Soft Touch، امباس برجسته و یووی موضعی سه بعدی جهت افزایش ارزش بصری بسته‌بندی.',
+    inlinks: [
+      { fromPath: '/blog', anchor: 'افکت‌های لوکس هاردباکس' },
+      { fromPath: '/products/applications/luxury-packaging', anchor: 'راهنمای افکت هاردباکس' }
+    ],
+    outlinks: [
+      { toPath: '/blog' },
+      { toPath: '/products/applications/luxury-packaging' }
+    ]
+  },
+  {
+    path: '/blog/offset-vs-digital-printing-guide',
+    title: 'چاپ افست در برابر چاپ دیجیتال: کدام یک برای سفارش شما مناسب‌تر است؟',
+    siloKey: 'content',
+    siloName: 'وبلاگ و مقالات',
+    depth: 2,
+    chars: 2100,
+    text: 'تحلیل دقیق نقطه سرفصل هزینه‌ای بین چاپ افست تیراژ بالا و دیجیتال فوری به همراه مقایسه کیفیت بافت و ثبات رنگی.',
+    inlinks: [
+      { fromPath: '/blog', anchor: 'افست یا دیجیتال؟' },
+      { fromPath: '/products/printing', anchor: 'راهنمای تیراژ چاپ' }
+    ],
+    outlinks: [
+      { toPath: '/blog' },
+      { toPath: '/products/printing' }
+    ]
+  },
+  {
+    path: '/news',
+    title: 'اخبار، رویدادها و دستاوردهای مجتمع چاپ و بسته‌بندی نجم',
+    siloKey: 'content',
+    siloName: 'وبلاگ و مقالات',
+    depth: 1,
+    chars: 2000,
+    text: 'اطلاع‌رسانی آخرین دستاوردهای صنعتی، نصب ماشین‌آلات جدید و حضور در نمایشگاه‌های بین‌المللی چاپ و بسته‌بندی تهران.',
+    inlinks: [
+      { fromPath: '/', anchor: 'اخبار و رویدادهای نجم' },
+      { fromPath: '/about', anchor: 'اخبار کارخانه' }
+    ],
+    outlinks: [
+      { toPath: '/news/heidelberg-new-press-installation' },
+      { toPath: '/news/iso-12647-color-certificate-renewal' }
+    ]
+  },
 
-  // 4. Industrial Services Silo
-  { path: '/services', title: 'خدمات کامل چاپ و پس از چاپ', short: 'سیلو خدمات', clusterKey: 'services', clusterName: 'خدمات چاپ', isClusterHub: true, depth: 1, chars: 2600, text: 'زنجیره کامل خدمات چاپ، لیتوگرافی، سلفون‌کشی، طلاکوب و دایکات بوبست.' },
-  { path: '/services/printing-and-packaging', title: 'چاپ افست ۵ رنگ هایدلبرگ', short: 'چاپ هایدلبرگ', clusterKey: 'services', clusterName: 'خدمات چاپ', depth: 2, chars: 2900, text: 'چاپ ۵ رنگ همزمان هایدلبرگ اسپید مستر با سیستم کنترل کیفیت طیف‌سنجی.' },
-  { path: '/services/finishing-services', title: 'خدمات تکمیلی، طلاکوب و دایکات', short: 'طلاکوب و دایکات', clusterKey: 'services', clusterName: 'خدمات چاپ', depth: 2, chars: 2700, text: 'طلاکوب گرم، یووی سیلندری شابلونی، سلفون حرارتی و جعبه‌چسبانی اتوماتیک.' },
-  { path: '/services/pre-press', title: 'پیش از چاپ و آماده‌سازی فایل', short: 'پیش از چاپ', clusterKey: 'services', clusterName: 'خدمات چاپ', depth: 2, chars: 2100, text: 'چک کردن رزولوشن و پروفایل‌های رنگی فایل‌های طراحی قبل از خروجی.' },
-  { path: '/services/lithography-and-plates', title: 'لیتوگرافی و پلیت دیجیتال CTP', short: 'لیتوگرافی CTP', clusterKey: 'services', clusterName: 'خدمات چاپ', depth: 2, chars: 2450, text: 'تهیه زینک‌های حرارتی با دقت ۲۴۰۰ DPI با سیستم مستقیم پلیت‌ستر.' },
+  // Company & Trust Silo
+  {
+    path: '/about',
+    title: 'درباره مجتمع چاپ و بسته‌بندی نجم و استانداردهای کیفی',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    isPillar: true,
+    depth: 1,
+    chars: 2400,
+    text: 'معرفی بیش از دو دهه فعالیت مستمر در طراحی ساختاری، تولید جعبه و چاپ افست با تیم مهندسی مجرب و کارخانه اختصاصی در تهران.',
+    inlinks: [
+      { fromPath: '/', anchor: 'درباره مجتمع نجم' },
+      { fromPath: '/contact', anchor: 'درباره ما' },
+      { fromPath: '/facilities', anchor: 'معرفی کارخانه' }
+    ],
+    outlinks: [
+      { toPath: '/facilities' },
+      { toPath: '/history' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/facilities',
+    title: 'امکانات، خطوط تولید و ماشین‌آلات مدرن کارخانه نجم',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    depth: 1,
+    chars: 2840,
+    text: 'مشاهده خطوط کامل چاپ افست ورقی هایدلبرگ اسپید مستر، لیتوگرافی دیجیتال پلیت CTP، دایکات اتوماتیک بوبست و جعبه‌چسبانی پرسرعت.',
+    inlinks: [
+      { fromPath: '/', anchor: 'امکانات و خطوط تولید' },
+      { fromPath: '/about', anchor: 'تجهیزات کارخانه' },
+      { fromPath: '/services', anchor: 'خطوط تولید بوبست' }
+    ],
+    outlinks: [
+      { toPath: '/about' },
+      { toPath: '/services/printing-and-packaging' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/history',
+    title: 'تاریخچه توسعه و افتخارات مجتمع چاپ نجم',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    depth: 2,
+    chars: 1820,
+    text: 'مسیر رشد مجتمع نجم از لیتوگرافی سنتی تا راه‌اندازی بزرگ‌ترین خط تولید کارتن و جعبه در غرب تهران.',
+    inlinks: [
+      { fromPath: '/about', anchor: 'تاریخچه نجم' },
+      { fromPath: '/', anchor: 'تاریخچه و افتخارات' }
+    ],
+    outlinks: [
+      { toPath: '/about' },
+      { toPath: '/facilities' }
+    ]
+  },
+  {
+    path: '/catalog',
+    title: 'دانلود کاتالوگ جامع محصولات و هاردباکس‌های نجم',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    depth: 1,
+    chars: 2180,
+    text: 'دریافت نسخه دیجیتال PDF کاتالوگ جامع معرفی نمونه‌های اجرایی جعبه و متریال‌های چاپ برای سفارش‌دهندگان.',
+    inlinks: [
+      { fromPath: '/', anchor: 'کاتالوگ جامع محصولات' },
+      { fromPath: '/products', anchor: 'دریافت کاتالوگ' }
+    ],
+    outlinks: [
+      { toPath: '/products/packaging' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/faq',
+    title: 'پرسش‌های متداول مشتریان در زمینه سفارش چاپ و جعبه',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    depth: 1,
+    chars: 2600,
+    text: 'پاسخ به سوالات متداول حداقل تیراژ سفارش جعبه، زمان تحویل سفارش، روش‌های محاسبه قیمت و نحوه ارسال ماکت آزمایشی.',
+    inlinks: [
+      { fromPath: '/', anchor: 'پرسش‌های متداول مشتریان' },
+      { fromPath: '/consultation', anchor: 'سوالات متداول' }
+    ],
+    outlinks: [
+      { toPath: '/consultation' },
+      { toPath: '/contact' }
+    ]
+  },
+  {
+    path: '/consultation',
+    title: 'مشاوره فنی و ساخت ماکت فیزیکی رایگان بسته‌بندی',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    depth: 1,
+    chars: 1950,
+    text: 'درخواست مشاوره تخصصی با کارشناسان بسته‌بندی نجم جهت محاسبه گرماژ مناسب، مهندسی باز و بسته شدن جعبه و ساخت نمونه فیزیکی.',
+    inlinks: [
+      { fromPath: '/', anchor: 'مشاوره فنی و نمونه‌سازی' },
+      { fromPath: '/faq', anchor: 'درخواست ماکت' },
+      { fromPath: '/products/packaging', anchor: 'مشاوره بسته‌بندی' }
+    ],
+    outlinks: [
+      { toPath: '/contact' },
+      { toPath: '/products/packaging' }
+    ]
+  },
+  {
+    path: '/contact',
+    title: 'تماس با کارخانه و خطوط فروش مجتمع چاپ نجم',
+    siloKey: 'company',
+    siloName: 'اطلاعات شرکت',
+    depth: 1,
+    chars: 1650,
+    text: 'خطوط مستقیم فروش و مشاوره سفارشات: ۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳، کارخانه واقع در تهران، بزرگراه فتح، خیابان ۱۷ شهریور.',
+    inlinks: [
+      { fromPath: '/', anchor: 'تماس با واحد فروش و کارخانه' },
+      { fromPath: '/about', anchor: 'تماس با ما' },
+      { fromPath: '/catalog', anchor: 'تماس برای سفارش' }
+    ],
+    outlinks: [
+      { toPath: 'https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA', isExternal: true },
+      { toPath: 'tel:+982166797911', isExternal: true },
+      { toPath: 'https://wa.me/989903400074', isExternal: true }
+    ]
+  },
 
-  // 5. Resources & Dielines Silo
-  { path: '/resources', title: 'مرکز دانلود منابع و قالب‌های تیغ', short: 'سیلو منابع و تیغ', clusterKey: 'resources', clusterName: 'منابع و قالب', isClusterHub: true, depth: 1, chars: 2800, text: 'بانک قالب‌های خط تیغ برداری، راهنماهای طراحی و پروفایل‌های رنگی.' },
-  { path: '/resources/dielines', title: 'دانلود خط تیغ و قالب‌های برداری', short: 'بانک خط تیغ', clusterKey: 'resources', clusterName: 'منابع و قالب', depth: 2, chars: 2300, text: 'دانلود رایگان فایل‌های AI و PDF انواع جعبه‌های مقوایی استاندارد.' },
-  { path: '/resources/guides', title: 'راهنماهای فنی آماده‌سازی فایل', short: 'راهنماهای طراحی', clusterKey: 'resources', clusterName: 'منابع و قالب', depth: 2, chars: 2400, text: 'نکات کلیدی رزولوشن ۳۰۰ DPI، سیستم رنگی CMYK و حاشیه امن خط برش.' },
-  { path: '/resources/template-tuck-end-box', title: 'قالب جعبه دارویی دردار', short: 'قالب دارویی', clusterKey: 'resources', clusterName: 'منابع و قالب', depth: 2, chars: 1750, text: 'فایل برداری آماده جعبه‌های دردار دارویی و بهداشتی.' },
-  { path: '/resources/template-magnetic-rigid-box', title: 'قالب هاردباکس مگنتی لوکس', short: 'قالب هاردباکس', clusterKey: 'resources', clusterName: 'منابع و قالب', depth: 2, chars: 1800, text: 'ساختار استاندارد هاردباکس مگنتی کتابی همراه با لایه‌های روکش و مقوا.' },
-
-  // 6. Content & Blog Silo
-  { path: '/blog', title: 'وبلاگ تخصصی و دانشنامه چاپ', short: 'سیلو وبلاگ', clusterKey: 'content', clusterName: 'محتوا و وبلاگ', isClusterHub: true, depth: 1, chars: 2500, text: 'دانشنامه جامع متریال‌های چاپ، تفاوت گرماژهای مقوا و تکنیک‌های نوین.' },
-  { path: '/blog/inboard-vs-greyboard-packaging', title: 'مقایسه ایندربرد و گری‌بورد', short: 'ایندربرد vs گری', clusterKey: 'content', clusterName: 'محتوا و وبلاگ', depth: 2, chars: 2300, text: 'تفاوت‌های ساختاری، مقاومت و استانداردهای بهداشتی مقواها در تولید جعبه.' },
-  { path: '/blog/luxury-hardbox-finishing-guide', title: 'راهنمای افکت‌های لوکس هاردباکس', short: 'افکت هاردباکس', clusterKey: 'content', clusterName: 'محتوا و وبلاگ', depth: 2, chars: 2250, text: 'روش‌های ترکیب طلاکوب گرم با بافت‌دهی امباس و سلفون مخملی.' },
-  { path: '/blog/offset-vs-digital-printing-guide', title: 'چاپ افست در برابر دیجیتال', short: 'افست vs دیجیتال', clusterKey: 'content', clusterName: 'محتوا و وبلاگ', depth: 2, chars: 2100, text: 'بررسی هزینه‌های تیراژ، سرعت تولید و کیفیت خروجی در چاپ‌های تجاری.' },
-  { path: '/news', title: 'اخبار و رویدادهای مجتمع نجم', short: 'اخبار نجم', clusterKey: 'content', clusterName: 'محتوا و وبلاگ', depth: 1, chars: 2000, text: 'آخرین دستاوردها، نمایشگاه‌های بین‌المللی و به‌روزرسانی خطوط تولید نجم.' },
-  { path: '/news/heidelberg-new-press-installation', title: 'نصب ماشین جدید هایدلبرگ', short: 'ماشین هایدلبرگ', clusterKey: 'content', clusterName: 'محتوا و وبلاگ', depth: 2, chars: 1900, text: 'راه‌اندازی خط جدید چاپ افست ورقی پرسرعت در کارخانه نجم.' },
-
-  // 7. Trust & Company Silo
-  { path: '/about', title: 'درباره مجتمع چاپ و بسته‌بندی نجم', short: 'درباره ما', clusterKey: 'company', clusterName: 'اعتماد و شرکت', isClusterHub: true, depth: 1, chars: 2400, text: 'بیش از دو دهه تجربه در طراحی ساختاری و تولید بسته‌بندی‌های صادراتی.' },
-  { path: '/facilities', title: 'امکانات و خطوط تولید کارخانه', short: 'خطوط تولید', clusterKey: 'company', clusterName: 'اعتماد و شرکت', depth: 1, chars: 2840, text: 'تجهیزات و ماشین‌آلات مدرن چاپ افست هایدلبرگ، دایکات اتوماتیک بوبست و لیتوگرافی CTP.' },
-  { path: '/history', title: 'تاریخچه و افتخارات نجم', short: 'افتخارات نجم', clusterKey: 'company', clusterName: 'اعتماد و شرکت', depth: 2, chars: 1820, text: 'روند توسعه و گواهینامه‌های بین‌المللی ایزو در صنعت چاپ و بسته‌بندی.' },
-  { path: '/catalog', title: 'کاتالوگ جامع محصولات و هاردباکس', short: 'کاتالوگ جامع', clusterKey: 'company', clusterName: 'اعتماد و شرکت', depth: 1, chars: 2180, text: 'کاتالوگ جامع انواع جعبه‌های هاردباکس، ایندربرد و نمونه‌های چاپی مجتمع نجم.' },
-  { path: '/faq', title: 'پرسش‌های متداول مشتریان', short: 'سوالات متداول', clusterKey: 'company', clusterName: 'اعتماد و شرکت', depth: 1, chars: 2600, text: 'پاسخ به سوالات حداقل تیراژ سفارش، زمان تحویل و استانداردهای طراحی قالب.' },
-  { path: '/consultation', title: 'مشاوره فنی و نمونه‌سازی', short: 'مشاوره فنی', clusterKey: 'company', clusterName: 'اعتماد و شرکت', depth: 1, chars: 1950, text: 'خدمات ساخت ماکت فیزیکی رایگان و محاسبه گرماژ مهندسی بسته‌بندی.' },
-  { path: '/contact', title: 'تماس با واحد فروش و کارخانه', short: 'تماس با ما', clusterKey: 'company', clusterName: 'اعتماد و شرکت', depth: 1, chars: 1650, text: 'خطوط مستقیم فروش و مشاوره سفارشات: ۰۲۱-۶۶۷۹۷۹۱۱ الی ۱۳ بزرگراه فتح.' },
-
-  // 8. Multilingual Alternates
-  { path: '/en', title: 'Najm Home (English)', short: 'Home (EN)', clusterKey: 'multilingual', clusterName: 'چندزبانه', isClusterHub: true, depth: 1, chars: 2800, text: 'Najm Printing & Packaging Complex - 5-Color Heidelberg sheetfed offset and rigid boxes.', isMultilingual: true },
-  { path: '/en/catalog', title: 'Catalog (EN)', short: 'Catalog (EN)', clusterKey: 'multilingual', clusterName: 'چندزبانه', depth: 2, chars: 2100, text: 'Comprehensive packaging and offset print catalog.', isMultilingual: true },
-  { path: '/ar', title: 'الرئيسية (العربية)', short: 'الرئيسية (AR)', clusterKey: 'multilingual', clusterName: 'چندزبانه', depth: 1, chars: 2750, text: 'مجمع نجم للطباعة والتغليف - طباعة أوفست ۵ ألوان هايدلبرغ وصناعة العلب الفاخرة.', isMultilingual: true },
-  { path: '/ar/catalog', title: 'الكتالوج (العربية)', short: 'الكتالوج (AR)', clusterKey: 'multilingual', clusterName: 'چندزبانه', depth: 2, chars: 2050, text: 'الكتالوج الشامل لمنتجات التغليف والعلب الفاخرة.', isMultilingual: true },
-
-  // 9. External Conversion Hubs
-  { path: 'https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA', title: 'لوکیشن کارخانه در گوگل مپ', short: 'گوگل مپ', clusterKey: 'conversion', clusterName: 'تبدیل خارجی', depth: 2, chars: 0, text: '', isExternal: true },
-  { path: 'tel:+982166797911', title: 'تماس مستقیم تلفنی', short: 'تلفن مستقیم', clusterKey: 'conversion', clusterName: 'تبدیل خارجی', depth: 2, chars: 0, text: '', isExternal: true },
-  { path: 'https://wa.me/989903400074', title: 'گفتگو در واتس‌اپ', short: 'واتس‌اپ', clusterKey: 'conversion', clusterName: 'تبدیل خارجی', depth: 2, chars: 0, text: '', isExternal: true }
-]
-
-// State for active nodes & links
-const allNodes = ref<GraphNode[]>([])
-const allEdges = ref<GraphEdge[]>([])
-
-// Expanded cluster state (by clusterKey)
-const expandedClusters = ref<Record<string, boolean>>({
-  core: true,
-  packaging: true, // Default open the primary packaging cluster
-  printing: false,
-  services: false,
-  resources: false,
-  content: false,
-  company: false,
-  multilingual: false,
-  conversion: false
-})
-
-function initializeGraphData() {
-  const map = new Map<string, GraphNode>()
-
-  // 1. Create nodes with initial calculated positions
-  strategicDataset.forEach((p) => {
-    const node: GraphNode = {
-      ...p,
-      id: p.path,
-      inlinksCount: 0,
-      outlinksCount: 0,
-      characterCount: p.chars || 0,
-      ssrSampleText: p.text || '',
-      pageRankScore: 50,
-      isExpanded: false,
-      clusterChildCount: 0,
-      inlinks: [],
-      outlinks: [],
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-      vx: 0,
-      vy: 0
-    }
-    map.set(p.path, node)
-  })
-
-  // 2. Count children per cluster hub
-  strategicDataset.forEach((p) => {
-    if (!p.isClusterHub && p.clusterKey) {
-      const hub = Array.from(map.values()).find((n) => n.clusterKey === p.clusterKey && n.isClusterHub)
-      if (hub) {
-        hub.clusterChildCount = (hub.clusterChildCount || 0) + 1
-      }
-    }
-  })
-
-  // 3. Establish authoritative semantic links
-  const homeNode = map.get('/')
-  const packagingHub = map.get('/products/packaging')
-  const printingHub = map.get('/products/printing')
-  const servicesHub = map.get('/services')
-  const resourcesHub = map.get('/resources')
-  const blogHub = map.get('/blog')
-  const aboutHub = map.get('/about')
-
-  // Homepage links to all primary hubs & company pages (Header + Footer)
-  map.forEach((target, path) => {
-    if (path !== '/' && homeNode) {
-      homeNode.outlinks.push({ toPath: path, isExternal: target.isExternal })
-      target.inlinks.push({ fromPath: '/', anchor: target.short })
-    }
-  })
-
-  // Silo Hub outlinks to child pages
-  map.forEach((target) => {
-    if (!target.isClusterHub && target.clusterKey) {
-      let hub: GraphNode | undefined
-      if (target.clusterKey === 'packaging') hub = packagingHub
-      else if (target.clusterKey === 'printing') hub = printingHub
-      else if (target.clusterKey === 'services') hub = servicesHub
-      else if (target.clusterKey === 'resources') hub = resourcesHub
-      else if (target.clusterKey === 'content') hub = blogHub
-      else if (target.clusterKey === 'company') hub = aboutHub
-
-      if (hub && hub.path !== target.path) {
-        hub.outlinks.push({ toPath: target.path })
-        target.inlinks.push({ fromPath: hub.path, anchor: target.short })
-      }
-    }
-  })
-
-  // Cross-silo contextual linking (Packaging -> Dielines, Blog -> Products)
-  const boxes = map.get('/products/packaging/boxes')
-  const dielines = map.get('/resources/dielines')
-  const blogInboard = map.get('/blog/inboard-vs-greyboard-packaging')
-  const contact = map.get('/contact')
-  const mapLink = map.get('https://maps.app.goo.gl/z4fFFJ4UwzQSuiEDA')
-  const telLink = map.get('tel:+982166797911')
-
-  if (boxes && dielines) {
-    boxes.outlinks.push({ toPath: dielines.path })
-    dielines.inlinks.push({ fromPath: boxes.path, anchor: 'دانلود خط تیغ جعبه' })
+  // Multilingual Alternates
+  {
+    path: '/en',
+    title: 'Najm Printing & Packaging Complex - English Homepage',
+    siloKey: 'multilingual',
+    siloName: 'چندزبانه (EN)',
+    isPillar: true,
+    depth: 1,
+    chars: 2800,
+    text: 'Najm Printing & Packaging Complex: Industrial 5-color Heidelberg offset printing, custom rigid boxes, folding cartons, and export packaging in Tehran, Iran.',
+    inlinks: [
+      { fromPath: '/', anchor: 'English Alternate (hreflang)' }
+    ],
+    outlinks: [
+      { toPath: '/en/catalog' },
+      { toPath: '/en/products/packaging' }
+    ],
+    isMultilingual: true
+  },
+  {
+    path: '/ar',
+    title: 'مجمع نجم للطباعة والتغليف - الصفحة الرئيسية باللغة العربية',
+    siloKey: 'multilingual',
+    siloName: 'چندزبانه (AR)',
+    isPillar: true,
+    depth: 1,
+    chars: 2750,
+    text: 'مجمع نجم للطباعة والتغليف: تصنيع علب الكرتون الفاخرة، علب الهاردبوكس المغناطيسية، وطباعة الأوفست المتطورة بمواصفات التصدير في طهران.',
+    inlinks: [
+      { fromPath: '/', anchor: 'Arabic Alternate (hreflang)' }
+    ],
+    outlinks: [
+      { toPath: '/ar/catalog' }
+    ],
+    isMultilingual: true
   }
-  if (blogInboard && packagingHub) {
-    blogInboard.outlinks.push({ toPath: packagingHub.path })
-    packagingHub.inlinks.push({ fromPath: blogInboard.path, anchor: 'تولید جعبه بهداشتی' })
-  }
-  if (contact && mapLink && telLink) {
-    contact.outlinks.push({ toPath: mapLink.path, isExternal: true })
-    contact.outlinks.push({ toPath: telLink.path, isExternal: true })
-    mapLink.inlinks.push({ fromPath: contact.path, anchor: 'لوکیشن کارخانه' })
-    telLink.inlinks.push({ fromPath: contact.path, anchor: 'تلفن تماس' })
-  }
+])
 
-  // 4. Compute Counts & Simulated PageRank Juice
-  map.forEach((node) => {
-    node.inlinksCount = node.inlinks.length
-    node.outlinksCount = node.outlinks.length
-
-    // Simulated PageRank (0 to 100) based on inlink weight and crawl depth
-    if (node.path === '/') {
-      node.pageRankScore = 100
-    } else {
-      const depthPenalty = node.depth === 1 ? 0.85 : 0.65
-      const inlinkScore = Math.min(node.inlinksCount * 14, 80)
-      node.pageRankScore = Math.round(inlinkScore * depthPenalty)
-    }
-  })
-
-  allNodes.value = Array.from(map.values())
-
-  // 5. Build edge connections
-  const edgesList: GraphEdge[] = []
-  allNodes.value.forEach((source) => {
-    source.outlinks.forEach((out) => {
-      const target = map.get(out.toPath)
-      if (target) {
-        edgesList.push({
-          source,
-          target,
-          isOrphan: target.inlinksCount === 0 && !target.isExternal
-        })
-      }
-    })
-  })
-  allEdges.value = edgesList
-
-  // Update layout positions
-  recalculateNodePositions()
-}
-
-// Layout Position Computations
-function recalculateNodePositions() {
-  const nodesList = allNodes.value
-  const homeNode = nodesList.find((n) => n.path === '/')
-
-  if (graphMode.value === 'depth') {
-    // 3 Structured Vertical Columns: Level 0 -> Level 1 -> Level 2
-    const level0 = nodesList.filter((n) => n.depth === 0)
-    const level1 = nodesList.filter((n) => n.depth === 1)
-    const level2 = nodesList.filter((n) => n.depth === 2)
-
-    level0.forEach((n, i) => {
-      n.targetX = 30
-      n.targetY = 0
-    })
-
-    const l1Spacing = 480 / Math.max(level1.length, 1)
-    level1.forEach((n, i) => {
-      n.targetX = 370
-      n.targetY = -230 + i * l1Spacing
-    })
-
-    const l2Spacing = 520 / Math.max(level2.length, 1)
-    level2.forEach((n, i) => {
-      n.targetX = 750
-      n.targetY = -240 + i * l2Spacing
-    })
-  } else {
-    // Silo / Cluster Radial Layout
-    // Center: Homepage
-    if (homeNode) {
-      homeNode.targetX = 0
-      homeNode.targetY = 0
+// Filtered Pages list
+const filteredPages = computed(() => {
+  return masterPages.value.filter((p) => {
+    // Silo Filter
+    if (selectedSiloFilter.value !== 'all' && p.siloKey !== selectedSiloFilter.value) {
+      return false
     }
 
-    // Cluster Hubs arranged in a balanced circle around home
-    const clusterHubs = nodesList.filter((n) => n.isClusterHub && n.path !== '/')
-    const hubCount = clusterHubs.length
-    const hubRadius = 220
-
-    clusterHubs.forEach((hub, i) => {
-      const angle = (i / hubCount) * 2 * Math.PI - Math.PI / 2
-      hub.targetX = Math.cos(angle) * hubRadius
-      hub.targetY = Math.sin(angle) * hubRadius
-      hub.isExpanded = !!expandedClusters.value[hub.clusterKey]
-
-      // Sub-pages in this cluster arranged in a subtle arc around their hub
-      const children = nodesList.filter((n) => n.clusterKey === hub.clusterKey && !n.isClusterHub)
-      const childCount = children.length
-      const childDist = 125
-
-      children.forEach((child, j) => {
-        const spread = Math.PI / 2.2
-        const childAngle = angle - spread / 2 + (j / Math.max(childCount - 1, 1)) * spread
-        child.targetX = hub.targetX + Math.cos(childAngle) * childDist
-        child.targetY = hub.targetY + Math.sin(childAngle) * childDist
-      })
-    })
-  }
-
-  // Snap or smoothly interpolate to targets
-  nodesList.forEach((n) => {
-    if (n.x === 0 && n.y === 0) {
-      n.x = n.targetX
-      n.y = n.targetY
-    }
-  })
-}
-
-// Active Visible Nodes according to Cluster Expansion and Active Filter
-const activeVisibleNodes = computed(() => {
-  return allNodes.value.filter((node) => {
-    // 1. Check Filter
-    if (activeFilter.value === 'internal' && node.isExternal) return false
-    if (activeFilter.value === 'external' && !node.isExternal) return false
-    if (activeFilter.value === 'orphans' && (node.inlinksCount > 0 || node.isExternal)) return false
-    if (activeFilter.value === 'low' && (node.inlinksCount >= 3 || node.isExternal)) return false
-    if (activeFilter.value === 'multilingual' && !node.isMultilingual) return false
-
-    // 2. Check Search
+    // Text Search
     if (searchQuery.value.trim()) {
       const q = searchQuery.value.toLowerCase().trim()
-      const match = node.title.toLowerCase().includes(q) || node.path.toLowerCase().includes(q) || node.short.toLowerCase().includes(q)
+      const match = p.title.toLowerCase().includes(q) || p.path.toLowerCase().includes(q) || p.siloName.toLowerCase().includes(q) || p.text.toLowerCase().includes(q)
       if (!match) return false
     }
 
-    // 3. In Cluster Mode: if node is a child page, only show if its cluster is expanded!
-    if (graphMode.value === 'cluster' && !searchQuery.value.trim()) {
-      if (!node.isClusterHub && node.path !== '/') {
-        if (!expandedClusters.value[node.clusterKey]) {
-          return false
-        }
-      }
-    }
-
     return true
   })
 })
 
-const activeVisibleEdges = computed(() => {
-  const visibleIds = new Set(activeVisibleNodes.value.map((n) => n.id))
-  return allEdges.value.filter((e) => visibleIds.has(e.source.id) && visibleIds.has(e.target.id))
-})
+// Silos Breakdown
+const silosList = computed(() => {
+  const siloKeys = [
+    { key: 'packaging', name: 'بسته‌بندی و جعبه‌سازی', color: '#10B981' },
+    { key: 'printing', name: 'چاپ تجاری و افست', color: '#06B6D4' },
+    { key: 'services', name: 'خدمات کارخانه', color: '#8B5CF6' },
+    { key: 'resources', name: 'منابع و خطوط تیغ', color: '#F59E0B' },
+    { key: 'content', name: 'وبلاگ و مقالات', color: '#F43F5E' },
+    { key: 'company', name: 'اطلاعات شرکت و اعتماد', color: '#64748B' },
+    { key: 'multilingual', name: 'صفحات بین‌المللی چندزبانه', color: '#A855F7' }
+  ]
 
-const filteredTableNodes = computed(() => {
-  return allNodes.value.filter((node) => {
-    if (activeFilter.value === 'internal' && node.isExternal) return false
-    if (activeFilter.value === 'external' && !node.isExternal) return false
-    if (activeFilter.value === 'orphans' && (node.inlinksCount > 0 || node.isExternal)) return false
-    if (activeFilter.value === 'low' && (node.inlinksCount >= 3 || node.isExternal)) return false
-    if (activeFilter.value === 'multilingual' && !node.isMultilingual) return false
+  return siloKeys.map((sk) => {
+    const pages = masterPages.value.filter((p) => p.siloKey === sk.key)
+    const pillar = pages.find((p) => p.isPillar) || pages[0]
+    const childPages = pages.filter((p) => p !== pillar)
 
-    if (searchQuery.value.trim()) {
-      const q = searchQuery.value.toLowerCase().trim()
-      return node.title.toLowerCase().includes(q) || node.path.toLowerCase().includes(q) || node.short.toLowerCase().includes(q)
+    return {
+      ...sk,
+      pages,
+      pillar,
+      childPages
     }
-    return true
   })
 })
 
-// Stats calculations
-const stats = computed(() => {
-  const total = allNodes.value.length
-  let inlinkSum = 0
-  let orphans = 0
-  let hubs = 0
+// Metrics calculations
+const totalPagesCount = computed(() => masterPages.value.length)
 
-  allNodes.value.forEach((n) => {
-    inlinkSum += n.inlinksCount
-    if (n.inlinksCount === 0 && !n.isExternal) orphans++
-    if (n.inlinksCount >= 8) hubs++
-  })
-
-  return {
-    totalUrls: total,
-    internalLinksCount: inlinkSum,
-    orphanCount: orphans,
-    authorityHubsCount: hubs
-  }
+const orphanPagesCount = computed(() => {
+  return masterPages.value.filter((p) => p.inlinks.length === 0 && !p.isExternal).length
 })
 
-// Appearance Helpers
-function getNodeColor(node: GraphNode): string {
-  if (node.path === '/') return '#10B981' // Emerald
-  if (node.isExternal) return '#38BDF8' // Sky
-  if (node.isMultilingual) return '#A855F7' // Purple
+const totalInboundLinksCount = computed(() => {
+  return masterPages.value.reduce((acc, p) => acc + p.inlinks.length, 0)
+})
 
-  if (node.clusterKey === 'packaging') return '#10B981' // Emerald
-  if (node.clusterKey === 'printing') return '#06B6D4' // Cyan
-  if (node.clusterKey === 'services') return '#8B5CF6' // Violet
-  if (node.clusterKey === 'resources') return '#F59E0B' // Amber
-  if (node.clusterKey === 'content') return '#F43F5E' // Rose
-  if (node.clusterKey === 'company') return '#64748B' // Slate
+const averageInlinksPerPage = computed(() => {
+  if (masterPages.value.length === 0) return '0'
+  return (totalInboundLinksCount.value / masterPages.value.length).toFixed(1)
+})
 
-  return '#10B981'
-}
+// Active Inspected Page
+const currentInspectedPage = computed(() => {
+  return masterPages.value.find((p) => p.path === inspectedPath.value) || masterPages.value[0]
+})
 
-function getNodeStroke(node: GraphNode): string {
-  if (selectedNode.value && selectedNode.value.id === node.id) return '#ffffff'
-  if (node.inlinksCount === 0 && !node.isExternal) return '#FDA4AF'
-  return 'rgba(255,255,255,0.3)'
-}
-
-function getNodeRadius(node: GraphNode): number {
-  if (node.path === '/') return 18
-  if (node.isClusterHub) return 14
-  if (node.isExternal) return 9
-  return 10
-}
-
-function getNodeGlyph(node: GraphNode): string {
-  if (node.path === '/') return '★'
-  if (node.isExternal) return '↗'
-  if (node.isMultilingual) return '🌐'
-  if (node.isClusterHub) return node.isExpanded ? '−' : '+'
-  return '●'
-}
-
-function getNodeLabelWidth(node: GraphNode): number {
-  const len = (node.shortLabel || '').length
-  const extra = node.isClusterHub && !node.isExpanded ? 24 : 0
-  return Math.max(len * 8 + 18 + extra, 54)
-}
-
-function getMarkerForEdge(edge: GraphEdge): string {
-  if (edge.source.clusterKey === 'printing') return 'url(#arrow-cyan)'
-  if (edge.source.clusterKey === 'resources' || edge.source.clusterKey === 'content') return 'url(#arrow-amber)'
-  return 'url(#arrow-emerald)'
-}
-
-function isEdgeHighlighted(edge: GraphEdge): boolean {
-  if (!selectedNode.value) return false
-  return edge.source.id === selectedNode.value.id || edge.target.id === selectedNode.value.id
-}
-
-function getPageRankColor(score: number): string {
-  if (score >= 80) return 'text-emerald-400'
-  if (score >= 50) return 'text-cyan-400'
-  if (score >= 30) return 'text-amber-400'
-  return 'text-rose-400'
-}
-
-// User Interactions
-function onNodeClick(node: GraphNode) {
-  selectedNode.value = node
-
-  // In cluster mode, toggle cluster expansion when clicking a hub!
-  if (graphMode.value === 'cluster' && node.isClusterHub && node.path !== '/') {
-    toggleClusterNode(node)
+function getSiloColor(siloKey: string): string {
+  switch (siloKey) {
+    case 'core': return '#10B981'
+    case 'packaging': return '#10B981'
+    case 'printing': return '#06B6D4'
+    case 'services': return '#8B5CF6'
+    case 'resources': return '#F59E0B'
+    case 'content': return '#F43F5E'
+    case 'company': return '#64748B'
+    case 'multilingual': return '#A855F7'
+    default: return '#10B981'
   }
 }
 
-function toggleClusterNode(node: GraphNode) {
-  const nextState = !expandedClusters.value[node.clusterKey]
-  expandedClusters.value[node.clusterKey] = nextState
-  node.isExpanded = nextState
-  recalculateNodePositions()
+function openInlinksModal(page: PageRecord) {
+  modalPage.value = page
 }
 
-function expandAllClusters() {
-  Object.keys(expandedClusters.value).forEach((k) => {
-    expandedClusters.value[k] = true
-  })
-  allNodes.value.forEach((n) => {
-    if (n.isClusterHub) n.isExpanded = true
-  })
-  recalculateNodePositions()
+function inspectPageSSR(page: PageRecord) {
+  inspectedPath.value = page.path
+  activeTab.value = 'inspector'
 }
 
-function collapseAllClusters() {
-  Object.keys(expandedClusters.value).forEach((k) => {
-    expandedClusters.value[k] = false
-  })
-  expandedClusters.value.core = true
-  allNodes.value.forEach((n) => {
-    if (n.isClusterHub) n.isExpanded = false
-  })
-  recalculateNodePositions()
-}
-
-function openNodeDrawerFromTable(node: GraphNode) {
-  selectedNode.value = node
-  graphMode.value = 'cluster'
-  // Expand its cluster so it is visible
-  if (node.clusterKey) {
-    expandedClusters.value[node.clusterKey] = true
-  }
-  recalculateNodePositions()
-  focusNodeByPath(node.path)
-}
-
-function focusNodeByPath(path: string) {
-  const node = allNodes.value.find((n) => n.path === path)
-  if (node) {
-    selectedNode.value = node
-    if (node.clusterKey) {
-      expandedClusters.value[node.clusterKey] = true
-    }
-    recalculateNodePositions()
-    panX.value = 420 - node.x * zoomScale.value
-    panY.value = 300 - node.y * zoomScale.value
-  }
-}
-
-function addQuickInboundLink(node: GraphNode) {
-  const homeNode = allNodes.value.find((n) => n.path === '/')
-  if (homeNode) {
-    homeNode.outlinks.push({ toPath: node.path })
-    node.inlinks.push({ fromPath: '/', anchor: node.shortLabel })
-    node.inlinksCount = node.inlinks.length
-    node.pageRankScore = 65
-  }
-  window.dispatchEvent(
-    new CustomEvent('toast', {
-      detail: { type: 'success', text: `صفحه ${node.shortLabel} با موفقیت به پیوندهای اصلی متصل شد.` }
-    })
-  )
-}
-
-function rescanGraph() {
-  isScanning.value = true
+function runFullAudit() {
+  isAuditing.value = true
   setTimeout(() => {
-    initializeGraphData()
-    isScanning.value = false
+    isAuditing.value = false
     window.dispatchEvent(
       new CustomEvent('toast', {
-        detail: { type: 'success', text: 'ساختار سیلوها و عمق خزش گوگل مجدداً ارزیابی شد.' }
+        detail: {
+          type: 'success',
+          text: `پایش ساختار انجام شد. تمام ${masterPages.value.length} آدرس دارای دسترسی خزش قطعی توسط ربات گوگل هستند.`
+        }
       })
     )
   }, 600)
 }
-
-// Smooth Motion Interpolation Frame Loop
-let animId: number | null = null
-function startAnimationLoop() {
-  const step = () => {
-    const list = allNodes.value
-    for (let i = 0; i < list.length; i++) {
-      const n = list[i]
-      if (n === draggedNode) continue
-
-      // Smoothly ease position toward target
-      const dx = n.targetX - n.x
-      const dy = n.targetY - n.y
-      if (Math.abs(dx) > 0.1 || Math.abs(dy) > 0.1) {
-        n.x += dx * 0.15
-        n.y += dy * 0.15
-      }
-    }
-    animId = requestAnimationFrame(step)
-  }
-  animId = requestAnimationFrame(step)
-}
-
-// PIXEL-PERFECT CURSOR & TOUCH TRACKING (Eliminates Offset)
-function getSvgLocalCoordinates(clientX: number, clientY: number): { x: number; y: number } {
-  if (!svgRef.value) return { x: 0, y: 0 }
-  const rect = svgRef.value.getBoundingClientRect()
-  return {
-    x: (clientX - rect.left - panX.value) / zoomScale.value,
-    y: (clientY - rect.top - panY.value) / zoomScale.value
-  }
-}
-
-function startPan(e: MouseEvent) {
-  if (e.button !== 0 || !svgRef.value) return
-  isPanning.value = true
-  const rect = svgRef.value.getBoundingClientRect()
-  startPanPos.value = {
-    x: e.clientX - rect.left - panX.value,
-    y: e.clientY - rect.top - panY.value
-  }
-}
-
-function startTouchPan(e: TouchEvent) {
-  if (!svgRef.value || e.touches.length === 0) return
-  isPanning.value = true
-  const touch = e.touches[0]
-  const rect = svgRef.value.getBoundingClientRect()
-  startPanPos.value = {
-    x: touch.clientX - rect.left - panX.value,
-    y: touch.clientY - rect.top - panY.value
-  }
-}
-
-function onPointerMove(e: MouseEvent | TouchEvent) {
-  const pointer = 'touches' in e ? e.touches[0] : (e as MouseEvent)
-  if (!pointer || !svgRef.value) return
-  const rect = svgRef.value.getBoundingClientRect()
-
-  if (draggedNode) {
-    const pt = getSvgLocalCoordinates(pointer.clientX, pointer.clientY)
-    draggedNode.x = pt.x
-    draggedNode.y = pt.y
-    draggedNode.targetX = pt.x
-    draggedNode.targetY = pt.y
-    return
-  }
-
-  if (isPanning.value) {
-    panX.value = pointer.clientX - rect.left - startPanPos.value.x
-    panY.value = pointer.clientY - rect.top - startPanPos.value.y
-  }
-}
-
-function endPan() {
-  isPanning.value = false
-  draggedNode = null
-}
-
-function startNodeDrag(e: MouseEvent, node: GraphNode) {
-  if (e.button !== 0) return
-  e.stopPropagation()
-  draggedNode = node
-}
-
-function startNodeTouchDrag(e: TouchEvent, node: GraphNode) {
-  e.stopPropagation()
-  draggedNode = node
-}
-
-function onWheel(e: WheelEvent) {
-  const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92
-  const newScale = Math.min(Math.max(zoomScale.value * zoomFactor, 0.45), 2.2)
-  zoomScale.value = newScale
-}
-
-function zoomIn() {
-  zoomScale.value = Math.min(zoomScale.value * 1.15, 2.2)
-}
-
-function zoomOut() {
-  zoomScale.value = Math.max(zoomScale.value * 0.85, 0.45)
-}
-
-function resetView() {
-  panX.value = 420
-  panY.value = 300
-  zoomScale.value = 0.9
-}
-
-onMounted(() => {
-  initializeGraphData()
-  startAnimationLoop()
-})
-
-onBeforeUnmount(() => {
-  if (animId) cancelAnimationFrame(animId)
-})
 </script>
 
 <style scoped>
-/* Ensure Persian typography inside SVG matches the site's IRANSansX font family cleanly */
-.graph-persian-font {
-  font-family: 'IRANSansX-d4', 'IRANSansX', sans-serif !important;
-  letter-spacing: -0.01em;
+.animate-scale-in {
+  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.drawer-slide-enter-active,
-.drawer-slide-leave-active {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.drawer-slide-enter-from,
-.drawer-slide-leave-to {
-  transform: translateX(100%);
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

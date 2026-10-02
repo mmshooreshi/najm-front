@@ -42,17 +42,18 @@ function scheduleScrollRefresh() {
 onMounted(async () => {
   await nextTick()
 
-  // Detect touch devices (iOS Safari, Android Chrome, tablets)
-  const isTouchDevice =
+  // Detect touch devices (iOS Safari, Android Chrome, tablets) and search crawlers
+  const isTouchOrCrawler =
     typeof window !== 'undefined' &&
     (ScrollTrigger.isTouch === 1 ||
       'ontouchstart' in window ||
       navigator.maxTouchPoints > 0 ||
-      window.matchMedia('(pointer: coarse)').matches)
+      window.matchMedia('(pointer: coarse)').matches ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|Googlebot|bingbot|Baiduspider/i.test(navigator.userAgent))
 
   // On desktop pointer/mouse environments, enable refined ScrollSmoother
-  // On mobile/touch devices, NEVER hijack scroll: allow native 120Hz compositor momentum scrolling!
-  if (!isTouchDevice) {
+  // On mobile/touch devices or crawlers, NEVER hijack scroll: allow native compositor momentum scrolling!
+  if (!isTouchOrCrawler) {
     smootherInstance = ScrollSmoother.create({
       wrapper: '#smooth-wrapper',
       content: '#smooth-content',

@@ -178,24 +178,6 @@ useAppSeo({
   description: computed(() => currentProduct.value.description),
   image: currentProduct.value.image,
   type: 'product',
-  slug: `products/${slug.value}`,
-  extraSchemas: computed(() => [
-    {
-      '@type': 'Product',
-      name: currentProduct.value.name,
-      image: currentProduct.value.image,
-      description: currentProduct.value.description,
-      brand: {
-        '@type': 'Brand',
-        name: 'مجتمع چاپ و بسته‌بندی نجم'
-      },
-      offers: {
-        '@type': 'Offer',
-        availability: 'https://schema.org/InStock',
-        priceCurrency: 'IRR',
-        price: '1'
-      }
-    }
-  ])
+  slug: `products/${slug.value}`
 })
 </script>
