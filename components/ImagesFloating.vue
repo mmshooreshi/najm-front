@@ -23,7 +23,7 @@
           v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
           :height="image.height"
           :width="image.width"
-          :priority="index < 14"
+          :priority="index === 0"
           class="opacity-100"
           :src="`/images/${image.src}`"
           @hover="() => handleElementHover(image)"

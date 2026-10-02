@@ -10,7 +10,7 @@
       <AdminMediaOverlay />
       <AdminMediaStudioModal />
     </template>
-    <ConsultationModal />
+    <ConsultationModal v-if="isModalOpen" />
   </ClientOnly>
 </template>
 
@@ -18,13 +18,16 @@
 import { computed, defineAsyncComponent } from 'vue'
 import '@unocss/reset/tailwind-compat.css'
 import Drawer from '~/components/Drawer.vue'
-import ConsultationModal from '~/components/consultation/ConsultationModal.vue'
 import { adminEditState } from '@/store/adminEditStore'
 import { useMenu } from '~/composables/useMenu'
 import { useLocale } from '~/composables/useLocale'
+import { useConsultation } from '~/composables/useConsultation'
 
 const { language, isRTL } = useLocale()
 const { isMenuOpen } = useMenu()
+const { isModalOpen } = useConsultation()
+
+const ConsultationModal = defineAsyncComponent(() => import('~/components/consultation/ConsultationModal.vue'))
 
 useHead({
   htmlAttrs: {

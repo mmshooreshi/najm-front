@@ -295,7 +295,7 @@ export default defineNuxtConfig({
     build: {
       chunkSizeWarningLimit: 2000,
       cssMinify: 'esbuild',
-      cssCodeSplit: true
+      cssCodeSplit: false
     },
 
     optimizeDeps: {

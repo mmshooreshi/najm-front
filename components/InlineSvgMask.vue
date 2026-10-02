@@ -8,12 +8,12 @@
   >
     <!-- Exact vector silhouette mask with animated Najm green shimmer displayed while image loads -->
     <svg
+      v-if="!isLoaded"
       :width="W"
       :height="H"
       :viewBox="maskData ? `0 0 ${maskData.w} ${maskData.h}` : `0 0 ${W} ${H}`"
       class="absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out z-0"
       :style="{
-        opacity: isLoaded ? 0 : 1,
         position: 'absolute',
         top: 0,
         left: 0,
