@@ -4,6 +4,9 @@
     <NuxtLink :to="isAuthenticated && user.name ? localePath(`/user/${user.id}`) : localePath('/login')"
       class="group flex items-center gap-2">
       <button type="button"
+        data-track="nav-login"
+        data-telemetry-label="ورود به حساب کاربری"
+        data-telemetry-cat="auth"
         class="group transition-all duration-200 text-xs px-3 lg:px-4 gap-2 h-10 lg:h-11 rounded-2xl bg-white hover:bg-gray-50 active:scale-[0.98] flex items-center justify-center text-gray-700 border border-gray-200/80 font-medium cursor-pointer shadow-xs">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
           class="w-4 h-4 text-gray-500 group-hover:text-najmgreen transition-colors shrink-0">

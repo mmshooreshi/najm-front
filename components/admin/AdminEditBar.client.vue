@@ -1,8 +1,7 @@
 <!-- components/admin/AdminEditBar.client.vue -->
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, ref, reactive, watch, nextTick } from 'vue'
-import HistoryModal from '~/components/admin/HistoryModal.client.vue'
-import ChangesDrawer from '~/components/admin/ChangesDrawer.client.vue'
+import AdminUnifiedPanel from '~/components/admin/AdminUnifiedPanel.client.vue'
 import AdminSeoDrawer from '~/components/admin/AdminSeoDrawer.client.vue'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
 import { invalidatePageUI } from '~/composables/ui/pageUiCache'
@@ -16,7 +15,10 @@ import {
   discardAllChanges,
   toggleGlobalMotionPaused,
   clearAdminSession,
-  clearDraftFromLocalStorage
+  clearDraftFromLocalStorage,
+  openUnifiedPanel,
+  toggleUnifiedPanel,
+  closeUnifiedPanel
 } from '@/store/adminEditStore'
 
 const { setLocale, language } = useLocale()
@@ -54,6 +56,19 @@ const autosaveDelayMs = 2000
 let autosaveTimer: any = null
 
 const isTelemetryOpen = ref(false)
+const isMobile = ref(false)
+const isMobileMoreOpen = ref(false)
+
+function updateIsMobile() {
+  if (typeof window !== 'undefined') {
+    isMobile.value = window.innerWidth < 768
+  }
+}
+
+function toggleTelemetryLens() {
+  window.dispatchEvent(new CustomEvent('najm:toggle-lens'))
+  window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Z', ctrlKey: true, shiftKey: true, bubbles: true }))
+}
 
 function formatTime(iso: string | null): string {
   if (!iso) return 'None'
@@ -328,15 +343,17 @@ let rafId: number | null = null
 // Viewport Safe Clamping with margin
 function clampPosition(x: number, y: number, margin = 12): { x: number; y: number } {
   if (typeof window === 'undefined') return { x, y }
-  const barW = barEl.value?.offsetWidth || (state.minimized ? 140 : 640)
-  const barH = barEl.value?.offsetHeight || 48
+  const isMob = window.innerWidth < 768
+  const actualMargin = isMob ? 8 : margin
+  const barW = barEl.value?.offsetWidth || (state.minimized ? (isMob ? 110 : 140) : (isMob ? Math.min(window.innerWidth - 16, 420) : 640))
+  const barH = barEl.value?.offsetHeight || (isMob ? 54 : 48)
 
-  const maxX = Math.max(margin, window.innerWidth - barW - margin)
-  const maxY = Math.max(margin, window.innerHeight - barH - margin)
+  const maxX = Math.max(actualMargin, window.innerWidth - barW - actualMargin)
+  const maxY = Math.max(actualMargin, window.innerHeight - barH - actualMargin)
 
   return {
-    x: Math.max(margin, Math.min(maxX, x)),
-    y: Math.max(margin, Math.min(maxY, y))
+    x: Math.max(actualMargin, Math.min(maxX, x)),
+    y: Math.max(actualMargin, Math.min(maxY, y))
   }
 }
 
@@ -385,13 +402,14 @@ function onPointerMove(e: PointerEvent) {
     const rawY = startPosY + dy
 
     // Rubber-band resistance if dragged beyond viewport boundary
-    const margin = 12
-    const barW = barEl.value?.offsetWidth || 200
-    const barH = barEl.value?.offsetHeight || 48
+    const isMob = window.innerWidth < 768
+    const margin = isMob ? 8 : 12
+    const barW = barEl.value?.offsetWidth || (isMob ? Math.min(window.innerWidth - 16, 420) : 200)
+    const barH = barEl.value?.offsetHeight || (isMob ? 54 : 48)
     const minX = margin
-    const maxX = window.innerWidth - barW - margin
+    const maxX = Math.max(margin, window.innerWidth - barW - margin)
     const minY = margin
-    const maxY = window.innerHeight - barH - margin
+    const maxY = Math.max(margin, window.innerHeight - barH - margin)
 
     let targetX = rawX
     let targetY = rawY
@@ -468,11 +486,13 @@ function restoreInitialPosition() {
   } catch {}
 
   // Calculate default bottom-center position
-  const defaultX = Math.round((window.innerWidth - 640) / 2)
-  const defaultY = window.innerHeight - 80
+  const isMob = window.innerWidth < 768
+  const barEstimatedW = isMob ? Math.min(window.innerWidth - 16, 420) : 640
+  const defaultX = Math.max(isMob ? 8 : 12, Math.round((window.innerWidth - barEstimatedW) / 2))
+  const defaultY = window.innerHeight - (isMob ? 68 : 80)
 
   if (state.minimized) {
-    pos.x = collapsedPos.saved ? collapsedPos.x : (defaultX + 240)
+    pos.x = collapsedPos.saved ? collapsedPos.x : (isMob ? window.innerWidth - 130 : defaultX + 240)
     pos.y = collapsedPos.saved ? collapsedPos.y : defaultY
   } else {
     pos.x = expandedPos.saved ? expandedPos.x : defaultX
@@ -538,8 +558,9 @@ const commands = computed(() => [
   { id: 'media-studio', icon: 'sparkles', label: 'Open Media Studio & Asset Manager', shortcut: '', action: () => { state.mediaStudioOpen = true; if (!state.activeMediaInitialUrl) state.activeMediaInitialUrl = '/images/sections/cards/01.png' } },
   { id: 'save', icon: 'save', label: 'Save Pending Changes', shortcut: '⌘S', action: () => saveDraft(true) },
   { id: 'seo-studio', icon: 'sparkles', label: 'Open SEO & AEO Studio (Meta & AI Search)', shortcut: '⌘M', action: () => (isSeoDrawerOpen.value = true) },
-  { id: 'inspector', icon: 'diff', label: 'Open Modified Fields Inspector', shortcut: '⌘K', action: () => (state.inspectorOpen = true) },
-  { id: 'history', icon: 'history', label: 'View Revisions & History', shortcut: '', action: () => (state.historyOpen = true) },
+  { id: 'inspector', icon: 'diff', label: 'Open Unified Console (Hierarchy, Origin & Proof Lens)', shortcut: '⌘K', action: () => openUnifiedPanel('proof') },
+  { id: 'origin-hierarchy', icon: 'diff', label: 'View Content Origin & Hierarchy', shortcut: '', action: () => openUnifiedPanel('origin') },
+  { id: 'history', icon: 'history', label: 'View Revisions & 1-Click Rollback', shortcut: '', action: () => openUnifiedPanel('versions') },
   { id: 'discard', icon: 'trash', label: 'Discard All Unsaved Changes', shortcut: 'Esc', action: () => discardWithConfirm() },
   { id: 'autosave', icon: 'clock-bolt', label: state.autosaveEnabled ? 'Turn Off Autosave' : 'Turn On Autosave', shortcut: '', action: () => (state.autosaveEnabled = !state.autosaveEnabled) },
   { id: 'minimize', icon: 'minimize', label: state.minimized ? 'Expand Admin Dock' : 'Minimize Admin Dock', shortcut: '', action: () => (state.minimized = !state.minimized) },
@@ -594,6 +615,8 @@ onMounted(() => {
       })
   }
 
+  updateIsMobile()
+  window.addEventListener('resize', updateIsMobile, { passive: true })
   window.addEventListener('resize', fitIntoViewport, { passive: true })
 
   const onSaveEvt = () => saveDraft(true)
@@ -613,16 +636,18 @@ onMounted(() => {
   })
 
   const onOutsidePointer = (e: PointerEvent) => {
-    if (isTelemetryOpen.value) {
-      const target = e.target as HTMLElement | null
-      if (target && !target.closest('.admin-floating-dock')) {
-        isTelemetryOpen.value = false
-      }
+    const target = e.target as HTMLElement | null
+    if (isTelemetryOpen.value && target && !target.closest('.admin-floating-dock')) {
+      isTelemetryOpen.value = false
+    }
+    if (isMobileMoreOpen.value && target && !target.closest('.admin-floating-dock')) {
+      isMobileMoreOpen.value = false
     }
   }
   window.addEventListener('pointerdown', onOutsidePointer)
 
   ;(window as any)._adminBarCleanup = () => {
+    window.removeEventListener('resize', updateIsMobile)
     window.removeEventListener('resize', fitIntoViewport)
     window.removeEventListener('pointerdown', onOutsidePointer)
     window.removeEventListener('admin-save', onSaveEvt)
@@ -689,7 +714,236 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
         </button>
       </div>
 
-      <!-- Expanded Full Dock -->
+      <!-- Expanded Full Dock (Mobile Mode) -->
+      <div
+        v-else-if="isMobile"
+        class="flex flex-col select-none relative"
+      >
+        <!-- Mobile Quick Action Sheet -->
+        <transition name="admin-modal">
+          <div
+            v-if="isMobileMoreOpen"
+            class="mb-2 w-full max-w-[calc(100vw-24px)] p-3.5 rounded-2xl bg-zinc-950/98 text-white border border-white/20 shadow-2xl backdrop-blur-2xl text-right z-[999999]"
+            dir="rtl"
+          >
+            <!-- Mobile Sheet Header -->
+            <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-white/10 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-zinc-100">ابزارهای مدیریت</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-zinc-300 font-mono" dir="ltr">
+                  /{{ state.slug || 'home' }}
+                </span>
+              </div>
+              <button
+                type="button"
+                @click.stop="isMobileMoreOpen = false"
+                class="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+              >
+                <AdminIcon name="close" class="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <!-- Language Switcher Row -->
+            <div class="flex items-center justify-between bg-zinc-900/80 px-2.5 py-2 rounded-xl border border-white/5 mb-2.5">
+              <span class="text-xs text-zinc-400 font-medium">زبان ویرایش:</span>
+              <div class="flex items-center gap-1 bg-black/40 rounded-lg p-0.5 border border-white/5">
+                <button
+                  v-for="l in availableLangs"
+                  :key="l"
+                  type="button"
+                  class="px-2.5 py-1 text-xs font-semibold uppercase rounded transition-colors cursor-pointer"
+                  :class="lang.toUpperCase() === l
+                    ? 'bg-zinc-700 text-white shadow-xs'
+                    : 'text-zinc-400 hover:text-white'"
+                  @click="handleLangChange(l)"
+                >
+                  {{ l }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Telemetry / Sync Row -->
+            <div class="flex items-center justify-between bg-zinc-900/80 px-2.5 py-2 rounded-xl border border-white/5 mb-3">
+              <div class="flex items-center gap-1.5 text-xs text-zinc-300">
+                <span class="w-2 h-2 rounded-full shrink-0" :class="telemetryDot"></span>
+                <span class="font-mono text-[11px]">{{ telemetryLabel }}</span>
+              </div>
+              <button
+                type="button"
+                @click.stop="forceSync"
+                class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-emerald-500/20 text-zinc-200 text-xs flex items-center gap-1 transition cursor-pointer active:scale-95"
+                :class="{ 'animate-spin text-emerald-400': syncing }"
+              >
+                <AdminIcon name="refresh" class="w-3.5 h-3.5" />
+                <span>همگام‌سازی فوری</span>
+              </button>
+            </div>
+
+            <!-- Quick Tool Actions Grid -->
+            <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+              <button
+                type="button"
+                @click="openUnifiedPanel('versions'); isMobileMoreOpen = false"
+                class="p-2.5 rounded-xl bg-zinc-900 border border-white/10 hover:border-white/20 text-zinc-200 flex items-center gap-2 cursor-pointer active:scale-95 transition"
+              >
+                <AdminIcon name="history" class="w-4 h-4 text-amber-400 shrink-0" />
+                <span class="font-medium">تاریخچه و بازگشت</span>
+              </button>
+
+              <button
+                type="button"
+                @click="isSeoDrawerOpen = true; isMobileMoreOpen = false"
+                class="p-2.5 rounded-xl bg-zinc-900 border border-white/10 hover:border-white/20 text-zinc-200 flex items-center gap-2 cursor-pointer active:scale-95 transition"
+              >
+                <span class="text-base leading-none">🌐</span>
+                <span class="font-medium">استودیو سئو</span>
+              </button>
+
+              <button
+                type="button"
+                @click="toggleGlobalMotionPaused"
+                class="p-2.5 rounded-xl bg-zinc-900 border border-white/10 hover:border-white/20 text-zinc-200 flex items-center gap-2 cursor-pointer active:scale-95 transition"
+              >
+                <AdminIcon :name="state.isMotionPausedGlobally ? 'play' : 'pause'" class="w-4 h-4 text-sky-400 shrink-0" />
+                <span class="font-medium">{{ state.isMotionPausedGlobally ? 'پخش انیمیشن' : 'فریز انیمیشن' }}</span>
+              </button>
+
+              <button
+                type="button"
+                @click="state.paletteOpen = true; isMobileMoreOpen = false"
+                class="p-2.5 rounded-xl bg-zinc-900 border border-white/10 hover:border-white/20 text-zinc-200 flex items-center gap-2 cursor-pointer active:scale-95 transition"
+              >
+                <AdminIcon name="command" class="w-4 h-4 text-emerald-400 shrink-0" />
+                <span class="font-medium">پالت دستورات (⌘K)</span>
+              </button>
+            </div>
+
+            <!-- Danger / Session Actions -->
+            <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs">
+              <button
+                type="button"
+                class="text-rose-400 hover:text-rose-300 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 py-1 cursor-pointer"
+                :disabled="changedCount === 0 || saving"
+                @click="discardWithConfirm(); isMobileMoreOpen = false"
+              >
+                <AdminIcon name="trash" class="w-3.5 h-3.5" />
+                <span>لغو تغییرات ({{ changedCount }})</span>
+              </button>
+
+              <div class="flex items-center gap-3">
+                <button
+                  type="button"
+                  class="text-zinc-400 hover:text-white py-1 cursor-pointer"
+                  @click="closeEditor"
+                >
+                  حالت کاربر
+                </button>
+                <button
+                  type="button"
+                  class="text-rose-400 hover:text-rose-300 py-1 cursor-pointer font-bold"
+                  @click="logoutAdmin"
+                >
+                  خروج
+                </button>
+              </div>
+            </div>
+          </div>
+        </transition>
+
+        <!-- Mobile Main Compact Dock Bar -->
+        <div
+          class="flex items-center justify-between gap-1 p-1.5 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-xl w-full max-w-[calc(100vw-24px)]"
+          :class="{ 'ring-2 ring-emerald-400/40 shadow-emerald-500/20': isDragging }"
+          role="toolbar"
+          aria-label="Admin Page Editor Dock Mobile"
+        >
+          <!-- Drag Gripper -->
+          <div
+            class="flex items-center justify-center w-6 h-8 text-zinc-400 hover:text-zinc-200 cursor-grab active:cursor-grabbing px-0.5 rounded-lg shrink-0"
+            title="جابجایی نوار ابزار"
+            @pointerdown="onPointerDown"
+          >
+            <AdminIcon name="grip" class="w-4 h-4" />
+          </div>
+
+          <!-- Edit / Preview Switch -->
+          <button
+            type="button"
+            class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer select-none"
+            :class="state.editMode
+              ? 'bg-emerald-600 text-white shadow-xs shadow-emerald-900/40'
+              : 'bg-zinc-900 text-zinc-400 hover:text-white border border-white/5'"
+            @click="state.editMode = !state.editMode"
+          >
+            <AdminIcon :name="state.editMode ? 'pencil' : 'eye'" class="w-3.5 h-3.5" />
+            <span>{{ state.editMode ? 'ویرایش' : 'پیش‌نمایش' }}</span>
+          </button>
+
+          <!-- Save Button -->
+          <button
+            type="button"
+            class="px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer select-none"
+            :class="changedCount > 0
+              ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs shadow-emerald-900/40'
+              : 'bg-zinc-900 text-zinc-500 border border-white/5 cursor-not-allowed'"
+            :disabled="changedCount === 0 || saving"
+            @click="saveDraft(true)"
+          >
+            <AdminIcon
+              :name="saving ? 'spinner' : 'save'"
+              class="w-3.5 h-3.5"
+              :class="{ 'animate-spin': saving }"
+            />
+            <span>ذخیره</span>
+            <span
+              v-if="changedCount > 0"
+              class="px-1.5 py-0.2 rounded-full bg-black/40 text-[10px] font-mono font-bold"
+            >
+              {{ changedCount }}
+            </span>
+          </button>
+
+          <!-- Unified Console Button -->
+          <button
+            type="button"
+            class="h-9 px-2.5 rounded-xl border flex items-center gap-1 text-xs font-semibold transition-colors cursor-pointer select-none"
+            :class="state.unifiedPanelOpen
+              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 ring-1 ring-amber-500/30'
+              : 'bg-zinc-900 text-zinc-300 hover:text-white border-white/5'"
+            @click="toggleUnifiedPanel('proof')"
+            title="کنسول تغییرات و تبارشناسی (⌘K)"
+          >
+            <AdminIcon name="diff" class="w-4 h-4" />
+            <span class="hidden xs:inline text-[11px]">کنسول</span>
+          </button>
+
+          <!-- More Options ("⋯") Trigger -->
+          <button
+            type="button"
+            class="h-9 px-2.5 rounded-xl border flex items-center justify-center gap-1 text-xs font-bold transition-colors cursor-pointer select-none"
+            :class="isMobileMoreOpen
+              ? 'bg-zinc-800 text-white border-white/20'
+              : 'bg-zinc-900 text-zinc-300 hover:text-white border-white/5'"
+            @click.stop="isMobileMoreOpen = !isMobileMoreOpen"
+            title="منوی ابزارهای پیشرفته"
+          >
+            <span class="text-sm leading-none font-bold">⋯</span>
+            <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="telemetryDot"></span>
+          </button>
+
+          <!-- Minimize to FAB Button -->
+          <button
+            type="button"
+            class="w-8 h-9 rounded-xl text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            @click="state.minimized = true"
+            title="کوچک کردن نوار ابزار"
+          >
+            <AdminIcon name="minimize" class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Expanded Full Dock (Desktop Mode) -->
       <div
         v-else
         class="flex items-center gap-1.5 p-1.5 rounded-2xl bg-zinc-950/95 text-white border border-white/20 shadow-2xl backdrop-blur-xl transition-shadow"
@@ -905,6 +1159,19 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
 
         <div class="h-4 w-px bg-white/10 mx-0.5"></div>
 
+        <!-- Telemetry Lens Action Button -->
+        <button
+          type="button"
+          class="h-8 px-2.5 rounded-xl border border-emerald-500/30 bg-emerald-950/40 hover:bg-emerald-900/60 text-emerald-300 flex items-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold"
+          @click="toggleTelemetryLens"
+          title="Telemetry Lens HUD (Ctrl+Shift+Z)"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-mono text-[11px]">Lens</span>
+        </button>
+
+        <div class="h-4 w-px bg-white/10 mx-0.5"></div>
+
         <!-- Quick Actions -->
         <div class="flex items-center gap-1">
           <!-- Save Button -->
@@ -926,29 +1193,29 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
             <span>Save</span>
           </button>
 
-          <!-- Page Content Explorer & Modified Fields Button -->
+          <!-- Unified Console Button (Proof Lens & Content Explorer) -->
           <button
             type="button"
             class="h-8 px-2.5 rounded-xl border flex items-center gap-1.5 transition-colors cursor-pointer text-xs font-semibold"
-            :class="state.inspectorOpen
+            :class="state.unifiedPanelOpen
               ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 ring-1 ring-amber-500/30'
               : 'bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border-white/5'"
-            @click="state.inspectorOpen = !state.inspectorOpen"
-            title="کاوشگر کل محتوای صفحه و تغییرات (Content Explorer & Changes)"
+            @click="toggleUnifiedPanel('proof')"
+            title="کنسول یکپارچه محتوا، تبارشناسی و تغییرات (⌘K)"
           >
             <AdminIcon name="diff" class="w-3.5 h-3.5" />
-            <span class="hidden md:inline">کاوشگر محتوا</span>
+            <span class="hidden md:inline">کنسول تغییرات</span>
             <span v-if="changedCount > 0" class="px-1.5 py-0.2 rounded-full bg-amber-500/30 text-amber-200 text-[10px] font-mono">
               {{ changedCount }}
             </span>
           </button>
 
-          <!-- History Toggle -->
+          <!-- History & Rollback Toggle (opens Unified Console on Versions tab) -->
           <button
             type="button"
             class="w-8 h-8 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/5 flex items-center justify-center transition-colors cursor-pointer"
-            @click="state.historyOpen = true"
-            title="Open Revision History"
+            @click="openUnifiedPanel('versions')"
+            title="تاریخچه نسخه‌ها و بازگشت ۱-کلیکی (Versions & Rollback)"
           >
             <AdminIcon name="history" class="w-4 h-4" />
           </button>
@@ -1034,17 +1301,8 @@ watch([changedCount, () => state.editMode, () => state.autosaveEnabled], schedul
       </div>
     </div>
 
-    <!-- Changes Inspector Drawer -->
-    <ChangesDrawer
-      :open="state.inspectorOpen"
-      @close="state.inspectorOpen = false"
-    />
-
-    <!-- History & Rollback Modal -->
-    <HistoryModal
-      :open="state.historyOpen"
-      @close="state.historyOpen = false"
-    />
+    <!-- Unified Docked Admin Panel (Hierarchy Origin, Proof Lens, Versions Rollback - NO Modals, NO Charts) -->
+    <AdminUnifiedPanel />
 
     <!-- SEO & AEO Management Studio Drawer -->
     <AdminSeoDrawer

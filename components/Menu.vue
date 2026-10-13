@@ -13,10 +13,19 @@
         v-if="section && section.type === 'accordion'"
         :title="section.name"
         :edit-path="`menu:${section.key}.name`"
+        :edit-panes-path="`menu:${section.key}.children`"
         :tabs="section.tabs"
         :panes="section.children"
         class="mb-3"
       >
+        <template #pane="{ pane, paneIndex }">
+          <MenuLevel
+            :items="pane.children"
+            :parent-slug="pane.slug"
+            :parent-path="`menu:${section.key}.children.${paneIndex ?? 0}.children`"
+            @link-click="emit('close')"
+          />
+        </template>
         <template #default>
           <MenuLevel
             :items="section.children"

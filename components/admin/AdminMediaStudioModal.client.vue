@@ -97,7 +97,7 @@
               >
                 <canvas
                   ref="previewCanvas"
-                  class="max-w-full max-h-[55vh] object-contain rounded-xl shadow-2xl border border-white/10"
+                  class="max-w-full max-h-[32vh] sm:max-h-[55vh] object-contain rounded-xl shadow-2xl border border-white/10"
                 ></canvas>
 
                 <!-- Crop Bounding Box -->
@@ -601,7 +601,7 @@
               </div>
 
               <!-- Sidebar Footer -->
-              <div class="p-4 border-t border-white/10 bg-zinc-950 flex items-center justify-between gap-2">
+              <div class="px-4 py-3 sm:py-4 border-t border-white/10 bg-zinc-950 flex items-center justify-between gap-2 pb-[max(12px,env(safe-area-inset-bottom,12px))]">
                 <button
                   type="button"
                   class="px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-semibold border border-white/10 transition-colors cursor-pointer"

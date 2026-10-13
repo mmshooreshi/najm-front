@@ -310,11 +310,13 @@ onMounted(async () => {
   }
 
   window.addEventListener('admin-edit-discarded', resetAndRerun)
+  window.addEventListener('admin:split-rebuild', resetAndRerun)
 })
 
 onBeforeUnmount(() => {
   if (stInstance) stInstance.kill()
   window.removeEventListener('admin-edit-discarded', resetAndRerun)
+  window.removeEventListener('admin:split-rebuild', resetAndRerun)
 })
 </script>
 

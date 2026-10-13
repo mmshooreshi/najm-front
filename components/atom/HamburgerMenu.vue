@@ -2,6 +2,9 @@
 <template>
   <button
     type="button"
+    data-track="nav-hamburger-menu"
+    data-telemetry-label="منوی ناوبری اصلی (موبایل و دسکتاپ)"
+    data-telemetry-cat="navigation"
     @click="toggleMenu"
     class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white hover:bg-gray-100/80 active:scale-95 flex items-center justify-center transition-all duration-200 border border-gray-200/80 shadow-xs cursor-pointer select-none"
     :aria-label="menuOpen ? 'بستن منو' : 'باز کردن منو'"

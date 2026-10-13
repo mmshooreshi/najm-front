@@ -23,7 +23,8 @@
           v-memotion-pop-pop="{ delay: (index + 5) % 5 * 0.1, duration: 0.4 }"
           :height="image.height"
           :width="image.width"
-          :priority="index <= 1"
+          :priority="false"
+          :alt="image.name ? `نمونه بسته‌بندی ${image.name}` : 'نمونه جعبه و بسته‌بندی مقوایی'"
           class="opacity-100"
           :src="`/images/${image.src}`"
           @hover="() => handleElementHover(image)"
@@ -625,12 +626,19 @@ const onMotionToggle = (e) => {
   }
 }
 
+const onMotionFreeze = (e) => {
+  if (e?.detail?.el && (e.detail.el === slider.value || slider.value?.contains(e.detail.el))) {
+    swipeVelocity.value = 0
+  }
+}
+
 onMounted(() => {
   lastFrameTime = performance.now()
   animate()
   if (typeof window !== 'undefined') {
     window.addEventListener('admin:motion-global-toggle', onMotionToggle)
     window.addEventListener('admin:motion-resume', onMotionToggle)
+    window.addEventListener('admin:motion-freeze', onMotionFreeze)
   }
 })
 
@@ -640,6 +648,7 @@ onUnmounted(() => {
     window.removeEventListener('mouseup', handleWindowMouseUp)
     window.removeEventListener('admin:motion-global-toggle', onMotionToggle)
     window.removeEventListener('admin:motion-resume', onMotionToggle)
+    window.removeEventListener('admin:motion-freeze', onMotionFreeze)
   }
 })
 </script>

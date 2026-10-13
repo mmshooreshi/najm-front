@@ -1,6 +1,5 @@
-// server/api/content/[slug].get.ts
-import { defineEventHandler, getRouterParam } from 'h3'
-import { readLocalContent } from '~/server/utils/contentStore'
+import { defineEventHandler, getRouterParam, getCookie, setHeader } from 'h3'
+import { readLocalContent, writeLocalContent, normalizeLanguageRoots } from '~/server/utils/contentStore'
 
 export default defineEventHandler(async (event) => {
   const slug = getRouterParam(event, 'slug')
@@ -71,14 +70,8 @@ export default defineEventHandler(async (event) => {
     writeLocalContent(slug, combinedUi)
   }
 
-  // Normalize uppercase/lowercase keys (FA/fa, EN/en, AR/ar)
-  const normalized: Record<string, any> = {}
-  for (const [k, v] of Object.entries(combinedUi)) {
-    const lowerK = k.toLowerCase()
-    const upperK = k.toUpperCase()
-    normalized[lowerK] = v
-    normalized[upperK] = v
-  }
+  // Normalize uppercase/lowercase keys (FA/fa, EN/en, AR/ar) and flat records
+  const normalized = normalizeLanguageRoots(combinedUi, slug)
 
   const hasData = Object.keys(normalized).length > 0
 

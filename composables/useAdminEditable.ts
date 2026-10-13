@@ -41,8 +41,8 @@ export function useAdminEditable(slug: string, isPage = true) {
     }
   }, { immediate: true })
 
-  // Watch language and allUi without deep: true to eliminate main-thread freezing
-  watch([language, () => allUi.value], ([lang, uiMap]) => {
+  // Watch language, allUi and state.canEdit so snapshots are reliably captured even after late auth hydration
+  watch([language, () => allUi.value, () => state.canEdit], ([lang, uiMap, canEdit]) => {
     if (!lang || !uiMap) return
     const currentUI = uiMap[lang] || uiMap[lang.toLowerCase()] || uiMap[lang.toUpperCase()]
     if (!currentUI || Object.keys(currentUI).length === 0) {
@@ -50,9 +50,10 @@ export function useAdminEditable(slug: string, isPage = true) {
     }
 
     // Capture snapshot for live clientOverrides and saving
-    if (!state.canEdit) return
     captureLanguageSnapshot(lang, currentUI, slug)
-    applySnapshotToBaselines(lang, slug)
+    if (canEdit) {
+      applySnapshotToBaselines(lang, slug)
+    }
   }, { immediate: true })
 
   return { state }

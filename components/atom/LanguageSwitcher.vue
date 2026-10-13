@@ -21,6 +21,9 @@
   <div class="relative inline-flex items-center">
     <button
       type="button"
+      data-track="nav-lang-switcher"
+      data-telemetry-label="تغییر زبان سایت"
+      data-telemetry-cat="localization"
       @click="nextLanguage"
       class="z-100 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl active:bg-gray-200/80 bg-white 
              flex items-center justify-center text-gray-700 select-none

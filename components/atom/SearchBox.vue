@@ -4,6 +4,9 @@
     <!-- Interactive Search Button Trigger -->
     <button
       type="button"
+      data-track="nav-search"
+      data-telemetry-label="جستجوی سریع در سایت"
+      data-telemetry-cat="search"
       @click="openSearch"
       :title="searchBtnTooltip"
       :aria-label="searchPromptText"

@@ -655,29 +655,29 @@
           </div>
 
           <!-- Drawer Footer Bar -->
-          <div class="p-4 border-t border-white/10 bg-zinc-900/95 flex items-center justify-between gap-3 flex-shrink-0">
-            <div class="text-[11px] text-zinc-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <div class="px-4 py-3 sm:py-4 border-t border-white/10 bg-zinc-900/95 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 flex-shrink-0 pb-[max(12px,env(safe-area-inset-bottom,12px))]">
+            <div class="text-[11px] text-zinc-400 flex items-center justify-center sm:justify-start gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
               <span>ویرایش آنی و خودکار در استور فعال است</span>
             </div>
 
             <div class="flex items-center gap-2">
               <button
                 type="button"
-                @click="saveSeoToServer"
-                :disabled="isSaving"
-                class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                @click="close"
+                class="flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-zinc-300 transition cursor-pointer text-center"
               >
-                <AdminIcon v-if="isSaving" name="spinner" class="w-3.5 h-3.5 animate-spin" />
-                <AdminIcon v-else name="save" class="w-3.5 h-3.5" />
-                <span>{{ isSaving ? 'در حال ذخیره...' : 'ذخیره سئو در دیتابیس (Save)' }}</span>
+                بستن
               </button>
               <button
                 type="button"
-                @click="close"
-                class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-zinc-300 transition cursor-pointer"
+                @click="saveSeoToServer"
+                :disabled="isSaving"
+                class="flex-2 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
-                بستن
+                <AdminIcon v-if="isSaving" name="spinner" class="w-3.5 h-3.5 animate-spin" />
+                <AdminIcon v-else name="save" class="w-3.5 h-3.5" />
+                <span>{{ isSaving ? 'در حال ذخیره...' : 'ذخیره سئو (Save)' }}</span>
               </button>
             </div>
           </div>

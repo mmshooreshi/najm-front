@@ -1,6 +1,8 @@
 // server/utils/contentStore.ts
 import fs from 'node:fs'
 import path from 'node:path'
+import { recordVersion } from '~/server/utils/versionStore'
+
 function getLocalFallbackSchema(slug: string): Record<string, any> {
   try {
     const schemaFile = path.resolve(process.cwd(), 'schemas', `${slug}-ui.json`)
@@ -55,43 +57,147 @@ export function writeLocalContent(slug: string, uiData: Record<string, any>): vo
   }
 }
 
+/**
+ * Tokenize path into segments supporting both dot indices and ID selectors:
+ * e.g. "sceneProjects.cards[id=7].text" or "cards.0.text"
+ */
+function parsePathSegments(pathStr: string): { type: 'prop' | 'id' | 'index'; val: any }[] {
+  const parts: { type: 'prop' | 'id' | 'index'; val: any }[] = []
+  const regex = /([^.\[\]]+)|\[id=([^\]]+)\]|\[(\d+)\]/g
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(pathStr)) !== null) {
+    if (match[1] !== undefined) {
+      parts.push({ type: 'prop', val: match[1] })
+    } else if (match[2] !== undefined) {
+      parts.push({ type: 'id', val: match[2].replace(/^["']|["']$/g, '') })
+    } else if (match[3] !== undefined) {
+      parts.push({ type: 'index', val: Number(match[3]) })
+    }
+  }
+  return parts
+}
+
+/**
+ * ID-aware and index-aware path getter
+ */
+export function getByPath(root: any, pathStr: string): any {
+  if (!root || !pathStr) return undefined
+  const segs = parsePathSegments(pathStr)
+  let curr = root
+  for (const seg of segs) {
+    if (curr == null) return undefined
+    if (seg.type === 'id') {
+      if (!Array.isArray(curr)) return undefined
+      curr = curr.find((x: any) => x && (String(x.id) === seg.val || String(x.key) === seg.val || String(x.slug) === seg.val || Number(x.id) === Number(seg.val)))
+    } else if (seg.type === 'index' || /^\d+$/.test(String(seg.val))) {
+      const idx = seg.type === 'index' ? seg.val : Number(seg.val)
+      curr = Array.isArray(curr) ? curr[idx] : undefined
+    } else {
+      curr = curr[seg.val]
+    }
+  }
+  return curr
+}
+
+/**
+ * ID-aware and index-aware dot-path setter
+ */
 export function setByPath(root: any, pathStr: string, value: any): void {
   if (!root || !pathStr) return
-  const segs = pathStr.split('.').filter(Boolean)
-  let obj = root
+  const segs = parsePathSegments(pathStr)
+  let curr = root
+
   for (let i = 0; i < segs.length; i++) {
     const seg = segs[i]
-    const isIndex = /^\d+$/.test(seg)
     const last = i === segs.length - 1
 
-    if (isIndex) {
-      const idx = Number(seg)
-      if (!Array.isArray(obj)) obj = []
+    if (seg.type === 'id') {
+      if (!Array.isArray(curr)) return
+      let foundIdx = curr.findIndex(
+        (x: any) => x && (String(x.id) === seg.val || String(x.key) === seg.val || String(x.slug) === seg.val)
+      )
+      if (foundIdx === -1) {
+        foundIdx = curr.findIndex((x: any) => x && Number(x.id) === Number(seg.val))
+      }
+      if (foundIdx === -1) {
+        // If not found, push new item with this ID
+        const nextSeg = segs[i + 1]
+        const newItem: any = { id: isNaN(Number(seg.val)) ? seg.val : Number(seg.val) }
+        curr.push(newItem)
+        foundIdx = curr.length - 1
+      }
+
       if (last) {
-        obj[idx] = value
+        curr[foundIdx] = value
       } else {
-        if (obj[idx] == null) {
-          const nextIsIndex = /^\d+$/.test(segs[i + 1])
-          obj[idx] = nextIsIndex ? [] : {}
+        curr = curr[foundIdx]
+      }
+    } else if (seg.type === 'index' || /^\d+$/.test(String(seg.val))) {
+      const idx = seg.type === 'index' ? seg.val : Number(seg.val)
+      if (!Array.isArray(curr)) curr = []
+      if (last) {
+        curr[idx] = value
+      } else {
+        if (curr[idx] == null) {
+          const nextSeg = segs[i + 1]
+          const isNextArray = nextSeg && (nextSeg.type === 'index' || nextSeg.type === 'id' || /^\d+$/.test(String(nextSeg.val)))
+          curr[idx] = isNextArray ? [] : {}
         }
-        obj = obj[idx]
+        curr = curr[idx]
       }
     } else {
+      const prop = seg.val
       if (last) {
-        obj[seg] = value
+        curr[prop] = value
       } else {
-        const nextIsIndex = /^\d+$/.test(segs[i + 1])
-        if (obj[seg] == null) obj[seg] = nextIsIndex ? [] : {}
-        obj = obj[seg]
+        if (curr[prop] == null) {
+          const nextSeg = segs[i + 1]
+          const isNextArray = nextSeg && (nextSeg.type === 'index' || nextSeg.type === 'id' || /^\d+$/.test(String(nextSeg.val)))
+          curr[prop] = isNextArray ? [] : {}
+        }
+        curr = curr[prop]
       }
     }
   }
 }
 
+/**
+ * Normalizes an arbitrary UI data structure so it is guaranteed to have
+ * trilingual root language keys ('fa', 'en', 'ar' / 'FA', 'EN', 'AR').
+ */
+export function normalizeLanguageRoots(rawUi: Record<string, any>, fallbackSlug?: string): Record<string, any> {
+  if (!rawUi || typeof rawUi !== 'object') return {}
+
+  const hasLangRoots = !!(rawUi.fa || rawUi.FA || rawUi.en || rawUi.EN || rawUi.ar || rawUi.AR)
+  if (hasLangRoots) {
+    const norm: Record<string, any> = { ...rawUi }
+    if (norm.FA && !norm.fa) norm.fa = norm.FA
+    if (norm.fa && !norm.FA) norm.FA = norm.fa
+    if (norm.EN && !norm.en) norm.en = norm.EN
+    if (norm.en && !norm.EN) norm.EN = norm.en
+    if (norm.AR && !norm.ar) norm.ar = norm.AR
+    if (norm.ar && !norm.AR) norm.AR = norm.ar
+    return norm
+  }
+
+  // Flat structure encountered (e.g. legacy menu record with products/services at root)
+  const fallback = fallbackSlug ? getLocalFallbackSchema(fallbackSlug) : {}
+  const wrapped: Record<string, any> = {
+    fa: { ...rawUi },
+    FA: { ...rawUi },
+    en: fallback?.en || fallback?.EN || { ...rawUi },
+    EN: fallback?.EN || fallback?.en || { ...rawUi },
+    ar: fallback?.ar || fallback?.AR || { ...rawUi },
+    AR: fallback?.AR || fallback?.ar || { ...rawUi }
+  }
+  return wrapped
+}
+
 export async function applyAndSaveContent(
   slug: string,
   language: string,
-  changes: { path: string; value: any }[]
+  changes: { path: string; value: any }[],
+  note?: string
 ): Promise<Record<string, any>> {
   const langLower = language.toLowerCase()
   const langUpper = language.toUpperCase()
@@ -120,7 +226,8 @@ export async function applyAndSaveContent(
     currentUi = getLocalFallbackSchema(slug) || {}
   }
 
-  currentUi = JSON.parse(JSON.stringify(currentUi))
+  // Ensure clean trilingual normalization
+  currentUi = normalizeLanguageRoots(JSON.parse(JSON.stringify(currentUi)), slug)
 
   if (!currentUi[langLower] && !currentUi[langUpper]) {
     currentUi[langLower] = {}
@@ -129,23 +236,41 @@ export async function applyAndSaveContent(
 
   const targetLangBlock = currentUi[langLower] || currentUi[langUpper] || {}
 
+  // Compute changes diff and update target language block
+  const changeEntries: { path: string; before?: any; after?: any }[] = []
   for (const { path: p, value } of changes) {
     if (!p) continue
+    const beforeVal = getByPath(targetLangBlock, p)
+    changeEntries.push({ path: p, before: beforeVal, after: value })
     setByPath(targetLangBlock, p, value)
   }
 
   currentUi[langLower] = targetLangBlock
   currentUi[langUpper] = targetLangBlock
 
+  // 1. Persistent audit snapshot before writing
+  try {
+    recordVersion(
+      slug,
+      langLower,
+      note || `ذخیره ${changes.length} تغییر روی /${slug}`,
+      changeEntries,
+      currentUi
+    )
+  } catch (err) {
+    console.warn(`[ContentStore] Version snapshot warning for "${slug}":`, err)
+  }
+
+  // 2. Write to local file
   writeLocalContent(slug, currentUi)
 
-  // CRITICAL: Await PocketBase sync and verify persistence so false saves never occur
+  // 3. CRITICAL: Await PocketBase sync and verify persistence so false saves never occur
   const pbSuccess = await syncContentToPocketBase(slug, currentUi)
   if (!pbSuccess) {
     throw new Error(`Failed to persist changes for "${slug}" to PocketBase database. Please verify connection.`)
   }
 
-  // On-demand cache invalidation and instant pre-warming
+  // 4. On-demand cache invalidation and instant pre-warming
   await purgeServerPageCache(slug)
   warmupServerPageCache(slug)
 

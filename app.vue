@@ -10,6 +10,7 @@
       <AdminMediaOverlay />
       <AdminMediaStudioModal />
     </template>
+    <TelemetryLens v-if="hasAdmin" />
     <ConsultationModal v-if="isModalOpen" />
   </ClientOnly>
 </template>
@@ -39,9 +40,15 @@ useHead({
 const AdminEditBar = defineAsyncComponent(() => import('~/components/admin/AdminEditBar.client.vue'))
 const AdminMediaOverlay = defineAsyncComponent(() => import('~/components/admin/AdminMediaOverlay.client.vue'))
 const AdminMediaStudioModal = defineAsyncComponent(() => import('~/components/admin/AdminMediaStudioModal.client.vue'))
+const TelemetryLens = defineAsyncComponent(() => import('~/components/admin/telemetry/TelemetryLens.client.vue'))
 
 const route = useRoute()
 const isDash = computed(() => route.path.startsWith('/dash'))
+const adminCookie = useCookie('pb_admin')
+const hasAdmin = computed(() => {
+  if (isDash.value) return false
+  return !!adminCookie.value || (typeof document !== 'undefined' && document.cookie.includes('pb_admin='))
+})
 const canEdit = computed(() => {
   if (isDash.value) return false
   return adminEditState.canEdit

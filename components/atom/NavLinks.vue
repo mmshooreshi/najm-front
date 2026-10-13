@@ -102,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useMenuUIData } from '@/composables/ui/menuUI'
 import { useLocale } from '~/composables/useLocale'
 import {
@@ -115,8 +115,14 @@ import {
 const { localePath } = useLocale()
 const { menuUIData } = useMenuUIData()
 
-const canEdit = computed(() => state.canEdit)
-const isEditMode = computed(() => state.editMode)
+// Client-mount guard to ensure 100% flawless SSR hydration
+const isMounted = ref(false)
+onMounted(() => {
+  isMounted.value = true
+})
+
+const canEdit = computed(() => isMounted.value && state.canEdit)
+const isEditMode = computed(() => isMounted.value && state.editMode)
 
 // Extract headerNav items or fallback to top items from links and contact
 const rawNavItems = computed<any[]>(() => {

@@ -121,8 +121,13 @@ import { adminEditState as state, moveArrayItem, removeArrayItem, addArrayItem }
 import { useLocale } from '~/composables/useLocale'
 
 const { localePath } = useLocale()
-const canEdit = computed(() => state.canEdit)
-const isEditMode = computed(() => state.editMode)
+const isMounted = ref(false)
+onMounted(() => {
+  isMounted.value = true
+})
+
+const canEdit = computed(() => isMounted.value && state.canEdit)
+const isEditMode = computed(() => isMounted.value && state.editMode)
 
 function onLinkHover(slug?: string) {
   try {

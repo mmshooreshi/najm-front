@@ -46,10 +46,11 @@
                 class="px-4 sm:px-6 py-1.5 rounded-full font-bold text-center transition-all duration-200 cursor-pointer whitespace-nowrap"
                 :class="activeTab === idx ? 'bg-najmgreen text-white shadow-xs' : 'text-gray-600 hover:text-gray-900'"
               >
-                {{ pane.name }}
+                <span v-if="editPanesPath" v-editable="`${editPanesPath}.${idx}.name`">{{ pane.name }}</span>
+                <span v-else>{{ pane.name }}</span>
               </button>
             </nav>
-            <slot name="pane" :pane="panes[activeTab]" />
+            <slot name="pane" :pane="panes[activeTab]" :paneIndex="activeTab" :pane-index="activeTab" />
           </div>
 
           <!-- Default content slot -->
@@ -72,15 +73,17 @@ const props = withDefaults(
     tabs?: boolean
     open?: boolean
     activeFiltersCount?: number
-    panes?: Array<{ name: string; slug: string }>
+    panes?: Array<{ name: string; slug: string; children?: any[] }>
     editPath?: string
+    editPanesPath?: string
   }>(),
   {
     open: false,
     tabs: false,
     activeFiltersCount: 0,
     panes: () => [],
-    editPath: ''
+    editPath: '',
+    editPanesPath: ''
   }
 )
 

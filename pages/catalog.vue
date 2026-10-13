@@ -82,6 +82,7 @@
           <a
             :href="uiContent.featured.downloadUrl || '#'"
             download
+            data-track="catalog-featured-download"
             class="flex-1 py-3 px-5 rounded-2xl bg-najmgreen hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition text-center"
           >
             <Icon name="mdi:download" class="w-4 h-4" />
@@ -89,6 +90,7 @@
           </a>
           <NuxtLink
             to="/contact"
+            data-track="catalog-featured-sample"
             class="py-3 px-5 rounded-2xl bg-najmgrey hover:bg-gray-200 text-gray-800 font-bold text-xs flex items-center justify-center gap-1.5 transition text-center"
           >
             <span v-editable="'featured.sampleBtn'">{{ uiContent.featured.sampleBtn }}</span>
@@ -165,6 +167,7 @@
       </div>
       <NuxtLink
         to="/contact"
+        data-track="catalog-sample-cta"
         class="px-7 py-3 rounded-2xl bg-white text-najmgreen font-bold text-xs hover:bg-emerald-50 transition shadow-xs whitespace-nowrap"
       >
         <span v-editable="'cta.button'">{{ uiContent.cta.button }}</span>

@@ -74,7 +74,7 @@
       :height="H"
       format="webp"
       quality="85"
-      :alt="alt || 'چاپ و بسته‌بندی نجم'"
+      :alt="alt || 'نمونه جعبه و بسته‌بندی مقوایی'"
       :loading="priority ? 'eager' : 'lazy'"
       :fetchpriority="priority ? 'high' : 'auto'"
       :preload="priority"

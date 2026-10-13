@@ -178,6 +178,13 @@ export function useAppSeo(options: SeoOptions = {}) {
     return `${baseUrl}/social-image.png`
   })
 
+  // Official Brand Logos per language (Persian/Arabic: najm-logo.svg / najm-logo-ar.svg, English: najm-logo-en.svg)
+  const brandLogoUrl = computed(() => {
+    if (currentLang.value === 'EN') return `${baseUrl}/najm-logo-en.svg`
+    if (currentLang.value === 'AR') return `${baseUrl}/najm-logo-ar.svg`
+    return `${baseUrl}/najm-logo.svg`
+  })
+
   // Industrial FAQs localized per locale
   const defaultFaqs = computed(() => {
     if (currentLang.value === 'EN') {
@@ -377,7 +384,8 @@ export function useAppSeo(options: SeoOptions = {}) {
         logo: {
           '@type': 'ImageObject',
           '@id': `${baseUrl}/#logo`,
-          url: `${baseUrl}/najm-logo.png`,
+          url: brandLogoUrl.value,
+          contentUrl: brandLogoUrl.value,
           caption: brandName.value
         },
         image: socialImage.value,
@@ -537,6 +545,11 @@ export function useAppSeo(options: SeoOptions = {}) {
       name: pageTitle.value,
       description: metaDescription.value,
       inLanguage: currentLang.value === 'FA' ? 'fa-IR' : (currentLang.value === 'AR' ? 'ar-SA' : 'en-US'),
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        '@id': `${canonicalUrl.value}/#primaryimage`,
+        url: socialImage.value
+      },
       isPartOf: {
         '@id': `${baseUrl}/#website`
       },
@@ -724,6 +737,9 @@ export function useAppSeo(options: SeoOptions = {}) {
         { property: 'og:description', content: ogDesc },
         { property: 'og:type', content: options.type === 'article' ? 'article' : (options.type === 'product' ? 'product' : 'website') },
         { property: 'og:url', content: canonicalUrl.value },
+        { property: 'og:image', content: socialImage.value },
+        { property: 'og:image:secure_url', content: socialImage.value },
+        { property: 'og:image:alt', content: brandName.value },
         { property: 'og:locale', content: currentLang.value === 'FA' ? 'fa_IR' : (currentLang.value === 'AR' ? 'ar_SA' : 'en_US') },
         ...(currentLang.value === 'FA'
           ? [

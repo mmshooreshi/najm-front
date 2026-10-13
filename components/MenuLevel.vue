@@ -13,16 +13,17 @@
         :open="false"
         :title="item.name"
         :edit-path="parentPath ? `${parentPath}.${idx}.name` : ''"
+        :edit-panes-path="parentPath ? `${parentPath}.${idx}.children` : ''"
         :tabs="item.tabs"
         :panes="item.children"
         class="border border-gray-200/80 rounded-2xl overflow-hidden bg-gray-50/60"
       >
         <!-- Tabbed pane slot -->
-        <template #pane="{ pane }">
+        <template #pane="{ pane, paneIndex }">
           <MenuLevel
             :items="pane.children"
             :parent-slug="fullSlug(pane)"
-            :parent-path="parentPath ? `${parentPath}.${idx}.children` : ''"
+            :parent-path="parentPath ? `${parentPath}.${idx}.children.${paneIndex ?? 0}.children` : ''"
             @link-click="emit('link-click')"
           />
         </template>

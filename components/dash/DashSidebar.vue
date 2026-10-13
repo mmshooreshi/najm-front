@@ -109,6 +109,7 @@ const navItems = [
   { to: '/dash/content', icon: 'edit', label: 'متن‌ها و بنرها' },
   { to: '/dash/sitemap', icon: 'layout', label: 'نقشه تعاملی سایت' },
   { to: '/dash/links', icon: 'link', label: 'گراف لینک‌ها و خزش گوگل', badge: 'SEO' },
+  { to: '/dash/traffic', icon: 'chart-pie', label: 'ترافیک، گوگل و رفتار کاربر', badge: 'جدید' },
   { to: '/dash/blog', icon: 'file', label: 'مقالات و اخبار' },
   { to: '/dash/media', icon: 'photo', label: 'عکس‌ها و فایل‌ها' },
   { to: '/dash/messaging', icon: 'chat', label: 'ارسال پیام واتس‌اپ' },

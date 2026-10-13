@@ -264,6 +264,8 @@
                     v-else
                     type="button"
                     @click="handleSubmit"
+                    data-track="consultation-submit"
+                    data-cta-primary
                     :disabled="isSubmitting || !form.name || !form.phone"
                     class="px-6 py-2.5 rounded-xl bg-najmgreen hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-md disabled:opacity-50 text-d4"
                   >
@@ -362,6 +364,19 @@ async function handleSubmit() {
       createdAt: new Date().toISOString()
     })
     submitted.value = true
+    try {
+      const { track } = useTracker()
+      track('sales_handoff', {
+        channel: 'form',
+        spec_summary: `${selectedCategory.value} | ${selectedQuantity.value} | ${form.name}`
+      })
+      const numQty = parseInt(String(selectedQuantity.value).replace(/[^0-9]/g, '')) || 1000
+      track('volume_inquired', {
+        packaging_type: selectedCategory.value,
+        quantity: numQty,
+        is_custom_mold: false
+      })
+    } catch {}
   } finally {
     isSubmitting.value = false
   }

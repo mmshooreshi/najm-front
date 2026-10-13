@@ -640,5 +640,41 @@ body.admin-global-motion-paused *::after {
   animation-play-state: paused !important;
 }
 
+/* ─── ALPHA-AWARE CONTOUR GLOW FOR TRANSPARENT PNG / SVG / WEBP MOCKUPS ─── */
+.admin-media-contour-glow {
+  filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.85)) drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) !important;
+  transition: filter 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.admin-media-contour-changed {
+  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.95)) drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) !important;
+  transition: filter 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* ─── PROOF LENS ON-SCREEN PULSE ─── */
+@keyframes adminLensPulseAnim {
+  0% {
+    outline: 3px solid rgba(16, 185, 129, 0.9);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.4), 0 0 35px rgba(16, 185, 129, 0.6);
+    transform: scale(1.02);
+  }
+  50% {
+    outline: 3px solid rgba(59, 130, 246, 0.9);
+    box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.3), 0 0 45px rgba(59, 130, 246, 0.5);
+    transform: scale(1.03);
+  }
+  100% {
+    outline: 2px solid transparent;
+    box-shadow: none;
+    transform: scale(1);
+  }
+}
+
+.admin-lens-pulse {
+  animation: adminLensPulseAnim 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  position: relative !important;
+  z-index: 99999 !important;
+}
+
 
 

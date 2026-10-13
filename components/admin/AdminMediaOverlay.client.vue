@@ -2,7 +2,7 @@
 <template>
   <div v-if="state.canEdit && state.editMode" data-admin-ui="true">
     <teleport to="body">
-      <!-- Media Foreground Pattern Mask + Minimal Centered Pencil -->
+      <!-- Media In-Place Control HUD with Alpha-Aware Contour & Floating Actions (NO Rectangular Masks) -->
       <div
         v-if="isVisible && targetEl && !state.mediaStudioOpen"
         ref="overlayContainerEl"
@@ -10,34 +10,25 @@
         class="admin-media-overlay-hud media-hud fixed z-[999990] pointer-events-none flex items-center justify-center select-none"
         :style="containerStyle"
       >
-        <!-- Subtle Green/Amber Overlay Mask with Cool Modern Diagonal Pattern Stripes -->
+        <!-- Floating Micro-Badge: Minimal Glowing Action Pill -->
         <div
-          class="absolute inset-0 transition-opacity duration-200 pointer-events-none"
-          :style="{ borderRadius: overlayBorderRadius }"
-          :class="isModified
-            ? 'admin-media-pattern-amber opacity-90'
-            : 'admin-media-pattern-green opacity-80'"
-        ></div>
-
-        <!-- Centered Glowing Pencil Badge & Format -->
-        <div
-          class="relative z-10 flex items-center gap-2 pointer-events-auto"
+          class="relative z-10 flex items-center gap-1.5 pointer-events-auto shadow-2xl rounded-full p-1 bg-zinc-950/85 backdrop-blur-xl border border-white/20 transition-all duration-200 hover:scale-105"
           :style="{ transform: currentRotation !== 0 ? `rotate(${-currentRotation}deg)` : undefined }"
           @click.stop="openStudioDirectly"
         >
           <button
             type="button"
-            class="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-2xl transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-xl border border-white/25"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-white transition-all duration-150 active:scale-95 cursor-pointer shadow-md"
             :class="isModified
-              ? 'bg-amber-500/90 text-zinc-950 shadow-amber-500/30'
-              : 'bg-najmgreen/90 text-white shadow-emerald-950/50 hover:bg-najmgreen'"
-            :title="isModified ? 'تصویر تغییر یافته • برای ویرایش کلیک کنید' : 'ویرایش تصویر (کلیک کنید)'"
+              ? 'bg-amber-500 text-zinc-950 shadow-amber-500/40 hover:bg-amber-400'
+              : 'bg-najmgreen text-white shadow-emerald-950/50 hover:bg-emerald-500'"
+            :title="isModified ? 'تصویر ویرایش‌شده • برای تغییر کلیک کنید' : 'ویرایش تصویر (کلیک کنید)'"
           >
-            <AdminIcon name="pencil" class="w-5 h-5" />
+            <AdminIcon name="pencil" class="w-4 h-4" />
           </button>
 
-          <!-- Format Tag (Subtle pill next to pencil) -->
-          <span class="px-2 py-1 rounded-xl bg-zinc-950/80 border border-white/15 text-[10px] font-mono font-bold text-zinc-200 backdrop-blur-md">
+          <!-- Format Tag -->
+          <span class="px-2 py-0.5 text-[10px] font-mono font-bold tracking-wider text-zinc-300">
             {{ mediaFormat }}
           </span>
 
@@ -46,10 +37,10 @@
             v-if="isModified"
             type="button"
             @click.stop="handleRevert"
-            class="p-2 rounded-full bg-rose-500/80 text-white hover:bg-rose-600 transition-colors shadow-lg cursor-pointer"
+            class="w-7 h-7 rounded-full bg-rose-500/80 text-white hover:bg-rose-600 transition-colors shadow-sm flex items-center justify-center cursor-pointer mr-0.5"
             title="بازگشت به تصویر اولیه"
           >
-            <AdminIcon name="undo" class="w-3.5 h-3.5" />
+            <AdminIcon name="undo" class="w-3 h-3" />
           </button>
         </div>
       </div>
@@ -206,10 +197,23 @@ function stopTracking() {
 
 function showForElement(el: HTMLElement, path = '', url = '') {
   if (!state.canEdit || !state.editMode || state.mediaStudioOpen) return
-  if (hideTimeout) clearTimeout(hideTimeout)
+  if (targetEl.value && targetEl.value !== el) {
+    targetEl.value.classList.remove('admin-media-contour-glow', 'admin-media-contour-changed')
+    unfreezeMotion(targetEl.value, false)
+  }
 
   targetEl.value = el
   currentPath.value = path || el.getAttribute('data-media-path') || el.getAttribute('data-edit-path') || ''
+
+  // Freeze physics animation so mockup stops drifting while admin interacts with it
+  freezeMotion(el)
+
+  // Apply alpha transparent contour glow directly to image element
+  if (isChanged(currentPath.value, state.language || 'fa')) {
+    el.classList.add('admin-media-contour-changed')
+  } else {
+    el.classList.add('admin-media-contour-glow')
+  }
 
   // Resolve media URL & dimensions
   let resolvedUrl = url
@@ -261,6 +265,10 @@ function openStudioDirectly() {
 function handleRevert() {
   if (!currentPath.value) return
   revertPath(currentPath.value, state.language || 'fa')
+  if (targetEl.value) {
+    targetEl.value.classList.remove('admin-media-contour-changed')
+    targetEl.value.classList.add('admin-media-contour-glow')
+  }
   window.dispatchEvent(new CustomEvent('toast', { detail: { type: 'info', text: `تصویر "${currentPath.value}" به نسخه اولیه بازگشت.` } }))
 }
 
@@ -269,6 +277,7 @@ function scheduleHide() {
   hideTimeout = setTimeout(() => {
     if (!isHovering && !state.selectedMediaElement) {
       if (targetEl.value) {
+        targetEl.value.classList.remove('admin-media-contour-glow', 'admin-media-contour-changed')
         unfreezeMotion(targetEl.value, false)
       }
       isVisible.value = false
@@ -294,6 +303,7 @@ watch(() => state.selectedMediaElement, (selEl) => {
     showForElement(selEl, state.selectedMediaPath || '', '')
   } else if (!isHovering) {
     if (targetEl.value) {
+      targetEl.value.classList.remove('admin-media-contour-glow', 'admin-media-contour-changed')
       unfreezeMotion(targetEl.value, false)
     }
     isVisible.value = false
@@ -330,6 +340,10 @@ onMounted(() => {
     window.removeEventListener('admin:media-leave', onMediaLeave)
     window.removeEventListener('scroll', onScrollOrResize)
     window.removeEventListener('resize', onScrollOrResize)
+    if (targetEl.value) {
+      targetEl.value.classList.remove('admin-media-contour-glow', 'admin-media-contour-changed')
+      unfreezeMotion(targetEl.value, false)
+    }
     stopTracking()
   }
 })
@@ -340,29 +354,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Cool Subtle Emerald Diagonal Pattern Stripes */
-.admin-media-pattern-green {
-  background-color: rgba(1, 68, 57, 0.4);
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(16, 185, 129, 0.18) 0,
-    rgba(16, 185, 129, 0.18) 8px,
-    transparent 8px,
-    transparent 16px
-  );
-  backdrop-filter: blur(1.5px);
-}
-
-/* Subtle Amber Diagonal Pattern Stripes when modified */
-.admin-media-pattern-amber {
-  background-color: rgba(180, 83, 9, 0.4);
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(245, 158, 11, 0.22) 0,
-    rgba(245, 158, 11, 0.22) 8px,
-    transparent 8px,
-    transparent 16px
-  );
-  backdrop-filter: blur(1.5px);
+/* Alpha-aware contour outline: minimal, clean, no background block shrouds */
+.admin-media-overlay-hud {
+  filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.4));
 }
 </style>

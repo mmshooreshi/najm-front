@@ -47,6 +47,22 @@ export interface MediaMetadata {
   url?: string
 }
 
+export type ContentOriginSource = 'page_cms' | 'pocketbase_collection' | 'layout_shared' | 'hardcoded_ui'
+
+export interface OriginMetadata {
+  source: ContentOriginSource
+  sourceLabel: string
+  collection?: string // e.g. 'pages', 'products', 'blog', 'resources'
+  recordId?: string
+  field?: string
+  slug: string
+  path: string
+  parentPath?: string
+  componentChain?: string[] // e.g. ['PagesHome', 'SceneHero', 'HighlightedMotion']
+  isDynamic: boolean
+  isShared: boolean // true for menu, footer
+}
+
 export interface AdminEditState {
   canEdit: boolean
   editMode: boolean
@@ -66,6 +82,11 @@ export interface AdminEditState {
   autosaveEnabled: boolean
   activeEditingPath: string | null
   isEditingActive: boolean
+  // Unified Docked Panel State
+  unifiedPanelOpen: boolean
+  unifiedPanelTab: 'origin' | 'proof' | 'versions'
+  highlightedDiffPath: string | null
+  originMap: Record<PathKey, OriginMetadata>
   // Media Studio & In-Place Media Editor State
   mediaStudioOpen: boolean
   activeMediaPath: string | null
@@ -123,6 +144,10 @@ export const adminEditState = reactive<AdminEditState>({
   autosaveEnabled: false,
   activeEditingPath: null,
   isEditingActive: false,
+  unifiedPanelOpen: false,
+  unifiedPanelTab: 'origin',
+  highlightedDiffPath: null,
+  originMap: {},
   mediaStudioOpen: false,
   activeMediaPath: null,
   activeMediaElement: null,
@@ -210,6 +235,37 @@ export function loadDraftFromLocalStorage(slug: string): boolean {
     const parsed = JSON.parse(raw)
     if (!parsed || typeof parsed !== 'object') return false
 
+    // Auto-heal corrupted drafts for menu where products tab was overwritten with child item "سربرگ"
+    if (slug === 'menu') {
+      const corruptPath = 'products.children.0.children.0.name'
+      if (parsed.changes && parsed.changes[corruptPath]) {
+        const faDraft = parsed.changes[corruptPath]?.FA?.draft || parsed.changes[corruptPath]?.fa?.draft
+        if (faDraft === 'سربرگ') {
+          delete parsed.changes[corruptPath]
+        }
+      }
+      for (const lang of ['fa', 'FA', 'en', 'EN', 'ar', 'AR']) {
+        if (parsed.clientOverrides?.[lang]?.products?.children?.[0]?.children?.[0]?.name === 'سربرگ') {
+          parsed.clientOverrides[lang].products.children[0].children[0].name = 'چاپ'
+        }
+      }
+    }
+
+    // Auto-heal corrupted drafts for footer where sections array was collapsed to 1 section
+    if (slug === 'footer') {
+      const baseFooter = getBaseSchemaForSlugAndLang('footer', 'fa')
+      const baseSecs = baseFooter?.sections || []
+      for (const lang of ['fa', 'FA', 'en', 'EN', 'ar', 'AR']) {
+        const ovSecs = parsed.clientOverrides?.[lang]?.sections
+        if (Array.isArray(ovSecs) && ovSecs.length === 1 && baseSecs.length > 1) {
+          parsed.clientOverrides[lang].sections = [
+            ovSecs[0],
+            ...deepClone(baseSecs.slice(1))
+          ]
+        }
+      }
+    }
+
     // Restore clientOverrides if present
     if (parsed.clientOverrides && Object.keys(parsed.clientOverrides).length > 0) {
       adminEditState.clientOverrides[slug] = parsed.clientOverrides
@@ -289,34 +345,113 @@ export function deepClone<T>(obj: T): T {
   }
 }
 
-/** Dot-path getter supporting array indices like "a.b.0.c" */
-export function getByPath(obj: any, path: string): any {
-  if (!obj || !path) return undefined
-  return path.split('.').reduce((acc, seg) => {
-    if (acc == null) return acc
-    const idx = Number(seg)
-    if (!Number.isNaN(idx) && String(idx) === seg) return acc?.[idx]
-    return acc?.[seg]
-  }, obj)
+/**
+ * Tokenize path into segments supporting both dot indices and ID selectors:
+ * e.g. "sceneProjects.cards[id=7].text" or "cards.0.text"
+ */
+export function parsePathSegments(pathStr: string): { type: 'prop' | 'id' | 'index'; val: any }[] {
+  const parts: { type: 'prop' | 'id' | 'index'; val: any }[] = []
+  const regex = /([^.\[\]]+)|\[id=([^\]]+)\]|\[(\d+)\]/g
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(pathStr)) !== null) {
+    if (match[1] !== undefined) {
+      parts.push({ type: 'prop', val: match[1] })
+    } else if (match[2] !== undefined) {
+      parts.push({ type: 'id', val: match[2].replace(/^["']|["']$/g, '') })
+    } else if (match[3] !== undefined) {
+      parts.push({ type: 'index', val: Number(match[3]) })
+    }
+  }
+  return parts
 }
 
-/** Dot-path setter supporting array indices like "a.b.0.c" */
-export function setByPath(obj: any, path: string, value: any): void {
-  if (!obj || !path) return
-  const segments = path.split('.')
-  let curr = obj
-  for (let i = 0; i < segments.length - 1; i++) {
-    const seg = segments[i]
-    const nextSeg = segments[i + 1]
-    const nextIsNum = !Number.isNaN(Number(nextSeg)) && String(Number(nextSeg)) === nextSeg
-
-    if (curr[seg] === undefined || curr[seg] === null || typeof curr[seg] !== 'object') {
-      curr[seg] = nextIsNum ? [] : {}
+/**
+ * ID-aware and index-aware dot-path getter supporting:
+ * - "sceneProjects.cards[id=7].text"
+ * - "cards.0.text"
+ * - standard dot paths
+ */
+export function getByPath(root: any, pathStr: string): any {
+  if (!root || !pathStr) return undefined
+  const segs = parsePathSegments(pathStr)
+  let curr = root
+  for (const seg of segs) {
+    if (curr == null) return undefined
+    if (seg.type === 'id') {
+      if (!Array.isArray(curr)) return undefined
+      curr = curr.find((x: any) => x && (String(x.id) === seg.val || String(x.key) === seg.val || String(x.slug) === seg.val || Number(x.id) === Number(seg.val)))
+    } else if (seg.type === 'index' || /^\d+$/.test(String(seg.val))) {
+      const idx = seg.type === 'index' ? seg.val : Number(seg.val)
+      curr = Array.isArray(curr) ? curr[idx] : undefined
+    } else {
+      curr = curr[seg.val]
     }
-    curr = curr[seg]
   }
-  const lastSeg = segments[segments.length - 1]
-  curr[lastSeg] = value
+  return curr
+}
+
+/**
+ * ID-aware and index-aware dot-path setter supporting:
+ * - "sceneProjects.cards[id=7].text"
+ * - "cards.0.text"
+ * - standard dot paths
+ */
+export function setByPath(root: any, pathStr: string, value: any): void {
+  if (!root || !pathStr) return
+  const segs = parsePathSegments(pathStr)
+  let curr = root
+
+  for (let i = 0; i < segs.length; i++) {
+    const seg = segs[i]
+    const last = i === segs.length - 1
+
+    if (seg.type === 'id') {
+      if (!Array.isArray(curr)) return
+      let foundIdx = curr.findIndex(
+        (x: any) => x && (String(x.id) === seg.val || String(x.key) === seg.val || String(x.slug) === seg.val)
+      )
+      if (foundIdx === -1) {
+        foundIdx = curr.findIndex((x: any) => x && Number(x.id) === Number(seg.val))
+      }
+      if (foundIdx === -1) {
+        // If not found, push new item with this ID
+        const newItem: any = { id: isNaN(Number(seg.val)) ? seg.val : Number(seg.val) }
+        curr.push(newItem)
+        foundIdx = curr.length - 1
+      }
+
+      if (last) {
+        curr[foundIdx] = value
+      } else {
+        curr = curr[foundIdx]
+      }
+    } else if (seg.type === 'index' || /^\d+$/.test(String(seg.val))) {
+      const idx = seg.type === 'index' ? seg.val : Number(seg.val)
+      if (!Array.isArray(curr)) curr = []
+      if (last) {
+        curr[idx] = value
+      } else {
+        if (curr[idx] == null) {
+          const nextSeg = segs[i + 1]
+          const isNextArray = nextSeg && (nextSeg.type === 'index' || nextSeg.type === 'id' || /^\d+$/.test(String(nextSeg.val)))
+          curr[idx] = isNextArray ? [] : {}
+        }
+        curr = curr[idx]
+      }
+    } else {
+      const prop = seg.val
+      if (last) {
+        curr[prop] = value
+      } else {
+        if (curr[prop] == null) {
+          const nextSeg = segs[i + 1]
+          const isNextArray = nextSeg && (nextSeg.type === 'index' || nextSeg.type === 'id' || /^\d+$/.test(String(nextSeg.val)))
+          curr[prop] = isNextArray ? [] : {}
+        }
+        curr = curr[prop]
+      }
+    }
+  }
 }
 
 function normForCompare(v: any, lang: LangCode): string {
@@ -580,11 +715,14 @@ export function buildChangesPayload(lang: LangCode): { path: string; value: stri
 }
 
 /** Record saved versions for saved paths */
-export function recordSavedVersions(lang: LangCode, paths: string[]) {
+export function recordSavedVersions(lang: LangCode, paths: string[], targetSlug?: string) {
   const now = new Date().toISOString()
   adminEditState.telemetry.serverSyncedAt = now
   adminEditState.telemetry.source = 'server_live'
   adminEditState.lastSavedAt = now
+
+  const affectedSlugs = new Set<string>()
+  if (targetSlug) affectedSlugs.add(targetSlug)
 
   for (const path of paths) {
     const rec = adminEditState.changes[path]?.[lang]
@@ -595,16 +733,27 @@ export function recordSavedVersions(lang: LangCode, paths: string[]) {
     rec.draft = undefined
     addVersion(path, lang, savedVal, 'saved')
 
-    // CRITICAL: Update clientOverrides to match saved values.
-    // Without this, stale clientOverrides (from before the save) will override
-    // the correct refetched data in usePageUI's merge order (local < remote < override).
-    // This happens when saving via keyboard shortcut (Cmd+S) without blurring first,
-    // since clientOverrides is only synced on blur (syncOverrides=true).
-    const slug = (adminEditState.changes[path] as any)?.slug || adminEditState.slug || 'home'
+    const slug = (adminEditState.changes[path] as any)?.slug || targetSlug || adminEditState.slug || 'home'
+    affectedSlugs.add(slug)
     updateClientOverride(path, lang, savedVal, slug)
   }
 
-  saveDraftToLocalStorage()
+  // Clear or refresh LocalStorage drafts per affected slug
+  for (const s of affectedSlugs) {
+    let hasRemainingDrafts = false
+    for (const [p, r] of Object.entries(adminEditState.changes)) {
+      const recSlug = (r as any)?.slug || adminEditState.slug || 'home'
+      if (recSlug === s && isChanged(p, lang)) {
+        hasRemainingDrafts = true
+        break
+      }
+    }
+    if (!hasRemainingDrafts) {
+      clearDraftFromLocalStorage(s)
+    } else {
+      saveDraftToLocalStorage(s)
+    }
+  }
 }
 
 /** Total modified fields for a language */
@@ -617,13 +766,22 @@ export function changedCountForLang(lang: LangCode): number {
 }
 
 /** Revert a single path (supports text, media, and arrays) */
+/** Revert a single path (supports text, media, and arrays) */
 export function revertPath(path: PathKey, lang: LangCode) {
   const rec = adminEditState.changes[path]?.[lang]
   if (!rec) return
   rec.draft = undefined
   rec.value = rec.original
 
-  const slug = adminEditState.slug
+  // Robust slug resolution:
+  const slug =
+    (adminEditState.changes[path] as any)?.slug ||
+    (typeof document !== 'undefined'
+      ? document.querySelector(`[data-edit-path="${CSS.escape(path)}"]`)?.getAttribute('data-admin-slug')
+      : null) ||
+    adminEditState.slug ||
+    'home'
+
   if (slug && adminEditState.clientOverrides[slug]) {
     const upper = lang.toUpperCase()
     const lower = lang.toLowerCase()
@@ -647,6 +805,7 @@ export function revertPath(path: PathKey, lang: LangCode) {
     }
   }
 
+  // Update DOM elements on page
   if (typeof document !== 'undefined') {
     document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
       .forEach(el => {
@@ -656,7 +815,31 @@ export function revertPath(path: PathKey, lang: LangCode) {
       })
   }
 
-  saveDraftToLocalStorage(slug)
+  // Check if any changes remain for this specific slug
+  let hasRemainingChangesForSlug = false
+  for (const [p, r] of Object.entries(adminEditState.changes)) {
+    const s = (r as any)?.slug || adminEditState.slug || 'home'
+    if (s === slug && isChanged(p, lang)) {
+      hasRemainingChangesForSlug = true
+      break
+    }
+  }
+
+  if (!hasRemainingChangesForSlug) {
+    clearDraftFromLocalStorage(slug)
+    if (adminEditState.clientOverrides[slug]) {
+      delete adminEditState.clientOverrides[slug][lang.toUpperCase()]
+      delete adminEditState.clientOverrides[slug][lang.toLowerCase()]
+    }
+  } else {
+    saveDraftToLocalStorage(slug)
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('admin:field-reverted', {
+      detail: { path, lang, slug }
+    }))
+  }
 }
 
 export function revertPathToOriginal(path: PathKey, lang: LangCode) {
@@ -681,35 +864,46 @@ export function discardAllChanges(lang: LangCode) {
     }
   }
 
-  // Clear client overrides and reset UI live
-  const slug = adminEditState.slug
-  if (slug && adminEditState.clientOverrides[slug]) {
-    delete adminEditState.clientOverrides[slug][lang.toUpperCase()]
-    delete adminEditState.clientOverrides[slug][lang.toLowerCase()]
-  }
+  // Clear client overrides and reset UI live across all slugs
+  const allSlugs = new Set<string>([
+    adminEditState.slug,
+    'home',
+    'menu',
+    'footer',
+    ...Object.keys(adminEditState.clientOverrides)
+  ])
 
-  clearDraftFromLocalStorage(slug)
+  for (const s of allSlugs) {
+    if (!s) continue
+    if (adminEditState.clientOverrides[s]) {
+      delete adminEditState.clientOverrides[s][lang.toUpperCase()]
+      delete adminEditState.clientOverrides[s][lang.toLowerCase()]
+    }
+    clearDraftFromLocalStorage(s)
+  }
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('admin:array-changed', {
-      detail: { arrayPath: '*', action: 'reset', lang, slug }
+      detail: { arrayPath: '*', action: 'reset', lang, slug: adminEditState.slug }
     }))
   }
 
   if (process.dev) {
-    logger.warn('Admin:Edit', `Discarded all pending drafts for [${lang.toUpperCase()}]`)
+    logger.warn('Admin:Edit', `Discarded all pending drafts for [${lang.toUpperCase()}] across all slugs`)
   }
 }
 
 /** Restore a specific revision from history */
 export function restoreVersion(path: PathKey, lang: LangCode, value: string) {
-  if (!adminEditState.changes[path]) adminEditState.changes[path] = {}
-  if (!adminEditState.changes[path][lang]) {
-    adminEditState.changes[path][lang] = { original: '', value: '' }
-  }
-  const rec = adminEditState.changes[path][lang]
-  rec.draft = value
-  addVersion(path, lang, value, 'draft')
+  const slug =
+    (adminEditState.changes[path] as any)?.slug ||
+    (typeof document !== 'undefined'
+      ? document.querySelector(`[data-edit-path="${CSS.escape(path)}"]`)?.getAttribute('data-admin-slug')
+      : null) ||
+    adminEditState.slug ||
+    'home'
+
+  setDraftValue(path, lang, value, slug, true)
 
   if (typeof document !== 'undefined') {
     document.querySelectorAll<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"]`)
@@ -718,6 +912,12 @@ export function restoreVersion(path: PathKey, lang: LangCode, value: string) {
         el.classList.add('v-editable--changed')
         el.setAttribute('data-admin-changed', 'true')
       })
+  }
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('admin:field-restored', {
+      detail: { path, lang, value, slug }
+    }))
   }
 }
 
@@ -748,7 +948,8 @@ export function getActiveWorkingUI(slug: string, lang: LangCode): { currentUI: a
 
   if (!currentUI || Object.keys(currentUI).length === 0) {
     const slugSnap = adminEditState.allLangUIBySlug?.[slug]?.[upper] || adminEditState.allLangUIBySlug?.[slug]?.[lower]
-    const snap = slugSnap || adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]
+    // NEVER fall back to active page allLangUI if slug is different (e.g. footer vs home)!
+    const snap = slugSnap || (slug === adminEditState.slug ? (adminEditState.allLangUI[upper] || adminEditState.allLangUI[lower]) : null)
     if (snap && Object.keys(snap).length > 0) {
       currentUI = deepClone(snap)
     } else {
@@ -776,6 +977,7 @@ function commitArrayMutation(slug: string, lang: LangCode, arrayPath: string, ta
       updatedAt: new Date().toISOString()
     }
   }
+  ;(adminEditState.changes[arrayPath] as any).slug = slug
 
   // Register array draft change in changes store
   const newArrStr = JSON.stringify(targetArr)
@@ -785,13 +987,35 @@ function commitArrayMutation(slug: string, lang: LangCode, arrayPath: string, ta
 
   // Store back into clientOverrides for real-time reactivity
   if (!adminEditState.clientOverrides[slug]) adminEditState.clientOverrides[slug] = {}
-  adminEditState.clientOverrides[slug][upper] = adminEditState.clientOverrides[slug][upper] || {}
-  adminEditState.clientOverrides[slug][lower] = adminEditState.clientOverrides[slug][lower] || {}
+
+  // CRITICAL: Initialize clientOverrides with full baseline schema if empty or missing parent structures!
+  const slugSnap = adminEditState.allLangUIBySlug?.[slug]?.[upper] || adminEditState.allLangUIBySlug?.[slug]?.[lower]
+  const fullBase = deepClone(slugSnap || baseSchema || {})
+
+  if (!adminEditState.clientOverrides[slug][upper] || Object.keys(adminEditState.clientOverrides[slug][upper]).length === 0) {
+    adminEditState.clientOverrides[slug][upper] = deepClone(fullBase)
+  }
+  if (!adminEditState.clientOverrides[slug][lower] || Object.keys(adminEditState.clientOverrides[slug][lower]).length === 0) {
+    adminEditState.clientOverrides[slug][lower] = deepClone(fullBase)
+  }
+
   setByPath(adminEditState.clientOverrides[slug][upper], arrayPath, targetArr)
   setByPath(adminEditState.clientOverrides[slug][lower], arrayPath, targetArr)
 
-  if (adminEditState.allLangUI[upper]) setByPath(adminEditState.allLangUI[upper], arrayPath, targetArr)
-  if (adminEditState.allLangUI[lower]) setByPath(adminEditState.allLangUI[lower], arrayPath, targetArr)
+  // Keep allLangUIBySlug in sync
+  if (!adminEditState.allLangUIBySlug) adminEditState.allLangUIBySlug = {}
+  if (!adminEditState.allLangUIBySlug[slug]) adminEditState.allLangUIBySlug[slug] = {} as any
+  if (adminEditState.allLangUIBySlug[slug][upper]) setByPath(adminEditState.allLangUIBySlug[slug][upper], arrayPath, targetArr)
+  if (adminEditState.allLangUIBySlug[slug][lower]) setByPath(adminEditState.allLangUIBySlug[slug][lower], arrayPath, targetArr)
+
+  // Only update allLangUI if this slug is actually the current active page
+  if (slug === adminEditState.slug || !adminEditState.slug) {
+    if (adminEditState.allLangUI[upper]) setByPath(adminEditState.allLangUI[upper], arrayPath, targetArr)
+    if (adminEditState.allLangUI[lower]) setByPath(adminEditState.allLangUI[lower], arrayPath, targetArr)
+  }
+
+  // Persist draft to LocalStorage specifically for this slug
+  saveDraftToLocalStorage(slug)
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('admin:array-changed', {
@@ -828,8 +1052,10 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
       newItem = deepClone(template)
       for (const k of Object.keys(newItem)) {
         if (typeof newItem[k] === 'string') {
-          if (k.toLowerCase().includes('id') || k.toLowerCase().includes('slug') || k.toLowerCase().includes('key')) {
-            newItem[k] = `item-${Date.now().toString(36)}`
+          if (k.toLowerCase() === 'slug' || k.toLowerCase() === 'href' || k.toLowerCase() === 'url' || k.toLowerCase() === 'to') {
+            newItem[k] = template[k] || '/'
+          } else if (k.toLowerCase().includes('id') || k.toLowerCase().includes('key')) {
+            newItem[k] = `item_${Date.now().toString(36)}`
           } else if (k.toLowerCase().includes('image') || k.toLowerCase().includes('icon')) {
             // preserve image
           } else {
@@ -1066,6 +1292,8 @@ export function getPageContentItems(slug?: string, lang?: LangCode): PageContent
     sceneCustomers: 'مشتریان و نظرات (Customers)',
     sceneFaq: 'سوالات متداول (FAQ)',
     sceneContact: 'اطلاعات تماس (Contact)',
+    products: 'دسته‌بندی محصولات منو (Menu Products)',
+    services: 'خدمات منو (Menu Services)',
     categories: 'دسته‌بندی‌ها (Categories)',
     links: 'پیوندها (Links)',
     featured: 'ویژه‌ها (Featured)',
@@ -1270,4 +1498,136 @@ export function toggleGlobalMotionPaused() {
 export function isElementMotionPaused(el: HTMLElement | null): boolean {
   if (!el) return false
   return adminEditState.pausedMotionElements.has(el) || adminEditState.isMotionPausedGlobally
+}
+
+/** Content Origin & Hierarchy Detection Engine */
+export function detectContentOrigin(path: string, slug?: string, el?: HTMLElement | null): OriginMetadata {
+  const currentSlug = slug || (adminEditState.changes[path] as any)?.slug || adminEditState.slug || 'home'
+  const isShared = currentSlug === 'menu' || currentSlug === 'footer'
+
+  let source: ContentOriginSource = 'page_cms'
+  let sourceLabel = 'محتوای صفحه (CMS Pages)'
+  let collection = 'pages'
+  let recordId: string | undefined = undefined
+  let field: string | undefined = undefined
+  let isDynamic = false
+
+  if (isShared) {
+    source = 'layout_shared'
+    sourceLabel = currentSlug === 'menu' ? 'منوی سراسری مشترک (Global Header)' : 'فوتر سراسری مشترک (Global Footer)'
+    collection = 'pages'
+  } else if (path.startsWith('collection:') || el?.getAttribute('data-origin-source') === 'pocketbase_collection') {
+    source = 'pocketbase_collection'
+    const parts = path.replace('collection:', '').split('.')
+    collection = parts[0] || 'records'
+    recordId = parts[1]
+    field = parts.slice(2).join('.')
+    sourceLabel = `پایگاه داده پویا (${collection})`
+    isDynamic = true
+  } else if (el?.getAttribute('data-origin-source') === 'hardcoded_ui') {
+    source = 'hardcoded_ui'
+    sourceLabel = 'المان رابط کاربری استاتیک'
+  }
+
+  // Derive component chain from DOM if element provided
+  const componentChain: string[] = []
+  if (el && typeof document !== 'undefined') {
+    let curr: HTMLElement | null = el.parentElement
+    while (curr && curr !== document.body) {
+      const compName = curr.getAttribute('data-component') || curr.getAttribute('data-scene') || curr.tagName.toLowerCase()
+      if (compName && !componentChain.includes(compName)) {
+        componentChain.unshift(compName)
+      }
+      curr = curr.parentElement
+    }
+  }
+
+  // Determine parent path
+  const segs = path.split('.')
+  const parentPath = segs.length > 1 ? segs.slice(0, -1).join('.') : undefined
+
+  return {
+    source,
+    sourceLabel,
+    collection,
+    recordId,
+    field,
+    slug: currentSlug,
+    path,
+    parentPath,
+    componentChain,
+    isDynamic,
+    isShared
+  }
+}
+
+export function registerOrigin(path: string, origin?: Partial<OriginMetadata>, el?: HTMLElement | null): OriginMetadata {
+  if (!path) return detectContentOrigin(path, origin?.slug, el)
+  const existing = adminEditState.originMap[path]
+  const detected = detectContentOrigin(path, origin?.slug, el)
+  const finalMeta: OriginMetadata = {
+    ...detected,
+    ...existing,
+    ...(origin || {})
+  }
+  adminEditState.originMap[path] = finalMeta
+  return finalMeta
+}
+
+export function getOrigin(path: string): OriginMetadata {
+  return adminEditState.originMap[path] || detectContentOrigin(path)
+}
+
+/** ID-aware remove array item */
+export function removeArrayItemById(arrayPath: string, itemId: string | number, lang: LangCode, targetSlug?: string) {
+  const currentSlug = targetSlug || adminEditState.slug || 'home'
+  if (!lang) lang = adminEditState.language || 'FA'
+
+  const { currentUI } = getActiveWorkingUI(currentSlug, lang)
+  const targetArr = getByPath(currentUI, arrayPath)
+  if (!Array.isArray(targetArr)) return
+
+  const idx = targetArr.findIndex((x: any) => x && (String(x.id) === String(itemId) || String(x.key) === String(itemId) || String(x.slug) === String(itemId)))
+  if (idx !== -1) {
+    removeArrayItem(arrayPath, idx, lang, targetSlug)
+  }
+}
+
+/** Unified Docked Panel Controls (Strictly NO modals in modals, NO charts) */
+export function openUnifiedPanel(tab?: 'origin' | 'proof' | 'versions') {
+  if (tab) adminEditState.unifiedPanelTab = tab
+  adminEditState.unifiedPanelOpen = true
+  adminEditState.inspectorOpen = true
+  adminEditState.historyOpen = false
+  adminEditState.minimized = false
+}
+
+export function closeUnifiedPanel() {
+  adminEditState.unifiedPanelOpen = false
+  adminEditState.inspectorOpen = false
+  adminEditState.historyOpen = false
+  adminEditState.highlightedDiffPath = null
+}
+
+export function toggleUnifiedPanel(tab?: 'origin' | 'proof' | 'versions') {
+  if (adminEditState.unifiedPanelOpen && (!tab || adminEditState.unifiedPanelTab === tab)) {
+    closeUnifiedPanel()
+  } else {
+    openUnifiedPanel(tab)
+  }
+}
+
+/** Visual proof lens highlight pulse on page element */
+export function highlightFieldInView(path: string) {
+  adminEditState.highlightedDiffPath = path
+  if (typeof document !== 'undefined') {
+    const el = document.querySelector<HTMLElement>(`[data-edit-path="${CSS.escape(path)}"], [data-media-path="${CSS.escape(path)}"]`)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el.classList.add('admin-lens-pulse')
+      setTimeout(() => {
+        el.classList.remove('admin-lens-pulse')
+      }, 2500)
+    }
+  }
 }

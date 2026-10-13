@@ -13,7 +13,13 @@ import {
   revertPath,
   addArrayItem,
   removeArrayItem,
-  setEditingActive
+  setEditingActive,
+  registerOrigin,
+  openUnifiedPanel,
+  closeUnifiedPanel,
+  toggleUnifiedPanel,
+  getVersions,
+  restoreVersion
 } from '@/store/adminEditStore'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
@@ -68,16 +74,6 @@ function updateElementState(el: HTMLElement, path: string, lang: string) {
 }
 
 /** ---------- Instant Hover Micro-Toolbar for Editable Elements ---------- **/
-let hoverBadgeEl: HTMLDivElement | null = null
-let hoverBadgeDot: HTMLSpanElement | null = null
-let hoverBadgeText: HTMLSpanElement | null = null
-let hoverBadgeRevert: HTMLButtonElement | null = null
-let currentBadgePath = ''
-let currentBadgeEl: HTMLElement | null = null
-let hoverActiveTarget: HTMLElement | null = null
-let hideBadgeTimer: any = null
-let isHoveringBadge = false
-let activeEditingEl: HTMLElement | null = null
 
 function createToolbarButton(
   text: string,
@@ -202,6 +198,23 @@ function toggleBidiOverride() {
   }
 }
 
+let hoverBadgeEl: HTMLDivElement | null = null
+let hoverBadgeMainRow: HTMLDivElement | null = null
+let hoverBadgeVersionsRow: HTMLDivElement | null = null
+let hoverBadgeDot: HTMLSpanElement | null = null
+let hoverBadgeText: HTMLSpanElement | null = null
+let hoverBadgeRevert: HTMLButtonElement | null = null
+let hoverBadgeVersionsToggle: HTMLButtonElement | null = null
+let hoverBadgeColor: HTMLButtonElement | null = null
+let hoverBadgeRot: HTMLButtonElement | null = null
+let currentBadgePath = ''
+let currentBadgeEl: HTMLElement | null = null
+let hoverActiveTarget: HTMLElement | null = null
+let hideBadgeTimer: any = null
+let isHoveringBadge = false
+let activeEditingEl: HTMLElement | null = null
+let showVersionsRow = true
+
 function getOrCreateHoverBadge(): HTMLDivElement {
   if (hoverBadgeEl) return hoverBadgeEl
   hoverBadgeEl = document.createElement('div')
@@ -211,24 +224,27 @@ function getOrCreateHoverBadge(): HTMLDivElement {
     z-index: 999999;
     pointer-events: auto;
     display: none;
-    align-items: center;
+    flex-direction: column;
     gap: 4px;
-    padding: 3px 6px;
+    padding: 5px 8px;
     font-size: 11px;
     font-weight: 500;
-    background: rgba(18, 18, 22, 0.95);
+    background: rgba(15, 23, 42, 0.96);
     color: #f3f4f6;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 9px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(14px);
-    transition: opacity 0.1s ease;
-    transform: translateY(0);
+    border-radius: 12px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(18px);
+    transition: opacity 0.12s ease;
     opacity: 0;
     user-select: none;
     max-width: 95vw;
-    overflow-x: auto;
+    box-sizing: border-box;
   `
+
+  // Main Action Row
+  hoverBadgeMainRow = document.createElement('div')
+  hoverBadgeMainRow.style.cssText = 'display:flex;align-items:center;gap:4px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;'
 
   hoverBadgeDot = document.createElement('span')
   hoverBadgeDot.style.cssText = 'display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;flex-shrink:0;'
@@ -252,7 +268,37 @@ function getOrCreateHoverBadge(): HTMLDivElement {
   const btnAlignL = createToolbarButton('⇥', 'چینش چپ', () => applyAlignment('left'))
   const btnRlo = createToolbarButton('RLO', 'تغییر وضعیت BiDi Override اجباری', () => toggleBidiOverride())
 
-  // 4. Utility: Copy & Revert
+  // 4. Highlight Styling Controls (Color & Rotation)
+  hoverBadgeColor = createToolbarButton('🎨 رنگ', 'تغییر رنگ پس‌زمینه هایلایت', () => {
+    if (!currentBadgeEl || !currentBadgePath) return
+    const parentPath = currentBadgePath.replace(/\.(label|sentence)$/, '')
+    const colors = ['#6D28D9', '#2563EB', '#059669', '#DC2626', '#D97706', '#0F172A']
+    const currBg = currentBadgeEl.style.getPropertyValue('--base-bg') || currentBadgeEl.style.backgroundColor || '#6D28D9'
+    const nextIdx = (colors.indexOf(currBg) + 1) % colors.length
+    const nextColor = colors[nextIdx]
+    currentBadgeEl.style.setProperty('--base-bg', nextColor)
+    currentBadgeEl.style.backgroundColor = nextColor
+    const slug = currentBadgeEl.dataset.adminSlug || state.slug || 'home'
+    setDraftValue(`${parentPath}.bgColor`, state.language || 'FA', nextColor, slug, true)
+    toast('رنگ هایلایت تغییر کرد', 'success')
+  })
+  hoverBadgeColor.style.display = 'none'
+
+  hoverBadgeRot = createToolbarButton('↻ زاویه', 'تغییر زاویه چرخش هایلایت', () => {
+    if (!currentBadgeEl || !currentBadgePath) return
+    const parentPath = currentBadgePath.replace(/\.(label|sentence)$/, '')
+    const rotations = ['0deg', '-3deg', '3deg', '-6deg', '6deg']
+    const currRot = currentBadgeEl.style.getPropertyValue('--base-rot') || '0deg'
+    const nextIdx = (rotations.indexOf(currRot) + 1) % rotations.length
+    const nextRot = rotations[nextIdx]
+    currentBadgeEl.style.setProperty('--base-rot', nextRot)
+    const slug = currentBadgeEl.dataset.adminSlug || state.slug || 'home'
+    setDraftValue(`${parentPath}.rotation`, state.language || 'FA', nextRot, slug, true)
+    toast(`زاویه هایلایت: ${nextRot}`, 'info')
+  })
+  hoverBadgeRot.style.display = 'none'
+
+  // 5. Utility: Copy, Revert & Versions
   const btnCopy = createToolbarButton('📋', 'کپی آدرس فیلد', (e) => {
     if (currentBadgePath && navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(currentBadgePath)
@@ -260,35 +306,52 @@ function getOrCreateHoverBadge(): HTMLDivElement {
     }
   })
 
-  hoverBadgeRevert = createToolbarButton('↺', 'بازگردانی به مقدار سرور', (e) => {
+  hoverBadgeRevert = createToolbarButton('↺ بازگردانی', 'بازگردانی این فیلد به مقدار اصلی سرور', (e) => {
     if (currentBadgePath) {
       revertPath(currentBadgePath, state.language || 'fa')
       if (currentBadgeEl) {
         showHoverBadge(currentBadgeEl, currentBadgePath)
       }
-      toast(`فیلد "${currentBadgePath}" بازگردانی شد`, 'info')
+      toast(`فیلد "${currentBadgePath}" به نسخه اولیه بازگردانی شد`, 'info')
     }
   }, true)
   hoverBadgeRevert.style.display = 'none'
 
-  hoverBadgeEl.appendChild(hoverBadgeDot)
-  hoverBadgeEl.appendChild(hoverBadgeText)
-  hoverBadgeEl.appendChild(createSeparator())
-  hoverBadgeEl.appendChild(btnFa)
-  hoverBadgeEl.appendChild(btnAr)
-  hoverBadgeEl.appendChild(btnEn)
-  hoverBadgeEl.appendChild(createSeparator())
-  hoverBadgeEl.appendChild(btnZwnj)
-  hoverBadgeEl.appendChild(btnPhone)
-  hoverBadgeEl.appendChild(createSeparator())
-  hoverBadgeEl.appendChild(btnDir)
-  hoverBadgeEl.appendChild(btnAlignR)
-  hoverBadgeEl.appendChild(btnAlignC)
-  hoverBadgeEl.appendChild(btnAlignL)
-  hoverBadgeEl.appendChild(btnRlo)
-  hoverBadgeEl.appendChild(createSeparator())
-  hoverBadgeEl.appendChild(btnCopy)
-  hoverBadgeEl.appendChild(hoverBadgeRevert)
+  hoverBadgeVersionsToggle = createToolbarButton('🕒 تاریخچه', 'نمایش یا پنهان‌سازی ردیف نسخه‌های این فیلد', () => {
+    showVersionsRow = !showVersionsRow
+    if (hoverBadgeVersionsRow) {
+      hoverBadgeVersionsRow.style.display = showVersionsRow ? 'flex' : 'none'
+    }
+  })
+
+  hoverBadgeMainRow.appendChild(hoverBadgeDot)
+  hoverBadgeMainRow.appendChild(hoverBadgeText)
+  hoverBadgeMainRow.appendChild(createSeparator())
+  hoverBadgeMainRow.appendChild(btnFa)
+  hoverBadgeMainRow.appendChild(btnAr)
+  hoverBadgeMainRow.appendChild(btnEn)
+  hoverBadgeMainRow.appendChild(createSeparator())
+  hoverBadgeMainRow.appendChild(btnZwnj)
+  hoverBadgeMainRow.appendChild(btnPhone)
+  hoverBadgeMainRow.appendChild(createSeparator())
+  hoverBadgeMainRow.appendChild(btnDir)
+  hoverBadgeMainRow.appendChild(btnAlignR)
+  hoverBadgeMainRow.appendChild(btnAlignC)
+  hoverBadgeMainRow.appendChild(btnAlignL)
+  hoverBadgeMainRow.appendChild(btnRlo)
+  hoverBadgeMainRow.appendChild(createSeparator())
+  hoverBadgeMainRow.appendChild(hoverBadgeColor)
+  hoverBadgeMainRow.appendChild(hoverBadgeRot)
+  hoverBadgeMainRow.appendChild(btnCopy)
+  hoverBadgeMainRow.appendChild(hoverBadgeRevert)
+  hoverBadgeMainRow.appendChild(hoverBadgeVersionsToggle)
+
+  // Dedicated Built-in Versions Row
+  hoverBadgeVersionsRow = document.createElement('div')
+  hoverBadgeVersionsRow.style.cssText = 'display:none;align-items:center;gap:4px;overflow-x:auto;white-space:nowrap;padding-top:4px;border-top:1px solid rgba(255,255,255,0.1);scrollbar-width:none;'
+
+  hoverBadgeEl.appendChild(hoverBadgeMainRow)
+  hoverBadgeEl.appendChild(hoverBadgeVersionsRow)
 
   // Prevent clicks on toolbar from stealing focus or text selection from the active editable element
   hoverBadgeEl.addEventListener('mousedown', (e) => {
@@ -340,18 +403,79 @@ function showHoverBadge(el: HTMLElement, path: string) {
   if (hoverBadgeText) hoverBadgeText.textContent = path
   if (hoverBadgeRevert) hoverBadgeRevert.style.display = changed ? 'inline-block' : 'none'
 
-  const rect = el.getBoundingClientRect()
-  badge.style.display = 'inline-flex'
+  const isHighlightItem = path.includes('highlight') || el.classList.contains('hero-highlight-pill')
+  if (hoverBadgeColor) hoverBadgeColor.style.display = isHighlightItem ? 'inline-block' : 'none'
+  if (hoverBadgeRot) hoverBadgeRot.style.display = isHighlightItem ? 'inline-block' : 'none'
 
-  let top = rect.top - 36
-  if (top < 10) {
-    top = rect.bottom + 6
+  // Populate built-in version history row
+  const versions = getVersions(path, lang)
+  if (hoverBadgeVersionsRow) {
+    hoverBadgeVersionsRow.innerHTML = ''
+    if (versions && versions.length > 0 && showVersionsRow) {
+      const titleSpan = document.createElement('span')
+      titleSpan.style.cssText = 'color:#94a3b8;font-size:10px;font-weight:600;display:inline-flex;align-items:center;gap:3px;flex-shrink:0;margin-left:2px;'
+      titleSpan.textContent = 'سابقه فیلد:'
+      hoverBadgeVersionsRow.appendChild(titleSpan)
+
+      const currentText = getText(el)
+      versions.forEach((v, vIdx) => {
+        const vBtn = document.createElement('button')
+        vBtn.type = 'button'
+        const isCurrent = v.value === currentText
+        vBtn.style.cssText = `
+          background: ${isCurrent ? 'rgba(16,185,129,0.25)' : 'rgba(255,255,255,0.06)'};
+          color: ${isCurrent ? '#6ee7b7' : '#cbd5e1'};
+          border: 1px solid ${isCurrent ? 'rgba(16,185,129,0.6)' : 'rgba(255,255,255,0.12)'};
+          padding: 2px 6px;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 10px;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          transition: all 0.12s ease;
+          white-space: nowrap;
+        `
+        const typeLabel = v.type === 'original' ? 'سرور (اصلی)' : `نسخه ${vIdx + 1}`
+        vBtn.title = `کلیک برای بازگردانی فیلد به: «${v.value}»`
+        vBtn.innerHTML = `<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:${v.type === 'original' ? '#38bdf8' : '#fbbf24'};"></span><span>${typeLabel}</span>`
+        vBtn.addEventListener('mousedown', (e) => e.preventDefault())
+        vBtn.addEventListener('click', (e) => {
+          e.stopPropagation()
+          restoreVersion(path, lang, v.value)
+          if (currentBadgeEl) {
+            currentBadgeEl.textContent = v.value
+            updateElementState(currentBadgeEl, path, lang)
+            showHoverBadge(currentBadgeEl, path)
+          }
+          toast(`فیلد به «${typeLabel}» بازگردانی شد`, 'success')
+        })
+        hoverBadgeVersionsRow.appendChild(vBtn)
+      })
+      hoverBadgeVersionsRow.style.display = 'flex'
+      if (hoverBadgeVersionsToggle) hoverBadgeVersionsToggle.style.display = 'inline-block'
+    } else {
+      hoverBadgeVersionsRow.style.display = 'none'
+      if (hoverBadgeVersionsToggle) hoverBadgeVersionsToggle.style.display = 'none'
+    }
   }
-  let left = rect.left
-  const badgeWidth = 460
-  if (typeof window !== 'undefined' && left + badgeWidth > window.innerWidth - 12) {
-    left = Math.max(12, window.innerWidth - badgeWidth - 12)
+
+  // Tidy, viewport-aware positioning centered over element
+  badge.style.display = 'flex'
+  const rect = el.getBoundingClientRect()
+  const badgeWidth = Math.min(hoverBadgeEl?.offsetWidth || 440, window.innerWidth - 24)
+  const badgeHeight = hoverBadgeEl?.offsetHeight || 50
+
+  let left = rect.left + (rect.width / 2) - (badgeWidth / 2)
+  left = Math.max(12, Math.min(window.innerWidth - badgeWidth - 12, left))
+
+  let top = rect.top - badgeHeight - 8
+  if (top < 52) {
+    top = rect.bottom + 8
   }
+  top = Math.max(8, Math.min(window.innerHeight - badgeHeight - 8, top))
+
   badge.style.top = `${Math.round(top)}px`
   badge.style.left = `${Math.round(left)}px`
   badge.style.opacity = '1'
@@ -528,6 +652,8 @@ export default defineNuxtPlugin(nuxtApp => {
       let targetSlug =
         el.dataset.adminSlug ||
         el.closest('[data-admin-slug]')?.getAttribute('data-admin-slug') ||
+        (el.closest('footer') ? 'footer' : null) ||
+        (el.closest('header, nav, [data-menu]') ? 'menu' : null) ||
         state.slug ||
         'home'
 
@@ -541,6 +667,8 @@ export default defineNuxtPlugin(nuxtApp => {
       el.dataset.editPath = path
       el.dataset.adminSlug = targetSlug
       el.classList.add('v-editable')
+
+      registerOrigin(path, { slug: targetSlug }, el)
 
       // Set initial editable state
       setEditable(el, state.canEdit && state.editMode)
@@ -585,6 +713,17 @@ export default defineNuxtPlugin(nuxtApp => {
       const onFocus = () => {
         (el as any)._isFocused = true
         activeEditingEl = el
+
+        // GSAP SplitText revert bridge: safely revert any split spans before typing
+        if ((el as any)._split) {
+          (el as any)._hadSplit = true
+          ;(el as any)._split.revert()
+          (el as any)._split = null
+        } else if (el.querySelector('.split-word, .split-line, .split-char')) {
+          (el as any)._hadSplit = true
+          el.textContent = getText(el)
+        }
+
         if (state.canEdit && state.editMode) {
           setEditingActive(path, true)
           showHoverBadge(el, path)
@@ -606,6 +745,11 @@ export default defineNuxtPlugin(nuxtApp => {
           setValueSilently(path, state.language, text, targetSlug)
         }
         updateElementState(el, path, state.language)
+
+        if ((el as any)._hadSplit) {
+          (el as any)._hadSplit = false
+          el.dispatchEvent(new CustomEvent('admin:split-rebuild', { bubbles: true }))
+        }
 
         // Allow clicking toolbar buttons without losing active lock
         setTimeout(() => {
@@ -696,6 +840,8 @@ export default defineNuxtPlugin(nuxtApp => {
       let targetSlug =
         el.dataset.adminSlug ||
         el.closest('[data-admin-slug]')?.getAttribute('data-admin-slug') ||
+        (el.closest('footer') ? 'footer' : null) ||
+        (el.closest('header, nav, [data-menu]') ? 'menu' : null) ||
         state.slug ||
         'home'
 
@@ -707,6 +853,8 @@ export default defineNuxtPlugin(nuxtApp => {
 
       el.dataset.editPath = path
       el.dataset.adminSlug = targetSlug
+
+      registerOrigin(path, { slug: targetSlug }, el)
 
       setEditable(el, state.canEdit && state.editMode)
       updateElementState(el, path, state.language)
@@ -751,15 +899,19 @@ export default defineNuxtPlugin(nuxtApp => {
         return
       }
 
-      // Command palette / Inspector: ⌘/Ctrl + K
+      // Unified Panel / Inspector: ⌘/Ctrl + K
       if (meta && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        state.paletteOpen = !state.paletteOpen
+        toggleUnifiedPanel()
         return
       }
 
-      // Discard / Close modals: Escape
+      // Discard / Close panels: Escape
       if (e.key === 'Escape') {
+        if (state.unifiedPanelOpen) {
+          closeUnifiedPanel()
+          return
+        }
         if (state.paletteOpen) {
           state.paletteOpen = false
           return
