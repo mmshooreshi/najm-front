@@ -46,18 +46,18 @@
           آرشیو
         </span>
 
-        <!-- In-Place Admin Micro-Toolbar on Hover -->
+        <!-- In-Place Admin Micro-Toolbar on Hover with Safe Hover Bridge -->
         <div
           v-if="canEdit && isEditMode"
-          class="absolute -bottom-9 right-1/2 translate-x-1/2 hidden group-hover:flex items-center gap-1 bg-zinc-950/95 text-white rounded-xl py-1 px-1.5 border border-white/20 shadow-xl backdrop-blur-md z-50 text-[10px]"
+          class="absolute top-full mt-1.5 right-1/2 translate-x-1/2 hidden group-hover:flex hover:flex items-center gap-1 bg-[#0a110f]/95 text-white rounded-xl py-1 px-1.5 border border-emerald-500/30 shadow-2xl backdrop-blur-md z-[9999999] text-[10px] before:content-[''] before:absolute before:-top-3 before:inset-x-0 before:h-3 before:pointer-events-auto"
           @click.stop
         >
           <!-- Edit Destination / Slug -->
           <button
             type="button"
             @click="openDestModal(idx)"
-            class="p-1 rounded-lg hover:bg-white/20 text-emerald-400 transition cursor-pointer"
-            title="ویرایش آدرس مقصد (Edit URL / Slug)"
+            class="p-1 rounded-lg hover:bg-emerald-500/20 text-emerald-400 transition cursor-pointer"
+            title="ویرایش آدرس مقصد (URL / Slug)"
           >
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
@@ -68,37 +68,37 @@
           <button
             type="button"
             @click="openHistory(idx)"
-            class="p-1 rounded-lg hover:bg-white/20 text-zinc-300 hover:text-white transition cursor-pointer"
-            title="تاریخچه تغییرات (Revision History)"
+            class="p-1 rounded-lg hover:bg-sky-500/20 text-sky-300 hover:text-white transition cursor-pointer"
+            title="تاریخچه تغییرات این عنوان"
           >
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </button>
 
-          <!-- Move Left -->
+          <!-- Move Right (انتقال به راست / آیتم قبلی در چیدمان راست‌به‌چپ) -->
           <button
             v-if="idx > 0"
             type="button"
             @click="onMove(idx, idx - 1)"
             class="p-1 rounded-lg hover:bg-white/20 text-zinc-300 hover:text-white transition cursor-pointer"
-            title="انتقال به قبل (Move Left)"
+            title="انتقال به راست (آیتم قبلی)"
           >
-            <svg class="w-3.5 h-3.5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
             </svg>
           </button>
 
-          <!-- Move Right -->
+          <!-- Move Left (انتقال به چپ / آیتم بعدی در چیدمان راست‌به‌چپ) -->
           <button
             v-if="idx < totalCount - 1"
             type="button"
             @click="onMove(idx, idx + 1)"
             class="p-1 rounded-lg hover:bg-white/20 text-zinc-300 hover:text-white transition cursor-pointer"
-            title="انتقال به بعد (Move Right)"
+            title="انتقال به چپ (آیتم بعدی)"
           >
-            <svg class="w-3.5 h-3.5 -rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
@@ -107,7 +107,7 @@
             type="button"
             @click="onToggleArchive(idx, item)"
             class="p-1 rounded-lg hover:bg-amber-500/30 text-amber-300 transition cursor-pointer"
-            :title="item.archived ? 'بازگردانی از آرشیو (Restore)' : 'انتقال به آرشیو (Archive)'"
+            :title="item.archived ? 'بازگردانی از آرشیو' : 'انتقال به آرشیو'"
           >
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
@@ -119,7 +119,7 @@
             type="button"
             @click="confirmRemove(idx)"
             class="p-1 rounded-lg hover:bg-rose-500/30 text-rose-300 transition cursor-pointer"
-            title="حذف (Delete)"
+            title="حذف لینک"
           >
             <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

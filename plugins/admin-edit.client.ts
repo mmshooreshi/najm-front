@@ -472,7 +472,8 @@ function showHoverBadge(el: HTMLElement, path: string) {
 
   let top = rect.top - badgeHeight - 8
   if (top < 52) {
-    top = rect.bottom + 8
+    const isHeaderOrNav = !!el.closest('header, nav, [data-menu]')
+    top = rect.bottom + (isHeaderOrNav ? 44 : 8)
   }
   top = Math.max(8, Math.min(window.innerHeight - badgeHeight - 8, top))
 

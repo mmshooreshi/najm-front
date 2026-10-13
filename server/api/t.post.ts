@@ -30,18 +30,34 @@ export default defineEventHandler(async (event) => {
       return { ok: true, count: 0 }
     }
 
-    // Extract client IP and create 16-character SHA-256 hash (never persist raw IP)
-    const clientIp =
+    // Extract client IP and create 16-character SHA-256 hash
+    const rawIp =
       getRequestIP(event, { xForwardedFor: true }) ||
       getRequestHeader(event, 'x-forwarded-for') ||
       getRequestHeader(event, 'x-real-ip') ||
       event.node?.req?.socket?.remoteAddress ||
       '127.0.0.1'
 
+    const clientIp = String(rawIp).split(',')[0].trim().replace(/^::ffff:/, '')
+
     const ipHash = createHash('sha256')
-      .update(String(clientIp))
+      .update(clientIp)
       .digest('hex')
       .slice(0, 16)
+
+    // Detect Region from Cloudflare / proxy headers
+    const cfCountry = getRequestHeader(event, 'cf-ipcountry') || getRequestHeader(event, 'x-country-code') || getRequestHeader(event, 'x-country')
+    const cfCity = getRequestHeader(event, 'cf-ipcity') || getRequestHeader(event, 'x-geo-city')
+
+    let region = 'ایران'
+    if (clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('192.168.') || clientIp.startsWith('10.')) {
+      region = 'شبکه داخلی (Local)'
+    } else if (cfCity && cfCountry) {
+      const cityFa = cfCity === 'Tehran' ? 'تهران' : cfCity === 'Isfahan' ? 'اصفهان' : cfCity === 'Shiraz' ? 'شیراز' : cfCity === 'Mashhad' ? 'مشهد' : cfCity
+      region = `${cityFa} (${cfCountry})`
+    } else if (cfCountry) {
+      region = cfCountry === 'IR' ? 'ایران (IR)' : cfCountry
+    }
 
     const userAgent = getRequestHeader(event, 'user-agent') || null
     const headerReferer = getRequestHeader(event, 'referer') || null
@@ -59,6 +75,8 @@ export default defineEventHandler(async (event) => {
         url: item.url || '/',
         referrer: item.referrer !== undefined ? item.referrer : headerReferer,
         ip_hash: ipHash,
+        ip: clientIp,
+        region,
         user_agent: userAgent,
         fingerprint: (item as any).fingerprint || null,
         is_excluded: Boolean((item as any).is_excluded),

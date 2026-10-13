@@ -263,8 +263,15 @@ export default defineNuxtPlugin((nuxtApp) => {
         const pageX = Math.round(clientX + (window.scrollX || window.pageXOffset || 0))
         const pageY = Math.round(clientY + (window.scrollY || window.pageYOffset || 0))
 
+        const targetLabel =
+          trackedEl.getAttribute('data-telemetry-label') ||
+          (trackedEl as HTMLInputElement).value ||
+          (trackedEl as HTMLElement).innerText?.trim().slice(0, 50) ||
+          targetId
+
         trackEvent('tap_heat', {
           target_id: targetId,
+          target_label: targetLabel,
           rx,
           ry,
           page_x: pageX,

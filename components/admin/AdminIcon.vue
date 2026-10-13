@@ -817,6 +817,191 @@ const props = withDefaults(defineProps<{
     <path d="M18 15l3 -3" />
   </svg>
 
+  <!-- DEVICE ICONS -->
+  <svg
+    v-else-if="name === 'device-mobile' || name === 'mobile' || name === 'smartphone'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <rect x="7" y="2" width="10" height="20" rx="2" ry="2" />
+    <line x1="11" y1="18" x2="13" y2="18" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'laptop' || name === 'device-laptop'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line x1="2" y1="20" x2="22" y2="20" />
+    <rect x="4" y="4" width="16" height="12" rx="1" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'desktop' || name === 'device-desktop' || name === 'monitor'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <rect x="2" y="3" width="20" height="14" rx="2" />
+    <line x1="8" y1="21" x2="16" y2="21" />
+    <line x1="12" y1="17" x2="12" y2="21" />
+  </svg>
+
+  <!-- BROWSERS -->
+  <svg
+    v-else-if="name === 'chrome' || name === 'browser-chrome'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="4" />
+    <line x1="21.17" y1="8" x2="12" y2="8" />
+    <line x1="3.95" y1="6.06" x2="8.54" y2="14" />
+    <line x1="10.88" y1="21.94" x2="15.46" y2="14" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'safari' || name === 'browser-safari' || name === 'compass'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'firefox' || name === 'browser-firefox'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a10 10 0 0 1 8 4.5c-1 0-2 .5-2 1.5s1 2 1 3c0 4-3 7-7 7-3 0-5.5-2-6-4.5.5.5 1.5 1 2.5 1 2 0 3-1.5 3-3 0-1.5-.5-2.5-1.5-3.5 1.5.5 2.5 1.5 2.5 2.5 0-2-1.5-4-3-4.5 1-.5 2-.5 2-.5z" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'edge' || name === 'browser-edge'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M2 12c0 5.52 4.48 10 10 10 3.87 0 7.24-2.2 8.94-5.43-.88.28-1.83.43-2.82.43-4.42 0-8-3.58-8-8 0-1.57.45-3.03 1.23-4.27C6.07 5.75 2 8.44 2 12z" />
+    <path d="M14 6c0-2.21 1.79-4 4-4 1.86 0 3.42 1.27 3.87 3-.88-.28-1.83-.43-2.82-.43-2.21 0-4 1.79-4 4 0 .34.05.67.13.98A4 4 0 0 1 14 6z" />
+  </svg>
+
+  <!-- OPERATING SYSTEMS -->
+  <svg
+    v-else-if="name === 'apple'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.78 1.06-1.85.94-2.93-.93.04-2.03.62-2.69 1.4-.58.67-.99 1.76-.85 2.81 1.04.08 2.07-.54 2.6-1.28z" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'android'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line x1="4" y1="10" x2="4" y2="18" />
+    <line x1="20" y1="10" x2="20" y2="18" />
+    <path d="M6 18h12V10H6z" />
+    <line x1="9" y1="18" x2="9" y2="22" />
+    <line x1="15" y1="18" x2="15" y2="22" />
+    <path d="M6 10a6 6 0 0 1 12 0" />
+    <line x1="9" y1="3" x2="10" y2="5" />
+    <line x1="15" y1="3" x2="14" y2="5" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'windows'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path d="M3 5.45l7.15-1 .01 6.85H3V5.45zm0 13.1l7.16 1V12.7H3v5.85zm8.35 1.15L21 21.2V12.7h-9.65v6.99zm0-15.39v7H21V2.8l-9.65 1.51z" />
+  </svg>
+
+  <!-- UTILITY ICONS -->
+  <svg
+    v-else-if="name === 'map-pin' || name === 'location' || name === 'pin'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'cursor-click' || name === 'click' || name === 'pointer'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M3 3l7 18 3-7 7-3L3 3z" />
+    <path d="M13 13l6 6" />
+  </svg>
+
+  <svg
+    v-else-if="name === 'filter'"
+    :class="props.class"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+  </svg>
+
   <!-- FALLBACK DEFAULT (Sparkles / Dot) -->
   <svg
     v-else

@@ -39,6 +39,7 @@ export type TelemetryEventMap = {
   }
   tap_heat: {
     target_id: string
+    target_label?: string
     rx: number // normalized 0.00 to 1.00 relative x coordinate
     ry: number // normalized 0.00 to 1.00 relative y coordinate
     page_x?: number // document absolute X position for page-wide heatmap
@@ -90,6 +91,8 @@ export interface StoredAnalyticsEvent {
   user_agent: string | null
   fingerprint?: string | null
   is_excluded?: boolean
+  ip?: string | null
+  region?: string | null
   properties: Record<string, any>
 }
 
@@ -108,6 +111,19 @@ export interface TelemetryLensResponse {
   scroll_density: number[] // 20-bucket averaged intensity
 }
 
+export interface JourneyStep {
+  step: number
+  type: 'landing' | 'page' | 'tap' | 'dwell' | 'conversion' | 'exit'
+  title: string
+  subtitle?: string
+  icon?: string
+  badge?: string
+  dwell_sec?: number
+  target_id?: string
+  target_label?: string
+  timestamp: string
+}
+
 /** Summary of a single visitor session shown in the Users tab */
 export interface SessionSummary {
   session_id: string
@@ -122,12 +138,18 @@ export interface SessionSummary {
   user_agent: string | null
   fingerprint: string | null
   is_excluded?: boolean
+  ip?: string | null
+  ip_hash?: string | null
+  region?: string | null
+  browser?: { name: string; icon: string; version?: string }
+  device?: { name: string; icon: string; os?: string; type: string }
   utm_source: string | null
   utm_medium: string | null
   utm_campaign: string | null
   search_query: string | null
   source_type: 'google_organic' | 'google_ads' | 'direct' | 'referral' | 'social' | 'utm' | 'other'
   pages: string[]      // list of distinct URLs visited (ordered)
+  journey_steps?: JourneyStep[]
 }
 
 /** Full event list for a single session, returned by /api/analytics/session/[id] */
@@ -143,16 +165,24 @@ export interface TrafficStatsOverview {
   total_events: number
   avg_duration_sec: number
   bounce_rate_pct: number
-  utm_sources: Array<{ name: string; count: number; percentage: number }>
+  time_range?: string
+  since?: string
+  until?: string
+  utm_sources: Array<{ name: string; count: number; percentage: number; conversions?: number }>
+  utm_campaigns?: Array<{ name: string; count: number; percentage: number; conversions?: number }>
+  utm_mediums?: Array<{ name: string; count: number; percentage: number }>
   google_queries: Array<{ query: string; count: number; landing_page: string }>
   source_breakdown: Array<{ type: string; label: string; count: number; percentage: number }>
   page_flows: Array<{ from: string; to: string; count: number }>
   top_landing_pages: Array<{ path: string; count: number }>
+  hourly_timeline?: Array<{ hour: string; timestamp: string; pageviews: number; sessions: number }>
   debounce_stats: {
     total_debounced_scrolls: number
     avg_dwell_before_stop: number
     hesitations: number
   }
+  top_clicked_targets?: Array<{ target_id: string; label: string; count: number }>
   excluded_fingerprints: string[]
 }
+
 

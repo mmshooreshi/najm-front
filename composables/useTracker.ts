@@ -4,8 +4,10 @@ import type { TelemetryEventMap, TelemetryEventName, ClientTelemetryPayload } fr
 const FLUSH_INTERVAL_MS = 1500 // 1.5 seconds for snappy updates
 const QUEUE_BATCH_LIMIT = 5 // Auto-flush at 5 items
 const SESSION_STORAGE_KEY = 'najm_telemetry_sid'
+const LAST_ACTIVITY_KEY = 'najm_telemetry_last_act'
 const FINGERPRINT_STORAGE_KEY = 'najm_telemetry_fp'
 const EXCLUDED_STORAGE_KEY = 'najm_telemetry_excluded'
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000 // 30 minutes inactivity expiry
 
 let memSessionId = ''
 let memFingerprint = ''
@@ -94,17 +96,27 @@ export function setDeviceExcluded(excluded: boolean): void {
 export function getTelemetrySessionId(): string {
   if (typeof window === 'undefined') return 'ssr_session'
 
-  if (memSessionId) return memSessionId
-
   try {
+    const now = Date.now()
+    const lastAct = Number(sessionStorage.getItem(LAST_ACTIVITY_KEY) || 0)
+    const isExpired = lastAct > 0 && now - lastAct > SESSION_TIMEOUT_MS
+
+    if (memSessionId && !isExpired) {
+      sessionStorage.setItem(LAST_ACTIVITY_KEY, String(now))
+      return memSessionId
+    }
+
     const existing = sessionStorage.getItem(SESSION_STORAGE_KEY)
-    if (existing) {
+    if (existing && !isExpired) {
+      sessionStorage.setItem(LAST_ACTIVITY_KEY, String(now))
       memSessionId = existing
       return memSessionId
     }
 
+    // Inactivity timeout reached or initial session -> generate fresh session
     const newId = generateSessionId()
     sessionStorage.setItem(SESSION_STORAGE_KEY, newId)
+    sessionStorage.setItem(LAST_ACTIVITY_KEY, String(now))
     memSessionId = newId
     return memSessionId
   } catch {
@@ -198,6 +210,10 @@ export function trackEvent<K extends TelemetryEventName>(
     is_excluded: isDeviceExcluded(),
     properties
   }
+
+  try {
+    sessionStorage.setItem(LAST_ACTIVITY_KEY, String(Date.now()))
+  } catch {}
 
   // 1. Dispatch custom event for 0ms in-memory UI updates in Telemetry Lens
   try {
