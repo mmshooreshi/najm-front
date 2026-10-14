@@ -58,16 +58,18 @@
 
           <NuxtLink
             v-if="item"
-            :to="localePath(item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || ''))"
+            :to="isEditMode ? undefined : localePath(item.slug?.startsWith('/') ? item.slug : '/' + (item.slug || ''))"
+            @click="onLinkClick($event)"
             @pointerenter.passive="onLinkHover(item.slug)"
             @focus.passive="onLinkHover(item.slug)"
             class="block py-1 text-white/100 text-xs text-d4 text-demibold text-right hover:text-white/80 transition-colors flex-1"
           >
             <div
-              class="w-max rounded-lg p-1"
+              class="w-max rounded-lg p-1 min-w-[40px] inline-block"
+              :class="{ 'text-amber-300 italic font-normal bg-amber-500/20 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name?.trim()) }"
               v-editable="sectionIndex !== undefined ? `sections.${sectionIndex}.children.${iIdx}.name` : ''"
             >
-              {{ item?.name || '' }}
+              {{ item?.name || (isEditMode ? 'لینک جدید' : '') }}
             </div>
           </NuxtLink>
 
@@ -277,6 +279,15 @@ function onLinkHover(slug?: string) {
     const path = localePath(slug.startsWith('/') ? slug : '/' + slug)
     preloadRouteComponents(path).catch(() => {})
   } catch {}
+}
+
+function onLinkClick(e?: MouseEvent) {
+  if (isEditMode.value) {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
 }
 
 function setHeight(expand: boolean) {

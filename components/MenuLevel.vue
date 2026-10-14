@@ -4,31 +4,17 @@
     <div
       v-for="(item, idx) in items || []"
       :key="item?.id || idx"
-      class="relative group transition-all duration-200"
+      class="relative group/menuitem transition-all duration-200"
       :class="{
         'ring-2 ring-emerald-500/80 rounded-xl bg-emerald-50/30 scale-[1.01]': dragOverIdx === idx,
         'opacity-40': dragFromIdx === idx
       }"
-      :draggable="canEdit && isEditMode && !!parentPath"
-      @dragstart="onDragStart(idx, $event)"
       @dragover="onDragOver(idx, $event)"
       @dragleave="onDragLeave(idx)"
       @drop="onDrop(idx, $event)"
       @dragend="onDragEnd"
     >
-      <!-- Row Wrapper with optional Drag Handle -->
-      <div class="flex items-center w-full">
-        <!-- Drag Handle in Admin Edit Mode -->
-        <span
-          v-if="canEdit && isEditMode && !!parentPath"
-          class="cursor-grab active:cursor-grabbing text-zinc-400 hover:text-emerald-600 transition-colors select-none text-xs px-1 shrink-0"
-          title="برای جابه‌جایی بکشید و رها کنید (Drag to reorder)"
-        >
-          ⠿
-        </span>
-
-        <div class="flex-1 min-w-0">
-          <!-- Accordion Type -->
+      <!-- Accordion Type -->
           <BaseAccordionGroupNew
             v-if="item.type === 'accordion'"
             :activeFiltersCount="trueCounts[item.id]"
@@ -65,21 +51,26 @@
           <div
             v-else-if="item.type === 'label'"
             class="text-gray-400 font-bold text-xs uppercase tracking-wider px-3 pt-3 pb-1"
+            :class="{ 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50 min-w-[50px] inline-block': isEditMode && (!item.name || !item.name.trim()) }"
             v-editable="parentPath ? `${parentPath}.${idx}.name` : ''"
           >
-            {{ item.name }}
+            {{ item.name || (isEditMode ? 'عنوان برچسب' : '') }}
           </div>
 
           <!-- Main Link Type (e.g. Services) -->
           <NuxtLink
             v-else-if="item.type === 'link'"
-            :to="formatToUrl(item)"
-            @click="onLinkClick"
+            :to="isEditMode ? undefined : formatToUrl(item)"
+            @click="onLinkClick($event)"
             @pointerenter.passive="onLinkHover(item)"
             @focus.passive="onLinkHover(item)"
             class="min-h-[44px] py-2.5 px-3 sm:px-4 flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-najmgreen hover:bg-gray-100/80 active:bg-gray-200/70 active:scale-[0.99] rounded-xl transition-all duration-200"
           >
-            <span class="truncate" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">{{ item.name }}</span>
+            <span
+              class="truncate min-w-[50px] inline-block"
+              :class="{ 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name.trim()) }"
+              v-editable="parentPath ? `${parentPath}.${idx}.name` : ''"
+            >{{ item.name || (isEditMode ? 'عنوان آیتم' : '') }}</span>
             <Icon
               :name="isRTL ? 'mdi:chevron-left' : 'mdi:chevron-right'"
               class="w-5 h-5 text-gray-400 group-hover:text-najmgreen transition-transform flex-shrink-0"
@@ -90,7 +81,7 @@
           <!-- Filter Type -->
           <div
             v-else-if="item.type === 'filter'"
-            @click="item.value = !item.value"
+            @click="isEditMode ? undefined : (item.value = !item.value)"
             class="min-h-[40px] py-2 px-3 sm:px-4 flex items-center gap-2.5 cursor-pointer hover:bg-gray-100/70 active:scale-[0.99] rounded-xl transition-all select-none"
           >
             <Icon
@@ -103,8 +94,15 @@
               name="mdi:checkbox-blank-outline"
               class="w-5 h-5 text-gray-400 hover:text-gray-600 flex-shrink-0"
             />
-            <div class="text-xs font-semibold" :class="item.value ? 'text-gray-900 font-bold' : 'text-gray-600'" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">
-              {{ item.name }}
+            <div
+              class="text-xs font-semibold min-w-[50px] inline-block"
+              :class="[
+                item.value ? 'text-gray-900 font-bold' : 'text-gray-600',
+                { 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name.trim()) }
+              ]"
+              v-editable="parentPath ? `${parentPath}.${idx}.name` : ''"
+            >
+              {{ item.name || (isEditMode ? 'عنوان فیلتر' : '') }}
             </div>
             <div v-if="item.count" class="text-[11px] text-gray-400">
               ({{ toLocalizedDigits(item.count) }} {{ countSuffix }})
@@ -114,13 +112,17 @@
           <!-- Simple Link Type (e.g. Catalog, About, Contact) -->
           <NuxtLink
             v-else-if="item.type === 'link-simple'"
-            :to="formatToUrl(item)"
-            @click="onLinkClick"
+            :to="isEditMode ? undefined : formatToUrl(item)"
+            @click="onLinkClick($event)"
             @pointerenter.passive="onLinkHover(item)"
             @focus.passive="onLinkHover(item)"
             class="min-h-[44px] py-2.5 px-3 sm:px-4 flex items-center justify-between text-sm font-semibold text-gray-700 hover:text-najmgreen hover:bg-gray-100/80 active:bg-gray-200/70 active:scale-[0.99] rounded-xl transition-all duration-200"
           >
-            <span class="truncate" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">{{ item.name }}</span>
+            <span
+              class="truncate min-w-[50px] inline-block"
+              :class="{ 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name.trim()) }"
+              v-editable="parentPath ? `${parentPath}.${idx}.name` : ''"
+            >{{ item.name || (isEditMode ? 'عنوان آیتم' : '') }}</span>
             <div v-if="item.count" class="text-xs font-normal text-gray-400 flex-shrink-0">
               ({{ toLocalizedDigits(item.count) }} {{ countSuffix }})
             </div>
@@ -129,91 +131,102 @@
           <!-- Simple Small Link Type (Leaf Products Subcategory) -->
           <NuxtLink
             v-else-if="item.type === 'link-simple-xs'"
-            :to="formatToUrl(item)"
-            @click="onLinkClick"
+            :to="isEditMode ? undefined : formatToUrl(item)"
+            @click="onLinkClick($event)"
             @pointerenter.passive="onLinkHover(item)"
             @focus.passive="onLinkHover(item)"
             class="min-h-[40px] py-2 px-3 sm:px-4 flex items-center justify-between text-xs sm:text-sm text-gray-600 hover:text-najmgreen hover:bg-white active:bg-gray-100 rounded-xl transition-all duration-150"
           >
             <div class="flex items-center gap-2 truncate">
               <span class="w-1.5 h-1.5 rounded-full bg-gray-300 flex-shrink-0"></span>
-              <span class="truncate" v-editable="parentPath ? `${parentPath}.${idx}.name` : ''">{{ item.name }}</span>
+              <span
+                class="truncate min-w-[50px] inline-block"
+                :class="{ 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name.trim()) }"
+                v-editable="parentPath ? `${parentPath}.${idx}.name` : ''"
+              >{{ item.name || (isEditMode ? 'عنوان آیتم' : '') }}</span>
             </div>
             <span v-if="item.count" class="text-[11px] text-gray-400 flex-shrink-0">
               ({{ toLocalizedDigits(item.count) }})
             </span>
           </NuxtLink>
-        </div>
-
-        <!-- Micro Toolbar in Admin Mode for Each Row -->
-        <div
-          v-if="canEdit && isEditMode && !!parentPath"
-          class="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 shrink-0 select-none px-1.5"
-          @click.stop.prevent
+      <!-- Floating Micro Toolbar in Admin Mode (Fades in on hover of this row - zero layout disruption) -->
+      <div
+        v-if="canEdit && isEditMode && !!parentPath"
+        class="absolute left-1.5 top-2 opacity-0 pointer-events-none group-hover/menuitem:opacity-100 group-hover/menuitem:pointer-events-auto transition-opacity duration-150 flex items-center gap-1 bg-[#0a110f]/95 text-white rounded-xl py-0.5 px-1.5 border border-emerald-500/30 shadow-2xl backdrop-blur-md z-30 select-none"
+        @click.stop.prevent
+      >
+        <!-- Drag Handle -->
+        <span
+          class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-800/80 hover:bg-zinc-800 text-zinc-400 hover:text-emerald-400 border border-white/10 transition-colors cursor-grab active:cursor-grabbing text-xs select-none"
+          draggable="true"
+          @dragstart="onDragStart(idx, $event)"
+          title="برای جابه‌جایی بکشید (Drag to reorder)"
         >
-          <!-- Destination Editor (if item has slug or is link) -->
-          <button
-            v-if="item.slug !== undefined || item.type?.startsWith('link')"
-            type="button"
-            @click="openDestModal(idx)"
-            class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-900/80 hover:bg-zinc-900 text-emerald-400 border border-white/10 transition-colors cursor-pointer"
-            title="ویرایش آدرس مقصد (Edit URL / Slug)"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
-          </button>
+          ⠿
+        </span>
 
-          <!-- Revision History -->
-          <button
-            type="button"
-            @click="openHistory(idx)"
-            class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-            title="تاریخچه تغییرات این عنوان"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </button>
+        <!-- Destination Editor (if item has slug or is link) -->
+        <button
+          v-if="item.slug !== undefined || item.type?.startsWith('link')"
+          type="button"
+          @click="openDestModal(idx)"
+          class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-800/80 hover:bg-zinc-800 text-emerald-400 border border-white/10 transition-colors cursor-pointer"
+          title="ویرایش آدرس مقصد (Edit URL / Slug)"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        </button>
 
-          <!-- Move Up -->
-          <button
-            v-if="idx > 0"
-            type="button"
-            @click="onMove(idx, idx - 1)"
-            class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-            title="انتقال به بالا (Move Up)"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
-            </svg>
-          </button>
+        <!-- Revision History -->
+        <button
+          type="button"
+          @click="openHistory(idx)"
+          class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-800/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
+          title="تاریخچه تغییرات این عنوان"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
 
-          <!-- Move Down -->
-          <button
-            v-if="idx < (items?.length || 0) - 1"
-            type="button"
-            @click="onMove(idx, idx + 1)"
-            class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-900/80 hover:bg-zinc-900 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
-            title="انتقال به پایین (Move Down)"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+        <!-- Move Up -->
+        <button
+          v-if="idx > 0"
+          type="button"
+          @click="onMove(idx, idx - 1)"
+          class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-800/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
+          title="انتقال به بالا (Move Up)"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
 
-          <!-- Delete Item -->
-          <button
-            type="button"
-            @click="confirmRemove(idx)"
-            class="w-6 h-6 rounded-lg flex items-center justify-center bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 transition-colors cursor-pointer"
-            title="حذف این آیتم (Delete)"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        <!-- Move Down -->
+        <button
+          v-if="idx < (items?.length || 0) - 1"
+          type="button"
+          @click="onMove(idx, idx + 1)"
+          class="w-6 h-6 rounded-lg flex items-center justify-center bg-zinc-800/80 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-white/10 transition-colors cursor-pointer"
+          title="انتقال به پایین (Move Down)"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Delete Item -->
+        <button
+          type="button"
+          @click="confirmRemove(idx)"
+          class="w-6 h-6 rounded-lg flex items-center justify-center bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white border border-rose-500/30 transition-colors cursor-pointer"
+          title="حذف این آیتم (Delete)"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -375,8 +388,19 @@ function onLinkHover(item: any) {
   } catch {}
 }
 
-function onLinkClick() {
+function onLinkClick(e?: MouseEvent) {
+  if (isEditMode.value) {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+    return
+  }
   emit('link-click')
+
+  if (typeof window !== 'undefined' && window.scrollY > 20) {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 }
 
 // Drag & Drop handlers
@@ -468,7 +492,7 @@ function onAddItem() {
     id: Date.now(),
     name: currentLang === 'en' ? 'New Item' : currentLang === 'ar' ? 'عنصر جديد' : 'آیتم جدید',
     slug: templateItem?.slug || '/',
-    type: templateItem?.type || 'link',
+    type: templateItem?.type || (props.parentPath?.includes('children') ? 'link-simple-xs' : 'link'),
     order: count + 1
   }
   addArrayItem(cleanArrayPath.value, count - 1, currentLang, 'menu', defaultItem)

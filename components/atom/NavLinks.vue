@@ -30,11 +30,16 @@
           </span>
 
           <NuxtLink
-            :to="formatToUrl(item.slug)"
+            :to="isEditMode ? undefined : formatToUrl(item.slug)"
+            @click="onLinkClick($event)"
             class="hover:text-najmgreen text-gray-700 transition-colors duration-200 py-1.5 px-1 block whitespace-nowrap"
             active-class="text-najmgreen font-bold"
           >
-            <span v-editable="`headerNav.${idx}.name`">{{ item.name }}</span>
+            <span
+              class="min-w-[40px] inline-block"
+              :class="{ 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name.trim()) }"
+              v-editable="`headerNav.${idx}.name`"
+            >{{ item.name || (isEditMode ? 'لینک جدید' : '') }}</span>
           </NuxtLink>
         </div>
 
@@ -273,6 +278,15 @@ function formatToUrl(slug = ''): string {
   if (slug.startsWith('http')) return slug
   const clean = slug.startsWith('/') ? slug : '/' + slug
   return localePath(clean)
+}
+
+function onLinkClick(e?: MouseEvent) {
+  if (isEditMode.value) {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
 }
 
 // Drag & Drop handlers

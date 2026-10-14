@@ -1025,7 +1025,7 @@ function commitArrayMutation(slug: string, lang: LangCode, arrayPath: string, ta
 }
 
 /** Add a new item to an array at a specific index */
-export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string) {
+export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode, targetSlug?: string, customTemplate?: any) {
   const currentSlug = targetSlug || adminEditState.slug || 'home'
   if (!lang) lang = adminEditState.language || 'FA'
 
@@ -1043,9 +1043,11 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
     setByPath(currentUI, arrayPath, targetArr)
   }
 
-  // Create clean placeholder item with proper fields by cloning template
+  // Create clean placeholder item with proper fields
   let newItem: any = 'آیتم جدید (کلیک برای ویرایش)'
-  if (targetArr.length > 0) {
+  if (customTemplate && typeof customTemplate === 'object') {
+    newItem = deepClone(customTemplate)
+  } else if (targetArr.length > 0) {
     const templateIndex = (atIndex >= 0 && atIndex < targetArr.length) ? atIndex : targetArr.length - 1
     const template = targetArr[templateIndex]
     if (typeof template === 'object' && template !== null) {
@@ -1070,10 +1072,23 @@ export function addArrayItem(arrayPath: string, atIndex: number, lang: LangCode,
     }
   } else {
     newItem = {
+      name: 'آیتم جدید',
       title: 'عنوان جدید (ویرایش کنید)',
+      slug: '/',
+      type: 'link',
       desc: 'توضیحات مورد نظر را اینجا وارد کنید',
       question: 'پرسش جدید (برای ویرایش کلیک کنید)',
       answer: 'پاسخ پرسش را در این قسمت وارد نمایید.'
+    }
+  }
+
+  // Guarantee name or title is never empty
+  if (typeof newItem === 'object' && newItem !== null) {
+    if (newItem.name !== undefined && (!newItem.name || !String(newItem.name).trim())) {
+      newItem.name = 'آیتم جدید'
+    }
+    if (newItem.title !== undefined && (!newItem.title || !String(newItem.title).trim())) {
+      newItem.title = 'عنوان جدید'
     }
   }
 
