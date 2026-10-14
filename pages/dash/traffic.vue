@@ -14,31 +14,100 @@
           رصد تعاملی سفر کاربران (DAG Journeys)، ردیابی کلیک روی دکمه‌ها، منابع UTM، توقف‌های مطالعه و فیلترهای زمانی پیشرفته.
         </p>
       </div>
+    </div>
 
-      <!-- Controls: Time Range Pills & Refresh -->
-      <div class="flex flex-wrap items-center gap-2.5 self-start lg:self-auto">
-        <!-- Time Range Selector Pills -->
-        <div class="flex items-center p-1 rounded-xl bg-zinc-900/90 border border-white/10 text-xs">
-          <button
-            v-for="opt in timeRangeOptions"
-            :key="opt.value"
-            type="button"
-            @click="selectedTimeRange = (opt.value as any); fetchData()"
-            class="px-2.5 py-1 rounded-lg font-bold transition cursor-pointer"
-            :class="selectedTimeRange === opt.value
-              ? 'bg-emerald-500 text-zinc-950 shadow-sm'
-              : 'text-zinc-400 hover:text-white'"
-          >
-            {{ opt.label }}
-          </button>
-        </div>
+    <!-- Mode Switcher Tabs: Historical vs Live -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 p-2.5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-lg">
+      <!-- Mode Tabs -->
+      <div class="flex items-center p-1 rounded-xl bg-zinc-950 border border-white/10 text-xs">
+        <button
+          type="button"
+          @click="switchMode('historical')"
+          class="px-4 py-2 rounded-lg font-bold transition cursor-pointer flex items-center gap-2"
+          :class="currentMode === 'historical'
+            ? 'bg-emerald-500 text-zinc-950 shadow-md font-black'
+            : 'text-zinc-400 hover:text-white'"
+        >
+          <AdminIcon name="chart-pie" class="w-4 h-4" />
+          <span>آرشیو و تحلیل گذشته (Historical)</span>
+        </button>
+
+        <button
+          type="button"
+          @click="switchMode('live')"
+          class="px-4 py-2 rounded-lg font-bold transition cursor-pointer flex items-center gap-2 relative"
+          :class="currentMode === 'live'
+            ? 'bg-emerald-500 text-zinc-950 shadow-md font-black'
+            : 'text-zinc-400 hover:text-white'"
+        >
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span>پخش زنده و لحظه‌ای (Live Stream)</span>
+          <span v-if="liveStats.active_visitors > 0" class="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-400/30 text-emerald-950 font-bold font-mono">
+            {{ liveStats.active_visitors }} آنلاین
+          </span>
+        </button>
+      </div>
+
+      <!-- Mode Specific Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Historical Mode Range Selector -->
+        <template v-if="currentMode === 'historical'">
+          <div class="flex items-center p-0.5 rounded-xl bg-zinc-950 border border-white/10 text-xs">
+            <button
+              v-for="opt in timeRangeOptions"
+              :key="opt.value"
+              type="button"
+              @click="selectedTimeRange = (opt.value as any); fetchData()"
+              class="px-2.5 py-1 rounded-lg font-bold transition cursor-pointer"
+              :class="selectedTimeRange === opt.value
+                ? 'bg-emerald-500 text-zinc-950 shadow-sm'
+                : 'text-zinc-400 hover:text-white'"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </template>
+
+        <!-- Live Mode Interval Selector -->
+        <template v-else>
+          <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-950 border border-white/10 text-xs">
+            <span class="text-zinc-400 text-[11px] px-1 font-semibold">بروزرسانی خودکار:</span>
+            <button
+              type="button"
+              @click="liveRefreshInterval = 5; startLivePolling()"
+              class="px-2 py-0.5 rounded font-mono transition cursor-pointer"
+              :class="liveRefreshInterval === 5 ? 'bg-emerald-500 text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'"
+            >
+              ۵ ثانیه
+            </button>
+            <button
+              type="button"
+              @click="liveRefreshInterval = 10; startLivePolling()"
+              class="px-2 py-0.5 rounded font-mono transition cursor-pointer"
+              :class="liveRefreshInterval === 10 ? 'bg-emerald-500 text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'"
+            >
+              ۱۰ ثانیه
+            </button>
+            <button
+              type="button"
+              @click="liveRefreshInterval = 0; stopLivePolling()"
+              class="px-2 py-0.5 rounded font-mono transition cursor-pointer"
+              :class="liveRefreshInterval === 0 ? 'bg-rose-500 text-white font-bold' : 'text-zinc-400 hover:text-white'"
+            >
+              خاموش
+            </button>
+          </div>
+        </template>
 
         <!-- Exclude Admin Routes Toggle -->
-        <label class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-900 border border-white/10 text-xs font-semibold text-zinc-300 cursor-pointer hover:bg-zinc-800 transition">
+        <label class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-950 border border-white/10 text-xs font-semibold text-zinc-300 cursor-pointer hover:bg-zinc-800 transition">
           <input
             type="checkbox"
             v-model="excludeAdmin"
-            @change="fetchData"
+            @change="currentMode === 'live' ? fetchLiveStats() : fetchData()"
             class="rounded border-zinc-700 bg-zinc-800 text-emerald-500 focus:ring-0 cursor-pointer"
           />
           <span>حذف صفحات ادمین (/dash)</span>
@@ -47,14 +116,52 @@
         <!-- Refresh Button -->
         <button
           type="button"
-          @click="fetchData"
-          class="px-3.5 py-2 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md"
-          :disabled="loading"
+          @click="currentMode === 'live' ? fetchLiveStats() : fetchData()"
+          class="px-3.5 py-1.5 rounded-xl bg-najmgreen hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md"
+          :disabled="loading || liveLoading"
         >
-          <AdminIcon name="refresh" class="w-3.5 h-3.5" :class="{ 'animate-spin': loading }" />
-          <span>{{ loading ? 'در حال دریافت...' : 'بروزرسانی' }}</span>
+          <AdminIcon name="refresh" class="w-3.5 h-3.5" :class="{ 'animate-spin': loading || liveLoading }" />
+          <span>{{ (loading || liveLoading) ? 'دریافت...' : 'بروزرسانی' }}</span>
         </button>
       </div>
+    </div>
+
+    <!-- Error Banner (if any) -->
+    <div
+      v-if="fetchError"
+      class="p-4 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-200 flex items-center justify-between gap-3 text-xs"
+    >
+      <div class="flex items-center gap-2">
+        <AdminIcon name="x" class="w-4 h-4 text-rose-400 shrink-0" />
+        <span>{{ fetchError }}</span>
+      </div>
+      <button
+        type="button"
+        @click="currentMode === 'live' ? fetchLiveStats() : fetchData()"
+        class="px-3 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold cursor-pointer"
+      >
+        تلاش مجدد
+      </button>
+    </div>
+
+    <!-- Zero-Data Historical Notice with One-Click Fallback -->
+    <div
+      v-if="currentMode === 'historical' && stats.total_sessions === 0 && (stats.total_historical_sessions || 0) > 0"
+      class="p-4 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+    >
+      <div class="flex items-center gap-2">
+        <span class="text-base">💡</span>
+        <span>
+          در بازه زمانی انتخابی ({{ timeRangeOptions.find(o => o.value === selectedTimeRange)?.label }}) نشستی ثبت نشده است، اما در آرشیو تاریخچه سایت <strong>{{ formatNumber(stats.total_historical_sessions) }} نشست</strong> ذخیره شده وجود دارد.
+        </span>
+      </div>
+      <button
+        type="button"
+        @click="selectAllHistory"
+        class="px-3.5 py-1.5 rounded-lg bg-amber-500 text-zinc-950 font-bold hover:bg-amber-400 transition cursor-pointer shrink-0"
+      >
+        مشاهده کل تاریخچه دیتابیس
+      </button>
     </div>
 
     <!-- Active Filters & Exclusions Bar (Chips) -->
@@ -178,8 +285,10 @@
       </div>
     </div>
 
-    <!-- Executive KPI Grid -->
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+    <!-- Historical Analytics Mode View -->
+    <template v-if="currentMode === 'historical'">
+      <!-- Executive KPI Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
       <!-- 1. Total Sessions -->
       <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
         <div class="flex items-center justify-between">
@@ -417,6 +526,81 @@
               <span class="px-2 py-0.5 rounded-md bg-teal-500/20 text-teal-300 font-bold text-xs">
                 {{ target.count }} کلیک
               </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hardware Devices & Browsers Distribution Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Device Breakdown -->
+      <div class="p-5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <AdminIcon name="desktop" class="w-4 h-4 text-emerald-400" />
+            <h3 class="text-sm font-bold text-white">توزیع دیوایس‌ها و سیستم‌عامل (Device Breakdown)</h3>
+          </div>
+          <span class="text-xs text-zinc-400 font-mono">{{ stats.device_breakdown?.length || 0 }} نوع</span>
+        </div>
+
+        <div v-if="!stats.device_breakdown || stats.device_breakdown.length === 0" class="py-8 text-center text-xs text-zinc-500">
+          هنوز داده‌ای برای دیوایس‌ها ثبت نشده است.
+        </div>
+        <div v-else class="space-y-3">
+          <div
+            v-for="dev in stats.device_breakdown"
+            :key="dev.device"
+            class="p-3 rounded-xl bg-zinc-950/60 border border-white/5 space-y-2"
+          >
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 font-bold text-zinc-200">
+                <AdminIcon :name="dev.icon || 'desktop'" class="w-4 h-4 text-emerald-400" />
+                <span>{{ dev.device }}</span>
+              </div>
+              <div class="flex items-center gap-2 font-mono">
+                <span class="text-emerald-400 font-bold">{{ dev.count }} نشست</span>
+                <span class="text-zinc-500">({{ dev.percentage }}٪)</span>
+              </div>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+              <div class="h-full rounded-full bg-emerald-500 transition-all duration-500" :style="{ width: dev.percentage + '%' }"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Browser Breakdown -->
+      <div class="p-5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <AdminIcon name="globe" class="w-4 h-4 text-sky-400" />
+            <h3 class="text-sm font-bold text-white">مرورگرهای کاربران با آیکون (Browsers)</h3>
+          </div>
+          <span class="text-xs text-zinc-400 font-mono">{{ stats.browser_breakdown?.length || 0 }} مرورگر</span>
+        </div>
+
+        <div v-if="!stats.browser_breakdown || stats.browser_breakdown.length === 0" class="py-8 text-center text-xs text-zinc-500">
+          هنوز داده‌ای برای مرورگرها ثبت نشده است.
+        </div>
+        <div v-else class="space-y-3">
+          <div
+            v-for="br in stats.browser_breakdown"
+            :key="br.browser"
+            class="p-3 rounded-xl bg-zinc-950/60 border border-white/5 space-y-2"
+          >
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 font-bold text-zinc-200">
+                <AdminIcon :name="br.icon || 'globe'" class="w-4 h-4 text-sky-400" />
+                <span>{{ br.browser }}</span>
+              </div>
+              <div class="flex items-center gap-2 font-mono">
+                <span class="text-sky-400 font-bold">{{ br.count }} نشست</span>
+                <span class="text-zinc-500">({{ br.percentage }}٪)</span>
+              </div>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+              <div class="h-full rounded-full bg-sky-500 transition-all duration-500" :style="{ width: br.percentage + '%' }"></div>
             </div>
           </div>
         </div>
@@ -770,6 +954,241 @@
         </div>
       </div>
     </div>
+  </template>
+
+    <!-- Real-Time Live Mode View -->
+    <template v-else-if="currentMode === 'live'">
+      <div class="space-y-6">
+        <!-- Live Pulse KPI Strip -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <!-- Active Visitors -->
+          <div class="p-4 rounded-2xl bg-zinc-900/90 border border-emerald-500/30 flex flex-col justify-between shadow-lg relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">کاربران فعال آنلاین (هم‌اکنون)</span>
+              <span class="relative flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-2">
+              <span class="text-3xl font-bold font-mono text-emerald-400">
+                {{ formatNumber(liveStats.active_visitors) }}
+              </span>
+              <span class="text-xs text-zinc-400">کاربر آنلاین</span>
+            </div>
+            <p class="text-[11px] text-zinc-500 mt-1">فعال در ۱۵ دقیقه اخیر</p>
+          </div>
+
+          <!-- Active Pages -->
+          <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">صفحات در حال مشاهده</span>
+              <AdminIcon name="eye" class="w-4 h-4 text-sky-400" />
+            </div>
+            <div class="flex items-baseline gap-2 mt-2">
+              <span class="text-3xl font-bold font-mono text-sky-400">
+                {{ formatNumber(liveStats.active_pages?.length || 0) }}
+              </span>
+              <span class="text-xs text-zinc-400">صفحه فعال</span>
+            </div>
+            <p class="text-[11px] text-zinc-500 mt-1">صفحاتی که هم‌اکنون کاربر در آن‌هاست</p>
+          </div>
+
+          <!-- Live Events Captured -->
+          <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">رویدادهای زنده اخیر</span>
+              <AdminIcon name="cursor-click" class="w-4 h-4 text-teal-400" />
+            </div>
+            <div class="flex items-baseline gap-2 mt-2">
+              <span class="text-3xl font-bold font-mono text-teal-400">
+                {{ formatNumber(liveStats.live_events?.length || 0) }}
+              </span>
+              <span class="text-xs text-zinc-400">رویداد تعاملی</span>
+            </div>
+            <p class="text-[11px] text-zinc-500 mt-1">کلیک، توقف و انتقال زنده</p>
+          </div>
+
+          <!-- Auto-Refresh Status -->
+          <div class="p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex flex-col justify-between shadow-lg">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-zinc-400">وضعیت استریم زنده</span>
+              <AdminIcon name="refresh" class="w-4 h-4 text-purple-400" :class="{ 'animate-spin': liveLoading }" />
+            </div>
+            <div class="flex items-baseline gap-2 mt-2">
+              <span class="text-base font-bold text-zinc-200">
+                {{ liveRefreshInterval > 0 ? `هر ${liveRefreshInterval} ثانیه` : 'دستی' }}
+              </span>
+            </div>
+            <p class="text-[11px] text-zinc-500 mt-1">
+              آخرین پالس: {{ liveStats.timestamp ? formatTimeAgo(liveStats.timestamp) : 'هم‌اکنون' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Real-Time Grid: Active Pages & Live Event Stream Ticker -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Active Pages List -->
+          <div class="p-5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <AdminIcon name="eye" class="w-4 h-4 text-sky-400" />
+                <h3 class="text-sm font-bold text-white">صفحات در حال مطالعه (هم‌اکنون)</h3>
+              </div>
+              <span class="text-xs text-zinc-400 font-mono">{{ liveStats.active_pages?.length || 0 }} مسیر</span>
+            </div>
+
+            <div v-if="!liveStats.active_pages || liveStats.active_pages.length === 0" class="py-8 text-center text-xs text-zinc-500">
+              در حال حاضر کاربری روی صفحات سایت نیست.
+            </div>
+            <div v-else class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar pr-1">
+              <div
+                v-for="p in liveStats.active_pages"
+                :key="p.url"
+                class="flex items-center justify-between p-3 rounded-xl bg-zinc-950/60 border border-white/5 hover:border-sky-500/30 transition text-xs"
+              >
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <code class="font-mono text-zinc-200 truncate">{{ p.url }}</code>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 font-bold font-mono text-xs">
+                  {{ p.count }} کاربر فعال
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-Time Live Event Stream Ticker -->
+          <div class="p-5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-xl space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <AdminIcon name="clock" class="w-4 h-4 text-emerald-400" />
+                <h3 class="text-sm font-bold text-white">جریان رویدادهای زنده (Live Event Stream)</h3>
+              </div>
+              <span class="text-xs text-zinc-400 font-mono">{{ liveStats.live_events?.length || 0 }} رویداد</span>
+            </div>
+
+            <div v-if="!liveStats.live_events || liveStats.live_events.length === 0" class="py-8 text-center text-xs text-zinc-500">
+              هنوز رویدادی در ۱۵ دقیقه اخیر ثبت نشده است.
+            </div>
+            <div v-else class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar pr-1">
+              <div
+                v-for="ev in liveStats.live_events.slice(0, 20)"
+                :key="ev.id"
+                class="flex items-center justify-between p-2.5 rounded-xl bg-zinc-950/60 border border-white/5 text-xs hover:border-emerald-500/20 transition"
+              >
+                <div class="flex items-center gap-2 min-w-0">
+                  <span
+                    class="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-[10px] shrink-0 border"
+                    :class="[formatFriendlyFingerprint(ev.fingerprint, ev.user_agent).palette.bg, formatFriendlyFingerprint(ev.fingerprint, ev.user_agent).palette.text, formatFriendlyFingerprint(ev.fingerprint, ev.user_agent).palette.border]"
+                  >
+                    {{ formatFriendlyFingerprint(ev.fingerprint, ev.user_agent).avatarChar }}
+                  </span>
+                  <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-bold text-zinc-200 truncate text-[11px]">
+                        {{ ev.label || (ev.event_name === 'page_view' ? 'بازدید صفحه' : ev.event_name) }}
+                      </span>
+                      <span class="px-1.5 py-0.2 rounded text-[10px] bg-zinc-800 text-zinc-400 font-mono">
+                        {{ ev.event_name }}
+                      </span>
+                    </div>
+                    <code class="text-[10px] text-zinc-500 truncate font-mono">{{ ev.url }}</code>
+                  </div>
+                </div>
+                <span class="text-[10px] text-zinc-500 font-mono shrink-0">
+                  {{ formatTimeAgo(ev.timestamp) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Active Visitor Journeys -->
+        <div class="p-5 rounded-2xl bg-zinc-900/90 border border-white/10 shadow-xl space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+              <h3 class="text-sm font-bold text-white">کاربران فعال آنلاین و جریان تعامل زنده</h3>
+            </div>
+            <span class="text-xs text-zinc-400 font-mono">{{ liveStats.active_sessions?.length || 0 }} نشست آنلاین</span>
+          </div>
+
+          <div v-if="!liveStats.active_sessions || liveStats.active_sessions.length === 0" class="py-12 text-center text-xs text-zinc-500">
+            در حال حاضر کاربری آنلاین نیست. به محض ورود کاربر به سایت، این بخش بلافاصله پر می‌شود.
+          </div>
+          <div v-else class="space-y-4">
+            <div
+              v-for="s in liveStats.active_sessions"
+              :key="s.session_id"
+              class="p-4 rounded-2xl bg-zinc-950/70 border border-emerald-500/20 hover:border-emerald-500/40 transition space-y-3"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2.5 flex-wrap">
+                  <div
+                    class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 border"
+                    :class="[formatFriendlyFingerprint(s.fingerprint, s.user_agent).palette.bg, formatFriendlyFingerprint(s.fingerprint, s.user_agent).palette.text, formatFriendlyFingerprint(s.fingerprint, s.user_agent).palette.border]"
+                  >
+                    {{ formatFriendlyFingerprint(s.fingerprint, s.user_agent).avatarChar }}
+                  </div>
+                  <span class="font-bold text-zinc-100">
+                    {{ formatFriendlyFingerprint(s.fingerprint, s.user_agent).label }}
+                  </span>
+                  <span class="px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold">
+                    🟢 آنلاین
+                  </span>
+                  <span
+                    class="px-2 py-0.5 rounded-md bg-zinc-900 border border-white/10 text-zinc-300 text-[11px] font-bold flex items-center gap-1"
+                  >
+                    <AdminIcon :name="formatFriendlyFingerprint(s.fingerprint, s.user_agent).device.icon" class="w-3 h-3 text-zinc-400" />
+                    <span>{{ formatFriendlyFingerprint(s.fingerprint, s.user_agent).device.label }}</span>
+                  </span>
+                  <span
+                    class="px-2 py-0.5 rounded-md bg-zinc-900 border border-white/10 text-zinc-300 text-[11px] font-bold flex items-center gap-1"
+                  >
+                    <AdminIcon :name="formatFriendlyFingerprint(s.fingerprint, s.user_agent).browser.icon" class="w-3 h-3 text-zinc-400" />
+                    <span>{{ formatFriendlyFingerprint(s.fingerprint, s.user_agent).browser.name }}</span>
+                  </span>
+                  <span class="px-2 py-0.5 rounded-md bg-zinc-900 border border-white/10 text-zinc-400 text-[11px] font-mono flex items-center gap-1">
+                    <AdminIcon name="map-pin" class="w-3 h-3 text-emerald-400" />
+                    <span>{{ s.region || 'ایران' }}</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 text-zinc-400 font-mono text-xs">
+                  <span class="text-emerald-400 font-bold">{{ formatDuration(s.duration_sec) }}</span>
+                  <span>•</span>
+                  <span>{{ s.page_count }} صفحه</span>
+                  <span>•</span>
+                  <span class="text-emerald-300 font-bold">{{ formatTimeAgo(s.last_seen) }}</span>
+                </div>
+              </div>
+
+              <!-- DAG Journey Ribbon for Live Session -->
+              <div class="p-3 rounded-xl bg-zinc-900/60 border border-white/5 overflow-x-auto custom-scrollbar">
+                <div class="flex items-center gap-2 min-w-max py-1">
+                  <template v-for="(step, stIdx) in (s.journey_steps && s.journey_steps.length > 0 ? s.journey_steps : s.pages.map((p, i) => ({ step: i + 1, type: 'page', title: p, subtitle: p, timestamp: '' })))" :key="stIdx">
+                    <div
+                      class="flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs"
+                      :class="step.type === 'landing' ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-200' : 'bg-zinc-900 border-white/10 text-zinc-200'"
+                    >
+                      <span class="w-4 h-4 rounded-full bg-zinc-800 text-[10px] flex items-center justify-center font-bold text-zinc-400">
+                        {{ stIdx + 1 }}
+                      </span>
+                      <span class="font-bold text-[11px]">{{ step.title }}</span>
+                    </div>
+                    <AdminIcon
+                      v-if="stIdx < (s.journey_steps?.length || s.pages.length) - 1"
+                      name="arrow-left"
+                      class="w-3 h-3 text-zinc-600 shrink-0"
+                    />
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
 
     <!-- Alias Editing Modal -->
     <div
@@ -813,9 +1232,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
-import type { TrafficStatsOverview, SessionSummary } from '~/types/telemetry'
+import type { TrafficStatsOverview, SessionSummary, LiveRealTimeStats } from '~/types/telemetry'
 import { getClientFingerprint, isDeviceExcluded, setDeviceExcluded } from '~/composables/useTracker'
 import {
   formatFriendlyFingerprint,
@@ -827,7 +1246,12 @@ definePageMeta({
   layout: 'dash'
 })
 
+// Dual-Mode: 'historical' (گزارش تاریخی و آرشیو) vs 'live' (رصد لحظه‌ای زنده)
+const currentMode = ref<'historical' | 'live'>('historical')
+
 const loading = ref(false)
+const liveLoading = ref(false)
+const fetchError = ref('')
 const togglingExclusion = ref(false)
 const includeExcluded = ref(false)
 const excludeAdmin = ref(true)
@@ -841,6 +1265,10 @@ const excludedFpsList = ref<string[]>([])
 const excludedPagesList = ref<string[]>([])
 const searchQuery = ref('')
 const utmTab = ref<'source' | 'campaign' | 'medium'>('source')
+
+// Live mode auto-refresh interval (in seconds, 0 = off)
+const liveRefreshInterval = ref<number>(5)
+let liveIntervalTimer: any = null
 
 // Alias modal state
 const isAliasModalOpen = ref(false)
@@ -861,11 +1289,15 @@ const stats = ref<Partial<TrafficStatsOverview>>({
   total_events: 0,
   avg_duration_sec: 0,
   bounce_rate_pct: 0,
+  total_historical_sessions: 0,
   utm_sources: [],
   utm_campaigns: [],
   utm_mediums: [],
   google_queries: [],
   source_breakdown: [],
+  device_breakdown: [],
+  browser_breakdown: [],
+  region_breakdown: [],
   page_flows: [],
   top_landing_pages: [],
   hourly_timeline: [],
@@ -876,6 +1308,14 @@ const stats = ref<Partial<TrafficStatsOverview>>({
     hesitations: 0
   },
   excluded_fingerprints: []
+})
+
+const liveStats = ref<LiveRealTimeStats>({
+  active_visitors: 0,
+  active_sessions: [],
+  live_events: [],
+  active_pages: [],
+  timestamp: ''
 })
 
 const sessions = ref<SessionSummary[]>([])
@@ -935,9 +1375,20 @@ const timelineChartData = computed(() => {
 
 const hoveredChartItem = ref<any>(null)
 
+function getAuthHeaders(): Record<string, string> {
+  const adminCookie = useCookie('pb_admin')
+  const headers: Record<string, string> = {}
+  if (adminCookie.value) {
+    headers['Authorization'] = `Bearer ${adminCookie.value}`
+  }
+  return headers
+}
+
 async function fetchData() {
   loading.value = true
+  fetchError.value = ''
   try {
+    const headers = getAuthHeaders()
     const params = new URLSearchParams()
     params.set('include_excluded', includeExcluded.value ? 'true' : 'false')
     params.set('exclude_admin', excludeAdmin.value ? 'true' : 'false')
@@ -953,8 +1404,14 @@ async function fetchData() {
     }
 
     const [trafficRes, sessionsRes] = await Promise.all([
-      $fetch<{ stats: TrafficStatsOverview }>(`/api/analytics/traffic?${params.toString()}`),
-      $fetch<{ sessions: SessionSummary[] }>(`/api/analytics/sessions?limit=100&${params.toString()}`)
+      $fetch<{ stats: TrafficStatsOverview }>(`/api/analytics/traffic?${params.toString()}`, {
+        credentials: 'include',
+        headers
+      }),
+      $fetch<{ sessions: SessionSummary[] }>(`/api/analytics/sessions?limit=100&${params.toString()}`, {
+        credentials: 'include',
+        headers
+      })
     ])
 
     if (trafficRes?.stats) {
@@ -963,11 +1420,67 @@ async function fetchData() {
     if (sessionsRes?.sessions) {
       sessions.value = sessionsRes.sessions
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Error fetching traffic stats:', err)
+    fetchError.value = err?.data?.statusMessage || err?.statusMessage || err?.message || 'خطا در ارتباط با سرور'
   } finally {
     loading.value = false
   }
+}
+
+async function fetchLiveStats() {
+  liveLoading.value = true
+  try {
+    const headers = getAuthHeaders()
+    const res = await $fetch<{ live: LiveRealTimeStats }>(`/api/analytics/live?minutes=15&exclude_admin=${excludeAdmin.value}`, {
+      credentials: 'include',
+      headers
+    })
+    if (res?.live) {
+      liveStats.value = res.live
+    }
+  } catch (err: any) {
+    console.error('Error fetching live stats:', err)
+  } finally {
+    liveLoading.value = false
+  }
+}
+
+function switchMode(mode: 'historical' | 'live') {
+  currentMode.value = mode
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem('najm_traffic_mode', mode)
+  }
+  if (mode === 'live') {
+    fetchLiveStats()
+    startLivePolling()
+  } else {
+    stopLivePolling()
+    fetchData()
+  }
+}
+
+function startLivePolling() {
+  stopLivePolling()
+  if (liveRefreshInterval.value > 0) {
+    liveIntervalTimer = setInterval(() => {
+      if (currentMode.value === 'live') {
+        fetchLiveStats()
+      }
+    }, liveRefreshInterval.value * 1000)
+  }
+}
+
+function stopLivePolling() {
+  if (liveIntervalTimer) {
+    clearInterval(liveIntervalTimer)
+    liveIntervalTimer = null
+  }
+}
+
+function selectAllHistory() {
+  selectedTimeRange.value = 'all'
+  fetchData()
 }
 
 async function toggleDeviceExclusion() {
@@ -1096,16 +1609,42 @@ function getSourceLabel(type?: string): string {
   }
 }
 
+function onIncomingLiveTelemetry(evt: any) {
+  if (currentMode.value === 'live') {
+    fetchLiveStats()
+  }
+}
+
 onMounted(() => {
   currentFingerprint.value = getClientFingerprint()
   isCurrentExcluded.value = isDeviceExcluded()
-  fetchData()
+
+  if (typeof localStorage !== 'undefined') {
+    const savedMode = localStorage.getItem('najm_traffic_mode')
+    if (savedMode === 'live' || savedMode === 'historical') {
+      currentMode.value = savedMode
+    }
+  }
+
+  if (currentMode.value === 'live') {
+    fetchLiveStats()
+    startLivePolling()
+  } else {
+    fetchData()
+  }
 
   if (typeof window !== 'undefined') {
     window.addEventListener('najm:fp-alias-updated', () => {
-      // triggers reactive re-render of friendly fingerprints
       sessions.value = [...sessions.value]
     })
+    window.addEventListener('najm:telemetry-event', onIncomingLiveTelemetry)
+  }
+})
+
+onBeforeUnmount(() => {
+  stopLivePolling()
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('najm:telemetry-event', onIncomingLiveTelemetry)
   }
 })
 </script>

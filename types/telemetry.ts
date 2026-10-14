@@ -159,6 +159,25 @@ export interface SessionDetail {
   events: StoredAnalyticsEvent[]
 }
 
+export interface LiveRealTimeStats {
+  active_visitors: number
+  active_sessions: SessionSummary[]
+  live_events: Array<{
+    id: string
+    event_name: string
+    session_id: string
+    timestamp: string
+    url: string
+    label?: string
+    fingerprint?: string
+    ip?: string
+    region?: string
+    user_agent?: string
+  }>
+  active_pages: Array<{ url: string; count: number }>
+  timestamp: string
+}
+
 export interface TrafficStatsOverview {
   total_sessions: number
   total_pageviews: number
@@ -168,11 +187,17 @@ export interface TrafficStatsOverview {
   time_range?: string
   since?: string
   until?: string
+  total_historical_sessions?: number
+  earliest_event_date?: string
+  latest_event_date?: string
   utm_sources: Array<{ name: string; count: number; percentage: number; conversions?: number }>
   utm_campaigns?: Array<{ name: string; count: number; percentage: number; conversions?: number }>
   utm_mediums?: Array<{ name: string; count: number; percentage: number }>
   google_queries: Array<{ query: string; count: number; landing_page: string }>
   source_breakdown: Array<{ type: string; label: string; count: number; percentage: number }>
+  device_breakdown?: Array<{ device: string; count: number; percentage: number; icon: string }>
+  browser_breakdown?: Array<{ browser: string; count: number; percentage: number; icon: string }>
+  region_breakdown?: Array<{ region: string; count: number; percentage: number }>
   page_flows: Array<{ from: string; to: string; count: number }>
   top_landing_pages: Array<{ path: string; count: number }>
   hourly_timeline?: Array<{ hour: string; timestamp: string; pageviews: number; sessions: number }>

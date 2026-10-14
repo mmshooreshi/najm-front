@@ -803,5 +803,23 @@ test('12. Traffic Overview, UTM, Google Query, Page Flows, Debounces, & Fingerpr
   assert.ok(!getExcludedFingerprints().includes(adminFingerprint), 'Admin fingerprint was cleanly removed')
 })
 
+test('13. Live Real-Time & Historical Dual-Mode Metrics', async () => {
+  const { getLiveRealTimeStats, getTrafficStatsOverview } = await import('../server/utils/telemetryDb.ts')
+
+  // 1. Verify Historical Overview has device and browser breakdowns
+  const historical = getTrafficStatsOverview({ timeRange: 'all', excludeAdmin: true })
+  assert.ok(historical.total_sessions >= 0, 'Total sessions is defined')
+  assert.ok(Array.isArray(historical.device_breakdown), 'device_breakdown is an array')
+  assert.ok(Array.isArray(historical.browser_breakdown), 'browser_breakdown is an array')
+  assert.ok(historical.total_historical_sessions >= historical.total_sessions, 'Historical total >= filtered total')
+
+  // 2. Verify Live Real-Time query
+  const live = getLiveRealTimeStats(60, true)
+  assert.equal(typeof live.active_visitors, 'number', 'active_visitors count returned')
+  assert.ok(Array.isArray(live.active_sessions), 'active_sessions array returned')
+  assert.ok(Array.isArray(live.live_events), 'live_events array returned')
+  assert.ok(Array.isArray(live.active_pages), 'active_pages array returned')
+})
+
 
 

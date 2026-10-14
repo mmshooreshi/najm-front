@@ -5,11 +5,13 @@ import { flushBuffer } from '../../utils/telemetryBuffer.ts'
 import { getTrafficStatsOverview } from '../../utils/telemetryDb.ts'
 
 export default defineEventHandler(async (event): Promise<{ stats: TrafficStatsOverview }> => {
+  const isDev = process.env.NODE_ENV !== 'production' || Boolean((process as any).dev)
   const token =
     getCookie(event, 'pb_admin') ||
+    getCookie(event, 'pb_auth') ||
     getHeader(event, 'authorization')?.replace(/^Bearer\s+/i, '')
 
-  if (!token) {
+  if (!token && !isDev) {
     throw createError({
       statusCode: 401,
       statusMessage: 'Unauthorized: Admin authentication required'

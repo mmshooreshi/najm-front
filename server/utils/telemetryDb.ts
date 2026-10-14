@@ -1351,8 +1351,18 @@ export function getTrafficStatsOverview(
       sessions: v.sessionIds.size
     }))
   } else if (range === '30d' || range === '90d' || range === 'all') {
-    const daysCount = range === '30d' ? 30 : 14
     const timelineMap = new Map<string, { pageviews: number; sessionIds: Set<string>; hourStr: string }>()
+    let daysCount = range === '30d' ? 30 : range === '90d' ? 90 : 14
+
+    if (range === 'all' && events.length > 0) {
+      const timestamps = events.map(e => new Date(e.timestamp).getTime()).filter(t => !isNaN(t))
+      if (timestamps.length > 0) {
+        const minT = Math.min(...timestamps)
+        const maxT = Math.max(...timestamps, Date.now())
+        daysCount = Math.min(60, Math.max(7, Math.ceil((maxT - minT) / (86400 * 1000)) + 1))
+      }
+    }
+
     const now = Date.now()
     for (let dIdx = daysCount - 1; dIdx >= 0; dIdx--) {
       const d = new Date(now - dIdx * 86400 * 1000)
@@ -1400,6 +1410,69 @@ export function getTrafficStatsOverview(
     }))
   }
 
+  // Device, Browser, Region breakdowns from sessions
+  const deviceCounts = new Map<string, { count: number; icon: string }>()
+  const browserCounts = new Map<string, { count: number; icon: string }>()
+  const regionCounts = new Map<string, number>()
+
+  for (const s of allSessions) {
+    const devName = s.device?.name || (s.device_type === 'mobile' ? 'گوشی هوشمند' : 'رایانه رومیزی')
+    const devIcon = s.device?.icon || (s.device_type === 'mobile' ? 'android' : 'desktop')
+    const dObj = deviceCounts.get(devName) || { count: 0, icon: devIcon }
+    dObj.count++
+    deviceCounts.set(devName, dObj)
+
+    const brName = s.browser?.name || 'مرورگر وب'
+    const brIcon = s.browser?.icon || 'chrome'
+    const bObj = browserCounts.get(brName) || { count: 0, icon: brIcon }
+    bObj.count++
+    browserCounts.set(brName, bObj)
+
+    const regName = s.region || 'ایران'
+    regionCounts.set(regName, (regionCounts.get(regName) || 0) + 1)
+  }
+
+  const deviceBreakdown = Array.from(deviceCounts.entries())
+    .map(([device, data]) => ({
+      device,
+      count: data.count,
+      icon: data.icon,
+      percentage: totalSessions > 0 ? Math.round((data.count / totalSessions) * 100) : 0
+    }))
+    .sort((a, b) => b.count - a.count)
+
+  const browserBreakdown = Array.from(browserCounts.entries())
+    .map(([browser, data]) => ({
+      browser,
+      count: data.count,
+      icon: data.icon,
+      percentage: totalSessions > 0 ? Math.round((data.count / totalSessions) * 100) : 0
+    }))
+    .sort((a, b) => b.count - a.count)
+
+  const regionBreakdown = Array.from(regionCounts.entries())
+    .map(([region, count]) => ({
+      region,
+      count,
+      percentage: totalSessions > 0 ? Math.round((count / totalSessions) * 100) : 0
+    }))
+    .sort((a, b) => b.count - a.count)
+
+  let earliestDate: string | undefined
+  let latestDate: string | undefined
+  let totalHistoricalSessions = totalSessions
+
+  if (sqliteDb) {
+    try {
+      const minMax = sqliteDb.prepare('SELECT MIN(timestamp) as min_ts, MAX(timestamp) as max_ts, COUNT(DISTINCT session_id) as total_s FROM analytics_events').get()
+      if (minMax) {
+        earliestDate = minMax.min_ts || undefined
+        latestDate = minMax.max_ts || undefined
+        if (minMax.total_s) totalHistoricalSessions = minMax.total_s
+      }
+    } catch {}
+  }
+
   return {
     total_sessions: totalSessions,
     total_pageviews: totalPageviews,
@@ -1409,11 +1482,17 @@ export function getTrafficStatsOverview(
     time_range: range,
     since: cutoff || undefined,
     until: until || undefined,
+    total_historical_sessions: totalHistoricalSessions,
+    earliest_event_date: earliestDate,
+    latest_event_date: latestDate,
     utm_sources: utmSources,
     utm_campaigns: utmCampaigns,
     utm_mediums: utmMediums,
     google_queries: googleQueries,
     source_breakdown: sourceBreakdown,
+    device_breakdown: deviceBreakdown,
+    browser_breakdown: browserBreakdown,
+    region_breakdown: regionBreakdown,
     page_flows: pageFlows,
     top_landing_pages: topLandingPages,
     hourly_timeline: hourlyTimeline,
@@ -1424,5 +1503,95 @@ export function getTrafficStatsOverview(
       hesitations: hesitationsCount
     },
     excluded_fingerprints: excludedFps
+  }
+}
+
+/**
+ * Get real-time stats of active visitors within the last N minutes
+ */
+export function getLiveRealTimeStats(minutes = 15, excludeAdmin = true): LiveRealTimeStats {
+  initDb()
+  const cutoff = new Date(Date.now() - minutes * 60 * 1000).toISOString()
+  const excludedFps = new Set(getExcludedFingerprints())
+
+  let recentEvents: StoredAnalyticsEvent[] = []
+  if (sqliteDb) {
+    try {
+      const query = `
+        SELECT * FROM analytics_events
+        WHERE timestamp >= ?
+        ORDER BY timestamp DESC
+        LIMIT 500
+      `
+      const rows = sqliteDb.prepare(query).all(cutoff)
+      recentEvents = rows.map((r: any) => ({
+        id: r.id,
+        event_name: r.event_name,
+        session_id: r.session_id,
+        timestamp: r.timestamp,
+        url: r.url,
+        referrer: r.referrer,
+        ip_hash: r.ip_hash,
+        ip: r.ip || null,
+        region: r.region || null,
+        user_agent: r.user_agent,
+        fingerprint: r.fingerprint || null,
+        is_excluded: Boolean(r.is_excluded),
+        properties: typeof r.properties === 'string' ? JSON.parse(r.properties || '{}') : (r.properties || {})
+      }))
+    } catch (err) {
+      recentEvents = fallbackMemoryEvents.filter(e => e.timestamp >= cutoff)
+    }
+  } else {
+    recentEvents = fallbackMemoryEvents.filter(e => e.timestamp >= cutoff)
+  }
+
+  // Filter exclusions and admin
+  recentEvents = recentEvents.filter(e => {
+    if (e.is_excluded || (e.fingerprint && excludedFps.has(e.fingerprint))) return false
+    if (excludeAdmin && isAdminUrl(e.url)) return false
+    return true
+  })
+
+  // Get active sessions
+  const activeSessions = getSessionList({
+    limit: 50,
+    includeExcluded: false,
+    excludeAdmin,
+    since: cutoff
+  })
+
+  // Group pages where visitors currently are
+  const pageMap = new Map<string, number>()
+  for (const s of activeSessions) {
+    if (s.pages && s.pages.length > 0) {
+      const current = s.pages[s.pages.length - 1]
+      pageMap.set(current, (pageMap.get(current) || 0) + 1)
+    }
+  }
+
+  const activePages = Array.from(pageMap.entries())
+    .map(([url, count]) => ({ url, count }))
+    .sort((a, b) => b.count - a.count)
+
+  const liveEvents = recentEvents.slice(0, 40).map(e => ({
+    id: e.id,
+    event_name: e.event_name,
+    session_id: e.session_id,
+    timestamp: e.timestamp,
+    url: e.url,
+    label: e.properties?.target_label || e.properties?.title || undefined,
+    fingerprint: e.fingerprint || undefined,
+    ip: e.ip || undefined,
+    region: e.region || undefined,
+    user_agent: e.user_agent || undefined
+  }))
+
+  return {
+    active_visitors: activeSessions.length,
+    active_sessions: activeSessions,
+    live_events: liveEvents,
+    active_pages: activePages,
+    timestamp: new Date().toISOString()
   }
 }
