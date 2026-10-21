@@ -27,9 +27,24 @@ Stores all site content, page UI schemas, and lead registries.
   - `title` (Text): Human-readable page title.
   - `layoutType` (Text): Template identifier (e.g. `custom`, `default`, `services`).
   - `uiData` (JSON): The full nested content object containing multilingual blocks (`fa`, `en`, `ar`) or array of lead objects.
+- **Special Record**: `id: z2962w7ya816ei0` stores persistent leads (`slug="leads"`).
 
-#### 2. Collection `_superusers` & `admins`
+#### 2. Collection `media_folders`
+Stores the virtual directory hierarchy for `/dash/media`.
+- **Fields**: `id`, `name`, `path`, `parent`.
+
+#### 3. Collection `_superusers` & `admins`
 PocketBase v0.23+ user collections for administrative authentication. Used by `/api/admin/login` to issue session cookies.
+- **Superuser ID**: `akvk96g432898l1`
+
+---
+
+## 2. PocketBase HTTPS Edge Proxy (`server/routes/api/pb/[...path].ts`)
+
+In production on Vercel (`https://chapenajm.com`), direct browser calls to `http://65.108.80.205:8090` are blocked by browsers as **Mixed Content**.
+- **Route**: `ALL /api/pb/[...path]`
+- **Mechanism**: Catch-all Nitro reverse proxy that forwards all client PocketBase SDK requests securely upstream to `http://65.108.80.205:8090`.
+- **Client Configuration**: Handled automatically in `plugins/pb.client.ts` which detects `window.location.protocol === 'https:'` and redirects the SDK base URL.
 
 ---
 
@@ -207,3 +222,46 @@ Manages CRM consultation requests, contact inquiries, and follow-ups.
 - `POST /api/admin/blog/reorder`: Reorders blog listing.
 - `POST /api/admin/resources/save`: Uploads or edits die-cut templates & guidelines.
 - `POST /api/admin/resources/reorder`: Changes order of downloadable assets.
+
+---
+
+### Telemetry & Analytics (`/api/analytics/*` & `/api/t`)
+
+- `POST /api/t`: Public beacon ingest for telemetry events (pageviews, taps, scroll dwell, conversions). Batched into in-memory queue and written to SQLite `.data/analytics.db`.
+- `GET /api/analytics/traffic`: Returns aggregated traffic metrics, UTM breakdown, browser/OS breakdowns, and daily/hourly timelines. Accepts `time_range` (`1h`, `24h`, `7d`, `30d`, `all`).
+- `GET /api/analytics/sessions`: Returns session summaries with reconstructed DAG journeys (Landing, Pageviews, Button Taps, Scroll Dwells, Conversions).
+- `GET /api/analytics/live`: Real-time streaming telemetry returning active visitors online (15m window), active page paths, and live event ticker.
+- `POST /api/analytics/exclude-device`: Toggles device exclusion in `.data/excluded_fingerprints.json` to prevent admin activity from distorting metrics.
+
+---
+
+## 4. Server-Side Performance, Latency & Edge Optimization
+
+> **Performance Rule**: Backend and API changes **MUST NOT** degrade TTFB (Time to First Byte) or endpoint response latency even slightly. You can **ONLY** preserve or enhance performance, never lower it. Build final, flawless, battle-tested solutions with zero execution waste.
+
+### 1. In-Memory Process Caching Before Disk / Network I/O
+- `contentStore.ts` and `leadsStore.ts` maintain in-memory arrays and objects (`inMemoryLeads`, local content cache).
+- Repeated calls within the same serverless instance execution read directly from memory in $0\text{ms}$ rather than making redundant sequential round-trips to disk or PocketBase.
+
+### 2. Elimination of Sequential Request Waterfalls
+- Server-side rendering (SSR) routes and API handlers must never execute sequential dependent waterfalls if operations can run concurrently.
+- When querying multiple collections or checking assets, leverage `Promise.all()` to saturate network bandwidth and minimize edge lambda run-time.
+
+### 3. SQLite WAL Mode & Concurrency Pragmas
+- The local telemetry database (`.data/analytics.db`) is configured with:
+  ```sql
+  PRAGMA journal_mode = WAL;
+  PRAGMA synchronous = NORMAL;
+  PRAGMA temp_store = MEMORY;
+  PRAGMA cache_size = -64000; -- 64MB cache
+  ```
+- Write-Ahead Logging (WAL) ensures writes (such as high-frequency telemetry beacons from `POST /api/t`) never block concurrent read queries from `/dash/traffic`, eliminating database lock contention.
+
+### 4. Awaiting Serverless Persistence Without Hangs
+- As outlined in Pitfall 1, never use unawaited fire-and-forget promises in Vercel edge functions.
+- Always `await syncContentToPocketBase(slug, data)` with an explicit timeout (`timeout: 4000` to `6000ms`) so the response terminates cleanly without running into cloud provider lambda execution caps.
+
+### 5. Microsecond Header Precision & Cache Invalidation
+- **Public Content**: `/api/content/[slug]` sets `Cache-Control: no-cache, no-store, must-revalidate` so visitors instantly see published changes without relying on hard browser refresh.
+- **Static Assets & Uploads**: `/public/images/*` and `/public/uploads/*` utilize immutable cache headers (`public, max-age=31536000, immutable`), offloading 100% of bandwidth to the CDN edge.
+

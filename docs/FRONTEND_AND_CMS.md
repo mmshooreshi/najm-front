@@ -145,3 +145,39 @@ const heroTitle = computed(() => pageData.value?.hero?.title || 'پیشرو در
   </NuxtLink>
   ```
 - Use `@click.stop` to ensure clicking the navigation pill does not toggle the accordion state.
+
+---
+
+## 5. Zero-Regression Frontend Performance Mandate
+
+> **Guiding Principle**: Changes to the frontend **MUST NOT** degrade performance even slightly. Engineers and agents may only preserve or enhance performance. Flawless, zero-DOM-churn solutions are required on every commit.
+
+### 1. Zero Forced Synchronous Reflows (Layout Thrashing)
+- Never read geometric layout properties (`offsetWidth`, `clientHeight`, `getBoundingClientRect()`, `scrollTop`) immediately after mutating style or DOM nodes.
+- Batch all DOM measurements before scheduling CSS/GSAP style modifications via `requestAnimationFrame` or `gsap.ticker`.
+
+### 2. GSAP & SplitText Lifecycle Hygiene
+- `SplitText` injects DOM nodes for words and characters. Failing to revert them creates memory leaks and duplicate spans during HMR or language changes.
+- Always store the instance on the element (`(el as any)._split = split`) and call `(el as any)._split?.revert()` before re-animating or in `onBeforeUnmount()`.
+- Kill ScrollTrigger instances explicitly:
+  ```ts
+  onBeforeUnmount(() => {
+    stInstance?.kill()
+    splits.forEach(s => s.revert())
+  })
+  ```
+
+### 3. Accessible & Standards-Compliant ARIA Attributes
+- When GSAP `SplitText` animates a text element, always ensure the container element declares `role="text"`:
+  ```html
+  <span role="text" class="..." v-editable="path"></span>
+  ```
+  This prevents Lighthouse/WAI-ARIA violations (*"Elements must only use permitted ARIA attributes"*).
+- All icon-only and logo links must feature discernible text via `<span class="sr-only">` and `aria-label`.
+
+### 4. Admin Tools Lazy Loading & Code Splitting
+- Never import admin-only tools or modals in the critical public rendering path.
+- Keep them as `.client.vue` files (e.g. `AdminMediaStudioModal.client.vue`, `AdminEditBar.client.vue`) or load them via dynamic `defineAsyncComponent`.
+
+### 5. Cumulative Layout Shift (CLS) Prevention
+- All images, hero carousels, and video mockups must declare explicit aspect ratios or reserved container heights (e.g. `aspect-[16/9]`, `h-[100px]`, `min-h-[400px]`) to ensure zero layout shift during SSR hydration and media loading.

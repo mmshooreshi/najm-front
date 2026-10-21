@@ -138,3 +138,25 @@ In addition to PocketBase, the server maintains local file caches:
 - **Host Platform**: Vercel (Edge Functions + Static Assets)
 - **Deployment Trigger**: Pushes to `staging` automatically trigger a production build on Vercel.
 - **Serverless Rule**: In serverless lambdas, any asynchronous task that persists data to PocketBase MUST be `await`ed before sending the HTTP response. Fire-and-forget background promises are frozen by the runtime environment.
+
+---
+
+## 6. Zero-Regression Performance Architecture
+
+> **The Core Mandate**: Any modification to this codebase **MUST NOT** degrade performance even slightly. Engineers and AI agents are expected to **only preserve or enhance performance, never lower it**. With this mindset, every solution must be final, flawless, and production-tested.
+
+### A. Rendering, Paint & Animation Budget
+1. **GPU Layer Promotion**: All interactive animations (e.g. `ImagesFloating.vue`, `Accordion.vue`, `HighlightedMotion.vue`) must use CSS transforms (`translate3d`, `scale`, `rotate`) and `opacity`. Never animate layout-triggering properties (`width`, `height`, `top`, `left`, `margin`).
+2. **Passive Touch & Scroll Listeners**: Mobile interactive carousels must declare `touch-pan-y` in Tailwind / UnoCSS. Never call `preventDefault()` on vertical scroll gestures.
+3. **GSAP Lifecycle Hygiene**: Every `SplitText` and `ScrollTrigger` instance MUST be reverted and killed in `onBeforeUnmount()` to prevent memory leaks and detached DOM node accumulation.
+
+### B. Payload & Bundle Optimization
+1. **Admin Tools Isolation**: All heavy admin editors, the live editing bar (`AdminEditBar.client.vue`), the media studio modal (`AdminMediaStudioModal.client.vue`), and cropping tools MUST remain client-only components (`*.client.vue`) or dynamically imported so public visitors never download admin JavaScript.
+2. **Icon Tree-Shaking**: All icons are loaded as direct SVG vectors in `AdminIcon.vue` or through `unplugin-icons`, avoiding multi-megabyte icon font bundles.
+
+### C. Server, Caching & I/O Hygiene
+1. **Adaptive Edge Caching**:
+   - Public content routes serve with `Cache-Control: public, max-age=60, s-maxage=3600, stale-while-revalidate=600`.
+   - In-place editing sessions use `Cache-Control: no-cache, no-store, must-revalidate`.
+2. **SQLite WAL Telemetry**: Native Node 22 `node:sqlite` runs in `WAL` (Write-Ahead Logging) mode with `synchronous = NORMAL`, allowing concurrent, zero-latency append writes without locking database reads.
+3. **Non-Blocking Telemetry Beaconing**: Client event tracking (`useTracker.ts`) batches telemetry and flushes every 1.5 seconds or via `navigator.sendBeacon` upon page unload, guaranteeing zero main-thread blocking or frame drops during navigation.

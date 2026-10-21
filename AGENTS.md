@@ -30,6 +30,13 @@
 - When staging or committing files via `git add`, `git commit`, or `git push`, the sandbox may throw `fatal: Unable to create '.git/index.lock': Operation not permitted`.
 - **Solution**: Execute Git commands with `BypassSandbox: true` so the tool can safely acquire the lockfile and authenticate with GitHub remote.
 
+### Rule 5: Zero-Regression Performance Mandate
+- **CRITICAL DIRECTIVE**: Your changes **MUST NOT** affect performance even slightly. You can **ONLY** preserve or enhance performance, never lower it.
+- **Flawless Mindset**: Approach every feature, refactor, and bug fix with the mindset of engineering final, battle-tested solutions that perform at the absolute physical limits of the browser and server.
+- **Zero DOM Churn**: Ensure hardware-accelerated animations (`transform`, `opacity`, `will-change`), eliminate forced synchronous reflows, and ensure interactive components use passive touch-scroll (`touch-pan-y`).
+- **Zero Payload Bloat**: Heavy admin tools (dock, media studio, image editors) MUST remain lazy-loaded `.client.vue` components so regular visitor bundles remain lean.
+- **Edge & Database Efficiency**: All database queries must leverage indexes and SQLite WAL mode; server-side rendering routes must never execute redundant sequential waterfalls.
+
 ---
 
 ## 2. System Architecture at a Glance
@@ -119,6 +126,19 @@
   - Directional anchoring: RTL uses `left-0 right-auto`, LTR uses `right-0 left-auto`.
   - Unlock body scroll (`document.body.style.overflow = ''`) only in `onAfterLeave()`.
 
+### ⚠️ Pitfall 7: Mixed Content on HTTPS (Vercel) vs Raw PocketBase HTTP
+- **The Bug**: Browser calls to `http://65.108.80.205:8090` are blocked by Chrome as `Mixed Content` on `https://chapenajm.com`.
+- **The Fix**: All client PocketBase requests MUST be routed through the server-side reverse proxy `/api/pb` via `plugins/pb.client.ts`. Never hardcode raw HTTP IP endpoints on the client.
+
+### ⚠️ Pitfall 8: GSAP SplitText & WAI-ARIA Permitted Attributes
+- **The Bug**: Lighthouse flags animated text headers with *"Elements must only use permitted ARIA attributes"* because GSAP dynamically injects `aria-label` on generic `<span>` tags.
+- **The Fix**: Always add `role="text"` to animated text containers (e.g. `<span role="text" class="..." v-editable="...">`).
+
+### ⚠️ Deprecation Notice: `/dashboard` and `/admin`
+- **MANDATORY**: `/dashboard` and `/admin` are **completely deprecated**.
+- Use **`/dash`** for the operational management portal (CRM, Media, Traffic, Content).
+- Use the **In-Place Live Editor** (`Meta+E` or `?edit=true`) with the floating dock `AdminEditBar.client.vue` for editing page content.
+
 ---
 
 ## 4. Key Endpoints Directory
@@ -193,6 +213,8 @@ najm-front/
 │   ├── ARCHITECTURE.md       # Full stack design & data flow
 │   ├── BACKEND_AND_API.md    # Detailed API endpoint reference & schemas
 │   ├── FRONTEND_AND_CMS.md   # Visual editor & frontend development guide
-│   └── CRM_AND_LEADS.md      # CRM pipeline, missed-call tracking & SMS guide
+│   ├── CRM_AND_LEADS.md      # CRM pipeline, missed-call tracking & SMS guide
+│   ├── TELEMETRY_AND_ANALYTICS.md # Dual-mode telemetry, SQLite WAL engine & journeys
+│   └── SEO_AEO_AND_I18N.md   # Multi-locale SEO, AEO (/llms.txt) & SERP directives
 └── README.md                 # Primary project overview
 ```
