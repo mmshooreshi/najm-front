@@ -1,71 +1,100 @@
-# Nuxt 3 Starter
+# مجتمع چاپ و بسته‌بندی نجم (Najm Printing & Packaging Complex)
 
-> 💚 A Better Nuxt 3 starter template
+> **وب‌سایت رسمی**: [chapenajm.com](https://chapenajm.com)  
+> **محیط پیش‌نمایش (Staging)**: مخزن گیت‌هاب شاخه `staging` متصل به Vercel CI/CD  
+> **فریم‌ورک**: Nuxt 3 (Vue 3, Vite, Nitro Engine, UnoCSS/Tailwind)  
+> **پایگاه داده و بک‌اند**: PocketBase v0.23+ بر روی سرور ابری لینوکس
 
-## Preview
+---
 
-<div>
-  <a href="https://stackblitz.com/github/nuxtbase/nuxt3-starter" rel="nofollow" target="_blank"><img src="https://camo.githubusercontent.com/bf5c9492905b6d3b558552de2c848c7cce2e0a0f0ff922967115543de9441522/68747470733a2f2f646576656c6f7065722e737461636b626c69747a2e636f6d2f696d672f6f70656e5f696e5f737461636b626c69747a2e737667" alt="" data-canonical-src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" style="max-width: 100%;"></a>
-</div>
+## فهرست مستندات جامع پروژه (Documentation Index)
 
-## Features
+برای آشنایی سریع، توسعه و مشارکت هوش مصنوعی و توسعه‌دهندگان، مستندات زیر تهیه شده است:
 
-- 🎨 [@unocss/nuxt](https://unocss.dev/integrations/nuxt) - UnoCSS Instant On-demand Atomic CSS Engine
-- 🤹 [unplugin-icons](https://github.com/antfu/unplugin-icons) - Use icons from any iconsets
-- 🍍 [@pinia/nuxt](https://pinia.esm.dev/ssr/nuxt.html) - Using Pinia with Nuxt.js 3
-- 🛠️ [@vueuse/nuxt3](https://vueuse.org/nuxt/readme.html#vueuse-nuxt) - This is an add-on of VueUse, which provides better Nuxt integration auto-import capabilities.
+| سند | موضوع و محتوا |
+|-----|---------------|
+| 🤖 **[AGENTS.md](./AGENTS.md)** | **راهنمای اختصاصی دستیاران هوش مصنوعی و ایجنت‌ها**: قوانین حیاتی (مانند الزام `uv` برای پایتون، اعداد فارسی `۰-۹`)، خطاهای رایج، کلیدها، تله‌های Serverless و چک‌لیست عیب‌یابی سریع. |
+| 🏗️ **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** | **معماری کلی سیستم**: لایه‌بندی فرانت‌اند، سیستم رندرینگ SSR، سیستم زنده ویرایش بصری (`?edit=true`)، مدل همگام‌سازی دوطرفه داده با PocketBase و ذخیره‌سازی محلی. |
+| 🔌 **[docs/BACKEND_AND_API.md](./docs/BACKEND_AND_API.md)** | **مرجع بک‌اند، دیتابیس و روت‌های API**: مشخصات سرور PocketBase، توکن‌های دسترسی، توابع `contentStore` و `leadsStore`، و کاتالوگ تمام اندپوینت‌های `/server/api/`. |
+| 🎨 **[docs/FRONTEND_AND_CMS.md](./docs/FRONTEND_AND_CMS.md)** | **توسعه فرانت‌اند، طراحی چندزبانه و CMS**: نحوه استفاده از دایرکتیو `v-editable` و کامپوزبل `useAdminEditable`، هندلینگ RTL/LTR، انیمیشن‌های GSAP و استانداردهای موبایل. |
+| 📈 **[docs/CRM_AND_LEADS.md](./docs/CRM_AND_LEADS.md)** | **سیستم مدیریت سرنخ‌ها و استعلام قیمت (`/dash/requests`)**: پایپ‌لاین فروش، ثبت ۱-کلیک تماس‌های بی‌پاسخ (📵)، قالب‌های پیامک آماده و زمان‌بندی دقیق ساعات کاری تهران. |
 
-## Use the Template
+---
 
-### GitHub Template
+## ویژگی‌های کلیدی پروژه (Key Features)
 
-[create a repo from this template on GitHub](https://github.com/xiaoluoboding/nuxt3-starter/generate)
+1. **سیستم ویرایش بصری زنده (In-Context Visual CMS)**:
+   - با ورود مدیر و افزودن `?edit=true` به هر صفحه از سایت، نوار ابزار شناور فعال شده و تمامی متن‌ها، تصاویر و بخش‌ها به صورت درجا قابل ویرایش می‌شوند.
+   - پیش‌نویس‌ها در `localStorage` نگهداری شده و با فشردن دکمه «ذخیره و انتشار»، به صورت اتمیک در PocketBase ثبت و در دسترس عموم کاربران قرار می‌گیرند.
+2. **پشتیبانی چندزبانه کامل با جهت‌بندی پویا (Trilingual & Native RTL)**:
+   - پشتیبانی بومی از زبان‌های **فارسی (`fa`)**، **انگلیسی (`en`)** و **عربی (`ar`)**.
+   - مدیریت جهت متن (`dir="rtl"` / `dir="ltr"`)، معکوس‌سازی جهت فلش‌ها و حفظ زبان در روت‌ها با `localePath()`.
+3. **میز کار هوشمند فروش و CRM استعلام قیمت (`/dash/requests`)**:
+   - ثبت دقیق ساعت و تاریخ استعلام بر اساس افق تهران (`Asia/Tehran`).
+   - محاسبه خودکار فرصت‌های تماس (مثلاً استعلام ثبت‌شده در صبح برای بازه بعدازظهر).
+   - دکمه ۱-کلیک «تماس گرفتیم پاسخ نداد» با شمارنده تلاش‌ها و باز شدن خودکار پیامک آماده پیگیری.
+   - قابلیت باز کردن مستقیم در اپلیکیشن پیامک موبایل (`sms:...`) و کپی سریع در کلیپ‌بورد.
+4. **طراحی واکنش‌گرا و تجربه لمسی روان (Mobile-First Smooth UX)**:
+   - منوی کشویی موبایل با ترنزیشن‌های صلب و بدون افت فریم (Cubic-Bezier Easing).
+   - تصاویر شناور تمام‌عرض با تفکیک ژست‌های لمسی عمودی (`touch-pan-y`) و درگ ماوس.
+   - اسکرول نرم و یکپارچه با موتور Lenis.
 
-### Clone to local
+---
 
-```bash
-$> npx nuxi init -t nuxtbase/nuxt3-starter my-nuxt3-app
-$> 🎉  Another rad Nuxt project just made! Next steps:
-$>
-$>    📁  `cd my-nuxt3-app`
-$>
-$>    💿  Install dependencies with `npm install` or `yarn install`
-$>
-$>    🚀  Start development server with `npm run dev` or `yarn dev`
-```
+## راه‌اندازی و توسعه محلی (Getting Started)
 
-## Setup
+### نیازمندی‌ها
+- **Node.js**: نسخه 18 یا بالاتر
+- **مدیر بسته**: `pnpm` یا `yarn` یا `npm`
+- **ابزار پایتون (در صورت نیاز به اسکریپت‌ها)**: `uv` (اجرای هرگونه تسک پایتون صرفاً با `uv run`)
 
-### Installation
-
-Make sure to install the dependencies
-
+### نصب وابستگی‌ها
 ```bash
 yarn install
+# یا
+pnpm install
 ```
 
-### Development
-
-Start the development server on http://localhost:3088
-
+### اجرای محیط توسعه
 ```bash
 yarn dev
 ```
+سایت در آدرس `http://localhost:3000` (یا پورت مشخص‌شده در ترمینال) در دسترس خواهد بود.
 
-### Production
+---
 
-Build the application for production:
+## ساخت نسخه پروداکشن (Production Build)
+
+جهت کامپایل بدون نقص در محیط‌های سرور یا ساندباکس، متغیرهای محیطی زیر را تنظیم کنید:
 
 ```bash
-yarn build
+HOME=$(pwd) VERCEL=1 yarn build
+```
+یا با اجرای مستقیم باینری Nuxt:
+```bash
+HOME=/Users/mamthenebo/Me/projects/najm/najm-front VERCEL=1 ./node_modules/.bin/nuxt build
 ```
 
-Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment).
+---
 
-## Related Template
+## متغیرهای محیطی (.env)
 
-- [vue3-starter](https://github.com/xiaoluoboding/vue3-starter) - 🖖 A Better Vue 3 Starter Template，generate by `create-vue`.
+```env
+# آدرس سرور اصلی PocketBase
+PB_URL="http://65.108.80.205:8090"
 
-## License
+# توکن دسترسی سوپریوزر (در utils تعریف شده و اختیاری است)
+PB_SUPERUSER_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
-MIT [@xiaoluoboding](https://github.com/xiaoluoboding)
+# کلید درگاه پیامک (کاوه نگار / فراز اس‌ام‌اس - پس از اینماد)
+SMS_API_KEY=""
+```
+
+---
+
+## قوانین مهم کدنویسی برای مشارکت‌کنندگان و هوش مصنوعی
+
+1. **اعداد فارسی**: در متون، لیبل‌ها، تاریخ‌ها و شمارنده‌های فارسی، الزاماً از ارقام فارسی (`۰, ۱, ۲, ۳, ۴, ۵, ۶, ۷, ۸, ۹`) استفاده شود.
+2. **عدم انجماد تسک‌های ناهمگام در سرورلس**: توابعی که با دیتابیس ارتباط دارند (نظیر `syncContentToPocketBase`) حتماً باید قبل از بازگرداندن پاسخ HTTP `await` شوند؛ در غیر این صورت فرآیند در Vercel متوقف می‌شود.
+3. **جلوگیری از ایجاد رکورد تکراری در PocketBase**: هنگام ذخیره در کالکشن `pages`، همیشه ابتدا با فیلتر `slug` رکورد موجود جستجو شده، شناسه آن به‌روزرسانی شود و رکوردهای تکراری اضافه پاکسازی گردند.
+4. **توسعه با کامپوزبل `useAdminEditable`**: برای تمام بخش‌های دارای محتوا در سایت، حتماً از `useAdminEditable` استفاده کنید تا تغییرات اعمال‌شده در حالت ویرایش و سرور بدون نیاز به هاردکد نمایش داده شوند.
