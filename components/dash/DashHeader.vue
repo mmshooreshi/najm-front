@@ -6,10 +6,10 @@
       <button
         type="button"
         @click="$emit('openMobile')"
-        class="md:hidden w-9 h-9 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-300 flex items-center justify-center border border-white/10 transition-colors cursor-pointer"
-        aria-label="Menu"
+        class="md:hidden w-10 h-10 rounded-xl bg-zinc-900 active:bg-zinc-800 text-zinc-200 flex items-center justify-center border border-white/10 transition-colors cursor-pointer shrink-0"
+        aria-label="باز کردن منو"
       >
-        <AdminIcon name="menu" class="w-4 h-4" />
+        <AdminIcon name="menu" class="w-4.5 h-4.5" />
       </button>
 
       <h1 class="text-sm sm:text-base font-bold text-zinc-100 font-d4">

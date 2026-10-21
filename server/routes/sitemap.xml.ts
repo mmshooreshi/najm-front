@@ -5,6 +5,7 @@ interface SitemapRoute {
   path: string
   priority: string
   changefreq: 'daily' | 'weekly' | 'monthly'
+  lastmod?: string
 }
 
 const routes: SitemapRoute[] = [
@@ -250,7 +251,7 @@ export default defineEventHandler((event) => {
   setResponseHeader(event, 'Cache-Control', 'public, max-age=3600, s-maxage=86400')
 
   const baseUrl = 'https://chapenajm.com'
-  const today = new Date().toISOString().split('T')[0]
+  const defaultLastMod = '2025-10-18'
 
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
   xml += '<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>\n'
@@ -262,6 +263,7 @@ export default defineEventHandler((event) => {
     const faUrl = `${baseUrl}${cleanPath}`
     const enUrl = `${baseUrl}/en${cleanPath}`
     const arUrl = `${baseUrl}/ar${cleanPath}`
+    const lastmod = r.lastmod || defaultLastMod
 
     const alternates = `    <xhtml:link rel="alternate" hreflang="fa" href="${faUrl}" />\n` +
       `    <xhtml:link rel="alternate" hreflang="en" href="${enUrl}" />\n` +
@@ -272,7 +274,7 @@ export default defineEventHandler((event) => {
     xml += '  <url>\n'
     xml += `    <loc>${faUrl}</loc>\n`
     xml += alternates
-    xml += `    <lastmod>${today}</lastmod>\n`
+    xml += `    <lastmod>${lastmod}</lastmod>\n`
     xml += `    <changefreq>${r.changefreq}</changefreq>\n`
     xml += `    <priority>${r.priority}</priority>\n`
     xml += '  </url>\n'
@@ -281,7 +283,7 @@ export default defineEventHandler((event) => {
     xml += '  <url>\n'
     xml += `    <loc>${enUrl}</loc>\n`
     xml += alternates
-    xml += `    <lastmod>${today}</lastmod>\n`
+    xml += `    <lastmod>${lastmod}</lastmod>\n`
     xml += `    <changefreq>${r.changefreq}</changefreq>\n`
     xml += `    <priority>${r.priority}</priority>\n`
     xml += '  </url>\n'
@@ -290,7 +292,7 @@ export default defineEventHandler((event) => {
     xml += '  <url>\n'
     xml += `    <loc>${arUrl}</loc>\n`
     xml += alternates
-    xml += `    <lastmod>${today}</lastmod>\n`
+    xml += `    <lastmod>${lastmod}</lastmod>\n`
     xml += `    <changefreq>${r.changefreq}</changefreq>\n`
     xml += `    <priority>${r.priority}</priority>\n`
     xml += '  </url>\n'

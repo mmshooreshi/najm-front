@@ -12,7 +12,7 @@
     <div
       v-if="isMobileMenuOpen"
       @click="isMobileMenuOpen = false"
-      class="md:hidden fixed inset-0 z-40 bg-black/70 backdrop-blur-xs transition-opacity"
+      class="md:hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-xs transition-opacity cursor-pointer"
     ></div>
 
     <!-- Main Workspace Area -->
@@ -26,19 +26,25 @@
       </main>
     </div>
 
-    <!-- Floating Mobile Bottom Navigation -->
-    <DashMobileNav />
+    <!-- Floating Mobile Bottom Navigation (Hidden when sidebar drawer is open) -->
+    <DashMobileNav v-if="!isMobileMenuOpen" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import DashSidebar from '~/components/dash/DashSidebar.vue'
 import DashHeader from '~/components/dash/DashHeader.vue'
 import DashMobileNav from '~/components/dash/DashMobileNav.vue'
 
 const isMobileMenuOpen = ref(false)
 const isMobile = ref(false)
+
+watch(isMobileMenuOpen, (isOpen) => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = isOpen ? 'hidden' : ''
+  }
+})
 
 function checkMobile() {
   if (typeof window !== 'undefined') {

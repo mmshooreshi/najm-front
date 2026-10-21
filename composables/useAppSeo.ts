@@ -112,13 +112,19 @@ export function useAppSeo(options: SeoOptions = {}) {
       if (currentLang.value === 'AR') return `${brandName.value} | طباعة أوفست وتغليف فاخر`
       return `${brandName.value} | چاپ افست و جعبه‌سازی صنعتی`
     }
-    // Check if brandName is already included in raw to prevent duplicate titles
-    if (
-      raw.includes(brandName.value) ||
-      raw.includes('چاپ و بسته‌بندی نجم') ||
-      raw.includes('چاپ نجم') ||
-      raw.includes('Najm Printing')
-    ) {
+    const knownBrands = [
+      brandName.value,
+      'چاپ و بسته‌بندی نجم',
+      'چاپ نجم',
+      'مجتمع چاپ نجم',
+      'Najm Printing & Packaging',
+      'Najm Printing',
+      'Najm Complex',
+      'مجمع نجم للطباعة والتغليف',
+      'مجمع نجم للطباعة',
+      'مجمع نجم'
+    ]
+    if (knownBrands.some(b => raw.includes(b))) {
       return raw
     }
     return `${raw} | ${brandName.value}`
@@ -610,14 +616,31 @@ export function useAppSeo(options: SeoOptions = {}) {
         '@id': `${canonicalUrl.value}/#product`,
         name: pageTitle.value,
         description: metaDescription.value,
-        image: socialImage.value,
+        image: {
+          '@type': 'ImageObject',
+          '@id': `${socialImage.value}#primaryimage`,
+          url: socialImage.value,
+          contentUrl: socialImage.value,
+          caption: pageTitle.value
+        },
         brand: {
           '@id': `${baseUrl}/#organization`
         },
         manufacturer: {
           '@id': `${baseUrl}/#organization`
         },
-        category: toValue(options.category) || 'Industrial Packaging & Custom Boxes'
+        category: toValue(options.category) || 'Industrial Packaging & Custom Boxes',
+        offers: {
+          '@type': 'Offer',
+          url: canonicalUrl.value,
+          priceCurrency: 'IRR',
+          price: '0',
+          priceValidUntil: '2026-12-31',
+          availability: 'https://schema.org/InStock',
+          seller: {
+            '@id': `${baseUrl}/#organization`
+          }
+        }
       })
     } else if (pageType === 'service') {
       graph.push({

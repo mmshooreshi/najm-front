@@ -1,15 +1,15 @@
 <!-- components/dash/DashSidebar.vue -->
 <template>
   <aside
-    class="relative z-30 flex flex-col shrink-0 bg-zinc-950 border-r border-white/10 transition-all duration-300 ease-in-out text-white"
+    class="flex flex-col shrink-0 bg-zinc-950 border-l border-white/10 transition-all duration-300 ease-in-out text-white max-md:fixed max-md:inset-y-0 max-md:right-0 max-md:z-50 max-md:w-72 max-md:max-w-[85vw] max-md:shadow-2xl max-md:bg-zinc-950/98 max-md:backdrop-blur-xl md:relative md:z-30 md:translate-x-0 md:pointer-events-auto"
     :class="[
-      isCollapsed ? 'w-20' : 'w-60',
-      isMobileOpen ? 'translate-x-0' : 'max-md:-translate-x-full max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-50 max-md:w-68'
+      isCollapsed ? 'md:w-20' : 'md:w-60',
+      isMobileOpen ? 'max-md:translate-x-0 max-md:pointer-events-auto' : 'max-md:translate-x-full max-md:pointer-events-none'
     ]"
   >
     <!-- Brand -->
-    <div class="h-16 px-4 flex items-center justify-between border-b border-white/10">
-      <NuxtLink to="/dash" class="flex items-center gap-3 overflow-hidden group">
+    <div class="h-16 px-4 flex items-center justify-between border-b border-white/10 shrink-0">
+      <NuxtLink to="/dash" class="flex items-center gap-3 overflow-hidden group" @click="onNavClick">
         <div class="w-9 h-9 rounded-xl bg-najmgreen flex items-center justify-center text-white font-bold text-base shrink-0 group-hover:scale-105 transition-transform">
           ن
         </div>
@@ -32,7 +32,8 @@
         v-else
         type="button"
         @click="$emit('closeMobile')"
-        class="w-8 h-8 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+        class="w-10 h-10 rounded-xl bg-zinc-900 active:bg-zinc-800 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/10"
+        aria-label="بستن منو"
       >
         <AdminIcon name="x" class="w-4 h-4" />
       </button>
@@ -44,7 +45,8 @@
         v-for="item in navItems"
         :key="item.to"
         :to="item.to"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 group"
+        @click="onNavClick"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 group cursor-pointer"
         :class="route.path === item.to || (item.to !== '/dash' && route.path.startsWith(item.to))
           ? 'bg-najmgreen text-white shadow-xs font-bold'
           : 'text-zinc-400 hover:text-white hover:bg-white/5'"
@@ -88,14 +90,20 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AdminIcon from '~/components/admin/AdminIcon.vue'
 
-defineProps<{
+const props = defineProps<{
   isMobileOpen?: boolean
   isMobile?: boolean
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'closeMobile'): void
 }>()
+
+function onNavClick() {
+  if (props.isMobile || (typeof window !== 'undefined' && window.innerWidth < 768)) {
+    emit('closeMobile')
+  }
+}
 
 const route = useRoute()
 const isCollapsed = ref(false)

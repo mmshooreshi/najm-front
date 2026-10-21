@@ -191,6 +191,40 @@ function scheduleQueueFlush() {
 }
 
 /**
+ * Ultra-fast O(1) referrer and search/AI channel classifier
+ */
+export function classifyReferrer(ref?: string | null): {
+  source: string
+  category: 'search' | 'ai' | 'social' | 'direct' | 'referral'
+} {
+  if (!ref) return { source: 'Direct / None', category: 'direct' }
+  const lower = ref.toLowerCase()
+
+  if (lower.includes('google.')) {
+    if (lower.includes('imgres') || lower.includes('images.')) {
+      return { source: 'Google Images', category: 'search' }
+    }
+    return { source: 'Google Organic', category: 'search' }
+  }
+  if (lower.includes('perplexity.ai')) return { source: 'Perplexity AI', category: 'ai' }
+  if (lower.includes('chatgpt.com') || lower.includes('chat.openai.com')) return { source: 'ChatGPT', category: 'ai' }
+  if (lower.includes('claude.ai')) return { source: 'Claude AI', category: 'ai' }
+  if (lower.includes('copilot.microsoft.com') || lower.includes('bing.com/chat')) return { source: 'Microsoft Copilot', category: 'ai' }
+  if (lower.includes('bing.com')) return { source: 'Bing Search', category: 'search' }
+  if (lower.includes('torob.com')) return { source: 'Torob', category: 'search' }
+  if (lower.includes('instagram.com') || lower.includes('t.me') || lower.includes('linkedin.com') || lower.includes('bale.ai')) {
+    return { source: 'Social Media', category: 'social' }
+  }
+
+  try {
+    const host = new URL(ref).hostname
+    return { source: host, category: 'referral' }
+  } catch {
+    return { source: ref, category: 'referral' }
+  }
+}
+
+/**
  * Track a typed packaging domain event
  */
 export function trackEvent<K extends TelemetryEventName>(
@@ -200,12 +234,22 @@ export function trackEvent<K extends TelemetryEventName>(
 ): void {
   if (typeof window === 'undefined') return
 
+  const ref = typeof document !== 'undefined' ? (document.referrer || null) : null
+  const { source: refSource, category: refCat } = classifyReferrer(ref)
+
+  // Fast route locale check
+  const path = window.location.pathname
+  const locale: 'FA' | 'EN' | 'AR' = path === '/en' || path.startsWith('/en/') ? 'EN' : (path === '/ar' || path.startsWith('/ar/') ? 'AR' : 'FA')
+
   const payload: ClientTelemetryPayload<K> = {
     event_name: eventName,
     session_id: getTelemetrySessionId(),
     timestamp: new Date().toISOString(),
     url: window.location.pathname + window.location.search,
-    referrer: document.referrer || null,
+    referrer: ref,
+    referrer_source: refSource,
+    referrer_category: refCat,
+    locale,
     fingerprint: getClientFingerprint(),
     is_excluded: isDeviceExcluded(),
     properties

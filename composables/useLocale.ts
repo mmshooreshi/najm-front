@@ -1,18 +1,45 @@
 // composables/useLocale.ts
 import { computed } from 'vue'
-import { useCookie, useRoute, navigateTo } from '#app'
+import { useCookie, useRoute } from '#app'
 
 export const useLocale = () => {
-  const language = useCookie<string>('language', { default: () => 'FA', sameSite: 'lax', path: '/' })
+  const route = useRoute()
+  const languageCookie = useCookie<string>('language', { default: () => 'FA', sameSite: 'lax', path: '/' })
   const langs = ['FA', 'AR', 'EN']
 
-  const currentLangCode = computed(() => {
-    const l = (language.value || 'FA').toLowerCase()
+  // Route-authoritative locale calculation (100% deterministic, zero hydration mismatch)
+  const activeLocale = computed<'FA' | 'AR' | 'EN'>(() => {
+    const p = route?.path || ''
+    // If inside admin/dashboard, allow cookie override for content editing preview
+    if (p.startsWith('/dash') || p.startsWith('/admin') || p.startsWith('/dashboard')) {
+      const c = (languageCookie.value || 'FA').toUpperCase()
+      return (c === 'EN' || c === 'AR') ? c : 'FA'
+    }
+    // For all public routes, URL prefix is the absolute authority
+    if (p === '/en' || p.startsWith('/en/')) return 'EN'
+    if (p === '/ar' || p.startsWith('/ar/')) return 'AR'
+    return 'FA'
+  })
+
+  // Proxy ref-like behavior for backward compatibility while enforcing URL authority
+  const language = computed({
+    get(): string {
+      return activeLocale.value
+    },
+    set(newVal: string) {
+      if (!newVal) return
+      const upper = newVal.toUpperCase()
+      languageCookie.value = upper
+    }
+  })
+
+  const currentLangCode = computed<'fa' | 'en' | 'ar'>(() => {
+    const l = activeLocale.value.toLowerCase()
     return (l === 'en' || l === 'ar' ? l : 'fa') as 'fa' | 'en' | 'ar'
   })
 
   const isRTL = computed(() => {
-    return language.value === 'FA' || language.value === 'AR'
+    return activeLocale.value === 'FA' || activeLocale.value === 'AR'
   })
 
   /**
@@ -22,7 +49,7 @@ export const useLocale = () => {
    */
   function localePath(path: string, targetLang?: string): string {
     if (!path) {
-      const t = (targetLang || language.value || 'FA').toUpperCase()
+      const t = (targetLang || activeLocale.value || 'FA').toUpperCase()
       return t === 'EN' ? '/en' : t === 'AR' ? '/ar' : '/'
     }
 
@@ -53,7 +80,7 @@ export const useLocale = () => {
     let clean = path.replace(/^\/(?:en|ar)(?=\/|$)/, '') || '/'
     if (!clean.startsWith('/')) clean = `/${clean}`
 
-    const t = (targetLang || language.value || 'FA').toUpperCase()
+    const t = (targetLang || activeLocale.value || 'FA').toUpperCase()
     if (t === 'EN') return `/en${clean === '/' ? '' : clean}`
     if (t === 'AR') return `/ar${clean === '/' ? '' : clean}`
     return clean
@@ -67,12 +94,11 @@ export const useLocale = () => {
   function setLocale(newLang: string) {
     if (!newLang) return
     const upper = newLang.toUpperCase()
-    language.value = upper
+    languageCookie.value = upper
 
     if (typeof window !== 'undefined') {
       try {
-        const route = useRoute()
-        const currentPath = route.path
+        const currentPath = route?.path || '/'
         if (
           !currentPath.startsWith('/dash') &&
           !currentPath.startsWith('/admin') &&
@@ -83,7 +109,7 @@ export const useLocale = () => {
         ) {
           const target = localePath(currentPath, upper)
           if (target !== currentPath) {
-            window.history.replaceState(window.history.state, '', target)
+            window.location.href = target
           }
         }
       } catch {}
@@ -91,7 +117,7 @@ export const useLocale = () => {
   }
 
   function nextLanguage() {
-    const idx = langs.indexOf(language.value)
+    const idx = langs.indexOf(activeLocale.value)
     const next = langs[(idx + 1) % langs.length]
     setLocale(next)
   }

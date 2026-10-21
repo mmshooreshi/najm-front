@@ -1,6 +1,6 @@
 // composables/ui/usePageUI.ts
 import { useFetch } from '#app'
-import { computed, type ComputedRef, watch } from 'vue'
+import { computed, type ComputedRef, watch, onMounted } from 'vue'
 import { useLocale } from '@/composables/useLocale'
 import { logger } from '@/utils/logger'
 import { adminEditState, loadDraftFromLocalStorage } from '@/store/adminEditStore'
@@ -57,9 +57,24 @@ export function usePageUI(
     `/api/content/${slug}`,
     {
       key: `page-ui-content:${slug}`,
+      headers: {
+        'Cache-Control': 'no-cache, no-store'
+      },
       default: () => ({ ok: false, uiData: {} })
     }
   )
+
+  // Revalidate on client mount if in admin edit mode or edit query is active
+  if (typeof window !== 'undefined') {
+    onMounted(() => {
+      const isEditing = window.location.search.includes('edit=true') ||
+        Boolean(adminEditState.canEdit) ||
+        document.cookie.includes('pb_admin')
+      if (isEditing) {
+        refresh().catch(() => {})
+      }
+    })
+  }
 
   // Build a complete language->UI map with remote-first, local-fallback, and live admin overrides
   const allUi = computed<AllUi>(() => {

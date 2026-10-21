@@ -75,6 +75,9 @@ export interface ClientTelemetryPayload<K extends TelemetryEventName = Telemetry
   timestamp: string // ISO 8601 string
   url: string
   referrer?: string | null
+  referrer_source?: string | null
+  referrer_category?: 'search' | 'ai' | 'social' | 'direct' | 'referral'
+  locale?: 'FA' | 'EN' | 'AR'
   fingerprint?: string | null
   is_excluded?: boolean
   properties: TelemetryEventMap[K]
@@ -87,6 +90,9 @@ export interface StoredAnalyticsEvent {
   timestamp: string
   url: string
   referrer: string | null
+  referrer_source?: string | null
+  referrer_category?: string | null
+  locale?: 'FA' | 'EN' | 'AR' | string | null
   ip_hash: string
   user_agent: string | null
   fingerprint?: string | null
@@ -207,6 +213,13 @@ export interface TrafficStatsOverview {
     hesitations: number
   }
   top_clicked_targets?: Array<{ target_id: string; label: string; count: number }>
+  page_interactions?: Array<{
+    url: string
+    views: number
+    taps: number
+    dwell_sec: number
+    rage_taps: number
+  }>
   excluded_fingerprints: string[]
 }
 

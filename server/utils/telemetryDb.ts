@@ -1228,10 +1228,11 @@ export function getTrafficStatsOverview(
     .sort((a, b) => b.count - a.count)
     .slice(0, 15)
 
-  // 6. Page Flows & Top Click Targets
+  // 6. Page Flows, Top Click Targets & Page Interactions (Lens Integration)
   const flowMap = new Map<string, number>()
   const sessionPageSequence = new Map<string, Array<{ url: string; time: number }>>()
   const targetClickMap = new Map<string, { label: string; count: number }>()
+  const pageStatsMap = new Map<string, { views: number; taps: number; dwellSec: number; rageTaps: number }>()
 
   let debouncedScrollsCount = 0
   let totalDwellSecBeforeStop = 0
@@ -1239,6 +1240,16 @@ export function getTrafficStatsOverview(
   let hesitationsCount = 0
 
   for (const ev of events) {
+    const rawUrl = ev.url?.split('?')[0] || '/'
+    if (!excludeAdmin || !isAdminUrl(rawUrl)) {
+      const cur = pageStatsMap.get(rawUrl) || { views: 0, taps: 0, dwellSec: 0, rageTaps: 0 }
+      if (ev.event_name === 'page_view') cur.views++
+      else if (ev.event_name === 'tap_heat') cur.taps++
+      else if (ev.event_name === 'scroll_dwell') cur.dwellSec += Number(ev.properties?.dwell_sec || 0)
+      else if (ev.event_name === 'hesitation_trigger') cur.rageTaps++
+      pageStatsMap.set(rawUrl, cur)
+    }
+
     if (ev.event_name === 'page_view') {
       totalPageviews++
       const cleanUrl = ev.url.split('?')[0]
@@ -1266,6 +1277,17 @@ export function getTrafficStatsOverview(
       hesitationsCount++
     }
   }
+
+  const pageInteractions = Array.from(pageStatsMap.entries())
+    .map(([url, d]) => ({
+      url,
+      views: d.views,
+      taps: d.taps,
+      dwell_sec: Math.round(d.dwellSec),
+      rage_taps: d.rageTaps
+    }))
+    .sort((a, b) => (b.views + b.taps) - (a.views + a.taps))
+    .slice(0, 25)
 
   const topClickedTargets = Array.from(targetClickMap.entries())
     .map(([target_id, data]) => ({
@@ -1497,6 +1519,7 @@ export function getTrafficStatsOverview(
     top_landing_pages: topLandingPages,
     hourly_timeline: hourlyTimeline,
     top_clicked_targets: topClickedTargets,
+    page_interactions: pageInteractions,
     debounce_stats: {
       total_debounced_scrolls: debouncedScrollsCount,
       avg_dwell_before_stop: dwellEventsCount > 0 ? Math.round((totalDwellSecBeforeStop / dwellEventsCount) * 10) / 10 : 0,

@@ -132,6 +132,8 @@ export default defineNuxtConfig({
     '/admin/**': { redirect: { to: '/dash', statusCode: 301 } },
     '/dashboard': { redirect: { to: '/dash', statusCode: 301 } },
     '/dashboard/**': { redirect: { to: '/dash', statusCode: 301 } },
+    '/api/content/**': { headers: { 'cache-control': 'no-cache, no-store, must-revalidate' } },
+    '/api/analytics/**': { headers: { 'cache-control': 'no-cache, no-store, must-revalidate' } },
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/fonts/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },

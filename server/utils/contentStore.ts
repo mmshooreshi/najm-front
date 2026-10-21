@@ -279,17 +279,39 @@ export async function applyAndSaveContent(
 
 export async function purgeServerPageCache(slug: string): Promise<void> {
   try {
-    const storage = useStorage('cache')
-    const keys = await storage.getKeys('nitro:routes')
-    const target = slug === 'home' || slug === '/' ? '' : slug
-    for (const key of keys) {
-      if (
-        (target === '' && (key.includes('_.') || key.includes('_en.') || key.includes('_ar.'))) ||
-        (target && key.includes(target))
-      ) {
-        await storage.removeItem(key)
+    const target = slug === 'home' || slug === '/' ? '' : slug.toLowerCase()
+
+    // 1. Purge root storage keys
+    const rootStorage = useStorage()
+    const allKeys = await rootStorage.getKeys().catch(() => [])
+    for (const key of allKeys) {
+      const lower = key.toLowerCase()
+      if (lower.includes('routes') || lower.includes('handlers') || lower.includes('content') || lower.includes('nitro')) {
+        if (!target) {
+          if (lower.includes('index') || lower.includes('_en') || lower.includes('_ar') || lower.includes(':_') || lower.includes('/_') || lower.includes('home')) {
+            await rootStorage.removeItem(key).catch(() => {})
+          }
+        } else if (lower.includes(target)) {
+          await rootStorage.removeItem(key).catch(() => {})
+        }
       }
     }
+
+    // 2. Purge dedicated 'cache' storage mount
+    try {
+      const cacheStorage = useStorage('cache')
+      const cacheKeys = await cacheStorage.getKeys().catch(() => [])
+      for (const k of cacheKeys) {
+        const lower = k.toLowerCase()
+        if (!target) {
+          if (lower.includes('index') || lower.includes('_en') || lower.includes('_ar') || lower.includes(':_') || lower.includes('/_') || lower.includes('home')) {
+            await cacheStorage.removeItem(k).catch(() => {})
+          }
+        } else if (lower.includes(target)) {
+          await cacheStorage.removeItem(k).catch(() => {})
+        }
+      }
+    } catch {}
   } catch (err) {
     console.warn(`[ContentStore] Cache purge warning for "${slug}":`, err)
   }

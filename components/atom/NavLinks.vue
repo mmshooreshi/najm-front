@@ -20,27 +20,24 @@
         @dragend="onDragEnd"
       >
         <div class="flex items-center gap-1">
-          <!-- Drag Handle in Admin Edit Mode -->
-          <span
-            v-if="canEdit && isEditMode"
-            class="cursor-grab active:cursor-grabbing text-zinc-400 hover:text-emerald-600 transition-colors select-none text-xs px-0.5"
-            title="برای جابه‌جایی بکشید و رها کنید (Drag to reorder)"
-          >
-            ⠿
-          </span>
-
-          <NuxtLink
+          <!-- Non-navigating text in Edit Mode vs NuxtLink in Visitor Mode -->
+          <component
+            :is="isEditMode ? 'span' : NuxtLink"
             :to="isEditMode ? undefined : formatToUrl(item.slug)"
-            @click="onLinkClick($event)"
-            class="hover:text-najmgreen text-gray-700 transition-colors duration-200 py-1.5 px-1 block whitespace-nowrap"
+            @click="isEditMode ? onLinkClick($event) : undefined"
+            class="hover:text-najmgreen text-gray-700 transition-colors duration-200 py-1.5 px-1 block whitespace-nowrap cursor-pointer"
+            :class="{ 'cursor-default': isEditMode }"
             active-class="text-najmgreen font-bold"
           >
             <span
-              class="min-w-[40px] inline-block"
-              :class="{ 'text-amber-600/90 italic font-normal bg-amber-500/10 px-1 rounded border border-dashed border-amber-400/50': isEditMode && (!item.name || !item.name.trim()) }"
+              class="inline-block transition-all"
+              :class="{
+                'min-w-[65px] px-2 py-0.5 rounded border border-dashed border-emerald-500 bg-emerald-50/50 text-emerald-800 font-bold': isEditMode && (!item.name || !item.name.trim()),
+                'hover:outline-1 hover:outline-dashed hover:outline-emerald-400 rounded px-1': isEditMode
+              }"
               v-editable="`headerNav.${idx}.name`"
             >{{ item.name || (isEditMode ? 'لینک جدید' : '') }}</span>
-          </NuxtLink>
+          </component>
         </div>
 
         <!-- Archived Indicator in Admin Mode -->
@@ -51,84 +48,40 @@
           آرشیو
         </span>
 
-        <!-- In-Place Admin Micro-Toolbar on Hover with Safe Hover Bridge -->
+        <!-- Streamlined Admin Micro-Toolbar (Non-disruptive, compact) -->
         <div
           v-if="canEdit && isEditMode"
-          class="absolute top-full mt-1.5 right-1/2 translate-x-1/2 hidden group-hover:flex hover:flex items-center gap-1 bg-[#0a110f]/95 text-white rounded-xl py-1 px-1.5 border border-emerald-500/30 shadow-2xl backdrop-blur-md z-[9999999] text-[10px] before:content-[''] before:absolute before:-top-3 before:inset-x-0 before:h-3 before:pointer-events-auto"
+          class="absolute top-full mt-1 right-0 hidden group-hover:flex items-center gap-1 bg-zinc-950/95 text-white rounded-lg py-0.5 px-1.5 border border-white/20 shadow-xl backdrop-blur-md z-50 text-[10px]"
           @click.stop
         >
           <!-- Edit Destination / Slug -->
           <button
             type="button"
             @click="openDestModal(idx)"
-            class="p-1 rounded-lg hover:bg-emerald-500/20 text-emerald-400 transition cursor-pointer"
+            class="p-1 rounded hover:bg-emerald-500/20 text-emerald-400 transition cursor-pointer"
             title="ویرایش آدرس مقصد (URL / Slug)"
           >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-            </svg>
+            🔗
           </button>
 
           <!-- History / Versions -->
           <button
             type="button"
             @click="openHistory(idx)"
-            class="p-1 rounded-lg hover:bg-sky-500/20 text-sky-300 hover:text-white transition cursor-pointer"
-            title="تاریخچه تغییرات این عنوان"
+            class="p-1 rounded hover:bg-sky-500/20 text-sky-300 transition cursor-pointer"
+            title="تاریخچه تغییرات"
           >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            🕒
           </button>
 
-          <!-- Move Right (انتقال به راست / آیتم قبلی در چیدمان راست‌به‌چپ) -->
-          <button
-            v-if="idx > 0"
-            type="button"
-            @click="onMove(idx, idx - 1)"
-            class="p-1 rounded-lg hover:bg-white/20 text-zinc-300 hover:text-white transition cursor-pointer"
-            title="انتقال به راست (آیتم قبلی)"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          <!-- Move Left (انتقال به چپ / آیتم بعدی در چیدمان راست‌به‌چپ) -->
-          <button
-            v-if="idx < totalCount - 1"
-            type="button"
-            @click="onMove(idx, idx + 1)"
-            class="p-1 rounded-lg hover:bg-white/20 text-zinc-300 hover:text-white transition cursor-pointer"
-            title="انتقال به چپ (آیتم بعدی)"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          <!-- Archive / Restore Toggle -->
-          <button
-            type="button"
-            @click="onToggleArchive(idx, item)"
-            class="p-1 rounded-lg hover:bg-amber-500/30 text-amber-300 transition cursor-pointer"
-            :title="item.archived ? 'بازگردانی از آرشیو' : 'انتقال به آرشیو'"
-          >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-            </svg>
-          </button>
-
-          <!-- Remove Item (with Confirmation Modal) -->
+          <!-- Remove Item -->
           <button
             type="button"
             @click="confirmRemove(idx)"
-            class="p-1 rounded-lg hover:bg-rose-500/30 text-rose-300 transition cursor-pointer"
+            class="p-1 rounded hover:bg-rose-500/30 text-rose-300 transition cursor-pointer"
             title="حذف لینک"
           >
-            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            ✕
           </button>
         </div>
       </li>

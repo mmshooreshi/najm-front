@@ -2,6 +2,7 @@
 <template>
   <footer
     data-admin-slug="footer"
+    data-nosnippet
     :dir="isRTL ? 'rtl' : 'ltr'"
     class="bg-najmgreen text-white rounded-t-2xl pt-8 md:pt-10 select-text"
   >
